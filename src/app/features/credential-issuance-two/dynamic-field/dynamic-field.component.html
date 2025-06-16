@@ -21,12 +21,11 @@
     <mat-form-field appearance="outline" class="w-full" [formGroup]="parentFormGroup$()">
       <mat-label>{{ fieldName }}</mat-label>
       <!-- todo use switch -->
-      @if (fieldSchema.controlType === 'number') {
-        <input matInput type="number" [formControlName]="fieldName" [id]="fieldName" />
-      }@else if (fieldSchema.controlType === 'string'){
-        <input matInput type="text" [formControlName]="fieldName" [id]="fieldName" />
-      }@else if(fieldSchema.controlType === 'selector'){
-          <mat-select [formControlName]="fieldName" [id]="fieldName">
+       @let controlType = fieldSchema.controlType;
+      @if (controlType === 'number' || controlType === 'text') {
+        <input matInput [type]="controlType" [formControlName]="fieldName" [id]="fieldName" [class]="fieldSchema.class"/>
+      }@else if(controlType === 'selector'){
+          <mat-select [formControlName]="fieldName" [id]="fieldName" [class]="fieldSchema.class">
             <mat-option value="">Select a {{fieldName}}</mat-option>
             @for(option of fieldSchema.multiOptions; track $index){
               <mat-option [value]="option.value">

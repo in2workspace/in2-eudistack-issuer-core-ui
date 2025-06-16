@@ -36,14 +36,14 @@ export class DynamicFieldComponent {
   abstractControl$ = input.required<AbstractControl>();
   fieldName$ = input.required<string>();
   
-  logEffect = effect(()=>{
-    console.log('fieldSchema');
-    console.log(this.fieldSchema$());
-    console.log('abstract');
-    console.log(this.abstractControl$());
-    console.log('fieldName');
-    console.log(this.fieldName$());
-  });
+  // logEffect = effect(()=>{
+  //   console.log('fieldSchema');
+  //   console.log(this.fieldSchema$());
+  //   console.log('abstract');
+  //   console.log(this.abstractControl$());
+  //   console.log('fieldName');
+  //   console.log(this.fieldName$());
+  // });
 
 
   parentFormGroup$ = computed(() => this.abstractControl$() as FormGroup);

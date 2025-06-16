@@ -2,14 +2,28 @@
   <mat-label>Power</mat-label>
   <mat-select [(ngModel)]="selectedPower$">
     <!-- mat-select-trigger ?-->
-    <mat-option [value]="undefined" disabled>Default</mat-option>
-    @for(power of selectablePowers$(); track $index){
+    <mat-option [value]="undefined" disabled>-Select a power-</mat-option>
+    @for(power of availablePowers$(); track $index){
       <mat-option [value]="power" [disabled]="power.isDisabled">{{power.function}}</mat-option>
     }
   </mat-select>
 </mat-form-field>
 <button (click)="addPower()" [disabled]="isAddDisabled$()">Add</button>
 
-@for(power of addedPowers$(); track $index){
-  <div>{{power.function}}</div>
+
+@if(powersFormModel$()){
+  <form action="" [formGroup]="powersFormModel$()!">
+    @for(power of normalizedAddedPowers$(); track $index){
+      <div [formGroupName]="power.function">
+
+        <div>{{power.function}}</div>
+        @for(action of power.normalizedActions; track $index){
+          <label for="">{{action.action}}</label>
+          <mat-slide-toggle [formControlName]="action.action" type="text"/>
+        }
+        <button (click)="removePower(power)">Delete</button>
+      </div>
+    }
+    <button type="button" (click)="submit()">Submit powers</button>
+  </form>
 }

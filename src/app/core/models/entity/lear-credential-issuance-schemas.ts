@@ -9,12 +9,13 @@ export type CredentialIssuanceFormFieldSchema = {
     ignore?: boolean, // sets if it will be used to build form (model and view)
     display?: 'main' | 'side' | 'pref_side'; //should it be displayed in the main space or as a side card? 'pref_side' for sections that are only displayed in main in "asSigner" mode
     // todo afegir-hi per a selector! (p. ex. country)
-    controlType?: 'string' | 'number' | 'selector', // for 'control' only
+    controlType?: 'text' | 'number' | 'selector', // for 'control' only
     multiOptions?: SelectorOption[], //only for 'selector', 'radio' and 'checkbox'
     groupFields?: CredentialIssuanceFormSchema; //for 'group' only
     errors?: string[], // todo remove?
     validators?: ValidatorEntry[];
-    // todo altres paràmetres? placeholder, 
+    class?: string
+    // todo altres paràmetres? placeholder, class
 };
 
 export type SelectorOption  = { label: string, value: string};
@@ -77,12 +78,12 @@ export function getLearCredentialMachineIssuanceFormSchemas(countries: SelectorO
       groupFields: {
         domain: {
           type: 'control',
-          controlType: 'string',
+          controlType: 'text',
           validators: [{ name: 'required' }, { name: 'isDomain' }]
         },
         ipAddress: {
           type: 'control',
-          controlType: 'string',
+          controlType: 'text',
           validators: [{ name: 'required' }, { name: 'isIP' }]
         }
       }
@@ -93,12 +94,12 @@ export function getLearCredentialMachineIssuanceFormSchemas(countries: SelectorO
       groupFields: {
         organizationId: {
           type: 'control',
-          controlType: 'string',
+          controlType: 'text',
           validators: [{ name: 'required' }]
         },
         organizationName: {
           type: 'control',
-          controlType: 'string',
+          controlType: 'text',
           validators: [{ name: 'required' }]
         },
         country: {
@@ -109,12 +110,12 @@ export function getLearCredentialMachineIssuanceFormSchemas(countries: SelectorO
         },
         commonName: {
           type: 'control',
-          controlType: 'string',
+          controlType: 'text',
           validators: [{ name: 'required' }]
         },
         serialNumber: {
           type: 'control',
-          controlType: 'string',
+          controlType: 'text',
           validators: [{ name: 'required' }]
         }
       }
