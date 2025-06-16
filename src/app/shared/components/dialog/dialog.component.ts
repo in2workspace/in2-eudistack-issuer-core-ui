@@ -1,4 +1,4 @@
-import { Component, ComponentRef, inject, ViewChild } from '@angular/core';
+import { Component, ComponentRef, inject, ViewChild, AfterViewInit } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA, MatDialogTitle, MatDialogContent, MatDialogActions } from '@angular/material/dialog';
 import { MatButton } from '@angular/material/button';
 import { TranslatePipe } from '@ngx-translate/core';
@@ -22,6 +22,7 @@ export interface DialogData {
   confirmationLabel?: string;
   cancelLabel?: string;
   style?: string;
+  fullCustomTemplate?: ComponentPortal<any>|TemplatePortal|DomPortal;
 }
 export interface DialogDefaultContent {
   data: DialogData;
@@ -47,7 +48,9 @@ export interface DialogDefaultContent {
         TranslatePipe,
     ],
 })
-export class DialogComponent {
+export class DialogComponent implements AfterViewInit {
+  //todo
+  @ViewChild('fullCustom', {read: CdkPortalOutlet}) fullCustomOutlet: CdkPortalOutlet|undefined;
   public data = inject<DialogData>(MAT_DIALOG_DATA);
   public readonly dialogRef = inject(MatDialogRef<DialogComponent>);
   private readonly loader = inject(LoaderService);
@@ -66,6 +69,10 @@ export class DialogComponent {
       this.dialogRef.addPanelClass('dialog-custom');
     }
     this.updateStatus();
+  }
+  ngAfterViewInit(){
+    //todo
+
   }
   public updateStatus(): void{
     const previousStatus = this.currentStatus;

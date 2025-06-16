@@ -4,17 +4,17 @@ import { keccak_256 } from '@noble/hashes/sha3';
 import * as secp from '@noble/secp256k1';
 
 
-interface KeyState {
-  desmosPrivateKeyValue: string,
+export interface KeyState {
+  desmosPrivateKeyValue: string, //show to user
   desmosPublicKeyValue: string,
-  desmosDidKeyValue: string,
+  desmosDidKeyValue: string, // store
   issValue: string,
   dltPrivateKeyValue: string,
   dltAddressValue: string
 }
 
 
-@Injectable({ providedIn: 'root' })
+@Injectable() //not provided in root but in key generator component
 export class KeyGeneratorService {
 
 private readonly keyState$: WritableSignal<KeyState|undefined> = signal(undefined);

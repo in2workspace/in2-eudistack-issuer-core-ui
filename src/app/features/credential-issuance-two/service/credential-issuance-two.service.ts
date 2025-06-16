@@ -42,7 +42,8 @@ export class CredentialIssuanceTwoService {
   getShemasFromCredentialType(credType: CredentialType):[CredentialIssuanceFormSchema, CredentialIssuancePowerFormSchema]{
     //todo
     if(credType === 'LEARCredentialEmployee'){
-      return [] as any;
+      const countries = this.countryService.getCountriesAsSelectorOptions();
+      return getLearCredentialMachineIssuanceFormSchemas(countries);
     }else if(credType === 'LEARCredentialMachine'){
       const countries = this.countryService.getCountriesAsSelectorOptions();
       return getLearCredentialMachineIssuanceFormSchemas(countries);

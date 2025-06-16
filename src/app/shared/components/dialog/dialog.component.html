@@ -14,6 +14,11 @@
 
   <!-- DEFAULT DIALOG DATA (NON-LOADING) -->
 }@else{
+  @if(data.fullCustomTemplate){
+    <div mat-dialog-content>
+      <ng-template [cdkPortalOutlet]="data.fullCustomTemplate" #fullCustom></ng-template>
+    </div>
+  }@else{
   <h2 mat-dialog-title>{{ data.title }}</h2>
   <div mat-dialog-content>
     @if(data.template){
@@ -26,14 +31,15 @@
   </div>
   <div mat-dialog-actions>
     <!-- CONFIRMATION NEEDED: CANCEL AND CONFIRM BUTTONS -->
-      @if(data.confirmationType !== 'none'){
-        <button mat-flat-button color="cancel" (click)="onCancel()">{{ data.cancelLabel ?? ("dialog.cancel" | translate) }}</button>
-        <button mat-raised-button [color]="statusColor"
-        (click)="onConfirm()">{{ data.confirmationLabel ?? ("dialog.accept" | translate) }}</button>
-      }
-      @else{
-        <!-- NO CONFIRMATION NEEDED: ONLY CLOSE BUTTON -->
-          <button mat-flat-button [color]="statusColor" (click)="onConfirm()">{{ "dialog.close" | translate }}</button>
-      }
+    @if(data.confirmationType !== 'none'){
+      <button mat-flat-button color="cancel" (click)="onCancel()">{{ data.cancelLabel ?? ("dialog.cancel" | translate) }}</button>
+      <button mat-raised-button [color]="statusColor"
+      (click)="onConfirm()">{{ data.confirmationLabel ?? ("dialog.accept" | translate) }}</button>
+    }
+    @else{
+      <!-- NO CONFIRMATION NEEDED: ONLY CLOSE BUTTON -->
+      <button mat-flat-button [color]="statusColor" (click)="onConfirm()">{{ "dialog.close" | translate }}</button>
+    }
   </div>
+}
 }
