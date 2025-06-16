@@ -1,0 +1,9 @@
+<p>key-generator works!</p>
+<button (click)="generateKeys()">Generate keys</button>
+@for(key of keyState$()| keyvalue; track $index){
+    <div><b>{{key.key}}</b> {{key.value}}</div>
+    <button (click)="copyToClipboard(key.value)">Copy</button>
+    @if(copiedKey === key.value){
+        <div>Copied!</div>
+    }
+}
