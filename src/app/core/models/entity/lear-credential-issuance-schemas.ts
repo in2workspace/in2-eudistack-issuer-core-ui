@@ -36,6 +36,7 @@ export type SelectorOption  = { label: string, value: string};
 
 export type CredentialIssuanceFormSchema = Record<string, CredentialIssuanceFormFieldSchema>;
 export interface IssuanceFormSchemaPower extends Power{
+  action: string[],
   isIn2Required: boolean
 }
 export type CredentialIssuancePowerFormSchema = { power: IssuanceFormSchemaPower[]}
@@ -124,15 +125,13 @@ export function getLearCredentialMachineIssuanceFormSchemas(countries: SelectorO
   { 
     power: [
       {
-          "id": "4acd944a-e137-487f-a3f3-3bf4f71d191a",
-          "action": "Execute",
+          "action": ["Execute"],
           "domain": "DOME",
           "function": "Onboarding",
           "type": "Domain",
           isIn2Required: true
       },
       {
-          "id": "f7da3294-81cd-42a3-b676-71bf9e982957",
           "action": [
               "Create",
               "Update",
@@ -144,7 +143,6 @@ export function getLearCredentialMachineIssuanceFormSchemas(countries: SelectorO
           isIn2Required: false
       },
       {
-          "id": "3e272252-647f-4158-943e-6661c117c184",
           "action": [
               "Upload",
               "Attest"

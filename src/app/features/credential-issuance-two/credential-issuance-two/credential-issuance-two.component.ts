@@ -49,9 +49,15 @@ export class CredentialIssuanceTwoComponent {
     if(this.selectedCredentialType$() === 'LEARCredentialMachine'){
       isDisabled = isDisabled && !this.keys$();
     }
+    if(this.power$()){
+      isDisabled = isDisabled && this.powersIsValid$();
+    }
     console.log('isSubmitDisabled' + isDisabled);
     return isDisabled
   });
+
+  public powersValue$ = signal({});
+  public powersIsValid$ = signal(false);
 
   public form: FormGroup = new FormGroup({});
   public isFormValid$ = signal(false);
@@ -177,5 +183,11 @@ public onSelectionChange(selectedCredentialType: CredentialType, select: MatSele
   this.selectedCredentialType$.set(selectedCredentialType);
 }
 
+updatePowers(powerState: {value:{}, isValid: boolean}){
+  console.log('update powers in issuance two');
+  console.log(powerState)
+  this.powersValue$.set(powerState.value);
+  this.powersIsValid$.set(powerState.isValid);
+}
 
 }

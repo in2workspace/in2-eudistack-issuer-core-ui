@@ -1,29 +1,90 @@
-<mat-form-field>
-  <mat-label>Power</mat-label>
-  <mat-select [(ngModel)]="selectedPower$">
-    <!-- mat-select-trigger ?-->
-    <mat-option [value]="undefined" disabled>-Select a power-</mat-option>
-    @for(power of availablePowers$(); track $index){
-      <mat-option [value]="power" [disabled]="power.isDisabled">{{power.function}}</mat-option>
-    }
-  </mat-select>
-</mat-form-field>
-<button (click)="addPower()" [disabled]="isAddDisabled$()">Add</button>
+<div class="power-two-container">
+  <!-- Power Selector Section -->
+  <div class="power-selector-section">
+    <h3>{{ 'POWER_SELECTOR.TITLE' | translate }}</h3>
+    
+    <div class="selector-row">
+      <mat-form-field appearance="outline" class="power-select-field">
+        <mat-label>{{ 'POWER_SELECTOR.SELECT_POWER' | translate }}</mat-label>
+        <mat-select [(value)]="selectedPower">
+          <mat-select-trigger>
+            @if (selectedPower) {
+              <span>{{ selectedPower.function }}</span>
+            }
+          </mat-select-trigger>
+          @for (power of selectorPowers; track power.function) {
+            <mat-option 
+              [value]="power"
+              [disabled]="power.isDisabled">
+              {{ power.function }}
+            </mat-option>
+          }
+        </mat-select>
+      </mat-form-field>
+      
+      <button 
+        mat-raised-button 
+        color="primary"
+        type="button"
+        [disabled]="!selectedPower || selectedPower.isDisabled"
+        (click)="addPower(selectedPower!.function)">
+        <mat-icon>add</mat-icon>
+        {{ 'POWER_SELECTOR.ADD' | translate }}
+      </button>
+    </div>
+  </div>
 
+  <!-- Dynamic Form Section -->
+  @if (form.controls | keyvalue) {
+    <div class="dynamic-form-section">
+      <h3>{{ 'POWER_FORM.SELECTED_POWERS' | translate }}</h3>
+      
+      <form [formGroup]="form" class="powers-form">
+        @for (powerControl of form.controls | keyvalue; track powerControl.key) {
+          <div class="power-group-card">
+            
+            <!-- Power Header -->
+            <div class="power-header">
+              <h4>{{ powerControl.key }}</h4>
+              <button 
+                mat-mini-fab 
+                color="warn"
+                type="button"
+                (click)="removePower(powerControl.key)"
+                [attr.aria-label]="'POWER_FORM.REMOVE_POWER' | translate">
+                <mat-icon>delete</mat-icon>
+              </button>
+            </div>
 
-@if(powersFormModel$()){
-  <form action="" [formGroup]="powersFormModel$()!">
-    @for(power of normalizedAddedPowers$(); track $index){
-      <div [formGroupName]="power.function">
-
-        <div>{{power.function}}</div>
-        @for(action of power.normalizedActions; track $index){
-          <label for="">{{action.action}}</label>
-          <mat-slide-toggle [formControlName]="action.action" type="text"/>
+            <!-- Actions Toggle Section -->
+            <div class="actions-section" [formGroupName]="powerControl.key">
+              <h5>{{ 'POWER_FORM.ACTIONS' | translate }}</h5>
+              
+              <div class="actions-grid">
+                @for (actionControl of getFormGroup(powerControl.value).controls | keyvalue; track actionControl.key) {
+                  <div class="action-toggle">
+                    <mat-slide-toggle 
+                      [formControlName]="actionControl.key"
+                      color="primary">
+                      {{ actionControl.key }}
+                    </mat-slide-toggle>
+                  </div>
+                }
+              </div>
+            </div>
+          </div>
         }
-        <button (click)="removePower(power)">Delete</button>
-      </div>
-    }
-    <button type="button" (click)="submit()">Submit powers</button>
-  </form>
-}
+      </form>
+
+    </div>
+  }
+
+  <!-- Empty State -->
+  @if (!(form.controls | keyvalue)?.length) {
+    <div class="empty-state">
+      <mat-icon class="empty-icon">power_settings_new</mat-icon>
+      <p>{{ 'POWER_FORM.NO_POWERS_SELECTED' | translate }}</p>
+      <p class="empty-subtitle">{{ 'POWER_FORM.SELECT_POWER_TO_START' | translate }}</p>
+    </div>
+  }
+</div>

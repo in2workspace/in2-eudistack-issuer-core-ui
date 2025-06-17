@@ -1,23 +1,23 @@
 import { IssuanceFormSchemaPower } from './../../../core/models/entity/lear-credential-issuance-schemas';
-import { Component, OnInit, Signal, WritableSignal, computed, inject, input, signal } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output, Signal, WritableSignal, computed, inject, input, signal } from '@angular/core';
 import { AuthService } from "../../../core/services/auth.service";
 import { MatSelect, MatSelectTrigger } from '@angular/material/select';
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { MatIcon } from '@angular/material/icon';
-import { FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { FormControl, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatSlideToggle } from '@angular/material/slide-toggle';
 import { MatButton, MatMiniFabButton } from '@angular/material/button';
 import { MatOption } from '@angular/material/core';
 import { MatFormField, MatLabel } from '@angular/material/form-field';
-import { NgIf, NgFor, NgTemplateOutlet, AsyncPipe } from '@angular/common';
+import { NgIf, NgFor, NgTemplateOutlet, AsyncPipe, KeyValuePipe } from '@angular/common';
 import { DialogWrapperService } from 'src/app/shared/components/dialog/dialog-wrapper/dialog-wrapper.service';
 import { NormalizedAction, PowerTwoService } from './power-two.service';
 import { DialogData } from 'src/app/shared/components/dialog/dialog.component';
-import { EMPTY, map, Observable, pairwise, scan } from 'rxjs';
+import { EMPTY, map, Observable, pairwise, scan, tap } from 'rxjs';
 import { toObservable, toSignal } from '@angular/core/rxjs-interop';
 
 export interface TempIssuanceFormSchemaPower extends IssuanceFormSchemaPower{
-  isDisabled?: boolean;
+  isDisabled: boolean;
 }
 
 export interface NormalizedTempIssuanceFormSchemaPower extends TempIssuanceFormSchemaPower{
@@ -30,115 +30,114 @@ export interface NormalizedTempIssuanceFormSchemaPower extends TempIssuanceFormS
     templateUrl: './power-two.component.html',
     styleUrls: ['./power-two.component.scss'],
     standalone: true,
-    imports: [ReactiveFormsModule, NgIf, MatFormField, MatSelect, MatSelectTrigger, MatOption, MatButton, NgFor, NgTemplateOutlet, MatSlideToggle, FormsModule, MatMiniFabButton, MatIcon, MatLabel, MatSelect, AsyncPipe, TranslatePipe]
+    imports: [KeyValuePipe, ReactiveFormsModule, NgIf, MatFormField, MatSelect, MatSelectTrigger, MatOption, MatButton, NgFor, NgTemplateOutlet, MatSlideToggle, FormsModule, MatMiniFabButton, MatIcon, MatLabel, MatSelect, AsyncPipe, TranslatePipe]
 })
 export class PowerTwoComponent implements OnInit{
 
   public organizationIdentifierIsIn2: boolean = false;
-  
-  //streams (form states)
-  public _selectablePowers$: Signal<TempIssuanceFormSchemaPower[]> = input.required<TempIssuanceFormSchemaPower[]>();
-  public selectedPower$: WritableSignal<TempIssuanceFormSchemaPower | undefined> = signal(undefined);
-  public addedPowers$: WritableSignal<TempIssuanceFormSchemaPower[]> = signal([]);
-  // powers that can be selected in the selector
-  public availablePowers$: Signal<TempIssuanceFormSchemaPower[] | undefined> = computed(() => { 
-    if(!this.addedPowers$() || this.addedPowers$().length === 0) return this._selectablePowers$();
-    const availablePowers = [...this._selectablePowers$().map(p => { 
-      return this.addedPowers$().some(pow => pow.function === p.function) 
-      ? {...p, isDisabled: true} 
-      : p })
-    ]
-    console.log('available powers')
-    console.log(availablePowers)
-    return availablePowers
-    ;
-  });
-  // used to build template
-  public normalizedAddedPowers$: Signal<NormalizedTempIssuanceFormSchemaPower[]> = computed(()=>{ return this.normalizePowers(this.addedPowers$())});
-  // model with initial values
-  public rawPowersFormModel$: Signal<FormGroup> = computed(() => {
-    return this.buildPowerFormModel(this.normalizedAddedPowers$());
-  }, );
-  public powersFormModel$ = toSignal(
-    toObservable(this.rawPowersFormModel$).pipe(
-      
-      scan((acc, curr) => {
-        console.log('acc and curr');
-        console.log(acc)
-        console.log(curr)
-        return this.updatePowerFormModel(acc, curr);
-      }, new FormGroup([])),
-    ),
-    { initialValue: new FormGroup([]) }
-  );
+  public _powersInput: IssuanceFormSchemaPower[] = [];
+  public selectorPowers: TempIssuanceFormSchemaPower[] = [];
+  public selectedPower: TempIssuanceFormSchemaPower | undefined;
+  public form: FormGroup = new FormGroup({});
 
-  
-  
-  isAddDisabled$ = computed(()=>{
-    return !this.selectedPower$() || this.isPowerDisabled(this.selectedPower$()!)
-  });
-  
   private readonly authService = inject(AuthService);
   private readonly dialog = inject(DialogWrapperService);
   private powerService = inject(PowerTwoService);
   private readonly translate = inject(TranslateService);
 
+ @Output() formChanges = new EventEmitter<{value:{}, isValid:boolean}>();
+ @Input()
+  set powersInput(value: IssuanceFormSchemaPower[]) {
+    console.error('Power component received empty list.');
+    this._powersInput = value || [];
+    this.selectorPowers = this.mapToTempPowerSchema(value) || [];
+    this.resetForm();
+  }
 
-public submit(){
-  console.log('submit: ');
-  console.log(this.powersFormModel$())
-}
- public isPowerDisabled(power:IssuanceFormSchemaPower): boolean{
-  return this.addedPowers$().some(p => p.function === power.function && p.action === power.action);
- }
+  public mapToTempPowerSchema(powers: IssuanceFormSchemaPower[]){
+    return powers.map(p => ({...p, isDisabled: false}));
+  }
 
- public normalizePowers(powers: TempIssuanceFormSchemaPower[]): NormalizedTempIssuanceFormSchemaPower[] {
-  return this.powerService.normalizePowers(powers);
-}
-public buildPowerFormModel(powers: NormalizedTempIssuanceFormSchemaPower[]): FormGroup {
-  return this.powerService.buildPowerFormModel(powers);
-}
+  public addPower(funcName: string) {
+    // update form
+    const power = this._powersInput.find(p => p.function === funcName);
+    const actions = power?.action;
+    if(!actions){
+      console.error('No actions for this power');
+      return;
+    }
+    const toggleGroup: Record<string, FormControl> = {};
+    for (const action of actions) {
+      toggleGroup[action] = new FormControl(false);
+    }
+    this.form.addControl(funcName, new FormGroup(toggleGroup));
+    //update available powers
+    this.selectorPowers = [...this.selectorPowers.map(p => {
+      if(p.function === funcName){
+        p = { ...p, isDisabled: true}
+      }
+      return p;
+    })];
+    //reset selected
+    this.selectedPower = undefined;
+  }
 
-public updatePowerFormModel(prev:FormGroup, curr:FormGroup): FormGroup {
-  return this.powerService.updatePowerFormModel(prev, curr);
-}
+  public removePower(funcName: string): void {
+    
+  if (this.form.contains(funcName)) {
+    this.form.removeControl(funcName);
+  }
 
+  this.selectorPowers = this.selectorPowers.map(p => {
+    if (p.function === funcName) {
+      return { ...p, isDisabled: false };
+    }
+    return p;
+  });
+  }
 
   public ngOnInit(){
     this.organizationIdentifierIsIn2 = this.authService.hasIn2OrganizationIdentifier();
+    this.form.valueChanges.pipe(
+      tap(
+        value => {
+          const functions = Object.values(this.form.controls);
+          const hasOneFunction = functions.length > 0;
+            const allHaveAtLeastOneTrue = functions.every(control =>
+            Object.values(control.value).some(v => v === true)
+          );
+          const powerIsValid = hasOneFunction && allHaveAtLeastOneTrue && this.form.valid;
+          this.formChanges.emit({ value, isValid: powerIsValid });
+        }
+      )
+    ).subscribe(val=>{
+      console.log('powers value changed: ');
+      console.log(val)
+    });
   }
 
-  //todo no perdre canvis fets en afegir
-  public addPower(): void {
-    const selectedPower = this.selectedPower$();
-    if(!selectedPower){
-      console.error('Trying to add a power but there is no selected power');
-      return;
+  private resetForm() {
+    this.form.reset();            
+    for (const key of Object.keys(this.form.controls)) {
+      this.form.removeControl(key);
     }
-    this.selectedPower$.set(undefined);
-    const currentAddedPowers = this.addedPowers$();
-    this.addedPowers$?.set([...currentAddedPowers, selectedPower]);
+  }
+
+
+public submit(){
+  console.log('submit: ');
   
-  }
+}
 
-//todo no perdre canvis fets en eliminar
-  public removePower(powerToRemove: TempIssuanceFormSchemaPower): void {
-    const dialogData: DialogData = {
-        title: this.translate.instant("power.remove-dialog.title"),
-        message: this.translate.instant("power.remove-dialog.message") + powerToRemove,
-        confirmationType: 'sync',
-        status: `default`
-    }
+// Mètode per obtenir un poder per la seva funció
+public getPowerByFunction(functionName: string): TempIssuanceFormSchemaPower | undefined {
+  return this.selectorPowers.find(p => p.function === functionName);
+}
 
-    const removeAfterClose =  (): Observable<any> => {
-      const addedPowers = this.addedPowers$();
-      const updatedAddedPowers = addedPowers.filter(p => p.function !== powerToRemove.function);
-      this.addedPowers$.set([...updatedAddedPowers]);
-      return EMPTY;
-    };
-    this.dialog.openDialogWithCallback(dialogData, removeAfterClose);
-  }
-
+// Mètode per obtenir el FormGroup d'un control
+public getFormGroup(control: any): FormGroup {
+  return control as FormGroup;
+}
   
 
 }
