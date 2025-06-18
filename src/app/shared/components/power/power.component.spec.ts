@@ -7,7 +7,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { RouterModule } from '@angular/router';
 import { AuthService } from 'src/app/core/services/auth.service';
 import { FormCredentialService } from '../form-credential/services/form-credential.service';
-import { DialogData } from '../dialog/dialog.component';
+import { DialogData } from '../dialog/dialog-component/dialog.component';
 import { of } from 'rxjs';
 import { DialogWrapperService } from '../dialog/dialog-wrapper/dialog-wrapper.service';
 

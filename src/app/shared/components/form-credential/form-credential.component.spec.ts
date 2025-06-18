@@ -18,7 +18,7 @@ import { TempPower } from 'src/app/core/models/temp/temp-power.interface';
 import { Power } from 'src/app/core/models/entity/lear-credential';
 import { BrowserAnimationsModule} from "@angular/platform-browser/animations";
 import { DialogWrapperService } from '../dialog/dialog-wrapper/dialog-wrapper.service';
-import { DialogData } from '../dialog/dialog.component';
+import { DialogData } from '../dialog/dialog-data';
 
 const mockTempPower: TempPower = {
   action: 'Execute',

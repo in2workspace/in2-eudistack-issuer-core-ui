@@ -18,6 +18,7 @@ import { CredentialOfferResponse } from 'src/app/core/models/dto/credential-offe
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { AsyncPipe } from '@angular/common';
 import { TemplatePortal } from '@angular/cdk/portal';
+import { DialogComponent } from 'src/app/shared/components/dialog/dialog-component/dialog.component';
 
 export type StepperIndex = 0 | 1;
 export type CredentialOfferStep = 'onboarding' | 'offer';
@@ -173,7 +174,7 @@ export class CredentialOfferStepperComponent implements OnInit{
   private readonly openRefreshPopupEffect = this.startOrEndFirstCountdown$.pipe(
     filter( val => val === 'END'),
     tap(() => {
-      const dialogRef = this.dialog.openDialogWithCallback({
+      const dialogRef = this.dialog.openDialogWithCallback(DialogComponent, {
         title: this.translate.instant('credentialOffer.expired-title'), 
         message: '',
         template: new TemplatePortal(this.popupCountdown, {} as ViewContainerRef),
@@ -244,7 +245,7 @@ export class CredentialOfferStepperComponent implements OnInit{
     filter(time => time === -1),
     tap(()=>{
       this.redirectToHome();
-      this.dialog.openErrorInfoDialog(this.translate.instant("error.credentialOffer.not-found"));
+      this.dialog.openErrorInfoDialog(DialogComponent, this.translate.instant("error.credentialOffer.not-found"));
     })
   );
 
@@ -285,7 +286,7 @@ export class CredentialOfferStepperComponent implements OnInit{
       this.translate.get("error.credentialOffer.invalid-url")
       .pipe(take(1))
       .subscribe((message:string)=>{
-        this.dialog.openErrorInfoDialog(message);
+        this.dialog.openErrorInfoDialog(DialogComponent, message);
         this.redirectToHome();
         }
       );
@@ -313,7 +314,7 @@ export class CredentialOfferStepperComponent implements OnInit{
       this.redirectToHome();
       console.error("Client error: Transaction code not found. Can't get credential offer");
       const message = this.translate.instant("error.credentialOffer.invalid-url");
-      this.dialog.openErrorInfoDialog(message);
+      this.dialog.openErrorInfoDialog(DialogComponent, message);
     }
     return params;
   }
@@ -322,7 +323,7 @@ export class CredentialOfferStepperComponent implements OnInit{
     if(!transactionCode){
       console.error("No transaction code was found, can't refresh QR.");
       const message = this.translate.instant("error.credentialOffer.invalid-url");
-      this.dialog.openErrorInfoDialog(message);
+      this.dialog.openErrorInfoDialog(DialogComponent, message);
       this.redirectToHome();
       return throwError(()=>new Error());
     }
@@ -337,7 +338,7 @@ export class CredentialOfferStepperComponent implements OnInit{
     if (!cCode) {
       console.error("No c-transaction code was found, can't refresh QR.");
       const message = this.translate.instant("error.credentialOffer.invalid-url");
-      this.dialog.openErrorInfoDialog(message);
+      this.dialog.openErrorInfoDialog(DialogComponent, message);
       this.redirectToHome();
       return throwError(()=>new Error());
     }
@@ -367,7 +368,7 @@ export class CredentialOfferStepperComponent implements OnInit{
 
   public redirectToHomeAndShowErrorDialog(errMessage: string): void{
     this.redirectToHome();
-    this.dialog.openErrorInfoDialog(this.translate.instant(errMessage));
+    this.dialog.openErrorInfoDialog(DialogComponent, this.translate.instant(errMessage));
   }
 
   public redirectToHome(): void{

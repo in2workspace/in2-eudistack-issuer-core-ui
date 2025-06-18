@@ -1,5 +1,5 @@
-import { IssuanceFormSchemaPower } from './../../../core/models/entity/lear-credential-issuance-schemas';
-import { Component, EventEmitter, Input, OnInit, Output, Signal, WritableSignal, computed, inject, input, signal } from '@angular/core';
+import { IssuanceFormPowerSchema } from './../../../core/models/entity/lear-credential-issuance-schemas';
+import { Component, EventEmitter, Input, OnInit, Output, inject } from '@angular/core';
 import { AuthService } from "../../../core/services/auth.service";
 import { MatSelect, MatSelectTrigger } from '@angular/material/select';
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
@@ -12,17 +12,18 @@ import { MatFormField, MatLabel } from '@angular/material/form-field';
 import { NgIf, NgFor, NgTemplateOutlet, AsyncPipe, KeyValuePipe } from '@angular/common';
 import { DialogWrapperService } from 'src/app/shared/components/dialog/dialog-wrapper/dialog-wrapper.service';
 import { NormalizedAction, PowerTwoService } from './power-two.service';
-import { DialogData } from 'src/app/shared/components/dialog/dialog.component';
-import { EMPTY, map, Observable, pairwise, scan, tap } from 'rxjs';
-import { toObservable, toSignal } from '@angular/core/rxjs-interop';
+import { tap } from 'rxjs';
+import { RawFormPower } from '../credential-issuance-two/credential-issuance-two.component';
 
-export interface TempIssuanceFormSchemaPower extends IssuanceFormSchemaPower{
+export interface TempIssuanceFormPowerSchema extends IssuanceFormPowerSchema{
   isDisabled: boolean;
 }
 
-export interface NormalizedTempIssuanceFormSchemaPower extends TempIssuanceFormSchemaPower{
+export interface NormalizedTempIssuanceFormSchemaPower extends TempIssuanceFormPowerSchema{
   normalizedActions: NormalizedAction[];
 }
+
+
 
 
 @Component({
@@ -35,9 +36,9 @@ export interface NormalizedTempIssuanceFormSchemaPower extends TempIssuanceFormS
 export class PowerTwoComponent implements OnInit{
 
   public organizationIdentifierIsIn2: boolean = false;
-  public _powersInput: IssuanceFormSchemaPower[] = [];
-  public selectorPowers: TempIssuanceFormSchemaPower[] = [];
-  public selectedPower: TempIssuanceFormSchemaPower | undefined;
+  public _powersInput: IssuanceFormPowerSchema[] = [];
+  public selectorPowers: TempIssuanceFormPowerSchema[] = [];
+  public selectedPower: TempIssuanceFormPowerSchema | undefined;
   public form: FormGroup = new FormGroup({});
 
   private readonly authService = inject(AuthService);
@@ -45,16 +46,16 @@ export class PowerTwoComponent implements OnInit{
   private powerService = inject(PowerTwoService);
   private readonly translate = inject(TranslateService);
 
- @Output() formChanges = new EventEmitter<{value:{}, isValid:boolean}>();
+ @Output() formChanges = new EventEmitter<{value:RawFormPower, isValid:boolean}>();
  @Input()
-  set powersInput(value: IssuanceFormSchemaPower[]) {
+  set powersInput(value: IssuanceFormPowerSchema[]) {
     console.error('Power component received empty list.');
     this._powersInput = value || [];
     this.selectorPowers = this.mapToTempPowerSchema(value) || [];
     this.resetForm();
   }
 
-  public mapToTempPowerSchema(powers: IssuanceFormSchemaPower[]){
+  public mapToTempPowerSchema(powers: IssuanceFormPowerSchema[]){
     return powers.map(p => ({...p, isDisabled: false}));
   }
 
@@ -100,7 +101,7 @@ export class PowerTwoComponent implements OnInit{
     this.organizationIdentifierIsIn2 = this.authService.hasIn2OrganizationIdentifier();
     this.form.valueChanges.pipe(
       tap(
-        value => {
+        (value: RawFormPower) => {
           const functions = Object.values(this.form.controls);
           const hasOneFunction = functions.length > 0;
             const allHaveAtLeastOneTrue = functions.every(control =>
@@ -130,7 +131,7 @@ public submit(){
 }
 
 // Mètode per obtenir un poder per la seva funció
-public getPowerByFunction(functionName: string): TempIssuanceFormSchemaPower | undefined {
+public getPowerByFunction(functionName: string): TempIssuanceFormPowerSchema | undefined {
   return this.selectorPowers.find(p => p.function === functionName);
 }
 

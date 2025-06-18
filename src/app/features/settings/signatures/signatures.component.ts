@@ -1,3 +1,4 @@
+import { DialogComponent } from 'src/app/shared/components/dialog/dialog-component/dialog.component';
 import { Component, inject, ViewChild ,ViewEncapsulation, TemplateRef, ViewContainerRef, Injector, StaticProvider } from '@angular/core';
 import { MatCard, MatCardContent } from '@angular/material/card';
 import {MatCheckboxModule} from '@angular/material/checkbox';
@@ -11,7 +12,7 @@ import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { ConfigurationService } from '../services/configuration.service';
 import { SignatureConfigPayload, SignatureMode, FormMode, SignatureConfigurationRequest, SignatureConfigurationResponse, UpdateSignatureConfigurationRequest} from '../models/signature.models';
 import { SignatureConfigurationService } from '../services/signatureConfiguration.service';
-import { DialogData } from 'src/app/shared/components/dialog/dialog.component';
+
 import {  Observable, of  } from 'rxjs';
 import { DialogWrapperService } from 'src/app/shared/components/dialog/dialog-wrapper/dialog-wrapper.service';
 import {DISPLAYED_COLUMNS, SECRET_INITIAL_VALUE,SPECIAL_EDIT_FIELDS, SECRETS_FIELDS} from '../models/signature.constants';
@@ -21,6 +22,7 @@ import { ComponentPortal } from '@angular/cdk/portal';
 import { DATA_CREDENTIAL, FormCloudSignatureConfigurationComponent, FORM_MODE } from './form-signature-configuration/form-cloud-signature-configuration.component';
 import { ActivatedRoute } from '@angular/router';
 import { LoaderService } from 'src/app/core/services/loader.service';
+import { DialogData } from 'src/app/shared/components/dialog/dialog-data';
 
 @Component({
   selector: 'app-signatures',
@@ -144,7 +146,7 @@ export class SignaturesComponent  {
   }
 
   private handleEdit(updateSignatureConfigurationRequest: UpdateSignatureConfigurationRequest, signatureConfigurationResponse: SignatureConfigurationResponse): Observable<any> {
-    let payload = this.buildUpdatePayload(updateSignatureConfigurationRequest, signatureConfigurationResponse);
+    const payload = this.buildUpdatePayload(updateSignatureConfigurationRequest, signatureConfigurationResponse);
      //If you only wrote the reason but didn't edit anything, it means there are no changes.
     if (!Object.keys(payload).length
       || (Object.keys(payload).length === 1 && payload?.rationale)) {
@@ -205,7 +207,7 @@ export class SignaturesComponent  {
 
     const asyncOperation = this.getAsyncOperation(mode, signatureConfigurationResponse);
 
-    const dialogRef = this.dialog.openDialogWithForm(dialogData, validateForm, getFormValue, asyncOperation);
+    const dialogRef = this.dialog.openDialogWithForm(DialogComponent, dialogData, validateForm, getFormValue, asyncOperation);
 
     dialogRef.afterClosed().subscribe(() => {
       this.reloadCredentialList();

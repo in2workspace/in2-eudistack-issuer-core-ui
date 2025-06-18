@@ -2,7 +2,6 @@ import { FormCredentialService } from '../form-credential/services/form-credenti
 import { Component, OnInit, inject, DestroyRef } from '@angular/core';
 import { AuthService } from "../../../core/services/auth.service";
 import { MatSelectChange, MatSelect, MatSelectTrigger } from '@angular/material/select';
-import { DialogData } from '../dialog/dialog.component';
 import { EMPTY, Observable } from 'rxjs';
 import { TempPower } from 'src/app/core/models/temp/temp-power.interface';
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
@@ -15,6 +14,7 @@ import { MatFormField } from '@angular/material/form-field';
 import { NgIf, NgFor, NgTemplateOutlet, AsyncPipe } from '@angular/common';
 import { DialogWrapperService } from '../dialog/dialog-wrapper/dialog-wrapper.service';
 import { TmfFunction } from 'src/app/core/models/entity/lear-credential';
+import { DialogComponent, DialogData } from '../dialog/dialog-component/dialog.component';
 
 @Component({
     selector: 'app-power',
@@ -105,7 +105,7 @@ export class PowerComponent implements OnInit{
       this.formService.removePower(powerToRemove);
       return EMPTY;
     };
-    this.dialog.openDialogWithCallback(dialogData, removeAfterClose);
+    this.dialog.openDialogWithCallback(DialogComponent, dialogData, removeAfterClose);
   }
 
   public onHandleSelectChange(event: MatSelectChange): void {

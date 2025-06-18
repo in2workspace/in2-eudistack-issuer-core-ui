@@ -1,12 +1,11 @@
 // --- Form Schemas ---
 
 import { ValidatorEntry } from "src/app/shared/validators/credential-issuance/issuance-validators";
-import { Power } from "./lear-credential";
 
+//todo canviar a -issuance-form-schema
 // todo unir params de control en controlConfig i de group en groupConfig
 export type CredentialIssuanceFormFieldSchema = {
     type: 'control' | 'group';
-    ignore?: boolean, // sets if it will be used to build form (model and view)
     display?: 'main' | 'side' | 'pref_side'; //should it be displayed in the main space or as a side card? 'pref_side' for sections that are only displayed in main in "asSigner" mode
     // todo afegir-hi per a selector! (p. ex. country)
     controlType?: 'text' | 'number' | 'selector', // for 'control' only
@@ -35,11 +34,13 @@ export type SelectorOption  = { label: string, value: string};
 // }
 
 export type CredentialIssuanceFormSchema = Record<string, CredentialIssuanceFormFieldSchema>;
-export interface IssuanceFormSchemaPower extends Power{
+export interface IssuanceFormPowerSchema{
+  //todo: add domain, use it in form (currently there is only "DOME")
+  function: string,
   action: string[],
   isIn2Required: boolean
 }
-export type CredentialIssuancePowerFormSchema = { power: IssuanceFormSchemaPower[]}
+export type CredentialIssuancePowerFormSchema = { power: IssuanceFormPowerSchema[]}
   
 
 // export const LearCredentialEmployeeIssuanceFormSchema: CredentialIssuanceFormSchema = {
@@ -63,11 +64,30 @@ export type CredentialIssuancePowerFormSchema = { power: IssuanceFormSchemaPower
 //       display: 'side',
 //       groupFields: commonIssuerFields,
 //     },
-//     power: {
-//       type: 'group',
-//       display: 'main',
-//       //content will be set dynamically
-//     },
+//     power: [
+  //     {
+  //         "action": ["Execute"],
+  //         "function": "Onboarding",
+  //         isIn2Required: true
+  //     },
+  //     {
+  //         "action": [
+  //             "Create",
+  //             "Update",
+  //             "Delete",
+  //         ],
+  //         "function": "ProductOffering",
+  //         isIn2Required: false
+  //     },
+  //     {
+  //         "action": [
+  //             "Upload",
+  //             "Attest"
+  //         ],
+  //         "function": "Certification",
+  //         isIn2Required: false
+  //     }
+  // ]
 //   };
   
 // todo fer directori per cada schema
@@ -93,12 +113,12 @@ export function getLearCredentialMachineIssuanceFormSchemas(countries: SelectorO
       type: 'group',
       display: 'pref_side',
       groupFields: {
-        organizationId: {
+        organizationIdentifier: {
           type: 'control',
           controlType: 'text',
           validators: [{ name: 'required' }]
         },
-        organizationName: {
+        organization: {
           type: 'control',
           controlType: 'text',
           validators: [{ name: 'required' }]
@@ -109,7 +129,12 @@ export function getLearCredentialMachineIssuanceFormSchemas(countries: SelectorO
           multiOptions: countries,
           validators: [{ name: 'required' }]
         },
-        commonName: {
+        firstName: {
+          type: 'control',
+          controlType: 'text',
+          validators: [{ name: 'required' }]
+        },
+        lastName: {
           type: 'control',
           controlType: 'text',
           validators: [{ name: 'required' }]
@@ -126,20 +151,17 @@ export function getLearCredentialMachineIssuanceFormSchemas(countries: SelectorO
     power: [
       {
           "action": ["Execute"],
-          "domain": "DOME",
           "function": "Onboarding",
-          "type": "Domain",
           isIn2Required: true
       },
+      //todo remove after tests
       {
           "action": [
               "Create",
               "Update",
               "Delete",
           ],
-          "domain": "DOME",
           "function": "ProductOffering",
-          "type": "Domain",
           isIn2Required: false
       },
       {
@@ -147,9 +169,7 @@ export function getLearCredentialMachineIssuanceFormSchemas(countries: SelectorO
               "Upload",
               "Attest"
           ],
-          "domain": "DOME",
           "function": "Certification",
-          "type": "Domain",
           isIn2Required: false
       }
   ]

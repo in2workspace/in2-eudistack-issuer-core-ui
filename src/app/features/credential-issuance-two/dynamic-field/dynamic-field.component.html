@@ -2,7 +2,7 @@
 @let fieldName = fieldName$();
 @let control = control$();
 
-@if(abstractControl$() && fieldSchema && !fieldSchema.ignore) {
+@if(abstractControl$() && fieldSchema) {
   @if (fieldSchema.type === 'group' && groupFields$()) {
     <!-- Per als grups, mostrem el FormGroup específic del camp -->
     <mat-card class="mb-4">

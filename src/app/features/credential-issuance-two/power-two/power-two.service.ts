@@ -1,5 +1,5 @@
 import { inject, Injectable } from '@angular/core';
-import { NormalizedTempIssuanceFormSchemaPower, TempIssuanceFormSchemaPower } from './power-two.component';
+import { NormalizedTempIssuanceFormSchemaPower, TempIssuanceFormPowerSchema } from './power-two.component';
 import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
 
 export type NormalizedAction = { action: string; value: boolean };
@@ -13,7 +13,7 @@ export class PowerTwoService {
 
   constructor() { }
 
-  public normalizePowers(powers: TempIssuanceFormSchemaPower[]): NormalizedTempIssuanceFormSchemaPower[] {
+  public normalizePowers(powers: TempIssuanceFormPowerSchema[]): NormalizedTempIssuanceFormSchemaPower[] {
     const normalizedPowers = powers.map(p => {
       
       // aquest camp d'alguna manera també es normalitza

@@ -225,6 +225,9 @@ export class AuthService{
   public getMandator(): Observable<EmployeeMandator | null> {
     return this.mandatorSubject.asObservable();
   }
+  public getRawMandator(): EmployeeMandator | null {
+    return this.mandatorSubject.getValue();
+  }
 
   public login(): void {
     this.oidcSecurityService.authorize();

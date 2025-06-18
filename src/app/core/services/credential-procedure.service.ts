@@ -1,3 +1,4 @@
+import { DialogComponent } from 'src/app/shared/components/dialog/dialog-component/dialog.component';
 import { inject, Injectable } from '@angular/core';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { Observable, throwError } from 'rxjs';
@@ -11,9 +12,11 @@ import { TranslateService } from "@ngx-translate/core";
 import { Router } from "@angular/router";
 import { API } from "../constants/api.constants";
 import { LEARCredentialDataNormalizer } from '../models/entity/lear-credential-employee-data-normalizer';
-import { EmployeeProcedureRequest } from '../models/dto/procedure-request.dto';
+import { LearCredentialProcedureRequest } from '../models/dto/procedure-request.dto';
 import { LEARCredentialDataDetailsResponse } from '../models/dto/lear-credential-data-details-response.dto';
+import { LearCredentialIssuanceRequestDto } from '../models/dto/procedure-request-two-dto';
 
+//todo rename (backend, api... service)
 @Injectable({
   providedIn: 'root'
 })
@@ -64,7 +67,15 @@ export class CredentialProcedureService {
     );
   }
 
-  public createProcedure(procedureRequest: EmployeeProcedureRequest): Observable<void> {
+  public createProcedure(procedureRequest: LearCredentialProcedureRequest): Observable<void> {
+    return this.http.post<void>(this.saveCredential, procedureRequest).pipe(
+      catchError(this.handleError)
+    );
+  }
+  //todo: only one createProcedure
+  public createProcedureTwo(procedureRequest: LearCredentialIssuanceRequestDto): Observable<void> {
+    console.log('Sending API request to create procedure');
+    console.log(procedureRequest);
     return this.http.post<void>(this.saveCredential, procedureRequest).pipe(
       catchError(this.handleError)
     );
@@ -143,7 +154,7 @@ export class CredentialProcedureService {
       errorMessage = this.translate.instant("error.credentialOffer.conflict");
     }
   
-    this.dialog.openErrorInfoDialog(errorMessage);
+    this.dialog.openErrorInfoDialog(DialogComponent, errorMessage);
     setTimeout(()=>{
       this.router.navigate(['/home']);
     }, 0);

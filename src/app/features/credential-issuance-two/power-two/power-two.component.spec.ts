@@ -8,7 +8,6 @@ import { RouterModule } from '@angular/router';
 import { AuthService } from 'src/app/core/services/auth.service';
 import { of } from 'rxjs';
 import { DialogWrapperService } from 'src/app/shared/components/dialog/dialog-wrapper/dialog-wrapper.service';
-import { DialogData } from 'src/app/shared/components/dialog/dialog.component';
 import { FormCredentialService } from 'src/app/shared/components/form-credential/services/form-credential.service';
 
 const mockDialogRef = {

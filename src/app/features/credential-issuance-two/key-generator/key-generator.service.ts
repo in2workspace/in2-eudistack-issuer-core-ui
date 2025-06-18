@@ -3,7 +3,7 @@ import { keccak_256 } from '@noble/hashes/sha3';
 // import { arrayify, hexToBytes } from '@ethersproject/bytes'; // Pots reemplaçar si vols, però arrayify és molt útil
 import * as secp from '@noble/secp256k1';
 
-
+//todo reduir a les necessàries
 export interface KeyState {
   desmosPrivateKeyValue: string, //show to user
   desmosPublicKeyValue: string,

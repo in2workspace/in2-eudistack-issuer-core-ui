@@ -1,4 +1,4 @@
-import { Component, ComponentRef, inject, ViewChild, AfterViewInit } from '@angular/core';
+import { Component, ComponentRef, inject, ViewChild } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA, MatDialogTitle, MatDialogContent, MatDialogActions } from '@angular/material/dialog';
 import { MatButton } from '@angular/material/button';
 import { TranslatePipe } from '@ngx-translate/core';
@@ -8,6 +8,7 @@ import { Observable, Subject } from 'rxjs';
 import { LoaderService } from 'src/app/core/services/loader.service';
 import { CdkPortalOutlet, ComponentPortal, DomPortal, PortalModule, TemplatePortal } from '@angular/cdk/portal';
 import { MatIconModule } from '@angular/material/icon';
+import { BaseDialogComponent } from '../dialog-component-abstract';
 
 export type DialogStatus = 'default' | 'error';
 export type DialogConfirmationType = 'none' | 'sync' | 'async';
@@ -48,7 +49,7 @@ export interface DialogDefaultContent {
         TranslatePipe,
     ],
 })
-export class DialogComponent implements AfterViewInit {
+export class DialogComponent implements BaseDialogComponent {
   //todo
   @ViewChild('fullCustom', {read: CdkPortalOutlet}) fullCustomOutlet: CdkPortalOutlet|undefined;
   public data = inject<DialogData>(MAT_DIALOG_DATA);
@@ -70,10 +71,7 @@ export class DialogComponent implements AfterViewInit {
     }
     this.updateStatus();
   }
-  ngAfterViewInit(){
-    //todo
 
-  }
   public updateStatus(): void{
     const previousStatus = this.currentStatus;
     this.currentStatus = this.data.status;

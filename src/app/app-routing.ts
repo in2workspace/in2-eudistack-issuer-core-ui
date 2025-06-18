@@ -1,3 +1,4 @@
+import { KeyGeneratorComponent } from './features/credential-issuance-two/key-generator/key-generator/key-generator.component';
 import { Routes } from '@angular/router';
 import { AutoLoginPartialRoutesGuard } from 'angular-auth-oidc-client';
 import {basicGuard, settingsGuard} from './core/guards/accessLevel.guard';

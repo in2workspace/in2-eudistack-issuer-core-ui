@@ -1,3 +1,4 @@
+import { DialogComponent, DialogData } from 'src/app/shared/components/dialog/dialog-component/dialog.component';
 import { inject, Injectable, signal } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { EMPTY, from, Observable, Observer, switchMap, take, tap } from 'rxjs';
@@ -6,7 +7,6 @@ import { buildFormFromSchema, FormSchemaByType, getFormDataByType, getFormSchema
 import { DialogWrapperService } from 'src/app/shared/components/dialog/dialog-wrapper/dialog-wrapper.service';
 import { TranslateService } from '@ngx-translate/core';
 import { Router } from '@angular/router';
-import { DialogData } from 'src/app/shared/components/dialog/dialog.component';
 import { CredentialStatus, CredentialType, LEARCredentialDataDetails } from 'src/app/core/models/entity/lear-credential';
 import { CredentialDetailsFormSchema } from 'src/app/core/models/entity/lear-credential-details-schemas';
 
@@ -110,7 +110,7 @@ export class CredentialDetailsService {
       return this.sendReminder();
     }
 
-    this.dialog.openDialogWithCallback(dialogData, sendReminderAfterConfirm);
+    this.dialog.openDialogWithCallback(DialogComponent, dialogData, sendReminderAfterConfirm);
 
   }
 
@@ -127,7 +127,7 @@ export class CredentialDetailsService {
       return this.signCredential();
     }
     
-    this.dialog.openDialogWithCallback(dialogData, signCredentialAfterConfirm);
+    this.dialog.openDialogWithCallback(DialogComponent, dialogData, signCredentialAfterConfirm);
   }
 
   private executeCredentialAction(
@@ -150,7 +150,7 @@ export class CredentialDetailsService {
           status: 'default'
         };
   
-        const dialogRef = this.dialog.openDialog(dialogData);
+        const dialogRef = this.dialog.openDialog(DialogComponent, dialogData);
         return dialogRef.afterClosed();
       }),
       switchMap(()  =>

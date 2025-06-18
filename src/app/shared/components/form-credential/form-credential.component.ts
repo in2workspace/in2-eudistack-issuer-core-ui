@@ -1,3 +1,4 @@
+import { DialogComponent } from '../dialog/dialog-component/dialog.component';
 import { Component, DestroyRef, Input, OnDestroy, OnInit, ViewChild, inject} from '@angular/core';
 import { FormGroupDirective, FormsModule } from '@angular/forms';
 import { CredentialProcedureService } from 'src/app/core/services/credential-procedure.service';
@@ -24,10 +25,10 @@ import { MatInput } from '@angular/material/input';
 import { MatFormField, MatLabel, MatError } from '@angular/material/form-field';
 import { MatCard, MatCardContent } from '@angular/material/card';
 import { DialogWrapperService } from '../dialog/dialog-wrapper/dialog-wrapper.service';
-import { DialogData } from '../dialog/dialog.component';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { LoaderService } from 'src/app/core/services/loader.service';
 import { MatIcon } from '@angular/material/icon';
+import { DialogData } from '../dialog/dialog-data';
 
 @Component({
   selector: 'app-form-credential',
@@ -131,7 +132,7 @@ export class FormCredentialComponent implements OnInit, OnDestroy {
     const submitAfterDialogClose = (): Observable<any> => {
       return this.submitCredential();
     };
-    this.dialog.openDialogWithCallback(dialogData, submitAfterDialogClose);
+    this.dialog.openDialogWithCallback(DialogComponent, dialogData, submitAfterDialogClose);
   }
 
   public submitCredential(): Observable<any> {
@@ -159,7 +160,7 @@ export class FormCredentialComponent implements OnInit, OnDestroy {
               status: 'default'
             };
 
-            const dialogRef = this.dialog.openDialog(dialogData);
+            const dialogRef = this.dialog.openDialog(DialogComponent, dialogData);
             return dialogRef.afterClosed();
           }),
           switchMap(() => from(this.navigateToCredentials())),
