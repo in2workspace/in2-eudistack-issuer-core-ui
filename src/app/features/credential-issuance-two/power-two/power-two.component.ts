@@ -11,7 +11,7 @@ import { MatOption } from '@angular/material/core';
 import { MatFormField, MatLabel } from '@angular/material/form-field';
 import { NgIf, NgFor, NgTemplateOutlet, AsyncPipe, KeyValuePipe } from '@angular/common';
 import { DialogWrapperService } from 'src/app/shared/components/dialog/dialog-wrapper/dialog-wrapper.service';
-import { NormalizedAction, PowerTwoService } from './power-two.service';
+import { NormalizedAction } from './power-two.service';
 import { tap } from 'rxjs';
 import { RawFormPower } from '../credential-issuance-two/credential-issuance-two.component';
 
@@ -43,7 +43,6 @@ export class PowerTwoComponent implements OnInit{
 
   private readonly authService = inject(AuthService);
   private readonly dialog = inject(DialogWrapperService);
-  private powerService = inject(PowerTwoService);
   private readonly translate = inject(TranslateService);
 
  @Output() formChanges = new EventEmitter<{value:RawFormPower, isValid:boolean}>();

@@ -9,8 +9,7 @@ export type CredentialDetailsFormFieldSchema = {
 export type CredentialDetailsFormSchema = Record<string, CredentialDetailsFormFieldSchema>;
   
 const commonMandatorFields: CredentialDetailsFormSchema = {
-  name: { type: 'control' },
-  lastName:{ type: 'control' },
+  commonName: { type: 'control' },
   emailAddress: { type: 'control' },
   serialNumber: { type: 'control' },
   organization: { type: 'control' },

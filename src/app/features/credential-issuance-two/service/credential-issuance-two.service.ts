@@ -1,7 +1,7 @@
 import { inject, Injectable } from '@angular/core';
 import { FormControl, FormGroup, ValidatorFn } from '@angular/forms';
 import { CredentialType, EmployeeMandator } from 'src/app/core/models/entity/lear-credential';
-import { CredentialIssuanceFormSchema, CredentialIssuancePowerFormSchema, getLearCredentialMachineIssuanceFormSchemas } from 'src/app/core/models/entity/lear-credential-issuance-schemas';
+import { CredentialIssuanceFormSchema, CredentialIssuancePowerFormSchema, getLearCredentialEmployeeIssuanceFormSchemas, getLearCredentialMachineIssuanceFormSchemas } from 'src/app/core/models/entity/lear-credential-issuance-schemas';
 import { CountryService } from 'src/app/shared/components/form-credential/services/country.service';
 import { ALL_VALIDATORS_FACTORY_MAP, ValidatorEntry } from 'src/app/shared/validators/credential-issuance/issuance-validators';
 import { CredentialProcedureService } from 'src/app/core/services/credential-procedure.service';
@@ -83,7 +83,7 @@ export class CredentialIssuanceTwoService {
     //todo
     if(credType === 'LEARCredentialEmployee'){
       const countries = this.countryService.getCountriesAsSelectorOptions();
-      return getLearCredentialMachineIssuanceFormSchemas(countries);
+      return getLearCredentialEmployeeIssuanceFormSchemas(countries);
     }else if(credType === 'LEARCredentialMachine'){
       const countries = this.countryService.getCountriesAsSelectorOptions();
       return getLearCredentialMachineIssuanceFormSchemas(countries);

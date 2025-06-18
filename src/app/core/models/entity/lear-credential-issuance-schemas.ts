@@ -43,52 +43,82 @@ export interface IssuanceFormPowerSchema{
 export type CredentialIssuancePowerFormSchema = { power: IssuanceFormPowerSchema[]}
   
 
-// export const LearCredentialEmployeeIssuanceFormSchema: CredentialIssuanceFormSchema = {
-//     mandatee: {
-//       type: 'group',
-//       display: 'main',
-//       groupFields: {
-//         firstName: { type: 'control', validators: [] },
-//         lastName: { type: 'control' },
-//         email: { type: 'control' },
-//         nationality: { type: 'control' },
-//       },
-//     },
-//     mandator: {
-//       type: 'group',
-//       display: 'side',
-//       groupFields: commonMandatorFields,
-//     },
-//     issuer: {
-//       type: 'group',
-//       display: 'side',
-//       groupFields: commonIssuerFields,
-//     },
-//     power: [
-  //     {
-  //         "action": ["Execute"],
-  //         "function": "Onboarding",
-  //         isIn2Required: true
-  //     },
-  //     {
-  //         "action": [
-  //             "Create",
-  //             "Update",
-  //             "Delete",
-  //         ],
-  //         "function": "ProductOffering",
-  //         isIn2Required: false
-  //     },
-  //     {
-  //         "action": [
-  //             "Upload",
-  //             "Attest"
-  //         ],
-  //         "function": "Certification",
-  //         isIn2Required: false
-  //     }
-  // ]
-//   };
+export function getLearCredentialEmployeeIssuanceFormSchemas(countries: SelectorOption[]): [CredentialIssuanceFormSchema, CredentialIssuancePowerFormSchema] {
+    return [
+      {
+        mandatee: {
+          type: 'group',
+          display: 'main',
+          groupFields: {
+            firstName: { type: 'control', controlType: 'text', validators: [] },
+            lastName: { type: 'control', controlType: 'text' },
+            email: { type: 'control', controlType: 'text' },
+            nationality: { type: 'control', controlType: 'text' }, //todo multiOptions
+          },
+        },
+        mandator: {
+          type: 'group',
+          display: 'pref_side',
+          groupFields: {
+            organizationIdentifier: {
+              type: 'control',
+              controlType: 'text',
+              validators: [{ name: 'required' }]
+            },
+            organization: {
+              type: 'control',
+              controlType: 'text',
+              validators: [{ name: 'required' }]
+            },
+            country: {
+              type: 'control',
+              controlType: 'selector',
+              multiOptions: countries,
+              validators: [{ name: 'required' }]
+            },
+            firstName: {
+              type: 'control',
+              controlType: 'text',
+              validators: [{ name: 'required' }]
+            },
+            lastName: {
+              type: 'control',
+              controlType: 'text',
+              validators: [{ name: 'required' }]
+            },
+            serialNumber: {
+              type: 'control',
+              controlType: 'text',
+              validators: [{ name: 'required' }]
+            }
+          }
+        }},
+        { 
+          power: [
+            {
+                "action": ["Execute"],
+                "function": "Onboarding",
+                isIn2Required: true
+            },
+            {
+                "action": [
+                    "Create",
+                    "Update",
+                    "Delete",
+                ],
+                "function": "ProductOffering",
+                isIn2Required: false
+            },
+            {
+                "action": [
+                    "Upload",
+                    "Attest"
+                ],
+                "function": "Certification",
+                isIn2Required: false
+            }
+      ]}]
+}
   
 // todo fer directori per cada schema
 export function getLearCredentialMachineIssuanceFormSchemas(countries: SelectorOption[]): [CredentialIssuanceFormSchema, CredentialIssuancePowerFormSchema] {
@@ -175,6 +205,13 @@ export function getLearCredentialMachineIssuanceFormSchemas(countries: SelectorO
   ]
   }];
 }
+
+export const commonMandatorIssuanceFields = {
+        firstName: { type: 'control', validators: [] },
+        lastName: { type: 'control' },
+        email: { type: 'control' },
+        nationality: { type: 'control' },
+      };
     
     // todo later!
     // power: {

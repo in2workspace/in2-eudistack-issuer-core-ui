@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { IssuancePayloadPower, LearCredentialEmployeeIssuancePayload, LearCredentialIssuancePayload, LearCredentialMachineIssuancePayload, RawCredentialPayload, RawCredentialPayloadWithParsedPower } from 'src/app/core/models/dto/lear-credential-issuance-request.dto';
-import { CredentialType, TmfAction, TmfFunction } from 'src/app/core/models/entity/lear-credential';
+import { CredentialFormData, CredentialType, TmfAction, TmfFunction } from 'src/app/core/models/entity/lear-credential';
 import { RawFormPower } from '../credential-issuance-two/credential-issuance-two.component';
 
 @Injectable({
@@ -35,12 +35,10 @@ export class IssuanceRequestFactoryService {
       console.log('Credential data: ');
       console.log(credentialData);
       // Mandatee
-      const mandatee = credentialData.partialCredentialSubject['mandatee'];
-
-      const didKey = credentialData.optional['keys']['desmosDidKeyValue'];
+      const mandatee = this.getMandateeFromCredentialData(credentialData);
       
       // Mandator
-      const mandator = credentialData.asSigner ? credentialData.partialCredentialSubject['mandator'] : credentialData.optional.staticData?.mandator;
+      const mandator = this.getMandatorFromCredentialData(credentialData);
       if(!mandator){
         console.error('Error getting mandator.'); 
         return {} as LearCredentialMachineIssuancePayload;
@@ -49,34 +47,64 @@ export class IssuanceRequestFactoryService {
       const orgId = mandator['organizationIdentifier'];
       const mandatorId = this.buildDidElsi(country, orgId); //did-elsi
       const mandatorCommonName = mandator['commonName'] ?? this.buildCommonName(mandator['firstName'], mandator['lastName']);
+      
+      const didKey = credentialData.optional['keys']['desmosDidKeyValue'];
 
-
-        const payload: LearCredentialMachineIssuancePayload =    
-         {
-          mandator: {
-                id: mandatorId,
-                organization: mandator['organization'],
-                country:  mandator['country'],
-                commonName:  mandatorCommonName,
-                serialNumber:  mandator['serialNumber']
-            },
-            mandatee: {
-                id:  didKey,
-                domain:  mandatee['domain'],
-                ipAddress:  mandatee["ipAddress"]
-            },
-            power: credentialData.power
-          }
+      const payload: LearCredentialMachineIssuancePayload =    
+        {
+        mandator: {
+              id: mandatorId,
+              organization: mandator['organization'],
+              country:  mandator['country'],
+              commonName:  mandatorCommonName,
+              serialNumber:  mandator['serialNumber']
+          },
+          mandatee: {
+              id:  didKey,
+              domain:  mandatee['domain'],
+              ipAddress:  mandatee["ipAddress"]
+          },
+          power: credentialData.power
+        }
         return payload;
     }
 
     //todo
     private createLearCredentialEmployeeRequest(credentialData: RawCredentialPayloadWithParsedPower): LearCredentialEmployeeIssuancePayload{
-        return {} as any;
-    }
+      console.log('CREATE LEAR CREDENTIAL EMPLOYEE');
+      console.log('Credential data: ');
+      console.log(credentialData);
+      // Mandatee
+      const mandatee = this.getMandateeFromCredentialData(credentialData);
+      
+      // Mandator
+      const mandator = this.getMandatorFromCredentialData(credentialData);
+      if(!mandator){
+        console.error('Error getting mandator.'); 
+        return {} as LearCredentialEmployeeIssuancePayload;
+      }
+      const country = mandator['country'];
+      const orgId = mandator['organizationIdentifier'];
+      const vatNumber = this.buildOrganizationId(country, orgId);
+      const mandatorCommonName = mandator['commonName'] ?? this.buildCommonName(mandator['firstName'], mandator['lastName']);
+      
 
-    private addMandatorToPayload(){
-
+      const payload: LearCredentialEmployeeIssuancePayload =    
+        {
+        mandator: {
+              emailAddress: mandator['emailAddress'],
+              organization: mandator['organization'],
+              country:  country,
+              commonName:  mandatorCommonName,
+              serialNumber:  mandator['serialNumber'],
+              organizationIdentifier: vatNumber
+          },
+          mandatee: {
+              ...mandatee
+          },
+          power: credentialData.power
+        }
+        return payload;
     }
 
     private buildDidElsi(orgId:string, country:string): string{
@@ -124,9 +152,13 @@ export class IssuanceRequestFactoryService {
       }, []);
     }
 
-
+private getMandatorFromCredentialData(credentialData:RawCredentialPayloadWithParsedPower){
+  return credentialData.asSigner ? credentialData.partialCredentialSubject['mandator'] : credentialData.optional.staticData?.mandator;
+}
     
-
+private getMandateeFromCredentialData(credentialData:RawCredentialPayloadWithParsedPower){
+  return credentialData.partialCredentialSubject['mandatee'];
+}
 }
 
 const domePowerBase = {

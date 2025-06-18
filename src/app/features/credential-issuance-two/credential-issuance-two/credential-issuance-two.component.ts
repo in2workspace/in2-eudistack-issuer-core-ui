@@ -57,6 +57,7 @@ export class CredentialIssuanceTwoComponent {
     this.selectedCredentialType$() 
   ? this.getCredentialFormSchema(this.selectedCredentialType$()!) 
   : undefined);
+  
   public powerFormSchema$ = computed(() => 
     this.selectedCredentialType$()  
     ? this.getPowerSchema(this.selectedCredentialType$()!) 
@@ -167,12 +168,14 @@ export class CredentialIssuanceTwoComponent {
   public onSubmit() {
     const isGlobalValid = this.isGlobalValid$();
     const globalValue = this.globalValue$();
-    if (!isGlobalValid) {
+    if (isGlobalValid) {
       console.log('✅ Form valid', globalValue);
-    } else {
+    } 
+    else {
       console.error('Invalid form: ');
       console.log(globalValue);
-      return;
+      // todo restore
+      // return;
     }
 
     //open confirm
@@ -252,7 +255,7 @@ public onSelectionChange(selectedCredentialType: CredentialType, select: MatSele
       return;
     }
   }
-
+  this.form = new FormGroup({});
   this.selectedCredentialType$.set(selectedCredentialType);
 }
 
