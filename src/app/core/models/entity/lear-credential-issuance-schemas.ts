@@ -2,28 +2,27 @@
 
 import { ValidatorEntry } from "src/app/shared/validators/credential-issuance/issuance-validators";
 
+// todo canviar a -issuance-form-schema
 
-//todo packs de validators com "name", "serial number", "email"
+//todo agrupar validators com "name", "serial number", "email"
+//todo agrupar camps sencers com "name", etc.
 
-//todo canviar a -issuance-form-schema
 // todo unir params de control en controlConfig i de group en groupConfig
+// todo fer que CredentialIssuanceFormFieldSchema sigui union type de control i group?
 export type CredentialIssuanceFormFieldSchema = {
     key: string,
     type: 'control' | 'group';
     display?: 'main' | 'side' | 'pref_side'; //should it be displayed in the main space or as a side card? 'pref_side' for sections that are only displayed in main in "asSigner" mode
-    // todo afegir-hi per a selector! (p. ex. country)
-    controlType?: 'text' | 'number' | 'selector', // for 'control' only
-    multiOptions?: SelectorOption[], //only for 'selector', 'radio' and 'checkbox'
+    controlType?: 'text' | 'number' | 'selector', // for type 'control' only
+    multiOptions?: SelectorOption[], //only for 'selector' (and similars if added: 'radio' and 'checkbox')
     groupFields?: CredentialIssuanceFormSchema; //for 'group' only
     errors?: string[], // todo remove?
     validators?: ValidatorEntry[];
     classes?: string //admits a string of separated clases; i.e.: "classOne classTwo"
-    // todo altres paràmetres? placeholder, class
 };
 
 export type SelectorOption  = { label: string, value: string};
 
-//todo fer que CredentialIssuanceFormFieldSchema sigui union type de control i group?
 
 export type CredentialIssuanceFormSchema = CredentialIssuanceFormFieldSchema[];
 export interface IssuanceFormPowerSchema{
