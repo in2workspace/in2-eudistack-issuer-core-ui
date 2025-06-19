@@ -25,8 +25,11 @@ export interface NormalizedTempIssuanceFormSchemaPower extends TempIssuanceFormP
   normalizedActions: NormalizedAction[];
 }
 
-
-
+export interface PowerValueAndValidity {
+  value:RawFormPower, 
+  hasOnePower:boolean, 
+  hasOneActionPerPower:boolean
+}
 
 @Component({
     selector: 'app-power-two',
@@ -49,7 +52,7 @@ export class PowerTwoComponent implements OnInit{
   public keepOrder = (_: any, _2: any) => 0;
 
 
- @Output() formChanges = new EventEmitter<{value:RawFormPower, isValid:boolean}>();
+ @Output() formChanges = new EventEmitter<PowerValueAndValidity>();
  @Input()
   set powersInput(value: IssuanceFormPowerSchema[]) {
     console.warn('Power component received empty list.');
@@ -119,12 +122,11 @@ export class PowerTwoComponent implements OnInit{
         (value: RawFormPower) => {
           //todo move in one function
           const functions = Object.values(this.form.controls);
-          const hasOneFunction = functions.length > 0;
-            const allHaveAtLeastOneTrue = functions.every(control =>
+          const hasOnePower = functions.length > 0;
+          const hasOneActionPerPower = functions.every(control =>
             Object.values(control.value).some(v => v === true)
           );
-          const powerIsValid = hasOneFunction && allHaveAtLeastOneTrue && this.form.valid;
-          this.formChanges.emit({ value, isValid: powerIsValid });
+          this.formChanges.emit({ value, hasOnePower, hasOneActionPerPower });
         }
       )
     ).subscribe(val=>{

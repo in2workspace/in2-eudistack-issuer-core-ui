@@ -53,20 +53,20 @@ export class IssuanceRequestFactoryService {
       const payload: LearCredentialMachineIssuancePayload =    
         {
         mandator: {
-              id: mandatorId,
-              organization: mandator['organization'],
-              country:  mandator['country'],
-              commonName:  mandatorCommonName,
-              serialNumber:  mandator['serialNumber']
-          },
-          mandatee: {
-              id:  didKey,
-              domain:  mandatee['domain'],
-              ipAddress:  mandatee["ipAddress"]
-          },
-          power: credentialData.power
-        }
-        return payload;
+          commonName:  mandatorCommonName,
+          serialNumber:  mandator['serialNumber'],
+          organization: mandator['organization'],
+          id: mandatorId,
+          country:  mandator['country'],
+        },
+        mandatee: {
+            id:  didKey,
+            domain:  mandatee['domain'],
+            ipAddress:  mandatee["ipAddress"]
+        },
+        power: credentialData.power
+      }
+      return payload;
     }
 
     //todo

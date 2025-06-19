@@ -21,7 +21,7 @@ export class WrappedValidators {
   public static required(): ValidatorFn {
     return (control: AbstractControl): ValidationErrors | null => {
       return Validators.required(control)
-        ? { required: 'Aquest camp és obligatori' }
+        ? { required: 'error.form.required' }
         : null;
     };
   }
@@ -29,7 +29,7 @@ export class WrappedValidators {
   public static email(): ValidatorFn {
     return (control: AbstractControl): ValidationErrors | null => {
       return Validators.email(control)
-        ? { email: 'El correu no és vàlid' }
+        ? { email: 'error.form.email' }
         : null;
     };
   }
@@ -37,35 +37,35 @@ export class WrappedValidators {
   public static min(min: number): ValidatorFn {
     return (control: AbstractControl): ValidationErrors | null => {
       const result = Validators.min(min)(control);
-      return result ? { min: `El valor mínim és ${min}` } : null;
+      return result ? { min: 'error.form.min' } : null;
     };
   }
 
   public static max(max: number): ValidatorFn {
     return (control: AbstractControl): ValidationErrors | null => {
       const result = Validators.max(max)(control);
-      return result ? { max: `El valor màxim és ${max}` } : null;
+      return result ? { max: 'error.form.max' } : null;
     };
   }
 
   public static minLength(minLength: number): ValidatorFn {
     return (control: AbstractControl): ValidationErrors | null => {
       const result = Validators.minLength(minLength)(control);
-      return result ? { minLength: `Longitud mínima: ${minLength}` } : null;
+      return result ? { minLength: 'error.form.minLength' } : null;
     };
   }
 
   public static maxLength(maxLength: number): ValidatorFn {
     return (control: AbstractControl): ValidationErrors | null => {
       const result = Validators.maxLength(maxLength)(control);
-      return result ? { maxLength: `Longitud màxima: ${maxLength}` } : null;
+      return result ? { maxLength: 'error.form.maxLength' } : null;
     };
   }
 
   public static pattern(pattern:RegExp): ValidatorFn {
     return (control: AbstractControl): ValidationErrors | null => {
       const result = Validators.pattern(pattern)(control);
-      return result ? { pattern: `Invaldi pattern` } : null;
+      return result ? { pattern: 'error.form.pattern' } : null;
     };
   }
 }

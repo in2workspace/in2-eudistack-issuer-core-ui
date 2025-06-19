@@ -41,7 +41,7 @@
             </mat-select>
         }
         @if (control?.invalid && control?.touched) {
-          <mat-error>{{ "error.form.required" + (control!.errors | firstElement | translate) }}</mat-error>
+          <mat-error>{{ control!.errors | firstElement | translate }}</mat-error>
         }
 
       </mat-form-field>

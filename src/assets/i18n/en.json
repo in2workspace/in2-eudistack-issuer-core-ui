@@ -246,8 +246,14 @@
       "message": "There was an error with the mail server. Please try again later to send a send reminder, if problem persist contact support team."
     },
     "form":{
-      "ip": "invaliiid ip",
       "required": "This field is required.",
+      "min": "Need more",
+      "max": "Need less",
+      "minLength": "Minimum characters",
+      "maxLength": "Maximum characters exceeded",
+      "pattern": "Invalid pattern",
+      "ip": "Invalid IP",
+      "domain": "Invalid domain",
       "invalid_character": "Invalid character/s",
       "only_letters_and_numbers": "Only letters and numbers are allowed",
       "only_letters_numbers_hyphens": "Only letters, numbers and hyphens are allowed",
@@ -266,6 +272,7 @@
         "top_level_domain_part_min": "The portion of the domain after the last '.' must be at least 2 characters long."
       },
       "org_id_startsWithVAT": "Enter the id without VAT nor the country prefix",
+      "no_key": "You need to generate a key to submit.",
       "no_power": "You need to add at least one power",
       "no_function": "Each power must have at least one selected function"
     }
@@ -320,7 +327,8 @@
   },
   "keys": {
     "title": "Private Key",
-    "buttonText": "Generate Key"
+    "buttonText": "Generate Key",
+    "alert": "Make sure to copy this key."
   }
 }
 

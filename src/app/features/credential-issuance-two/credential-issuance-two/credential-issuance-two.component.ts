@@ -1,3 +1,4 @@
+import { ConditionalConfirmDialogData } from './../../../shared/components/dialog/conditional-confirm-dialog/conditional-confirm-dialog.component';
 import { MatButton } from '@angular/material/button';
 import { KeyGeneratorComponent } from './../key-generator/key-generator/key-generator.component';
 import { MatLabel } from '@angular/material/form-field';
@@ -10,7 +11,7 @@ import { NgFor, TitleCasePipe } from '@angular/common';
 import { CredentialIssuanceFormSchema, CredentialIssuancePowerFormSchema } from 'src/app/core/models/entity/lear-credential-issuance-schemas';
 import { CredentialIssuanceTwoService } from '../service/credential-issuance-two.service';
 import { KeyValuePipe } from '@angular/common';
-import { PowerTwoComponent } from '../power-two/power-two.component';
+import { PowerTwoComponent, PowerValueAndValidity } from '../power-two/power-two.component';
 import { KeyState } from '../key-generator/key-generator.service';
 import { EMPTY, map, Observable, of, startWith } from 'rxjs';
 import { DialogWrapperService } from 'src/app/shared/components/dialog/dialog-wrapper/dialog-wrapper.service';
@@ -72,8 +73,13 @@ export class CredentialIssuanceTwoComponent {
   //Keys
   public keys$ = signal<KeyState|undefined>(undefined);
   //Power form
+  //todo type
   public powersValue$ = signal<RawFormPower>({} as RawFormPower);
-  public powersIsValid$ = signal<boolean>(false);
+  public powersHasOneFunction$ = signal<boolean>(false);
+  public powersHaveOneAction$ = signal<boolean>(false);
+  public powersIsValid$ = computed(() => {
+    return this.powersHasOneFunction$() && this.powersHaveOneAction$()
+  });
   //Main form
   public form: FormGroup = new FormGroup({});
   public formValue$ = signal<FormGroup>(this.form.value);
@@ -207,11 +213,13 @@ export class CredentialIssuanceTwoComponent {
   }
 
   public openLEARCredentialMachineSubmitDialog(){
-    const dialogData: DialogData = {
-          title: "Títol prova",
-          message: "msg",
-          confirmationType: 'async',
+    const dialogData: ConditionalConfirmDialogData = {
+          title: "Create LEARCredentialMachine",
+          message: "Are you sure you want to create this credential?",
+          checkboxLabel: 'I confirm that I have copied and safely stored the private key.',
+          belowText: 'Without the private key, you will not be able to use this credential later.',
           status: 'default',
+          confirmationType: 'async'
         };
 
     const submitAfterDialogClose = (): Observable<any> => {
@@ -261,11 +269,12 @@ public onSelectionChange(selectedCredentialType: CredentialType, select: MatSele
   this.selectedCredentialType$.set(selectedCredentialType);
 }
 
-updatePowers(powerState: {value:RawFormPower, isValid: boolean}){
+updatePowers(powerState: PowerValueAndValidity){
   console.log('update powers in issuance two');
   console.log(powerState)
   this.powersValue$.set(powerState.value);
-  this.powersIsValid$.set(powerState.isValid);
+  this.powersHasOneFunction$.set(powerState.hasOnePower);
+  this.powersHaveOneAction$.set(powerState.hasOneActionPerPower);
 }
 
 }

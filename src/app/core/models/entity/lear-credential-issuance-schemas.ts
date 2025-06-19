@@ -82,7 +82,7 @@ export function getLearCredentialEmployeeIssuanceFormSchemas(countries: Selector
               validators: [{name:'required'}, {name:'minLength', args:[2]}, {name:'maxLength', args:[50]}, {name:'unicode'}]
             },
             { 
-              key:'email', 
+              key:'emailAddress', 
               type: 'control', 
               controlType: 'text', 
               validators: [{name:'required'}, {name:'customEmail'}] 
@@ -198,12 +198,6 @@ export function getLearCredentialMachineIssuanceFormSchemas(
               controlType: 'text',
               validators: [{name:'required'}, {name:'minLength', args:[2]}, {name:'maxLength', args:[50]}, {name:'unicode'}]
             },
-            { 
-              key:'email', 
-              type: 'control', 
-              controlType: 'text', 
-              validators: [{name:'required'}, {name:'customEmail'}] 
-            },
             {
               key: 'serialNumber',
               hint: 'serialNumber',
@@ -255,13 +249,5 @@ export function getLearCredentialMachineIssuanceFormSchemas(
     }
   ];
 }
-
-
-export const commonMandatorIssuanceFields = {
-        firstName: { type: 'control', validators: [] },
-        lastName: { type: 'control' },
-        email: { type: 'control' },
-        nationality: { type: 'control' },
-      };
     
     
