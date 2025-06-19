@@ -17,7 +17,7 @@ export type CredentialIssuanceFormFieldSchema = {
     groupFields?: CredentialIssuanceFormSchema; //for 'group' only
     errors?: string[], // todo remove?
     validators?: ValidatorEntry[];
-    class?: string
+    classes?: string //admits a string of separated clases; i.e.: "classOne classTwo"
     // todo altres paràmetres? placeholder, class
 };
 
@@ -41,6 +41,7 @@ export function getLearCredentialEmployeeIssuanceFormSchemas(countries: Selector
         // MANDATEE
         {
           key: 'mandatee',
+          classes: 'mandatee',
           type: 'group',
           display: 'main',
           groupFields: [

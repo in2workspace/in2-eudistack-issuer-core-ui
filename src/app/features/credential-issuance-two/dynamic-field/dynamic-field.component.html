@@ -23,9 +23,9 @@
       <!-- todo use switch -->
        @let controlType = fieldSchema.controlType;
       @if (controlType === 'number' || controlType === 'text') {
-        <input matInput [type]="controlType" [formControlName]="fieldName" [id]="fieldName" [class]="fieldSchema.class"/>
+        <input matInput [type]="controlType" [formControlName]="fieldName" [id]="fieldName" [class]="fieldSchema.classes"/>
       }@else if(controlType === 'selector'){
-          <mat-select [formControlName]="fieldName" [id]="fieldName" [class]="fieldSchema.class">
+          <mat-select [formControlName]="fieldName" [id]="fieldName" [class]="fieldSchema.classes">
             <mat-option value="">Select a {{fieldName}}</mat-option>
             @for(option of fieldSchema.multiOptions; track $index){
               <mat-option [value]="option.value">
