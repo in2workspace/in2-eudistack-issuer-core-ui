@@ -136,7 +136,7 @@ export function getLearCredentialEmployeeIssuanceFormSchemas(countries: Selector
                     "Attest"
                 ],
                 "function": "Certification",
-                isIn2Required: false
+                isIn2Required: true
             }
       ]}]
 }
@@ -237,6 +237,7 @@ export function getLearCredentialMachineIssuanceFormSchemas(
           function: 'Onboarding',
           isIn2Required: true
         },
+        //todo remove
         {
           action: ['Create', 'Update', 'Delete'],
           function: 'ProductOffering',

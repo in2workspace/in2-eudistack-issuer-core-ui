@@ -34,16 +34,16 @@ export interface NormalizedTempIssuanceFormSchemaPower extends TempIssuanceFormP
     imports: [KeyValuePipe, ReactiveFormsModule, NgIf, MatFormField, MatSelect, MatSelectTrigger, MatOption, MatButton, NgFor, NgTemplateOutlet, MatSlideToggle, FormsModule, MatMiniFabButton, MatIcon, MatLabel, MatSelect, AsyncPipe, TranslatePipe]
 })
 export class PowerTwoComponent implements OnInit{
+  private readonly authService = inject(AuthService);
+  private readonly dialog = inject(DialogWrapperService);
+  private readonly translate = inject(TranslateService);
 
-  public organizationIdentifierIsIn2: boolean = false;
+  public organizationIdentifierIsIn2: boolean = this.authService.hasIn2OrganizationIdentifier();
   public _powersInput: IssuanceFormPowerSchema[] = [];
   public selectorPowers: TempIssuanceFormPowerSchema[] = [];
   public selectedPower: TempIssuanceFormPowerSchema | undefined;
   public form: FormGroup = new FormGroup({});
 
-  private readonly authService = inject(AuthService);
-  private readonly dialog = inject(DialogWrapperService);
-  private readonly translate = inject(TranslateService);
 
  @Output() formChanges = new EventEmitter<{value:RawFormPower, isValid:boolean}>();
  @Input()
@@ -54,8 +54,10 @@ export class PowerTwoComponent implements OnInit{
     this.resetForm();
   }
 
-  public mapToTempPowerSchema(powers: IssuanceFormPowerSchema[]){
-    return powers.map(p => ({...p, isDisabled: false}));
+  public mapToTempPowerSchema(powers: IssuanceFormPowerSchema[]): TempIssuanceFormPowerSchema[]{
+    return powers
+      .map(p => ({...p, isDisabled: false}))
+      .filter(p => this.organizationIdentifierIsIn2 || !p.isIn2Required);
   }
 
   public addPower(funcName: string) {
@@ -97,10 +99,11 @@ export class PowerTwoComponent implements OnInit{
   }
 
   public ngOnInit(){
-    this.organizationIdentifierIsIn2 = this.authService.hasIn2OrganizationIdentifier();
+    //every time form changes, emit value and validity
     this.form.valueChanges.pipe(
       tap(
         (value: RawFormPower) => {
+          //todo move in one function
           const functions = Object.values(this.form.controls);
           const hasOneFunction = functions.length > 0;
             const allHaveAtLeastOneTrue = functions.every(control =>
