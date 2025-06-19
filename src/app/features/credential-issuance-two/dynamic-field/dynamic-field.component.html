@@ -32,7 +32,7 @@
           <input matInput [type]="controlType" [formControlName]="fieldName" [id]="fieldName" [class]="fieldSchema.classes"/>
         }@else if(controlType === 'selector'){
             <mat-select [formControlName]="fieldName" [id]="fieldName" [class]="fieldSchema.classes">
-              <mat-option value="">Select a {{fieldName}}</mat-option>
+              <mat-option [value]="" disabled>{{ "credentialIssuance.selectA" | translate }}{{ fieldName }}</mat-option>
               @for(option of fieldSchema.multiOptions; track $index){
                 <mat-option [value]="option.value">
                   {{ option.label }}

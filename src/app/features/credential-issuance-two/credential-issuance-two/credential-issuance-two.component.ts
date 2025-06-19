@@ -44,7 +44,7 @@ export class CredentialIssuanceTwoComponent {
   private readonly route = inject(ActivatedRoute);
   private readonly translate = inject(TranslateService);
 
-  public asSigner: boolean = false;
+  public asSigner: boolean = true;
   //  todo = this.route.snapshot.pathFromRoot
   //     .flatMap(r => r.url)
   //     .map(seg => seg.path)

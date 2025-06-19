@@ -201,6 +201,7 @@
     },
     "creating-credential": "Creating credential",
     "create-credential": "Create credential",
+    "credentialType": "Credential Type",
     "cancel": "Cancel",
     "mandatee": "mandatee",
     "mandator": "mandator",
@@ -216,7 +217,11 @@
     "organizationIdentifier": "Company VAT number",
     "country": "Country",
     "domain": "Domain",
-    "ipAddress": "IP Address"
+    "ipAddress": "IP Address",
+    "selectA": "Select a ",
+    "hint": {
+      "serialNumber": "Enter only the characters after 'VAT...-'. For example, if 'VATEU-123ABC', enter '123ABC'"
+    }
   },
   "error": {
     "not_found": "The requested resource was not found.",
