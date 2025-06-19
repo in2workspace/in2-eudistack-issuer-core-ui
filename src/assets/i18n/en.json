@@ -200,17 +200,23 @@
       "message": "LEARCredentialEmployee was created successfully."
     },
     "creating-credential": "Creating credential",
+    "create-credential": "Create credential",
+    "cancel": "Cancel",
     "mandatee": "mandatee",
     "mandator": "mandator",
     "select-type": "Select credential type",
     "firstName": "First name",
     "lastName": "Last name",
+    "commonName": "Name",
     "email": "Email",
+    "emailAddress": "Email",
     "nationality": "Nationality",
     "serialNumber": "ID card number",
     "organization": "Company name",
     "organizationIdentifier": "Company VAT number",
-    "country": "Country"
+    "country": "Country",
+    "domain": "Domain",
+    "ipAddress": "IP Address"
   },
   "error": {
     "not_found": "The requested resource was not found.",

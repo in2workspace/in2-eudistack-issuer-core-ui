@@ -17,6 +17,7 @@ export interface LEARCredentialJwtPayload {
 }
 
 export const CREDENTIAL_TYPES_ARRAY = ['LEARCredentialEmployee', 'LEARCredentialMachine', 'VerifiableCertification'] as const;
+export const ISSUANCE_CREDENTIAL_TYPES_ARRAY = ['LEARCredentialEmployee', 'LEARCredentialMachine', 'VerifiableCertification'] as const;
 export type CredentialType = typeof CREDENTIAL_TYPES_ARRAY[number];
 export type ExtendedCredentialType =  'VerifiableCredential' | 'LEARCredentialEmployee' | 'LEARCredentialMachine' | 'VerifiableCertification';
 

@@ -1,8 +1,9 @@
+import { MatButton } from '@angular/material/button';
 import { KeyGeneratorComponent } from './../key-generator/key-generator/key-generator.component';
 import { MatLabel } from '@angular/material/form-field';
 import { Component, computed, inject, Signal, signal, WritableSignal, effect } from '@angular/core';
 import { MatFormField, MatOption, MatSelect } from '@angular/material/select';
-import { CREDENTIAL_TYPES_ARRAY, CredentialType, EmployeeMandator, TmfAction, TmfFunction } from 'src/app/core/models/entity/lear-credential';
+import { CredentialType, EmployeeMandator, ISSUANCE_CREDENTIAL_TYPES_ARRAY, TmfAction, TmfFunction } from 'src/app/core/models/entity/lear-credential';
 import { DynamicFieldComponent } from '../dynamic-field/dynamic-field.component';
 import { FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { NgFor, TitleCasePipe } from '@angular/common';
@@ -32,7 +33,7 @@ export type RawFormPower = Partial<Record<TmfFunction, Record<TmfAction, boolean
 @Component({
   selector: 'app-credential-issuance-two',
   standalone: true,
-  imports: [KeyValuePipe, NgFor, ReactiveFormsModule, DynamicFieldComponent, KeyGeneratorComponent, MatCard, MatCardContent, MatFormField, MatLabel, MatOption, MatSelect, PowerTwoComponent, TitleCasePipe, TranslatePipe],
+  imports: [KeyValuePipe, NgFor, ReactiveFormsModule, DynamicFieldComponent, KeyGeneratorComponent, MatButton, MatCard, MatCardContent, MatFormField, MatLabel, MatOption, MatSelect, PowerTwoComponent, TitleCasePipe, TranslatePipe],
   templateUrl: './credential-issuance-two.component.html',
   styleUrl: './credential-issuance-two.component.scss'
 })
@@ -43,14 +44,14 @@ export class CredentialIssuanceTwoComponent {
   private readonly route = inject(ActivatedRoute);
   private readonly translate = inject(TranslateService);
 
-  public asSigner: boolean = true;
+  public asSigner: boolean = false;
   //  todo = this.route.snapshot.pathFromRoot
   //     .flatMap(r => r.url)
   //     .map(seg => seg.path)
   //     .includes('create-as-signer');
 
   //CREDENTIAL TYPE SELECTOR
-  public readonly credentialTypesArr = CREDENTIAL_TYPES_ARRAY;
+  public readonly credentialTypesArr = ISSUANCE_CREDENTIAL_TYPES_ARRAY;
   public selectedCredentialType$: WritableSignal<CredentialType|undefined> = signal(undefined);
 
   //BUILD SCHEMAS FROM CREDENTIAL TYPE
