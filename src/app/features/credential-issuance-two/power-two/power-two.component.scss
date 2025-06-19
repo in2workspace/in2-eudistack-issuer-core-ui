@@ -58,6 +58,11 @@ h2.title{
       mat-slide-toggle {
         margin-left: 01rem;
       }
+
+      mat-icon {
+        display:block;
+        width:25px;
+      }
     }
     button.delete-power{
       margin-left:auto;

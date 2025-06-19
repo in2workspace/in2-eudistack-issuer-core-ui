@@ -30,7 +30,7 @@
           }
         </mat-select>
       </mat-form-field>
-      
+      <!-- Add button -->
       <button 
         mat-raised-button 
         color="primary"
@@ -42,11 +42,11 @@
     </div>
   </div>
 
-  <!-- Dynamic Form Section -->
+  <!-- Added powers Section -->
   @if (form.controls | keyvalue) {
-    <div class="selected-powers-section">     
+    <div class="added-powers-section">     
       <form [formGroup]="form" class="powers-form">
-        @for (powerControl of form.controls | keyvalue; track powerControl.key) {
+        @for (powerControl of form.controls | keyvalue: keepOrder; track powerControl.key) {
             <p>{{ powerControl.key }}</p>
             <div class="functions-container" [formGroupName]="powerControl.key">
               <!-- Actions Toggle Section -->
@@ -67,7 +67,7 @@
               color="warn"
               (click)="removePower(powerControl.key)"
               aria-label="Remove power">
-              <mat-icon style="display:block;width:25px">delete</mat-icon>
+              <mat-icon class="remove-icon">delete</mat-icon>
             </button>
         }
       </form>

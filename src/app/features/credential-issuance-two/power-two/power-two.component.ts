@@ -1,3 +1,4 @@
+import { DialogComponent } from 'src/app/shared/components/dialog/dialog-component/dialog.component';
 import { IssuanceFormPowerSchema } from './../../../core/models/entity/lear-credential-issuance-schemas';
 import { Component, EventEmitter, Input, OnInit, Output, inject } from '@angular/core';
 import { AuthService } from "../../../core/services/auth.service";
@@ -12,8 +13,9 @@ import { MatFormField, MatLabel } from '@angular/material/form-field';
 import { NgIf, NgFor, NgTemplateOutlet, AsyncPipe, KeyValuePipe } from '@angular/common';
 import { DialogWrapperService } from 'src/app/shared/components/dialog/dialog-wrapper/dialog-wrapper.service';
 import { NormalizedAction } from './power-two.service';
-import { tap } from 'rxjs';
+import { EMPTY, Observable, tap } from 'rxjs';
 import { RawFormPower } from '../credential-issuance-two/credential-issuance-two.component';
+import { DialogData } from 'src/app/shared/components/dialog/dialog-data';
 
 export interface TempIssuanceFormPowerSchema extends IssuanceFormPowerSchema{
   isDisabled: boolean;
@@ -43,12 +45,14 @@ export class PowerTwoComponent implements OnInit{
   public selectorPowers: TempIssuanceFormPowerSchema[] = [];
   public selectedPower: TempIssuanceFormPowerSchema | undefined;
   public form: FormGroup = new FormGroup({});
+  //this makes keyvaluePipe respect the order
+  public keepOrder = (_: any, _2: any) => 0;
 
 
  @Output() formChanges = new EventEmitter<{value:RawFormPower, isValid:boolean}>();
  @Input()
   set powersInput(value: IssuanceFormPowerSchema[]) {
-    console.error('Power component received empty list.');
+    console.warn('Power component received empty list.');
     this._powersInput = value || [];
     this.selectorPowers = this.mapToTempPowerSchema(value) || [];
     this.resetForm();
@@ -85,17 +89,27 @@ export class PowerTwoComponent implements OnInit{
   }
 
   public removePower(funcName: string): void {
-    
-  if (this.form.contains(funcName)) {
-    this.form.removeControl(funcName);
-  }
-
-  this.selectorPowers = this.selectorPowers.map(p => {
-    if (p.function === funcName) {
-      return { ...p, isDisabled: false };
+    const dialogData: DialogData = {
+        title: this.translate.instant("power.remove-dialog.title"),
+        message: this.translate.instant("power.remove-dialog.message") + funcName,
+        confirmationType: 'sync',
+        status: `default`
     }
-    return p;
-  });
+    const removeAfterClose =  (): Observable<any> => {
+    if (this.form.contains(funcName)) {
+          this.form.removeControl(funcName);
+        }
+
+    this.selectorPowers = this.selectorPowers.map(p => {
+      if (p.function === funcName) {
+        return { ...p, isDisabled: false };
+      }
+      return p;
+    });
+      return EMPTY;
+    };
+    this.dialog.openDialogWithCallback(DialogComponent, dialogData, removeAfterClose);
+    
   }
 
   public ngOnInit(){
