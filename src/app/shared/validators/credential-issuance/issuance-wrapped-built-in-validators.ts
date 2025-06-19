@@ -12,6 +12,7 @@ export const BUILTIN_VALIDATORS_FACTORY_MAP: Record<
   max: (max: number) => WrappedValidators.max(max),
   minLength: (minLength: number) => WrappedValidators.minLength(minLength),
   maxLength: (maxLength: number) => WrappedValidators.maxLength(maxLength),
+  pattern: (pattern:RegExp) => WrappedValidators.pattern(pattern)
 };
 
 export type BuiltinValidatorName = keyof typeof BUILTIN_VALIDATORS_FACTORY_MAP;
@@ -58,6 +59,13 @@ export class WrappedValidators {
     return (control: AbstractControl): ValidationErrors | null => {
       const result = Validators.maxLength(maxLength)(control);
       return result ? { maxLength: `Longitud màxima: ${maxLength}` } : null;
+    };
+  }
+
+  public static pattern(pattern:RegExp): ValidatorFn {
+    return (control: AbstractControl): ValidationErrors | null => {
+      const result = Validators.pattern(pattern)(control);
+      return result ? { pattern: `Invaldi pattern` } : null;
     };
   }
 }

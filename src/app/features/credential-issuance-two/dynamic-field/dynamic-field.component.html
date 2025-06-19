@@ -7,10 +7,10 @@
     <!-- Per als grups, mostrem el FormGroup específic del camp -->
     <mat-card class="mb-4">
       <mat-card-content [formGroup]="group$()!">
-        @for (field of fieldSchema.groupFields | keyvalue; track $index) {
+        @for (field of fieldSchema.groupFields; track $index) {
           <app-dynamic-field 
             [fieldName$]="field.key" 
-            [fieldSchema$]="field.value" 
+            [fieldSchema$]="field" 
             [abstractControl$]="group$()!">
           </app-dynamic-field>
         }

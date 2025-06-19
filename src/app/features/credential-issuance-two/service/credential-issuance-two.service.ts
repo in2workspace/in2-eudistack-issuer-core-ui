@@ -63,14 +63,15 @@ export class CredentialIssuanceTwoService {
   issuanceFormBuilder(schema: CredentialIssuanceFormSchema, asSigner:boolean): FormGroup {
     const group: Record<string, any> = {};
 
-    for (const [key, field] of Object.entries(schema)) {
-      if(!asSigner && field.display === 'pref_side'){ continue; }
+    for (const field of schema) {
+      const { key, type, display, groupFields } = field;
+      if(!asSigner && display === 'pref_side'){ continue; }
 
-      if (field.type === 'control') {
+      if (type === 'control') {
         const validators = field.validators?.map(this.getValidatorFn).filter(Boolean) as ValidatorFn[];
         group[key] = new FormControl('', validators);
-      } else if (field.type === 'group' && field.groupFields) {
-        group[key] = this.issuanceFormBuilder(field.groupFields, asSigner);
+      } else if (type === 'group' && groupFields) {
+        group[key] = this.issuanceFormBuilder(groupFields, asSigner);
       } else {
         console.warn(`Unknown or invalid field type for key "${key}"`);
       }
