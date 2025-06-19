@@ -45,7 +45,7 @@
   <!-- Added powers Section -->
   @if (form.controls | keyvalue) {
     <div class="added-powers-section">     
-      <form [formGroup]="form" class="powers-form">
+      <form [formGroup]="form" class="powers-form" novalidate>
         @for (powerControl of form.controls | keyvalue: keepOrder; track powerControl.key) {
             <p>{{ powerControl.key }}</p>
             <div class="functions-container" [formGroupName]="powerControl.key">
