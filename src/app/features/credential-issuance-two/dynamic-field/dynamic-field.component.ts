@@ -1,3 +1,4 @@
+import { AddAsteriskDirective } from './../../../shared/directives/add-asterisk.directive';
 import { FirstElementPipe } from './../../../shared/pipes/first-element.pipe';
 import { Component, computed, effect, input } from '@angular/core';
 import { FormGroup, FormControl, AbstractControl } from '@angular/forms';
@@ -16,7 +17,7 @@ import { MatSelect } from '@angular/material/select';
 @Component({
   selector: 'app-dynamic-field',
   standalone: true,
-  imports: [KeyValuePipe, NgIf, NgFor, AsyncPipe, FirstElementPipe, ReactiveFormsModule, MatCard, 
+  imports: [AddAsteriskDirective, KeyValuePipe, NgIf, NgFor, AsyncPipe, FirstElementPipe, ReactiveFormsModule, MatCard, 
         MatButton,
         MatCard,
         MatCardContent,
