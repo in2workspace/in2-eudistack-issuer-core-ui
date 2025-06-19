@@ -1,4 +1,4 @@
-import { Injectable, Signal, signal, WritableSignal } from '@angular/core';
+import { computed, Injectable, Signal, signal, WritableSignal } from '@angular/core';
 import { keccak_256 } from '@noble/hashes/sha3';
 // import { arrayify, hexToBytes } from '@ethersproject/bytes'; // Pots reemplaçar si vols, però arrayify és molt útil
 import * as secp from '@noble/secp256k1';
@@ -18,6 +18,9 @@ export interface KeyState {
 export class KeyGeneratorService {
 
 private readonly keyState$: WritableSignal<KeyState|undefined> = signal(undefined);
+public readonly displayedKeys$: Signal<Partial<KeyState>|undefined> = computed(() => {
+  return {desmosPrivateKeyValue: this.keyState$()?.desmosPrivateKeyValue}
+});
 public getState(): Signal<KeyState | undefined>{
   return this.keyState$.asReadonly();
 }

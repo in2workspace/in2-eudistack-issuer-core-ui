@@ -1,6 +1,8 @@
 {
   "next": "Next",
   "back": "Back",
+  "copy": "Copy",
+  "copied": "Copied",
   "verifiable-credential": "Verifiable Credential",
   "dome-wallet": "DOME Wallet",
   "home": {
@@ -292,6 +294,10 @@
       }
       
     }
+  },
+  "keys": {
+    "title": "Private Key",
+    "buttonText": "Generate Key"
   }
 }
 
