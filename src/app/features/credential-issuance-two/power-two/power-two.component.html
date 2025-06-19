@@ -1,11 +1,20 @@
-<div class="power-two-container">
+<div class="power-container">
   <!-- Power Selector Section -->
+  <h2 class="title">{{ 'power.power' | translate }}</h2>
   <div class="power-selector-section">
-    <h3>{{ 'POWER_SELECTOR.TITLE' | translate }}</h3>
-    
-    <div class="selector-row">
-      <mat-form-field>
-        <mat-label>{{ 'POWER_SELECTOR.SELECT_POWER' | translate }}</mat-label>
+    <!-- Domain & Function titles -->
+    <div class="domain-function">
+      <h3 class="domain-title first-col">{{ "power.domain" | translate }}</h3>
+      <h3>{{ "power.function" | translate }}</h3>
+    </div>
+    <!-- Selector container-->
+    <div class="selector-container">
+      <!-- Domain (at the moment there is only DOME) -->
+      <p class="dome first-col">{{ "power.dome" | translate }}</p>
+      <!--  Selector -->
+      <!-- todo: fer que es "resetegi bé selector després d'afegir power" -->
+      <mat-form-field  appearance="fill">
+        <mat-label>{{ 'power.select' | translate }}</mat-label>
         <mat-select [(value)]="selectedPower">
           <mat-select-trigger>
             @if (selectedPower) {
@@ -28,63 +37,40 @@
         type="button"
         [disabled]="!selectedPower || selectedPower.isDisabled"
         (click)="addPower(selectedPower!.function)">
-        <mat-icon>add</mat-icon>
-        {{ 'POWER_SELECTOR.ADD' | translate }}
+        {{ 'power.add' | translate }}
       </button>
     </div>
   </div>
 
   <!-- Dynamic Form Section -->
   @if (form.controls | keyvalue) {
-    <div class="dynamic-form-section">
-      <h3>{{ 'POWER_FORM.SELECTED_POWERS' | translate }}</h3>
-      
+    <div class="selected-powers-section">     
       <form [formGroup]="form" class="powers-form">
         @for (powerControl of form.controls | keyvalue; track powerControl.key) {
-          <div class="power-group-card">
-            
-            <!-- Power Header -->
-            <div class="power-header">
-              <h4>{{ powerControl.key }}</h4>
-              <button 
-                mat-mini-fab 
-                color="warn"
-                type="button"
-                (click)="removePower(powerControl.key)"
-                [attr.aria-label]="'POWER_FORM.REMOVE_POWER' | translate">
-                <mat-icon>delete</mat-icon>
-              </button>
+            <p>{{ powerControl.key }}</p>
+            <div class="functions-container">
+              <!-- Actions Toggle Section -->
+                <div class="toggles-container">
+                  @for (actionControl of getFormGroup(powerControl.value).controls | keyvalue; track actionControl.key) {
+                      <mat-slide-toggle 
+                        [formControlName]="actionControl.key"
+                        color="primary">
+                        {{ actionControl.key }}
+                      </mat-slide-toggle>
+                  }
+                </div>
             </div>
-
-            <!-- Actions Toggle Section -->
-            <div class="actions-section" [formGroupName]="powerControl.key">
-              <h5>{{ 'POWER_FORM.ACTIONS' | translate }}</h5>
-              
-              <div class="actions-grid">
-                @for (actionControl of getFormGroup(powerControl.value).controls | keyvalue; track actionControl.key) {
-                  <div class="action-toggle">
-                    <mat-slide-toggle 
-                      [formControlName]="actionControl.key"
-                      color="primary">
-                      {{ actionControl.key }}
-                    </mat-slide-toggle>
-                  </div>
-                }
-              </div>
-            </div>
-          </div>
+            <button 
+              type="button"
+              mat-mini-fab 
+              class="small-icon-button delete-power"
+              color="warn"
+              (click)="removePower(powerControl.key)"
+              aria-label="Remove power">
+              <mat-icon style="display:block;width:25px">delete</mat-icon>
+            </button>
         }
       </form>
-
-    </div>
-  }
-
-  <!-- Empty State -->
-  @if (!(form.controls | keyvalue)?.length) {
-    <div class="empty-state">
-      <mat-icon class="empty-icon">power_settings_new</mat-icon>
-      <p>{{ 'POWER_FORM.NO_POWERS_SELECTED' | translate }}</p>
-      <p class="empty-subtitle">{{ 'POWER_FORM.SELECT_POWER_TO_START' | translate }}</p>
     </div>
   }
 </div>
