@@ -10,7 +10,7 @@ import { ValidatorEntry } from "src/app/shared/validators/credential-issuance/is
 // todo unir params de control en controlConfig i de group en groupConfig
 // todo fer que CredentialIssuanceFormFieldSchema sigui union type de control i group?
 export type CredentialIssuanceFormFieldSchema = {
-    key: string,
+    key: string, //this is used for models fields names and also as label for transations; i.e. "credentialIssuance.mandatee"
     type: 'control' | 'group';
     display?: 'main' | 'side' | 'pref_side'; //should it be displayed in the main space or as a side card? 'pref_side' for sections that are only displayed in main in "asSigner" mode
     controlType?: 'text' | 'number' | 'selector', // for type 'control' only
