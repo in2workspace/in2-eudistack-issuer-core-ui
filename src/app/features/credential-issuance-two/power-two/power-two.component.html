@@ -48,7 +48,7 @@
       <form [formGroup]="form" class="powers-form">
         @for (powerControl of form.controls | keyvalue; track powerControl.key) {
             <p>{{ powerControl.key }}</p>
-            <div class="functions-container">
+            <div class="functions-container" [formGroupName]="powerControl.key">
               <!-- Actions Toggle Section -->
                 <div class="toggles-container">
                   @for (actionControl of getFormGroup(powerControl.value).controls | keyvalue; track actionControl.key) {
