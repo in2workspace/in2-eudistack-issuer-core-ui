@@ -18,7 +18,7 @@
     </mat-card>
   } @else {
     <!-- Controls individuals -->
-    <mat-form-field appearance="outline" class="w-full" [formGroup]="parentFormGroup$()">
+    <mat-form-field [formGroup]="parentFormGroup$()">
       <mat-label>{{ fieldName }}</mat-label>
       <!-- todo use switch -->
        @let controlType = fieldSchema.controlType;
