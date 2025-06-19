@@ -18,7 +18,8 @@ export type CredentialIssuanceFormFieldSchema = {
     groupFields?: CredentialIssuanceFormSchema; //for 'group' only
     errors?: string[], // todo remove?
     validators?: ValidatorEntry[];
-    classes?: string //admits a string of separated clases; i.e.: "classOne classTwo"
+    hint?: string;
+    classes?: string; //admits a string of separated clases; i.e.: "classOne classTwo"
 };
 
 export type SelectorOption  = { label: string, value: string};
@@ -88,6 +89,7 @@ export function getLearCredentialEmployeeIssuanceFormSchemas(countries: Selector
             },
             {
               key: 'serialNumber',
+              hint: 'serialNumber',
               type: 'control',
               controlType: 'text',
               validators: [{name:'minLength', args:[7]}, {name:'maxLength', args:[15]}, {name:'pattern', args:["^[a-zA-Z0-9-]+$"]}]
@@ -204,6 +206,7 @@ export function getLearCredentialMachineIssuanceFormSchemas(
             },
             {
               key: 'serialNumber',
+              hint: 'serialNumber',
               type: 'control',
               controlType: 'text',
               validators: [{name:'minLength', args:[7]}, {name:'maxLength', args:[15]}, {name:'pattern', args:["^[a-zA-Z0-9-]+$"]}]

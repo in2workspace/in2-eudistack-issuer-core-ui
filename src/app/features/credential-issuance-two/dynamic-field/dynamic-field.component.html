@@ -4,6 +4,11 @@
 
 <div class="container">
   @if(abstractControl$() && fieldSchema) {
+    @if(fieldSchema.hint){
+      <div class="field-hint">
+        {{ "credentialIssuance.hint." + fieldSchema.hint | translate }}
+      </div>
+    }
     @if (fieldSchema.type === 'group' && groupFields$()) {
       <!-- Per als grups, mostrem el FormGroup específic del camp -->
       <mat-card class="mb-4">
