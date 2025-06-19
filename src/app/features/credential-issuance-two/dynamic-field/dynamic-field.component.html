@@ -2,42 +2,44 @@
 @let fieldName = fieldName$();
 @let control = control$();
 
-@if(abstractControl$() && fieldSchema) {
-  @if (fieldSchema.type === 'group' && groupFields$()) {
-    <!-- Per als grups, mostrem el FormGroup específic del camp -->
-    <mat-card class="mb-4">
-      <mat-card-content [formGroup]="group$()!">
-        @for (field of fieldSchema.groupFields; track $index) {
-          <app-dynamic-field 
-            [fieldName$]="field.key" 
-            [fieldSchema$]="field" 
-            [abstractControl$]="group$()!">
-          </app-dynamic-field>
+<div class="container">
+  @if(abstractControl$() && fieldSchema) {
+    @if (fieldSchema.type === 'group' && groupFields$()) {
+      <!-- Per als grups, mostrem el FormGroup específic del camp -->
+      <mat-card class="mb-4">
+        <mat-card-content [formGroup]="group$()!">
+          @for (field of fieldSchema.groupFields; track $index) {
+            <app-dynamic-field 
+              [fieldName$]="field.key" 
+              [fieldSchema$]="field" 
+              [abstractControl$]="group$()!">
+            </app-dynamic-field>
+          }
+        </mat-card-content>
+      </mat-card>
+    } @else {
+      <!-- Controls individuals -->
+      <mat-form-field [formGroup]="parentFormGroup$()">
+        <mat-label>{{ "credentialIssuance." + fieldName | translate }}</mat-label>
+        <!-- todo use switch -->
+        @let controlType = fieldSchema.controlType;
+        @if (controlType === 'number' || controlType === 'text') {
+          <input matInput [type]="controlType" [formControlName]="fieldName" [id]="fieldName" [class]="fieldSchema.classes"/>
+        }@else if(controlType === 'selector'){
+            <mat-select [formControlName]="fieldName" [id]="fieldName" [class]="fieldSchema.classes">
+              <mat-option value="">Select a {{fieldName}}</mat-option>
+              @for(option of fieldSchema.multiOptions; track $index){
+                <mat-option [value]="option.value">
+                  {{ option.label }}
+                </mat-option>
+              }
+            </mat-select>
         }
-      </mat-card-content>
-    </mat-card>
-  } @else {
-    <!-- Controls individuals -->
-    <mat-form-field [formGroup]="parentFormGroup$()">
-      <mat-label>{{ fieldName }}</mat-label>
-      <!-- todo use switch -->
-       @let controlType = fieldSchema.controlType;
-      @if (controlType === 'number' || controlType === 'text') {
-        <input matInput [type]="controlType" [formControlName]="fieldName" [id]="fieldName" [class]="fieldSchema.classes"/>
-      }@else if(controlType === 'selector'){
-          <mat-select [formControlName]="fieldName" [id]="fieldName" [class]="fieldSchema.classes">
-            <mat-option value="">Select a {{fieldName}}</mat-option>
-            @for(option of fieldSchema.multiOptions; track $index){
-              <mat-option [value]="option.value">
-                {{ option.label }}
-              </mat-option>
-            }
-          </mat-select>
-      }
-      @if (control?.invalid && control?.touched) {
-        <mat-error>{{ control!.errors | firstElement | translate }}</mat-error>
-      }
+        @if (control?.invalid && control?.touched) {
+          <mat-error>{{ control!.errors | firstElement | translate }}</mat-error>
+        }
 
-    </mat-form-field>
+      </mat-form-field>
+    }
   }
-}
+</div>

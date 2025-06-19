@@ -189,6 +189,7 @@
     }
   },
   "credentialIssuance": {
+    "title": "LEARCredential Issuance",
     "learCredentialEmployee": "LEARCredentialEmployee",
     "create-confirm-dialog": {
       "title": "Create credential",
@@ -198,7 +199,18 @@
       "title": "Credential created",
       "message": "LEARCredentialEmployee was created successfully."
     },
-    "creating-credential": "Creating credential"
+    "creating-credential": "Creating credential",
+    "mandatee": "mandatee",
+    "mandator": "mandator",
+    "select-type": "Select credential type",
+    "firstName": "First name",
+    "lastName": "Last name",
+    "email": "Email",
+    "nationality": "Nationality",
+    "serialNumber": "ID card number",
+    "organization": "Company name",
+    "organizationIdentifier": "Company VAT number",
+    "country": "Country"
   },
   "error": {
     "not_found": "The requested resource was not found.",

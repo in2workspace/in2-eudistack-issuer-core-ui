@@ -29,7 +29,8 @@ import { MatSelect } from '@angular/material/select';
         MatSelect,
         TranslatePipe
   ],
-  templateUrl: './dynamic-field.component.html'
+  templateUrl: './dynamic-field.component.html',
+  styleUrl: './dynamic-field.component.scss'
 })
 export class DynamicFieldComponent {
   fieldSchema$ = input.required<CredentialIssuanceFormFieldSchema>();

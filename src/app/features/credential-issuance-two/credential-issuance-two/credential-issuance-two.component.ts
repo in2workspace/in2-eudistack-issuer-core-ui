@@ -5,7 +5,7 @@ import { MatFormField, MatOption, MatSelect } from '@angular/material/select';
 import { CREDENTIAL_TYPES_ARRAY, CredentialType, EmployeeMandator, TmfAction, TmfFunction } from 'src/app/core/models/entity/lear-credential';
 import { DynamicFieldComponent } from '../dynamic-field/dynamic-field.component';
 import { FormGroup, ReactiveFormsModule } from '@angular/forms';
-import { NgFor } from '@angular/common';
+import { NgFor, TitleCasePipe } from '@angular/common';
 import { CredentialIssuanceFormSchema, CredentialIssuancePowerFormSchema } from 'src/app/core/models/entity/lear-credential-issuance-schemas';
 import { CredentialIssuanceTwoService } from '../service/credential-issuance-two.service';
 import { KeyValuePipe } from '@angular/common';
@@ -13,12 +13,13 @@ import { PowerTwoComponent } from '../power-two/power-two.component';
 import { KeyState } from '../key-generator/key-generator.service';
 import { EMPTY, map, Observable, of, startWith } from 'rxjs';
 import { DialogWrapperService } from 'src/app/shared/components/dialog/dialog-wrapper/dialog-wrapper.service';
-import { TranslateService } from '@ngx-translate/core';
+import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { DialogData } from 'src/app/shared/components/dialog/dialog-data';
 import { DialogComponent } from 'src/app/shared/components/dialog/dialog-component/dialog.component';
 import { ConditionalConfirmDialogComponent } from 'src/app/shared/components/dialog/conditional-confirm-dialog/conditional-confirm-dialog.component';
 import { RawCredentialPayload } from 'src/app/core/models/dto/lear-credential-issuance-request.dto';
 import { ActivatedRoute } from '@angular/router';
+import { MatCard, MatCardContent } from '@angular/material/card';
 
 export type CredentialGlobalFormState = {
     keys: KeyState | undefined;
@@ -31,7 +32,7 @@ export type RawFormPower = Partial<Record<TmfFunction, Record<TmfAction, boolean
 @Component({
   selector: 'app-credential-issuance-two',
   standalone: true,
-  imports: [KeyValuePipe, NgFor, ReactiveFormsModule, DynamicFieldComponent, KeyGeneratorComponent, MatFormField, MatLabel, MatOption, MatSelect, PowerTwoComponent],
+  imports: [KeyValuePipe, NgFor, ReactiveFormsModule, DynamicFieldComponent, KeyGeneratorComponent, MatCard, MatCardContent, MatFormField, MatLabel, MatOption, MatSelect, PowerTwoComponent, TitleCasePipe, TranslatePipe],
   templateUrl: './credential-issuance-two.component.html',
   styleUrl: './credential-issuance-two.component.scss'
 })
@@ -42,7 +43,7 @@ export class CredentialIssuanceTwoComponent {
   private readonly route = inject(ActivatedRoute);
   private readonly translate = inject(TranslateService);
 
-  public asSigner: boolean = false;
+  public asSigner: boolean = true;
   //  todo = this.route.snapshot.pathFromRoot
   //     .flatMap(r => r.url)
   //     .map(seg => seg.path)
