@@ -9,7 +9,14 @@
     {{ data.checkboxLabel }}
   </mat-checkbox>
 
-  <p *ngIf="data.belowText" class="below-text">{{ data.belowText }}</p>
+  @if(data.belowText){
+    <p  class="below-text">
+      <span style="color: #FFA500; font-size: 1em;">
+        ⚠
+      </span>
+      {{ data.belowText }}
+    </p>
+  }
 </div>
 
 <div mat-dialog-actions >

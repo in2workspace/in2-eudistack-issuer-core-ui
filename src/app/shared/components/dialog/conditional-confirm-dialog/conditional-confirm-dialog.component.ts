@@ -1,6 +1,6 @@
 import { Component, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { MatDialogRef, MAT_DIALOG_DATA, MatDialogActions, MatDialogContent, MatDialogTitle } from '@angular/material/dialog';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatButtonModule } from '@angular/material/button';
 import { Observable, Subject } from 'rxjs';
@@ -13,7 +13,9 @@ import { TranslatePipe } from '@ngx-translate/core';
 @Component({
   selector: 'app-conditional-confirm-dialog',
   standalone: true,
-  imports: [CommonModule, MatCheckboxModule, MatButtonModule, TranslatePipe],
+  imports: [CommonModule, MatButtonModule, MatCheckboxModule, MatDialogTitle,
+          MatDialogContent,
+          MatDialogActions, TranslatePipe],
   templateUrl: './conditional-confirm-dialog.component.html',
   styleUrl: './conditional-confirm-dialog.component.scss',
 })
@@ -28,12 +30,8 @@ export class ConditionalConfirmDialogComponent implements BaseDialogComponent<Co
   private confirm$ = new Subject<boolean>();
 
   public constructor(){
-      if(this.data?.style){
-        this.dialogRef.addPanelClass(this.data.style);
-      }
-      else{
-        this.dialogRef.addPanelClass('dialog-custom');
-      }
+    const dataStyle = this.data.style ?? 'conditional-confirm';
+    this.dialogRef.addPanelClass(dataStyle);
       this.updateStatus();
     }
   
