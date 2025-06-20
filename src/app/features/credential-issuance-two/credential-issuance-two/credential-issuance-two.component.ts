@@ -1,4 +1,3 @@
-import { ConditionalConfirmDialogData } from './../../../shared/components/dialog/conditional-confirm-dialog/conditional-confirm-dialog.component';
 import { MatButton } from '@angular/material/button';
 import { KeyGeneratorComponent } from './../key-generator/key-generator/key-generator.component';
 import { MatLabel } from '@angular/material/form-field';
@@ -16,7 +15,7 @@ import { KeyState } from '../key-generator/key-generator.service';
 import { EMPTY, from, map, Observable, of, startWith, switchMap, tap } from 'rxjs';
 import { DialogWrapperService } from 'src/app/shared/components/dialog/dialog-wrapper/dialog-wrapper.service';
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
-import { DialogData } from 'src/app/shared/components/dialog/dialog-data';
+import { ConditionalConfirmDialogData, DialogData } from 'src/app/shared/components/dialog/dialog-data';
 import { DialogComponent } from 'src/app/shared/components/dialog/dialog-component/dialog.component';
 import { ConditionalConfirmDialogComponent } from 'src/app/shared/components/dialog/conditional-confirm-dialog/conditional-confirm-dialog.component';
 import { RawCredentialPayload } from 'src/app/core/models/dto/lear-credential-issuance-request.dto';
@@ -286,12 +285,13 @@ export class CredentialIssuanceTwoComponent implements CanDeactivate<CanComponen
 
 public onSelectionChange(selectedCredentialType: CredentialType, select: MatSelect) {
   const currentType = this.selectedCredentialType$();
-  if (currentType !== undefined && currentType !== selectedCredentialType) {
+  const hasChangedType = currentType !== undefined && currentType !== selectedCredentialType
+  if (hasChangedType && !this.canLeave()) {
     const alertMsg = this.translate.instant("credentialIssuance.changeCredentialAlert");
     const shouldChange = window.confirm(alertMsg);
 
     if (!shouldChange) {
-      this.selectedCredentialType$.set(currentType);
+      // this.selectedCredentialType$.set(currentType);
       select.value = currentType;
       return;
     }
