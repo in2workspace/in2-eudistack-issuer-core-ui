@@ -2,7 +2,7 @@ import { ConditionalConfirmDialogData } from './../../../shared/components/dialo
 import { MatButton } from '@angular/material/button';
 import { KeyGeneratorComponent } from './../key-generator/key-generator/key-generator.component';
 import { MatLabel } from '@angular/material/form-field';
-import { Component, computed, inject, Signal, signal, WritableSignal, effect } from '@angular/core';
+import { Component, computed, inject, Signal, signal, WritableSignal, effect, HostListener } from '@angular/core';
 import { MatFormField, MatOption, MatSelect } from '@angular/material/select';
 import { CredentialType, EmployeeMandator, ISSUANCE_CREDENTIAL_TYPES_ARRAY, TmfAction, TmfFunction } from 'src/app/core/models/entity/lear-credential';
 import { DynamicFieldComponent } from '../dynamic-field/dynamic-field.component';
@@ -20,8 +20,9 @@ import { DialogData } from 'src/app/shared/components/dialog/dialog-data';
 import { DialogComponent } from 'src/app/shared/components/dialog/dialog-component/dialog.component';
 import { ConditionalConfirmDialogComponent } from 'src/app/shared/components/dialog/conditional-confirm-dialog/conditional-confirm-dialog.component';
 import { RawCredentialPayload } from 'src/app/core/models/dto/lear-credential-issuance-request.dto';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, CanDeactivate, Router } from '@angular/router';
 import { MatCard, MatCardContent } from '@angular/material/card';
+import { CanComponentDeactivate, CanDeactivateType } from 'src/app/core/guards/can-component-deactivate.guard';
 
 export type CredentialGlobalFormState = {
     keys: KeyState | undefined;
@@ -38,7 +39,27 @@ export type RawFormPower = Partial<Record<TmfFunction, Record<TmfAction, boolean
   templateUrl: './credential-issuance-two.component.html',
   styleUrl: './credential-issuance-two.component.scss'
 })
-export class CredentialIssuanceTwoComponent {
+export class CredentialIssuanceTwoComponent implements CanDeactivate<CanComponentDeactivate>{
+  @HostListener('window:beforeunload', ['$event'])
+  private unloadAlert($event: BeforeUnloadEvent): void{
+    const dataHasBeenUpdated = this.checkIfDataUpdated();
+    if(dataHasBeenUpdated){
+      const alertMsg = this.translate.instant("credentialIssuance.unloadAlert");
+      const confirm = window.confirm(alertMsg);
+      if(confirm) return;
+      $event.preventDefault();
+    }else{
+      return;
+    }
+  }
+
+  public canDeactivate(): CanDeactivateType {
+    return !this.checkIfDataUpdated();
+  }
+
+  private checkIfDataUpdated(): boolean{
+    return this.form.touched || !!this.keys$() || this.powersHasOneFunction$();
+  }
 
   private readonly issuanceService = inject(CredentialIssuanceTwoService);
   private readonly dialog = inject(DialogWrapperService);
@@ -214,10 +235,10 @@ export class CredentialIssuanceTwoComponent {
 
   public openLEARCredentialMachineSubmitDialog(){
     const dialogData: ConditionalConfirmDialogData = {
-          title: "Create LEARCredentialMachine",
-          message: "Are you sure you want to create this credential?",
-          checkboxLabel: 'I confirm that I have copied and safely stored the private key.',
-          belowText: 'Without the private key, you will not be able to use this credential later.',
+          title: this.translate.instant("credentialIssuance.create-confirm-dialog.title"),
+          message: this.translate.instant("credentialIssuance.create-confirm-dialog.message"),
+          checkboxLabel: this.translate.instant("credentialIssuance.create-confirm-dialog.checkboxLabel"),
+          belowText: this.translate.instant("credentialIssuance.create-confirm-dialog.belowText"),
           status: 'default',
           confirmationType: 'async'
         };
@@ -257,7 +278,8 @@ export class CredentialIssuanceTwoComponent {
 public onSelectionChange(selectedCredentialType: CredentialType, select: MatSelect) {
   const currentType = this.selectedCredentialType$();
   if (currentType !== undefined && currentType !== selectedCredentialType) {
-    const shouldChange = window.confirm('Are you sure you want to change the type of credential? Your progress will be lost.');
+    const alertMsg = this.translate.instant("credentialIssuance.changeCredentialAlert");
+    const shouldChange = window.confirm(alertMsg);
 
     if (!shouldChange) {
       this.selectedCredentialType$.set(currentType);

@@ -193,7 +193,9 @@
     "learCredentialEmployee": "LEARCredentialEmployee",
     "create-confirm-dialog": {
       "title": "Create credential",
-      "message": "Are you sure you want to create this credential?"
+      "message": "Are you sure you want to create this credential?",
+      "checkboxLabel": "I confirm that I have copied and safely stored the private key.",
+      "belowText": "Without the private key, you will not be able to use this credential later."
     },
     "create-success-dialog": {
       "title": "Credential created",
@@ -221,7 +223,9 @@
     "selectA": "Select a ",
     "hint": {
       "serialNumber": "Enter only the characters after 'VAT...-'. For example, if 'VATEU-123ABC', enter '123ABC'"
-    }
+    },
+    "changeCredentialAlert": "Are you sure you want to change the type of credential? Your progress will be lost.",
+    "unloadAlert": "Are you sure yo want to leave? Your progress will be lost."
   },
   "error": {
     "not_found": "The requested resource was not found.",
