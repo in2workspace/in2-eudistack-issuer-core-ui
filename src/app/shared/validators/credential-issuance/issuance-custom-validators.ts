@@ -40,7 +40,7 @@ export class CustomValidators {
       }
     
       if (!emailPattern.test(email)) {
-        return { customEmail: 'error.form.invalid' };
+        return { customEmail: 'error.form.email.invalid' };
       }
     
       const [localPart, domain] = email.split('@');
@@ -116,16 +116,6 @@ export class CustomValidators {
   }
   }
 
-  //todo cal?
-  public static maxLength(maxLength: number): ValidatorFn {
-  return (control: AbstractControl): ValidationErrors | null => {
-    const value: string = control.value ?? '';
-    return value.length > maxLength
-      ? { maxlengthExceeded: 'error.form.maxLength' }
-      : null;
-  };
-}
-
 }
 
 export const CUSTOM_VALIDATORS_FACTORY_MAP: Record<
@@ -137,8 +127,7 @@ export const CUSTOM_VALIDATORS_FACTORY_MAP: Record<
   customEmail: CustomValidators.customEmail,
   unicode: CustomValidators.unicode,
   orgIdentifier: CustomValidators.orgIdentifier,
-  orgName: CustomValidators.orgName,
-  maxLength: CustomValidators.maxLength
+  orgName: CustomValidators.orgName
 } as const;
 
 export type CustomValidatorName = keyof typeof CUSTOM_VALIDATORS_FACTORY_MAP;

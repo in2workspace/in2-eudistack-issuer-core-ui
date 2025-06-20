@@ -51,14 +51,14 @@ export class WrappedValidators {
   public static minLength(minLength: number): ValidatorFn {
     return (control: AbstractControl): ValidationErrors | null => {
       const result = Validators.minLength(minLength)(control);
-      return result ? { minLength: 'error.form.minLength' } : null;
+      return result ? { minLength: 'error.form.minLength_' + minLength } : null;
     };
   }
 
   public static maxLength(maxLength: number): ValidatorFn {
     return (control: AbstractControl): ValidationErrors | null => {
       const result = Validators.maxLength(maxLength)(control);
-      return result ? { maxLength: 'error.form.maxLength' } : null;
+      return result ? { maxLength: 'error.form.maxLength_' + maxLength } : null;
     };
   }
 
