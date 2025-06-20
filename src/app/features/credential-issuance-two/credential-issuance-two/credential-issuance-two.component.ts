@@ -13,7 +13,7 @@ import { CredentialIssuanceTwoService } from '../service/credential-issuance-two
 import { KeyValuePipe } from '@angular/common';
 import { PowerTwoComponent, PowerValueAndValidity } from '../power-two/power-two.component';
 import { KeyState } from '../key-generator/key-generator.service';
-import { EMPTY, map, Observable, of, startWith } from 'rxjs';
+import { EMPTY, from, map, Observable, of, startWith, switchMap, tap } from 'rxjs';
 import { DialogWrapperService } from 'src/app/shared/components/dialog/dialog-wrapper/dialog-wrapper.service';
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { DialogData } from 'src/app/shared/components/dialog/dialog-data';
@@ -42,8 +42,8 @@ export type RawFormPower = Partial<Record<TmfFunction, Record<TmfAction, boolean
 export class CredentialIssuanceTwoComponent implements CanDeactivate<CanComponentDeactivate>{
   @HostListener('window:beforeunload', ['$event'])
   private unloadAlert($event: BeforeUnloadEvent): void{
-    const dataHasBeenUpdated = this.checkIfDataUpdated();
-    if(dataHasBeenUpdated){
+    const canLeave = this.canLeave();
+    if(!canLeave){
       const alertMsg = this.translate.instant("credentialIssuance.unloadAlert");
       const confirm = window.confirm(alertMsg);
       if(confirm) return;
@@ -54,16 +54,18 @@ export class CredentialIssuanceTwoComponent implements CanDeactivate<CanComponen
   }
 
   public canDeactivate(): CanDeactivateType {
-    return !this.checkIfDataUpdated();
+    return this.canLeave();
   }
 
-  private checkIfDataUpdated(): boolean{
-    return this.form.touched || !!this.keys$() || this.powersHasOneFunction$();
+  private canLeave(): boolean{
+    const dataHasBeenUpdated = this.form.touched || !!this.keys$() || this.powersHasOneFunction$();
+    return !this.hasSubmitted && !dataHasBeenUpdated;
   }
 
   private readonly issuanceService = inject(CredentialIssuanceTwoService);
   private readonly dialog = inject(DialogWrapperService);
   private readonly route = inject(ActivatedRoute);
+  private readonly router = inject(Router);
   private readonly translate = inject(TranslateService);
 
   public asSigner: boolean = true;
@@ -122,6 +124,7 @@ export class CredentialIssuanceTwoComponent implements CanDeactivate<CanComponen
     console.log('isSubmitDisabled' + isValid);
     return isValid;
   });
+  private hasSubmitted: boolean = false;
 
   // SIDE (STATIC CREDENTIAL DATA)
   public staticData$ = computed<{
@@ -227,10 +230,7 @@ export class CredentialIssuanceTwoComponent implements CanDeactivate<CanComponen
       }
     };
 
-    const submitAfterDialogClose = (): Observable<any> => {
-      return this.submitCredential();
-    };
-    this.dialog.openDialogWithCallback(DialogComponent, dialogData, submitAfterDialogClose);
+    this.dialog.openDialogWithCallback(DialogComponent, dialogData, this.submitAsCallback);
   }
 
   public openLEARCredentialMachineSubmitDialog(){
@@ -243,11 +243,13 @@ export class CredentialIssuanceTwoComponent implements CanDeactivate<CanComponen
           confirmationType: 'async'
         };
 
-    const submitAfterDialogClose = (): Observable<any> => {
+
+    this.dialog.openDialogWithCallback(ConditionalConfirmDialogComponent, dialogData, this.submitAsCallback);
+  }
+
+  private readonly submitAsCallback = (): Observable<any> => {
       return this.submitCredential();
     };
-    this.dialog.openDialogWithCallback(ConditionalConfirmDialogComponent, dialogData, submitAfterDialogClose);
-  }
 
   private submitCredential(){
     const credential = this.globalValue$();
@@ -270,8 +272,15 @@ export class CredentialIssuanceTwoComponent implements CanDeactivate<CanComponen
       optional: { keys: credential.keys, staticData:this.staticData$() },
       asSigner: this.asSigner
     }
-    this.issuanceService.submitCredential(dataForCredentialPayload, credentialType);
-    return of(EMPTY); //todo cal?
+    return this.issuanceService.submitCredential(dataForCredentialPayload, credentialType).pipe(
+      tap(() => {this.hasSubmitted = true; }),
+      switchMap(() => from(this.navigateToCredentials())),
+      tap(() => location.reload() )
+    );
+  }
+
+  public navigateToCredentials(): Promise<boolean> {
+    return this.router.navigate(['/organization/credentials']);
   }
 
 

@@ -28,11 +28,11 @@ export class CredentialIssuanceTwoService {
   submitCredential(
     credentialData: RawCredentialPayload, 
     credentialType: CredentialType,
-  ): void{
+  ): Observable<void>{
    
     const payload: LearCredentialIssuancePayload = this.credentialFactory.createCredentialRequest(credentialData, credentialType);
     const request: LearCredentialIssuanceRequestDto = this.buildRequestDto(credentialType, payload);
-    this.sendCredential(request);
+    return this.sendCredential(request);
   }
 
   buildRequestDto(credType:CredentialType, payload:LearCredentialIssuancePayload): LearCredentialIssuanceRequestDto{
@@ -48,11 +48,11 @@ export class CredentialIssuanceTwoService {
     return Object.keys(credSchema);
   }
 
-  sendCredential(credentialPayload: LearCredentialIssuanceRequestDto){
+  sendCredential(credentialPayload: LearCredentialIssuanceRequestDto): Observable<void>{
     // this.credentialService.createProcedure(credentialPayload);
     console.log('SEND CREDENTIAL: ');
     console.log(credentialPayload);
-    this.credentialService.createProcedureTwo(credentialPayload);
+    return this.credentialService.createProcedureTwo(credentialPayload);
   }
 
   getValidatorFn(entry: ValidatorEntry): ValidatorFn | null {
