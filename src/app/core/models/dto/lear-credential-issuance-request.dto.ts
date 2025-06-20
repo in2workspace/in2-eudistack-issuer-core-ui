@@ -1,4 +1,4 @@
-import { RawFormPower } from "src/app/features/credential-issuance-two/credential-issuance-two/credential-issuance-two.component";
+import { RawFormPower } from "src/app/features/credential-issuance-two/components/credential-issuance-two/credential-issuance-two.component";
 import { EmployeeMandatee, EmployeeMandator, Power, TmfAction } from "../entity/lear-credential";
 
 // data enviada per component

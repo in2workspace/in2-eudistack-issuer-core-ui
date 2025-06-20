@@ -1,6 +1,6 @@
-import { CredentialDetailsFormFieldSchema, CredentialDetailsFormSchema, LearCredentialEmployeeDetailsFormSchema, LearCredentialMachineDetailsFormSchema, VerifiableCertificationDetailsFormSchema } from '../../../core/models/entity/lear-credential-details-schemas';
 import { FormBuilder, FormGroup, FormControl } from '@angular/forms';
 import { CredentialFormData, CredentialType, Power, LEARCredential, LEARCredentialEmployee, LEARCredentialMachine, VerifiableCertification } from 'src/app/core/models/entity/lear-credential';
+import { CredentialDetailsFormSchema, LearCredentialEmployeeDetailsFormSchema, LearCredentialMachineDetailsFormSchema, VerifiableCertificationDetailsFormSchema, CredentialDetailsFormFieldSchema } from 'src/app/core/models/schemas/lear-credential-details-schemas';
 
 type ComplianceEntry = {
   id: string;
@@ -67,7 +67,7 @@ export const FormSchemaByType: Record<CredentialType, CredentialDetailsFormSchem
     return schema;
   }
 
-  export function buildFormFromSchema(
+  export function detailsFormBuilder(
     fb: FormBuilder,
     schema: CredentialDetailsFormSchema,
     data: any
@@ -86,7 +86,7 @@ export const FormSchemaByType: Record<CredentialType, CredentialDetailsFormSchem
       } else if (field.type === 'control') {
         group[key] = new FormControl(data?.[key] ?? null);
       } else if (field.type === 'group') {
-        group[key] = buildFormFromSchema(fb, field.fields!, data?.[key]);
+        group[key] = detailsFormBuilder(fb, field.fields!, data?.[key]);
       }
     }
   

@@ -41,7 +41,8 @@
             </mat-select>
         }
         @if (control?.invalid && control?.touched) {
-          <mat-error>{{ control!.errors | firstElement | translate }}</mat-error>
+          <!-- <mat-error>{{ control!.errors | firstElement | translate }}</mat-error> -->
+           <mat-error>{{getErrorMessage(control) | translate: getErrorsArgs(control) }}</mat-error>
         }
 
       </mat-form-field>

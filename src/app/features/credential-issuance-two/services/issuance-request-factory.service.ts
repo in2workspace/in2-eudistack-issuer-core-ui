@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { IssuancePayloadPower, LearCredentialEmployeeIssuancePayload, LearCredentialIssuancePayload, LearCredentialMachineIssuancePayload, RawCredentialPayload, RawCredentialPayloadWithParsedPower } from 'src/app/core/models/dto/lear-credential-issuance-request.dto';
-import { CredentialFormData, CredentialType, TmfAction, TmfFunction } from 'src/app/core/models/entity/lear-credential';
-import { RawFormPower } from '../credential-issuance-two/credential-issuance-two.component';
+import { CredentialType, TmfAction, TmfFunction } from 'src/app/core/models/entity/lear-credential';
+import { RawFormPower } from '../components/credential-issuance-two/credential-issuance-two.component';
 
 @Injectable({
   providedIn: 'root'

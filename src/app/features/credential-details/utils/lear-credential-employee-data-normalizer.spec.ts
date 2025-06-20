@@ -1,4 +1,4 @@
-import { CredentialDetailsFormSchema, LearCredentialEmployeeDetailsFormSchema, LearCredentialMachineDetailsFormSchema, VerifiableCertificationDetailsFormSchema } from 'src/app/core/models/entity/lear-credential-details-schemas';
+import { CredentialDetailsFormSchema, LearCredentialEmployeeDetailsFormSchema, LearCredentialMachineDetailsFormSchema, VerifiableCertificationDetailsFormSchema } from 'src/app/core/models/entity/lear-credential-details';
 
   describe('LearCredentialEmployeeDetailsFormSchema', () => {
     it('should contain mandatee, mandator, issuer and power groups', () => {

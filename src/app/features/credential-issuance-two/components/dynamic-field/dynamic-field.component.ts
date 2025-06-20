@@ -1,9 +1,6 @@
-import { AddAsteriskDirective } from './../../../shared/directives/add-asterisk.directive';
-import { FirstElementPipe } from './../../../shared/pipes/first-element.pipe';
-import { Component, computed, effect, input } from '@angular/core';
+import { Component, computed, input } from '@angular/core';
 import { FormGroup, FormControl, AbstractControl } from '@angular/forms';
 import { NgIf, NgFor, AsyncPipe, KeyValuePipe } from '@angular/common';
-import { CredentialIssuanceFormFieldSchema } from 'src/app/core/models/entity/lear-credential-issuance-schemas';
 import { ReactiveFormsModule } from '@angular/forms';
 import { MatCard, MatCardContent } from '@angular/material/card';
 import { MatError, MatFormField, MatLabel } from '@angular/material/form-field';
@@ -13,6 +10,9 @@ import { MatOption } from '@angular/material/core';
 import { MatButton } from '@angular/material/button';
 import { TranslatePipe } from '@ngx-translate/core';
 import { MatSelect } from '@angular/material/select';
+import { CredentialIssuanceFormFieldSchema } from 'src/app/core/models/schemas/lear-credential-issuance-schemas';
+import { AddAsteriskDirective } from 'src/app/shared/directives/add-asterisk.directive';
+import { FirstElementPipe } from 'src/app/shared/pipes/first-element.pipe';
 
 @Component({
   selector: 'app-dynamic-field',
@@ -66,10 +66,26 @@ export class DynamicFieldComponent {
     }))
   );
 
-  getFirstErrorMessage(control: AbstractControl | null): string | null {
-  if (!control || !control.errors) return null;
-  const firstKey = Object.keys(control.errors)[0];
-  return control.errors[firstKey];
-}
+  //todo no s'usa
+  getErrorMessage(control: AbstractControl | null): string {
+    if (!control || !control.errors) return "";
+    const err = Object.values(control.errors)[0];
+    const defaultLabel = err.value;
+    return defaultLabel;
+  }
+
+  getErrorsArgs(control: AbstractControl | null): Record<string, string> {
+    if (!control || !control.errors) return {};
+    const err = Object.values(control.errors)[0];
+    const args = err.args as [];
+    let translateParams = {};
+    args.forEach((arg, i) => {
+      translateParams = { ...translateParams, [i]: arg }
+    });
+    return translateParams;
+  }
+
+  
+
 }
 

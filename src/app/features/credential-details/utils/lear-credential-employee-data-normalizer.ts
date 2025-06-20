@@ -1,4 +1,4 @@
-import { LEARCredential, EmployeeMandatee, Power, VerifiableCertification, Attester } from './lear-credential';
+import { LEARCredential, EmployeeMandatee, Power, VerifiableCertification, Attester } from './../../../core/models/entity/lear-credential';
 
 // Interfaces for the raw JSON of Mandatee and Power
 interface RawEmployeeMandatee {
@@ -21,14 +21,14 @@ interface RawPower {
   tmf_type?: string;
 }
 
-export interface RawVerifiableCertification extends VerifiableCertification{
+interface RawVerifiableCertification extends VerifiableCertification{
   atester?: Attester;
 }
 
 export class LEARCredentialDataNormalizer {
 
   /**
-   * Normalizes the complete LearCredentialEmployeeDataDetail object.
+   * Normalizes the complete LEARCredential object.
    * It applies normalization to the mandatee object and each element of the power array.
    */
   public normalizeLearCredential(data: LEARCredential): LEARCredential {

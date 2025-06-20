@@ -21,7 +21,7 @@ export class WrappedValidators {
   public static required(): ValidatorFn {
     return (control: AbstractControl): ValidationErrors | null => {
       return Validators.required(control)
-        ? { required: 'error.form.required' }
+        ? { required: { value: 'error.form.required'} }
         : null;
     };
   }
@@ -29,7 +29,7 @@ export class WrappedValidators {
   public static email(): ValidatorFn {
     return (control: AbstractControl): ValidationErrors | null => {
       return Validators.email(control)
-        ? { email: 'error.form.email' }
+        ? { email: { value: 'error.form.email' } }
         : null;
     };
   }
@@ -37,28 +37,28 @@ export class WrappedValidators {
   public static min(min: number): ValidatorFn {
     return (control: AbstractControl): ValidationErrors | null => {
       const result = Validators.min(min)(control);
-      return result ? { min: 'error.form.min' } : null;
+      return result ? { min: { value: 'error.form.min' } } : null;
     };
   }
 
   public static max(max: number): ValidatorFn {
     return (control: AbstractControl): ValidationErrors | null => {
       const result = Validators.max(max)(control);
-      return result ? { max: 'error.form.max' } : null;
+      return result ? { max: { value: 'error.form.max', args: [max]} } : null;
     };
   }
 
   public static minLength(minLength: number): ValidatorFn {
     return (control: AbstractControl): ValidationErrors | null => {
       const result = Validators.minLength(minLength)(control);
-      return result ? { minLength: 'error.form.minLength_' + minLength } : null;
+      return result ? { minLength: {value: 'error.form.minLength', args:[minLength] } } : null;
     };
   }
 
   public static maxLength(maxLength: number): ValidatorFn {
     return (control: AbstractControl): ValidationErrors | null => {
       const result = Validators.maxLength(maxLength)(control);
-      return result ? { maxLength: 'error.form.maxLength_' + maxLength } : null;
+      return result ? { maxLength: {value: 'error.form.maxLength', args:[maxLength] }} : null;
     };
   }
 

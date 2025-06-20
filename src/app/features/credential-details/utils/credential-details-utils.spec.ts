@@ -1,6 +1,6 @@
 import { getFormSchemaByType, mapPowerArrayByFunction, shouldSkipIssuer } from './credential-details-utils';
 import { CredentialType } from 'src/app/core/models/entity/lear-credential';
-import { LearCredentialEmployeeDetailsFormSchema, LearCredentialMachineDetailsFormSchema, VerifiableCertificationDetailsFormSchema } from 'src/app/core/models/entity/lear-credential-details-schemas';
+import { LearCredentialEmployeeDetailsFormSchema, LearCredentialMachineDetailsFormSchema, VerifiableCertificationDetailsFormSchema } from 'src/app/core/models/entity/lear-credential-details';
 import { Power } from 'src/app/core/models/entity/lear-credential';
 import { getFormDataByType } from './credential-details-utils';
 import {

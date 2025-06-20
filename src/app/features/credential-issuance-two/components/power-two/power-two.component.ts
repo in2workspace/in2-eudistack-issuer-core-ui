@@ -1,7 +1,5 @@
 import { DialogComponent } from 'src/app/shared/components/dialog/dialog-component/dialog.component';
-import { IssuanceFormPowerSchema } from './../../../core/models/entity/lear-credential-issuance-schemas';
 import { Component, EventEmitter, Input, OnInit, Output, inject } from '@angular/core';
-import { AuthService } from "../../../core/services/auth.service";
 import { MatSelect, MatSelectTrigger } from '@angular/material/select';
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { MatIcon } from '@angular/material/icon';
@@ -16,6 +14,8 @@ import { NormalizedAction } from './power-two.service';
 import { EMPTY, Observable, tap } from 'rxjs';
 import { RawFormPower } from '../credential-issuance-two/credential-issuance-two.component';
 import { DialogData } from 'src/app/shared/components/dialog/dialog-data';
+import { IssuanceFormPowerSchema } from 'src/app/core/models/schemas/lear-credential-issuance-schemas';
+import { AuthService } from 'src/app/core/services/auth.service';
 
 export interface TempIssuanceFormPowerSchema extends IssuanceFormPowerSchema{
   isDisabled: boolean;

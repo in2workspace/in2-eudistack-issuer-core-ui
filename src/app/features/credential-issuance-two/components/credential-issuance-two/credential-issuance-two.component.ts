@@ -7,8 +7,6 @@ import { CredentialType, EmployeeMandator, ISSUANCE_CREDENTIAL_TYPES_ARRAY, TmfA
 import { DynamicFieldComponent } from '../dynamic-field/dynamic-field.component';
 import { FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { NgFor, TitleCasePipe } from '@angular/common';
-import { CredentialIssuanceFormSchema, CredentialIssuancePowerFormSchema } from 'src/app/core/models/entity/lear-credential-issuance-schemas';
-import { CredentialIssuanceTwoService } from '../service/credential-issuance-two.service';
 import { KeyValuePipe } from '@angular/common';
 import { PowerTwoComponent, PowerValueAndValidity } from '../power-two/power-two.component';
 import { KeyState } from '../key-generator/key-generator.service';
@@ -22,6 +20,8 @@ import { RawCredentialPayload } from 'src/app/core/models/dto/lear-credential-is
 import { ActivatedRoute, CanDeactivate, Router } from '@angular/router';
 import { MatCard, MatCardContent } from '@angular/material/card';
 import { CanComponentDeactivate, CanDeactivateType } from 'src/app/core/guards/can-component-deactivate.guard';
+import { CredentialIssuanceTwoService } from '../../services/credential-issuance-two.service';
+import { CredentialIssuanceFormFieldSchema, CredentialIssuanceFormSchema, CredentialIssuancePowerFormSchema } from 'src/app/core/models/schemas/lear-credential-issuance-schemas';
 
 export type CredentialGlobalFormState = {
     keys: KeyState | undefined;
@@ -67,7 +67,7 @@ export class CredentialIssuanceTwoComponent implements CanDeactivate<CanComponen
   private readonly router = inject(Router);
   private readonly translate = inject(TranslateService);
 
-  public asSigner: boolean = true;
+  public asSigner: boolean = false;
   //  todo = this.route.snapshot.pathFromRoot
   //     .flatMap(r => r.url)
   //     .map(seg => seg.path)
@@ -126,14 +126,32 @@ export class CredentialIssuanceTwoComponent implements CanDeactivate<CanComponen
   private hasSubmitted: boolean = false;
 
   // SIDE (STATIC CREDENTIAL DATA)
+
+  //todo fix
   public staticData$ = computed<{
     mandator: EmployeeMandator;
 } | null>(() =>  {
-    //todo idealment, l'esquema hauria de passar la font dels valors estàtics
-    if(!this.asSigner){
-      const type = this.selectedCredentialType$();
-      if(!(type === 'LEARCredentialEmployee' || type === 'LEARCredentialMachine')) return null;
-      //busca claus amb display:pref_side
+  const schema = this.credentialFormSchema$()?.[0];
+  if(!schema) return null;
+  const fields = Object.entries(schema);
+  const staticFields: [string, CredentialIssuanceFormFieldSchema][] = fields.filter(
+    f => 
+  );
+  const numberOfStaticFields = staticFields.length;
+  const hasStaticFields = numberOfStaticFields > 0;
+  if(numberOfStaticFields > 1){ 
+    console.error('Unexpected static fields');
+    console.error(staticFields);
+    return null;
+  }
+  //todo idealment, l'esquema hauria de passar la font dels valors estàtics
+  // todo aquí es dona per fet que l'únic valor static és mandator
+    if(!this.asSigner || hasStaticFields){
+      const staticFieldKey = staticFields[0][0];
+      if(staticFieldKey !== 'mandator' ){
+        console.error('Unexpected static field: ');
+        return null;
+      }
       //todo restore
       // return this.issuanceService.getRawMandator();
       return {
@@ -151,13 +169,13 @@ export class CredentialIssuanceTwoComponent implements CanDeactivate<CanComponen
     }
   });
 
-    
+  
   // every time a new credential type > credential schema is selected, reset global state
   private updateFormEffect = effect(() => {
     // reset keys
     this.updateKeys(undefined);
 
-    //todo fer-ho amb funció recursiva d'eliminar i afegir controls per evitar repetir subscribe?
+    //todo fer-ho amb funció recursiva d'eliminar (semblant a power component) i afegir controls per evitar repetir subscribe?
     //reset form
     this.form = this.credentialFormSchema$() 
       ? this.getCredentialFormFromSchema()
@@ -178,9 +196,20 @@ export class CredentialIssuanceTwoComponent implements CanDeactivate<CanComponen
     //No need to reset powers; they are automatically reset when the powersFormSchema passed as input changes
   }, { allowSignalWrites: true});
 
+  public updateKeys(event: KeyState | undefined): void{
+    this.keys$.set(event);
+  }
+
+  public updatePowers(powerState: PowerValueAndValidity){
+    console.log('update powers in issuance two');
+    console.log(powerState)
+    this.powersValue$.set(powerState.value);
+    this.powersHasOneFunction$.set(powerState.hasOnePower);
+    this.powersHaveOneAction$.set(powerState.hasOneActionPerPower);
+  }
 
   private getCredentialFormSchema(credType: CredentialType): CredentialIssuanceFormSchema{
-    return this.issuanceService.getFormSchemaFromCredentialType(credType);
+    return this.issuanceService.schemaBuilder(credType, this.asSigner);
   }
 
   private getPowerSchema(credType: CredentialType): CredentialIssuancePowerFormSchema{
@@ -188,14 +217,28 @@ export class CredentialIssuanceTwoComponent implements CanDeactivate<CanComponen
   }
 
   private getCredentialFormFromSchema(): FormGroup{
-    return this.issuanceService.issuanceFormBuilder(this.credentialFormSchema$()!, this.asSigner);
+    return this.issuanceService.formBuilder(this.credentialFormSchema$()!, this.asSigner);
   }
 
-  public updateKeys(event: KeyState | undefined): void{
-    this.keys$.set(event);
+  public onSelectionChange(selectedCredentialType: CredentialType, select: MatSelect) {
+  const currentType = this.selectedCredentialType$();
+  const hasChangedType = currentType !== undefined && currentType !== selectedCredentialType
+  if (hasChangedType && !this.canLeave()) {
+    const alertMsg = this.translate.instant("credentialIssuance.changeCredentialAlert");
+    const shouldChange = window.confirm(alertMsg);
+
+    if (!shouldChange) {
+      // this.selectedCredentialType$.set(currentType);
+      select.value = currentType;
+      return;
+    }
   }
+  this.form = new FormGroup({});
+  this.selectedCredentialType$.set(selectedCredentialType);
+}
 
 
+// ** SUBMISSION LOGIC **
   public onSubmit() {
     const isGlobalValid = this.isGlobalValid$();
     const globalValue = this.globalValue$();
@@ -281,31 +324,5 @@ export class CredentialIssuanceTwoComponent implements CanDeactivate<CanComponen
   public navigateToCredentials(): Promise<boolean> {
     return this.router.navigate(['/organization/credentials']);
   }
-
-
-public onSelectionChange(selectedCredentialType: CredentialType, select: MatSelect) {
-  const currentType = this.selectedCredentialType$();
-  const hasChangedType = currentType !== undefined && currentType !== selectedCredentialType
-  if (hasChangedType && !this.canLeave()) {
-    const alertMsg = this.translate.instant("credentialIssuance.changeCredentialAlert");
-    const shouldChange = window.confirm(alertMsg);
-
-    if (!shouldChange) {
-      // this.selectedCredentialType$.set(currentType);
-      select.value = currentType;
-      return;
-    }
-  }
-  this.form = new FormGroup({});
-  this.selectedCredentialType$.set(selectedCredentialType);
-}
-
-updatePowers(powerState: PowerValueAndValidity){
-  console.log('update powers in issuance two');
-  console.log(powerState)
-  this.powersValue$.set(powerState.value);
-  this.powersHasOneFunction$.set(powerState.hasOnePower);
-  this.powersHaveOneAction$.set(powerState.hasOneActionPerPower);
-}
 
 }

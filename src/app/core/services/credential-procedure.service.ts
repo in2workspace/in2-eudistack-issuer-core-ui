@@ -11,10 +11,10 @@ import { DialogWrapperService } from "../../shared/components/dialog/dialog-wrap
 import { TranslateService } from "@ngx-translate/core";
 import { Router } from "@angular/router";
 import { API } from "../constants/api.constants";
-import { LEARCredentialDataNormalizer } from '../models/entity/lear-credential-employee-data-normalizer';
 import { LearCredentialProcedureRequest } from '../models/dto/procedure-request.dto';
 import { LEARCredentialDataDetailsResponse } from '../models/dto/lear-credential-data-details-response.dto';
 import { LearCredentialIssuanceRequestDto } from '../models/dto/procedure-request-two-dto';
+import { LEARCredentialDataNormalizer } from 'src/app/features/credential-details/utils/lear-credential-employee-data-normalizer';
 
 //todo rename (backend, api... service)
 @Injectable({

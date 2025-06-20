@@ -3,12 +3,12 @@ import { inject, Injectable, signal } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { EMPTY, from, Observable, Observer, switchMap, take, tap } from 'rxjs';
 import { CredentialProcedureService } from 'src/app/core/services/credential-procedure.service';
-import { buildFormFromSchema, FormSchemaByType, getFormDataByType, getFormSchemaByType } from '../utils/credential-details-utils';
+import { detailsFormBuilder, FormSchemaByType, getFormDataByType, getFormSchemaByType } from '../utils/credential-details-utils';
 import { DialogWrapperService } from 'src/app/shared/components/dialog/dialog-wrapper/dialog-wrapper.service';
 import { TranslateService } from '@ngx-translate/core';
 import { Router } from '@angular/router';
 import { CredentialStatus, CredentialType, LEARCredentialDataDetails } from 'src/app/core/models/entity/lear-credential';
-import { CredentialDetailsFormSchema } from 'src/app/core/models/entity/lear-credential-details-schemas';
+import { CredentialDetailsFormSchema } from 'src/app/core/models/schemas/lear-credential-details-schemas';
 
 @Injectable() //provided in component
 export class CredentialDetailsService {
@@ -87,7 +87,7 @@ export class CredentialDetailsService {
     const formData = getFormDataByType(credential, type);
 
   
-    const builtForm = buildFormFromSchema(this.fb, schema, formData);
+    const builtForm = detailsFormBuilder(this.fb, schema, formData);
     builtForm.disable();
 
     this.credentialDetailsFormSchema$.set(schema);

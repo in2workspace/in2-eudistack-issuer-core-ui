@@ -9,10 +9,14 @@ import { ValidatorEntry } from "src/app/shared/validators/credential-issuance/is
 
 // todo unir params de control en controlConfig i de group en groupConfig
 // todo fer que CredentialIssuanceFormFieldSchema sigui union type de control i group?
+// todo add error message field to decouple validation from displayed message responsibilities
+
 export type CredentialIssuanceFormFieldSchema = {
     key: string, //this is used for models fields names and also as label for transations; i.e. "credentialIssuance.mandatee"
     type: 'control' | 'group';
+    // todo fer boolean
     display?: 'main' | 'side' | 'pref_side'; //should it be displayed in the main space or as a side card? 'pref_side' for sections that are only displayed in main in "asSigner" mode
+    staticGetter?: () => any, 
     controlType?: 'text' | 'number' | 'selector', // for type 'control' only
     multiOptions?: SelectorOption[], //only for 'selector' (and similars if added: 'radio' and 'checkbox')
     groupFields?: CredentialIssuanceFormSchema; //for 'group' only
@@ -33,9 +37,10 @@ export interface IssuanceFormPowerSchema{
   isIn2Required: boolean
 }
 export type CredentialIssuancePowerFormSchema = { power: IssuanceFormPowerSchema[]}
-  
 
-export function getLearCredentialEmployeeIssuanceFormSchemas(countries: SelectorOption[]): [CredentialIssuanceFormSchema, CredentialIssuancePowerFormSchema] {
+export type CredentialIssuanceSchemaTuple = [CredentialIssuanceFormSchema, CredentialIssuancePowerFormSchema];
+
+export function getLearCredentialEmployeeIssuanceFormSchemas(countries: SelectorOption[]): CredentialIssuanceSchemaTuple {
     return [
       [
         // MANDATEE
@@ -146,7 +151,7 @@ export function getLearCredentialEmployeeIssuanceFormSchemas(countries: Selector
 // todo fer directori per cada schema
 export function getLearCredentialMachineIssuanceFormSchemas(
   countries: SelectorOption[]
-): [CredentialIssuanceFormSchema, CredentialIssuancePowerFormSchema] {
+): CredentialIssuanceSchemaTuple {
   return [
     [
       // MANDATEE
