@@ -50,7 +50,7 @@ export class CountryService {
   }
 
   public getCountriesAsSelectorOptions(): SelectorOption[]{
-    return this.countries.map(country => ({
+    return this.getSortedCountries().map(country => ({
       label: country.name,
       value: country.isoCountryCode
     }))
