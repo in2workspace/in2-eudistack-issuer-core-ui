@@ -49,7 +49,7 @@ export interface DialogDefaultContent {
         TranslatePipe,
     ],
 })
-export class DialogComponent implements BaseDialogComponent {
+export class DialogComponent implements BaseDialogComponent<DialogData> {
   //todo
   @ViewChild('fullCustom', {read: CdkPortalOutlet}) fullCustomOutlet: CdkPortalOutlet|undefined;
   public data = inject<DialogData>(MAT_DIALOG_DATA);

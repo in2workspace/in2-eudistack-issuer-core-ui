@@ -5,29 +5,19 @@ import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatButtonModule } from '@angular/material/button';
 import { Observable, Subject } from 'rxjs';
 import { BaseDialogComponent } from '../dialog-component-abstract';
-import { DialogStatus, DialogData } from '../dialog-data';
+import { DialogStatus, DialogData, ConditionalConfirmDialogData } from '../dialog-data';
+import { TranslatePipe } from '@ngx-translate/core';
 
 // todo fer germà de DialogComponent
-export interface ConditionalConfirmDialogData {
-  title: string;
-  message: string;
-  checkboxLabel: string;
-  belowText?: string;
-  confirmLabel?: string;
-  cancelLabel?: string;
-  style?: string;
-  status: DialogStatus;
-  confirmationType: 'sync' | 'async' | 'none';
-}
 
 @Component({
   selector: 'app-conditional-confirm-dialog',
   standalone: true,
-  imports: [CommonModule, MatCheckboxModule, MatButtonModule],
+  imports: [CommonModule, MatCheckboxModule, MatButtonModule, TranslatePipe],
   templateUrl: './conditional-confirm-dialog.component.html',
   styleUrl: './conditional-confirm-dialog.component.scss',
 })
-export class ConditionalConfirmDialogComponent implements BaseDialogComponent {
+export class ConditionalConfirmDialogComponent implements BaseDialogComponent<ConditionalConfirmDialogData> {
   public readonly dialogRef = inject(MatDialogRef<ConditionalConfirmDialogComponent>);
   public data = inject<ConditionalConfirmDialogData>(MAT_DIALOG_DATA);
   

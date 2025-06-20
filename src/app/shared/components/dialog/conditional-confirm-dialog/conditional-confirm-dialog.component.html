@@ -14,11 +14,11 @@
 
 <div mat-dialog-actions >
   <button mat-button (click)="onCancel()">
-    {{ data.cancelLabel || "Cancel" }}
+    {{ data.cancelLabel || ("dialog.cancel" | translate) }}
   </button>
   <button mat-flat-button color="primary"
           [disabled]="!checkboxChecked()"
           (click)="onConfirm()">
-    {{ data.confirmLabel || "Confirm" }}
+    {{ data.confirmationLabel || ("dialog.accept" | translate) }}
   </button>
 </div>

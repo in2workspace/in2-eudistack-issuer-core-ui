@@ -3,7 +3,7 @@ import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { BaseDialogComponent } from './../dialog-component-abstract';
 import { EMPTY, filter, Observable, switchMap, take, tap } from 'rxjs';
 import { LoaderService } from 'src/app/core/services/loader.service';
-import { DialogData } from '../dialog-data';
+import { BaseDialogData, DialogData } from '../dialog-data';
 
 export type observableCallback = () => Observable<any>;
 
@@ -15,9 +15,12 @@ export class DialogWrapperService {
   private readonly dialog = inject(MatDialog);
   private readonly loader = inject(LoaderService);
 
-  public openDialog<T extends BaseDialogComponent>(
+  public openDialog< 
+    D extends BaseDialogData,
+    T extends BaseDialogComponent<D>
+  >(
     component: Type<T>,
-    dialogData: DialogData
+    dialogData: D
   ): MatDialogRef<T, any> {
     return this.dialog.open(component, {
       data: { ...dialogData },
@@ -25,12 +28,14 @@ export class DialogWrapperService {
     });
   }
 
-  public openErrorInfoDialog<T extends BaseDialogComponent>(
+  public openErrorInfoDialog<
+  T extends BaseDialogComponent<BaseDialogData>
+>(
     component: Type<T>,
     message: string,
     title?: string
   ): MatDialogRef<T, any> {
-    const errorDialogData: DialogData = {
+    const errorDialogData: BaseDialogData = {
       title: title ?? 'Error',
       message,
       confirmationType: 'none',
@@ -50,9 +55,12 @@ export class DialogWrapperService {
     }
   }
 
-  public openDialogWithCallback<T extends BaseDialogComponent>(
+  public openDialogWithCallback< 
+    D extends BaseDialogData,
+    T extends BaseDialogComponent<D>
+  >(
     component: Type<T>,
-    dialogData: DialogData,
+    dialogData: D,
     callback: observableCallback,
     cancelCallback?: () => Observable<any>,
     disableClose?: 'DISABLE_CLOSE'
@@ -104,7 +112,7 @@ export class DialogWrapperService {
     return dialogRef;
   }
 
-  public openDialogWithForm<T extends BaseDialogComponent, TFormValue>(
+  public openDialogWithForm<T extends BaseDialogComponent<BaseDialogData>, TFormValue>(
     component: Type<T>,
     dialogData: DialogData,
     validateForm: (formInstance: any) => boolean,

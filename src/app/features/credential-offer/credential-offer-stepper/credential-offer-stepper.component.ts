@@ -19,6 +19,7 @@ import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { AsyncPipe } from '@angular/common';
 import { TemplatePortal } from '@angular/cdk/portal';
 import { DialogComponent } from 'src/app/shared/components/dialog/dialog-component/dialog.component';
+import { DialogData } from 'src/app/shared/components/dialog/dialog-data';
 
 export type StepperIndex = 0 | 1;
 export type CredentialOfferStep = 'onboarding' | 'offer';
@@ -174,7 +175,7 @@ export class CredentialOfferStepperComponent implements OnInit{
   private readonly openRefreshPopupEffect = this.startOrEndFirstCountdown$.pipe(
     filter( val => val === 'END'),
     tap(() => {
-      const dialogRef = this.dialog.openDialogWithCallback(DialogComponent, {
+      const dialogRef = this.dialog.openDialogWithCallback<DialogData, DialogComponent>(DialogComponent, {
         title: this.translate.instant('credentialOffer.expired-title'), 
         message: '',
         template: new TemplatePortal(this.popupCountdown, {} as ViewContainerRef),
