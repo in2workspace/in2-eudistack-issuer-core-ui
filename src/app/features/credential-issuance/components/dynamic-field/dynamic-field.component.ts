@@ -34,47 +34,38 @@ import { FirstElementPipe } from 'src/app/shared/pipes/first-element.pipe';
   styleUrl: './dynamic-field.component.scss'
 })
 export class DynamicFieldComponent {
-  fieldSchema$ = input.required<CredentialIssuanceFormFieldSchema>();
-  abstractControl$ = input.required<AbstractControl>();
-  fieldName$ = input.required<string>();
-  
-  // logEffect = effect(()=>{
-  //   console.log('fieldSchema');
-  //   console.log(this.fieldSchema$());
-  //   console.log('abstract');
-  //   console.log(this.abstractControl$());
-  //   console.log('fieldName');
-  //   console.log(this.fieldName$());
-  // });
+  public fieldSchema$ = input.required<CredentialIssuanceFormFieldSchema>();
+  public abstractControl$ = input.required<AbstractControl>();
+  public fieldName$ = input.required<string>();
 
 
-  parentFormGroup$ = computed(() => this.abstractControl$() as FormGroup);
+  public parentFormGroup$ = computed(() => this.abstractControl$() as FormGroup);
   
-  control$ = computed(() => {
+  public control$ = computed(() => {
     const parent = this.parentFormGroup$();
     return parent ? parent.get(this.fieldName$()) as FormControl | null : null;
   });
   
-  group$ = computed(() => {
+  public group$ = computed(() => {
     const parent = this.parentFormGroup$();
     return parent ? parent.get(this.fieldName$()) as FormGroup | null : null;
   });
-  groupFields$ = computed(() =>
+  public groupFields$ = computed(() =>
     Object.entries(((this.fieldSchema$().type === 'group') && (this.fieldSchema$().groupFields)) ?? {}).map(([key, value]) => ({
       key,
       value,
     }))
   );
 
-  //todo no s'usa
-  getErrorMessage(control: AbstractControl | null): string {
+
+  public getErrorMessage(control: AbstractControl | null): string {
     if (!control || !control.errors) return "";
     const err = Object.values(control.errors)[0];
     const defaultLabel = err.value;
     return defaultLabel;
   }
 
-  getErrorsArgs(control: AbstractControl | null): Record<string, string> {
+  public getErrorsArgs(control: AbstractControl | null): Record<string, string> {
     if (!control || !control.errors) return {};
     const err = Object.values(control.errors)[0];
     const args = err.args as [];
