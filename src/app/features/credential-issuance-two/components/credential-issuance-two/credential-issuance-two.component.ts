@@ -292,10 +292,24 @@ export class CredentialIssuanceTwoComponent implements CanDeactivate<CanComponen
       asSigner: this.asSigner
     }
     return this.issuanceService.submitCredential(dataForCredentialPayload, credentialType).pipe(
+      // After submitting credential, show success popup and navigate to dashboard after close
       tap(() => {this.hasSubmitted = true; }),
+      switchMap(() => this.openSuccessfulCreateDialog()),
       switchMap(() => from(this.navigateToCredentials())),
       tap(() => location.reload() )
     );
+  }
+
+  public openSuccessfulCreateDialog(): Observable<any>{
+    const dialogData: DialogData = {
+      title: this.translate.instant("credentialIssuance.create-success-dialog.title"),
+      message: this.translate.instant("credentialIssuance.create-success-dialog.message"),
+      confirmationType: 'none',
+      status: 'default'
+    };
+
+    const dialogRef = this.dialog.openDialog(DialogComponent, dialogData);
+    return dialogRef.afterClosed();
   }
 
   public navigateToCredentials(): Promise<boolean> {
