@@ -25,7 +25,7 @@ import { CredentialIssuanceFormSchema, CredentialIssuancePowerFormSchema } from 
 
 export type CredentialGlobalFormState = {
     keys: KeyState | undefined;
-    form: {};
+    form: Record<string, any>;
     power: RawFormPower;
 }
 
@@ -89,6 +89,9 @@ export class CredentialIssuanceTwoComponent implements CanDeactivate<CanComponen
   //CREDENTIAL TYPE SELECTOR
   public readonly credentialTypesArr = ISSUANCE_CREDENTIAL_TYPES_ARRAY;
   public selectedCredentialType$: WritableSignal<CredentialType|undefined> = signal(undefined);
+  public needsKeys$: Signal<boolean> = computed(() => {
+    return this.selectedCredentialType$() === 'LEARCredentialMachine'
+  });
 
   //BUILD SCHEMAS FROM CREDENTIAL TYPE
   public credentialSchemas$: Signal<[CredentialIssuanceFormSchema, StaticSchema] | null> = computed(() => 
@@ -134,7 +137,7 @@ export class CredentialIssuanceTwoComponent implements CanDeactivate<CanComponen
 
   public isGlobalValid$: Signal<boolean> = computed(() => {
     let isValid = this.isFormValid$();
-    if(this.selectedCredentialType$() === 'LEARCredentialMachine'){
+    if(this.needsKeys$()){
       isValid = isValid && !!this.keys$();
     }
     if(this.powerFormSchema$()){
