@@ -102,7 +102,7 @@ export function getLearCredentialEmployeeIssuanceFormSchemas(countries: Selector
               key: 'organization',
               type: 'control',
               controlType: 'text',
-              validators: [{ name: 'required' }, {name:'minLength', args:[2]}, {name:'maxLength', args:[15]}, {name:'orgName'}]
+              validators: [{ name: 'required' }, {name:'minLength', args:[2]}, {name:'maxLength', args:[50]}, {name:'orgName'}]
             },
             {
               key: 'organizationIdentifier',
@@ -213,7 +213,7 @@ export function getLearCredentialMachineIssuanceFormSchemas(
               key: 'organization',
               type: 'control',
               controlType: 'text',
-              validators: [{ name: 'required' }, {name:'minLength', args:[2]}, {name:'maxLength', args:[15]}, {name:'orgName'}]
+              validators: [{ name: 'required' }, {name:'minLength', args:[2]}, {name:'maxLength', args:[50]}, {name:'orgName'}]
             },
             {
               key: 'organizationIdentifier',
