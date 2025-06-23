@@ -1,11 +1,9 @@
-import { AbstractControl, ValidationErrors, ValidatorFn, Validators } from "@angular/forms";
+import { AbstractControl, ValidationErrors, Validators } from "@angular/forms";
+import { ExtendedValidatorFn } from "./issuance-validators";
 
 export type BuiltInValidatorEntry = { name: BuiltinValidatorName; args?: any[] };
 
-export const BUILTIN_VALIDATORS_FACTORY_MAP: Record<
-  string,
-  (...args: any[]) => ValidatorFn
-> = {
+export const BUILTIN_VALIDATORS_FACTORY_MAP = {
   required: () => WrappedValidators.required(),
   email: () => WrappedValidators.email(),
   min: (min: number) => WrappedValidators.min(min),
@@ -18,7 +16,7 @@ export const BUILTIN_VALIDATORS_FACTORY_MAP: Record<
 export type BuiltinValidatorName = keyof typeof BUILTIN_VALIDATORS_FACTORY_MAP;
 
 export class WrappedValidators {
-  public static required(): ValidatorFn {
+  public static required(): ExtendedValidatorFn {
     return (control: AbstractControl): ValidationErrors | null => {
       return Validators.required(control)
         ? { required: { value: 'error.form.required'} }
@@ -26,7 +24,7 @@ export class WrappedValidators {
     };
   }
 
-  public static email(): ValidatorFn {
+  public static email(): ExtendedValidatorFn {
     return (control: AbstractControl): ValidationErrors | null => {
       return Validators.email(control)
         ? { email: { value: 'error.form.email' } }
@@ -34,35 +32,35 @@ export class WrappedValidators {
     };
   }
 
-  public static min(min: number): ValidatorFn {
+  public static min(min: number): ExtendedValidatorFn {
     return (control: AbstractControl): ValidationErrors | null => {
       const result = Validators.min(min)(control);
       return result ? { min: { value: 'error.form.min' } } : null;
     };
   }
 
-  public static max(max: number): ValidatorFn {
+  public static max(max: number): ExtendedValidatorFn {
     return (control: AbstractControl): ValidationErrors | null => {
       const result = Validators.max(max)(control);
       return result ? { max: { value: 'error.form.max', args: [max]} } : null;
     };
   }
 
-  public static minLength(minLength: number): ValidatorFn {
+  public static minLength(minLength: number): ExtendedValidatorFn {
     return (control: AbstractControl): ValidationErrors | null => {
       const result = Validators.minLength(minLength)(control);
-      return result ? { minLength: {value: 'error.form.minLength', args:[minLength] } } : null;
+      return result ? { minLength: { value: 'error.form.minLength', args:[minLength] } } : null;
     };
   }
 
-  public static maxLength(maxLength: number): ValidatorFn {
+  public static maxLength(maxLength: number): ExtendedValidatorFn {
     return (control: AbstractControl): ValidationErrors | null => {
       const result = Validators.maxLength(maxLength)(control);
-      return result ? { maxLength: {value: 'error.form.maxLength', args:[maxLength] }} : null;
+      return result ? { maxLength: { value: 'error.form.maxLength', args:[maxLength] }} : null;
     };
   }
 
-  public static pattern(pattern:RegExp): ValidatorFn {
+  public static pattern(pattern:RegExp): ExtendedValidatorFn {
     return (control: AbstractControl): ValidationErrors | null => {
       const result = Validators.pattern(pattern)(control);
       return result ? { pattern: 'error.form.pattern' } : null;

@@ -22,7 +22,7 @@ export type CredentialIssuanceFormFieldSchema = {
     groupFields?: CredentialIssuanceFormSchema; //for 'group' only
     errors?: string[], // todo remove?
     validators?: ValidatorEntry[];
-    hint?: string;
+    hint?: string; //hint that is shown above the input
     classes?: string; //admits a string of separated clases; i.e.: "classOne classTwo"
 };
 
@@ -53,7 +53,6 @@ export function getLearCredentialEmployeeIssuanceFormSchemas(countries: Selector
             { key:'firstName', type: 'control', controlType: 'text', validators: [{name:'required'}, {name:'minLength', args:[2]}, {name:'maxLength', args:[50]}, {name:'unicode'}] },
             { key:'lastName', type: 'control', controlType: 'text', validators:[{name:'required'}, {name:'minLength', args:[2]}, {name:'maxLength', args:[50]}, {name:'unicode'}] },
             { key:'email', type: 'control', controlType: 'text', validators: [{name:'required'}, {name:'customEmail'}] },
-            //todo multiOptions
             {
               key:'nationality', 
               type: 'control',
@@ -109,7 +108,7 @@ export function getLearCredentialEmployeeIssuanceFormSchemas(countries: Selector
               key: 'organizationIdentifier',
               type: 'control',
               controlType: 'text',
-              validators: [{ name: 'required' }, {name:'minLength', args:[7]}, {name:'maxLength', args:[15]}, {name:'orgId'}]
+              validators: [{ name: 'required' }, {name:'minLength', args:[7]}, {name:'maxLength', args:[15]}, {name:'orgIdentifier'}]
             },
             {
               key: 'country',
@@ -220,7 +219,7 @@ export function getLearCredentialMachineIssuanceFormSchemas(
               key: 'organizationIdentifier',
               type: 'control',
               controlType: 'text',
-              validators: [{ name: 'required' }, {name:'minLength', args:[7]}, {name:'maxLength', args:[15]}, {name:'orgId'}]
+              validators: [{ name: 'required' }, {name:'minLength', args:[7]}, {name:'maxLength', args:[15]}, {name:'orgIdentifier'}]
             },
             {
               key: 'country',

@@ -1,5 +1,6 @@
+import { ExtendedValidatorFn } from './../../../shared/validators/credential-issuance/issuance-validators';
 import { inject, Injectable } from '@angular/core';
-import { FormControl, FormGroup, ValidatorFn } from '@angular/forms';
+import { FormControl, FormGroup } from '@angular/forms';
 import { CredentialType, EmployeeMandator } from 'src/app/core/models/entity/lear-credential';
 import { CountryService } from 'src/app/shared/components/form-credential/services/country.service';
 import { ALL_VALIDATORS_FACTORY_MAP, ValidatorEntry } from 'src/app/shared/validators/credential-issuance/issuance-validators';
@@ -37,7 +38,7 @@ export class CredentialIssuanceTwoService {
       VerifiableCertification: () => [] as any,
     };
 
-  private getValidatorFn(entry: ValidatorEntry): ValidatorFn | null {
+  private getValidatorFn(entry: ValidatorEntry): ExtendedValidatorFn | null {
     const factory = ALL_VALIDATORS_FACTORY_MAP[entry.name];
     return factory ? factory(...(entry.args ?? [])) : null;
 }
@@ -84,7 +85,7 @@ export class CredentialIssuanceTwoService {
       if(!asSigner && display === 'pref_side'){ continue; }
 
       if (type === 'control') {
-        const validators = field.validators?.map(this.getValidatorFn).filter(Boolean) as ValidatorFn[];
+        const validators = field.validators?.map(this.getValidatorFn).filter(Boolean) as ExtendedValidatorFn[];
         group[key] = new FormControl('', validators);
       } else if (type === 'group' && groupFields) {
         group[key] = this.formBuilder(groupFields, asSigner);

@@ -1,6 +1,5 @@
 import { Directive, ElementRef, Input, OnInit, Renderer2 } from '@angular/core';
-import { FormGroup, Validators } from '@angular/forms';
-import { WrappedValidators } from '../validators/credential-issuance/issuance-wrapped-built-in-validators';
+import { FormGroup } from '@angular/forms';
 
 @Directive({
   selector: '[appAddAsterisk]',

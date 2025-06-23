@@ -79,9 +79,11 @@ export class DynamicFieldComponent {
     const err = Object.values(control.errors)[0];
     const args = err.args as [];
     let translateParams = {};
-    args.forEach((arg, i) => {
-      translateParams = { ...translateParams, [i]: arg }
-    });
+    if(args && args.length > 0){
+      args.forEach((arg, i) => {
+        translateParams = { ...translateParams, [i]: arg }
+      });
+    }
     return translateParams;
   }
 
