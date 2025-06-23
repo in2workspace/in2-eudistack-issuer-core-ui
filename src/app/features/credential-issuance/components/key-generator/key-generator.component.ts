@@ -1,9 +1,8 @@
-import { state } from '@angular/animations';
-import { Component, effect, EventEmitter, inject, OnInit, Output, Signal } from '@angular/core';
-import { KeyGeneratorService, KeyState } from '../key-generator.service';
+import { Component, effect, EventEmitter, inject, Output, Signal } from '@angular/core';
 import { KeyValuePipe } from '@angular/common';
 import { TranslatePipe } from '@ngx-translate/core';
 import { MatButton } from '@angular/material/button';
+import { KeyGeneratorService, KeyState } from '../../services/key-generator.service';
 
 @Component({
   selector: 'app-key-generator',

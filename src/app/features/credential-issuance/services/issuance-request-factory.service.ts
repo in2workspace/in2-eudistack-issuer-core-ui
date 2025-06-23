@@ -1,7 +1,8 @@
+import { IssuanceRawCredentialPayload, IssuanceRawCredentialPayloadWithParsedPower } from './../../../core/models/dto/lear-credential-issuance-request.dto';
 import { Injectable } from '@angular/core';
-import { IssuancePayloadPower, LearCredentialEmployeeIssuancePayload, LearCredentialIssuancePayload, LearCredentialMachineIssuancePayload, RawCredentialPayload, RawCredentialPayloadWithParsedPower } from 'src/app/core/models/dto/lear-credential-issuance-request.dto';
+import { IssuancePayloadPower, IssuanceLEARCredentialEmployeePayload, IssuanceLEARCredentialPayload, IssuanceLEARCredentialMachinePayload } from 'src/app/core/models/dto/lear-credential-issuance-request.dto';
 import { IssuanceCredentialType, TmfAction, TmfFunction } from 'src/app/core/models/entity/lear-credential';
-import { RawFormPower } from '../components/credential-issuance-two/credential-issuance-two.component';
+import { IssuanceRawPowerForm } from '../components/credential-issuance/credential-issuance.component';
 
 @Injectable({
   providedIn: 'root'
@@ -11,12 +12,12 @@ export class IssuanceRequestFactoryService {
   private constructor() { }
 
   public createCredentialRequest(
-      credentialData: RawCredentialPayload, 
+      credentialData: IssuanceRawCredentialPayload, 
       credentialType: IssuanceCredentialType,
-    ): LearCredentialIssuancePayload{
+    ): IssuanceLEARCredentialPayload{
       //Parse power
       const parsedPower: IssuancePayloadPower[] = this.parsePower(credentialData.power, credentialType);
-      const credentialDataWithParsedPower:RawCredentialPayloadWithParsedPower = { ...credentialData, power: parsedPower };
+      const credentialDataWithParsedPower:IssuanceRawCredentialPayloadWithParsedPower = { ...credentialData, power: parsedPower };
 
       //Build credential request payload
       if(credentialType === 'LEARCredentialEmployee'){
@@ -25,11 +26,11 @@ export class IssuanceRequestFactoryService {
         return this.createLearCredentialMachineRequest(credentialDataWithParsedPower);
       }else{
         console.error('Unexpected credential type');
-        return {} as LearCredentialIssuancePayload;
+        return {} as IssuanceLEARCredentialPayload;
       }
     }
 
-    private createLearCredentialMachineRequest(credentialData: RawCredentialPayloadWithParsedPower): LearCredentialMachineIssuancePayload{
+    private createLearCredentialMachineRequest(credentialData: IssuanceRawCredentialPayloadWithParsedPower): IssuanceLEARCredentialMachinePayload{
       console.log('CREATE LEAR CREDENTIAL MACHINE');
       console.log('Credential data: ');
       console.log(credentialData);
@@ -40,7 +41,7 @@ export class IssuanceRequestFactoryService {
       const mandator = this.getMandatorFromCredentialData(credentialData);
       if(!mandator){
         console.error('Error getting mandator.'); 
-        return {} as LearCredentialMachineIssuancePayload;
+        return {} as IssuanceLEARCredentialMachinePayload;
       }
       const country = mandator['country'];
       const orgId = mandator['organizationIdentifier'];
@@ -49,7 +50,7 @@ export class IssuanceRequestFactoryService {
       
       const didKey = credentialData.optional['keys']['desmosDidKeyValue'];
 
-      const payload: LearCredentialMachineIssuancePayload =    
+      const payload: IssuanceLEARCredentialMachinePayload =    
         {
         mandator: {
           commonName:  mandatorCommonName,
@@ -68,7 +69,7 @@ export class IssuanceRequestFactoryService {
       return payload;
     }
 
-    private createLearCredentialEmployeeRequest(credentialData: RawCredentialPayloadWithParsedPower): LearCredentialEmployeeIssuancePayload{
+    private createLearCredentialEmployeeRequest(credentialData: IssuanceRawCredentialPayloadWithParsedPower): IssuanceLEARCredentialEmployeePayload{
       console.log('CREATE LEAR CREDENTIAL EMPLOYEE');
       console.log('Credential data: ');
       console.log(credentialData);
@@ -79,7 +80,7 @@ export class IssuanceRequestFactoryService {
       const mandator = this.getMandatorFromCredentialData(credentialData);
       if(!mandator){
         console.error('Error getting mandator.'); 
-        return {} as LearCredentialEmployeeIssuancePayload;
+        return {} as IssuanceLEARCredentialEmployeePayload;
       }
       const country = mandator['country'];
       const orgId = mandator['organizationIdentifier'];
@@ -87,7 +88,7 @@ export class IssuanceRequestFactoryService {
       const mandatorCommonName = mandator['commonName'] ?? this.buildCommonName(mandator['firstName'], mandator['lastName']);
       
 
-      const payload: LearCredentialEmployeeIssuancePayload =    
+      const payload: IssuanceLEARCredentialEmployeePayload =    
         {
         mandator: {
               emailAddress: mandator['emailAddress'],
@@ -119,7 +120,7 @@ export class IssuanceRequestFactoryService {
     }
 
     private parsePower(
-      power: RawFormPower,
+      power: IssuanceRawPowerForm,
       credType: IssuanceCredentialType
     ): IssuancePayloadPower[] {
       return Object.entries(power).reduce<IssuancePayloadPower[]>((acc, [funct, pow]) => {
@@ -150,11 +151,11 @@ export class IssuanceRequestFactoryService {
       }, []);
     }
 
-private getMandatorFromCredentialData(credentialData:RawCredentialPayloadWithParsedPower){
+private getMandatorFromCredentialData(credentialData: IssuanceRawCredentialPayloadWithParsedPower){
   return credentialData.asSigner ? credentialData.partialCredentialSubject['mandator'] : credentialData.optional.staticData?.mandator;
 }
     
-private getMandateeFromCredentialData(credentialData:RawCredentialPayloadWithParsedPower){
+private getMandateeFromCredentialData(credentialData: IssuanceRawCredentialPayloadWithParsedPower){
   return credentialData.partialCredentialSubject['mandatee'];
 }
 }

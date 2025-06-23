@@ -1,14 +1,15 @@
-import { RawFormPower } from "src/app/features/credential-issuance-two/components/credential-issuance-two/credential-issuance-two.component";
+import { IssuanceRawPowerForm } from "src/app/features/credential-issuance/components/credential-issuance/credential-issuance.component";
 import { EmployeeMandatee, EmployeeMandator, Power, TmfAction } from "../entity/lear-credential";
 
 // data enviada per component
-export interface RawCredentialPayload {
+export interface IssuanceRawCredentialPayload {
         partialCredentialSubject: Record<string, any>, 
-        power: RawFormPower, 
-        optional: {keys?:any, staticData:{mandator:EmployeeMandator}|null}, //todo tipar més
+        power: IssuanceRawPowerForm, 
+        optional: { keys?: any, staticData: { mandator: EmployeeMandator } | null},
         asSigner: boolean
-      }
-export interface RawCredentialPayloadWithParsedPower extends Omit<RawCredentialPayload, 'power'>{
+}
+
+export interface IssuanceRawCredentialPayloadWithParsedPower extends Omit<IssuanceRawCredentialPayload, 'power'>{
     power: IssuancePayloadPower[];
 }
 
@@ -17,14 +18,14 @@ export interface IssuancePayloadPower extends Power {
     action: TmfAction[]
 }
 
-export type LearCredentialIssuancePayload = LearCredentialMachineIssuancePayload | LearCredentialEmployeeIssuancePayload;
+export type IssuanceLEARCredentialPayload = IssuanceLEARCredentialMachinePayload | IssuanceLEARCredentialEmployeePayload;
 
-export interface BaseLEARCredentialIssuancePayload {}
+export interface IssuanceBaseLEARCredentialPayload {}
 
-export interface LearCredentialMachineIssuancePayload extends BaseLEARCredentialIssuancePayload {
+export interface IssuanceLEARCredentialMachinePayload extends IssuanceBaseLEARCredentialPayload {
     //it should probably be the same as in credentials, but details interface has to be updated first
     mandator: {
-        id: string, //did-elsi //todo organization?
+        id: string, //did-elsi
         organization: string,
         country: string,
         commonName: string,
@@ -39,8 +40,17 @@ export interface LearCredentialMachineIssuancePayload extends BaseLEARCredential
     power: IssuancePayloadPower[]
 }
 
-export interface LearCredentialEmployeeIssuancePayload extends BaseLEARCredentialIssuancePayload{
+export interface IssuanceLEARCredentialEmployeePayload extends IssuanceBaseLEARCredentialPayload{
       mandatee: EmployeeMandatee;
       mandator: EmployeeMandator;
       power: IssuancePayloadPower[];
+}
+
+export interface IssuanceLEARCredentialRequestDto {
+    schema: string,
+    format: string,
+    payload: IssuanceLEARCredentialPayload,
+    operation_mode: string,
+    validity_period?: number,
+    response_uri?: string
 }

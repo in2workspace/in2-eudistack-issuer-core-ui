@@ -11,10 +11,9 @@ import { DialogWrapperService } from "../../shared/components/dialog/dialog-wrap
 import { TranslateService } from "@ngx-translate/core";
 import { Router } from "@angular/router";
 import { API } from "../constants/api.constants";
-import { LearCredentialProcedureRequest } from '../models/dto/procedure-request.dto';
 import { LEARCredentialDataDetailsResponse } from '../models/dto/lear-credential-data-details-response.dto';
-import { LearCredentialIssuanceRequestDto } from '../models/dto/procedure-request-two-dto';
 import { LEARCredentialDataNormalizer } from 'src/app/features/credential-details/utils/lear-credential-employee-data-normalizer';
+import { IssuanceLEARCredentialRequestDto } from '../models/dto/lear-credential-issuance-request.dto';
 
 //todo rename (backend, api... service)
 @Injectable({
@@ -67,8 +66,7 @@ export class CredentialProcedureService {
     );
   }
 
-  //todo: only one createProcedure
-  public createProcedureTwo(procedureRequest: LearCredentialIssuanceRequestDto): Observable<void> {
+  public createProcedure(procedureRequest: IssuanceLEARCredentialRequestDto): Observable<void> {
     console.log('Sending API request to create procedure');
     console.log(procedureRequest);
     return this.http.post<void>(this.saveCredential, procedureRequest).pipe(

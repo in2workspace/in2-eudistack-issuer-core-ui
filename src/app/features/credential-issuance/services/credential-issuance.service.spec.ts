@@ -1,6 +1,6 @@
 import { TestBed } from '@angular/core/testing';
 
-import { CredentialIssuanceTwoService } from './credential-issuance-two.service';
+import { CredentialIssuanceTwoService } from './credential-issuance.service';
 
 describe('CredentialIssuanceTwoService', () => {
   let service: CredentialIssuanceTwoService;

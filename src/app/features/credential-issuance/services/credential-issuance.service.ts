@@ -1,17 +1,16 @@
 import { ExtendedValidatorFn } from '../../../shared/validators/credential-issuance/all-validators';
 import { inject, Injectable } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
-import { CredentialType, EmployeeMandator, IssuanceCredentialType } from 'src/app/core/models/entity/lear-credential';
+import { EmployeeMandator, IssuanceCredentialType } from 'src/app/core/models/entity/lear-credential';
 import { ALL_VALIDATORS_FACTORY_MAP, ValidatorEntry } from 'src/app/shared/validators/credential-issuance/all-validators';
 import { CredentialProcedureService } from 'src/app/core/services/credential-procedure.service';
-import { LearCredentialIssuancePayload, RawCredentialPayload } from 'src/app/core/models/dto/lear-credential-issuance-request.dto';
+import { IssuanceLEARCredentialPayload, IssuanceRawCredentialPayload, IssuanceLEARCredentialRequestDto } from 'src/app/core/models/dto/lear-credential-issuance-request.dto';
 import { IssuanceRequestFactoryService } from './issuance-request-factory.service';
-import { LearCredentialIssuanceRequestDto } from 'src/app/core/models/dto/procedure-request-two-dto';
 import { AuthService } from 'src/app/core/services/auth.service';
 import { Observable } from 'rxjs';
 import { CredentialIssuanceFormSchema, CredentialIssuancePowerFormSchema, CredentialIssuanceSchemaTuple, getLearCredentialEmployeeIssuanceFormSchemas, getLearCredentialMachineIssuanceFormSchemas } from 'src/app/core/models/schemas/lear-credential-issuance-schemas';
-import { StaticSchema } from '../components/credential-issuance-two/credential-issuance-two.component';
 import { CountryService } from 'src/app/core/services/country.service';
+import { IssuanceStaticDataSchema } from '../components/credential-issuance/credential-issuance.component';
 
 
 @Injectable({
@@ -41,10 +40,10 @@ export class CredentialIssuanceTwoService {
     return factory ? factory(...(entry.args ?? [])) : null;
   }
 
-  public schemasBuilder(credType:IssuanceCredentialType, asSigner:boolean): [CredentialIssuanceFormSchema, StaticSchema]{
+  public schemasBuilder(credType:IssuanceCredentialType, asSigner:boolean): [CredentialIssuanceFormSchema, IssuanceStaticDataSchema]{
     const rawSchema = this.getFormSchemaFromCredentialType(credType);
     const formSchema = [] as CredentialIssuanceFormSchema;
-    let staticSchema = {} as StaticSchema;
+    let staticSchema = {} as IssuanceStaticDataSchema;
     for(const field of rawSchema){
       const { display } = field;
       if(!asSigner && display === 'pref_side'){ 
@@ -114,20 +113,20 @@ export class CredentialIssuanceTwoService {
 
   /* SUBMISSION LOGIC */
   public submitCredential(
-    credentialData: RawCredentialPayload, 
+    credentialData: IssuanceRawCredentialPayload, 
     credentialType: IssuanceCredentialType,
   ): Observable<void>{
    
-    const payload: LearCredentialIssuancePayload = this.buildRequestPayload(credentialData, credentialType);
-    const request: LearCredentialIssuanceRequestDto = this.buildRequestDto(credentialType, payload);
+    const payload: IssuanceLEARCredentialPayload = this.buildRequestPayload(credentialData, credentialType);
+    const request: IssuanceLEARCredentialRequestDto = this.buildRequestDto(credentialType, payload);
     return this.sendCredential(request);
   }
 
-  private buildRequestPayload(credentialData: RawCredentialPayload, credentialType: IssuanceCredentialType): LearCredentialIssuancePayload{
+  private buildRequestPayload(credentialData: IssuanceRawCredentialPayload, credentialType: IssuanceCredentialType): IssuanceLEARCredentialPayload{
     return this.credentialFactory.createCredentialRequest(credentialData, credentialType);
   }
 
-  private buildRequestDto(credType:CredentialType, payload:LearCredentialIssuancePayload): LearCredentialIssuanceRequestDto{
+  private buildRequestDto(credType:IssuanceCredentialType, payload: IssuanceLEARCredentialPayload): IssuanceLEARCredentialRequestDto{
     return {
       schema: credType,
       format: "jwt_vc_json",
@@ -136,10 +135,10 @@ export class CredentialIssuanceTwoService {
     }
   }
 
-  private sendCredential(credentialPayload: LearCredentialIssuanceRequestDto): Observable<void>{
+  private sendCredential(credentialPayload: IssuanceLEARCredentialRequestDto): Observable<void>{
     console.log('SEND CREDENTIAL: ');
     console.log(credentialPayload);
-    return this.credentialService.createProcedureTwo(credentialPayload);
+    return this.credentialService.createProcedure(credentialPayload);
   }
 
 }

@@ -1,6 +1,6 @@
 import { inject, Injectable } from '@angular/core';
-import { NormalizedTempIssuanceFormSchemaPower, TempIssuanceFormPowerSchema } from './power-two.component';
 import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
+import { TempIssuanceFormPowerSchema, NormalizedTempIssuanceFormSchemaPower } from '../components/power/power.component';
 
 export type NormalizedAction = { action: string; value: boolean };
 

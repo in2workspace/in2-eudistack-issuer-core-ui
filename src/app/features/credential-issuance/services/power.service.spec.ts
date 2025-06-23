@@ -1,6 +1,6 @@
 import { TestBed } from '@angular/core/testing';
 
-import { PowerTwoService } from './power-two.service';
+import { PowerTwoService } from './power.service';
 
 describe('PowerTwoService', () => {
   let service: PowerTwoService;

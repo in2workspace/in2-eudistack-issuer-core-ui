@@ -1,5 +1,4 @@
 import { MatButton } from '@angular/material/button';
-import { KeyGeneratorComponent } from './../key-generator/key-generator/key-generator.component';
 import { MatLabel } from '@angular/material/form-field';
 import { Component, computed, inject, Signal, signal, WritableSignal, effect, HostListener, OnDestroy } from '@angular/core';
 import { MatFormField, MatOption, MatSelect } from '@angular/material/select';
@@ -8,41 +7,42 @@ import { DynamicFieldComponent } from '../dynamic-field/dynamic-field.component'
 import { FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { NgFor, TitleCasePipe } from '@angular/common';
 import { KeyValuePipe } from '@angular/common';
-import { PowerTwoComponent, PowerValueAndValidity } from '../power-two/power-two.component';
-import { KeyState } from '../key-generator/key-generator.service';
+import { PowerComponent, IssuancePowerValueAndValidity } from '../power/power.component';
 import { EMPTY, from, map, Observable, of, startWith, Subject, switchMap, takeUntil, tap } from 'rxjs';
 import { DialogWrapperService } from 'src/app/shared/components/dialog/dialog-wrapper/dialog-wrapper.service';
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { ConditionalConfirmDialogData, DialogData } from 'src/app/shared/components/dialog/dialog-data';
 import { DialogComponent } from 'src/app/shared/components/dialog/dialog-component/dialog.component';
 import { ConditionalConfirmDialogComponent } from 'src/app/shared/components/dialog/conditional-confirm-dialog/conditional-confirm-dialog.component';
-import { RawCredentialPayload } from 'src/app/core/models/dto/lear-credential-issuance-request.dto';
 import { ActivatedRoute, CanDeactivate, Router } from '@angular/router';
 import { MatCard, MatCardContent } from '@angular/material/card';
 import { CanComponentDeactivate, CanDeactivateType } from 'src/app/core/guards/can-component-deactivate.guard';
-import { CredentialIssuanceTwoService } from '../../services/credential-issuance-two.service';
+import { CredentialIssuanceTwoService } from '../../services/credential-issuance.service';
 import { CredentialIssuanceFormSchema, CredentialIssuancePowerFormSchema } from 'src/app/core/models/schemas/lear-credential-issuance-schemas';
+import { KeyState } from '../../services/key-generator.service';
+import { KeyGeneratorComponent } from '../key-generator/key-generator.component';
+import { IssuanceRawCredentialPayload } from 'src/app/core/models/dto/lear-credential-issuance-request.dto';
 
-export type CredentialGlobalFormState = {
+export type CredentialIssuanceGlobalFormState = {
     keys: KeyState | undefined;
     form: Record<string, any>;
-    power: RawFormPower;
+    power: IssuanceRawPowerForm;
 }
 
-export type StaticSchema = {
+export type IssuanceStaticDataSchema = {
     mandator: EmployeeMandator;
 }
 
-export type RawFormPower = Partial<Record<TmfFunction, Record<TmfAction, boolean>>>;
+export type IssuanceRawPowerForm = Partial<Record<TmfFunction, Record<TmfAction, boolean>>>;
 
 @Component({
-  selector: 'app-credential-issuance-two',
+  selector: 'app-credential-issuance',
   standalone: true,
-  imports: [KeyValuePipe, NgFor, ReactiveFormsModule, DynamicFieldComponent, KeyGeneratorComponent, MatButton, MatCard, MatCardContent, MatFormField, MatLabel, MatOption, MatSelect, PowerTwoComponent, TitleCasePipe, TranslatePipe],
-  templateUrl: './credential-issuance-two.component.html',
-  styleUrl: './credential-issuance-two.component.scss'
+  imports: [KeyValuePipe, NgFor, ReactiveFormsModule, DynamicFieldComponent, KeyGeneratorComponent, MatButton, MatCard, MatCardContent, MatFormField, MatLabel, MatOption, MatSelect, PowerComponent, TitleCasePipe, TranslatePipe],
+  templateUrl: './credential-issuance.component.html',
+  styleUrl: './credential-issuance.component.scss'
 })
-export class CredentialIssuanceTwoComponent implements CanDeactivate<CanComponentDeactivate>, OnDestroy{
+export class CredentialIssuanceComponent implements CanDeactivate<CanComponentDeactivate>, OnDestroy{
   
   //CREDENTIAL TYPE SELECTOR
   public readonly credentialTypesArr = ISSUANCE_CREDENTIAL_TYPES_ARRAY;
@@ -52,7 +52,7 @@ export class CredentialIssuanceTwoComponent implements CanDeactivate<CanComponen
   });
 
   //BUILD SCHEMAS FROM CREDENTIAL TYPE
-  public credentialSchemas$: Signal<[CredentialIssuanceFormSchema, StaticSchema] | null> = computed(() => 
+  public credentialSchemas$: Signal<[CredentialIssuanceFormSchema, IssuanceStaticDataSchema] | null> = computed(() => 
     this.selectedCredentialType$() 
   ? this.getCredentialFormSchemas(this.selectedCredentialType$()!) 
   : null);
@@ -77,7 +77,7 @@ export class CredentialIssuanceTwoComponent implements CanDeactivate<CanComponen
   public keys$ = signal<KeyState|undefined>(undefined);
   //Power form
   //todo type
-  public powersValue$ = signal<RawFormPower>({} as RawFormPower);
+  public powersValue$ = signal<IssuanceRawPowerForm>({} as IssuanceRawPowerForm);
   public powersHasOneFunction$ = signal<boolean>(false);
   public powersHaveOneAction$ = signal<boolean>(false);
   public powersIsValid$ = computed(() => {
@@ -89,7 +89,7 @@ export class CredentialIssuanceTwoComponent implements CanDeactivate<CanComponen
   public isFormValid$ = signal<boolean>(false);
 
   //Global credential states
-  public globalValue$: Signal<CredentialGlobalFormState> = computed(() => {
+  public globalValue$: Signal<CredentialIssuanceGlobalFormState> = computed(() => {
     return { keys: this.keys$(), form: this.formValue$(), power: this.powersValue$()}
   });
 
@@ -105,7 +105,7 @@ export class CredentialIssuanceTwoComponent implements CanDeactivate<CanComponen
     return isValid;
   });
   // SIDE (STATIC CREDENTIAL DATA)
-  public staticData$ = computed<StaticSchema | null>(() => {
+  public staticData$ = computed<IssuanceStaticDataSchema | null>(() => {
     const schema = this.credentialSchemas$();
       return schema ? 
       schema[1] :
@@ -199,7 +199,7 @@ export class CredentialIssuanceTwoComponent implements CanDeactivate<CanComponen
     this.keys$.set(event);
   }
 
-  public updatePowers(powerState: PowerValueAndValidity){
+  public updatePowers(powerState: IssuancePowerValueAndValidity){
     console.log('update powers in issuance two');
     console.log(powerState)
     this.powersValue$.set(powerState.value);
@@ -249,7 +249,7 @@ export class CredentialIssuanceTwoComponent implements CanDeactivate<CanComponen
     return confirm;
   }  
 
-  private getCredentialFormSchemas(credType: IssuanceCredentialType): [CredentialIssuanceFormSchema, StaticSchema]{
+  private getCredentialFormSchemas(credType: IssuanceCredentialType): [CredentialIssuanceFormSchema, IssuanceStaticDataSchema]{
     return this.issuanceService.schemasBuilder(credType, this.asSigner);
   }
 
@@ -309,7 +309,7 @@ export class CredentialIssuanceTwoComponent implements CanDeactivate<CanComponen
       console.error('SubmitCredential: type or schema missing!');
       return of(EMPTY);
     }
-    const dataForCredentialPayload: RawCredentialPayload = { 
+    const dataForCredentialPayload: IssuanceRawCredentialPayload = { 
       partialCredentialSubject: credential.form, 
       power: credential.power, 
       optional: { keys: credential.keys, staticData:this.staticData$() },

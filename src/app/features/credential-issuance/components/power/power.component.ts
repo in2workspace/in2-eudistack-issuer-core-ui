@@ -10,12 +10,12 @@ import { MatOption } from '@angular/material/core';
 import { MatFormField, MatLabel } from '@angular/material/form-field';
 import { NgIf, NgFor, NgTemplateOutlet, AsyncPipe, KeyValuePipe } from '@angular/common';
 import { DialogWrapperService } from 'src/app/shared/components/dialog/dialog-wrapper/dialog-wrapper.service';
-import { NormalizedAction } from './power-two.service';
 import { EMPTY, Observable, tap } from 'rxjs';
-import { RawFormPower } from '../credential-issuance-two/credential-issuance-two.component';
 import { DialogData } from 'src/app/shared/components/dialog/dialog-data';
 import { IssuanceFormPowerSchema } from 'src/app/core/models/schemas/lear-credential-issuance-schemas';
 import { AuthService } from 'src/app/core/services/auth.service';
+import { NormalizedAction } from '../../services/power.service';
+import { IssuanceRawPowerForm } from '../credential-issuance/credential-issuance.component';
 
 export interface TempIssuanceFormPowerSchema extends IssuanceFormPowerSchema{
   isDisabled: boolean;
@@ -25,20 +25,20 @@ export interface NormalizedTempIssuanceFormSchemaPower extends TempIssuanceFormP
   normalizedActions: NormalizedAction[];
 }
 
-export interface PowerValueAndValidity {
-  value:RawFormPower, 
-  hasOnePower:boolean, 
-  hasOneActionPerPower:boolean
+export interface IssuancePowerValueAndValidity {
+  value: IssuanceRawPowerForm, 
+  hasOnePower: boolean, 
+  hasOneActionPerPower: boolean
 }
 
 @Component({
-    selector: 'app-power-two',
-    templateUrl: './power-two.component.html',
-    styleUrls: ['./power-two.component.scss'],
+    selector: 'app-power',
+    templateUrl: './power.component.html',
+    styleUrls: ['./power.component.scss'],
     standalone: true,
     imports: [KeyValuePipe, ReactiveFormsModule, NgIf, MatFormField, MatSelect, MatSelectTrigger, MatOption, MatButton, NgFor, NgTemplateOutlet, MatSlideToggle, FormsModule, MatMiniFabButton, MatIcon, MatLabel, MatSelect, AsyncPipe, TranslatePipe]
 })
-export class PowerTwoComponent implements OnInit{
+export class PowerComponent implements OnInit{
   private readonly authService = inject(AuthService);
   private readonly dialog = inject(DialogWrapperService);
   private readonly translate = inject(TranslateService);
@@ -52,7 +52,7 @@ export class PowerTwoComponent implements OnInit{
   public keepOrder = (_: any, _2: any) => 0;
 
 
- @Output() formChanges = new EventEmitter<PowerValueAndValidity>();
+ @Output() formChanges = new EventEmitter<IssuancePowerValueAndValidity>();
  @Input()
   set powersInput(value: IssuanceFormPowerSchema[]) {
     console.warn('Power component received empty list.');
@@ -119,7 +119,7 @@ export class PowerTwoComponent implements OnInit{
     //every time form changes, emit value and validity
     this.form.valueChanges.pipe(
       tap(
-        (value: RawFormPower) => {
+        (value: IssuanceRawPowerForm) => {
           //todo move in one function
           const functions = Object.values(this.form.controls);
           const hasOnePower = functions.length > 0;
