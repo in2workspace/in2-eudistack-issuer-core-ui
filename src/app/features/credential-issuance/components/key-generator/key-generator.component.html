@@ -7,11 +7,12 @@
             @for(key of displayedKeys| keyvalue; track $index){
                 @if(key.value){
                     <div class="key-container">
-                        <div>{{ key.value }}</div>
+                        <div class="key">{{ key.value }}</div>
                             <button type="button" (click)="copyToClipboard(key.value!)" class="copy-button" [disabled]="copiedKey === key.value">
                                 @if(copiedKey === key.value){
-                                    <span>{{ "copied" | translate }}!</span>
-                                }@else {
+                                    <!-- <span>{{ "copied" | translate }}!</span> -->
+                                     <mat-icon>check</mat-icon>
+                                    }@else {
                                     {{ "copy" | translate }}
                                 }
                             </button>
