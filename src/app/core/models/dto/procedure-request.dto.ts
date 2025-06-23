@@ -9,7 +9,7 @@ export interface LearCredentialProcedureRequest {
     response_uri?: string
 }
 
-//todo
+//todo: Common...
 export interface LearCredentialPayload {
   mandator: EmployeeMandator;
   mandatee: EmployeeMandatee;
