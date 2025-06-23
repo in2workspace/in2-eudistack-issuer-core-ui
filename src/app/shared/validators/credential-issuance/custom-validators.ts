@@ -1,5 +1,5 @@
-import { AbstractControl, ValidationErrors } from "@angular/forms";
-import { ExtendedValidatorFn } from "./issuance-validators";
+import { AbstractControl } from "@angular/forms";
+import { ExtendedValidatorErrors, ExtendedValidatorFn } from "./all-validators";
 
 export type CustomValidatorEntry = { name: CustomValidatorName; args?: any[] };
 
@@ -9,7 +9,7 @@ export class CustomValidators {
   public static isDomain(): ExtendedValidatorFn {
     const domainRegex =
       /^(?!:\/\/)([a-zA-Z0-9-_]+\.)*[a-zA-Z0-9][a-zA-Z0-9-_]+\.[a-zA-Z]{2,11}?$/;
-    return (control: AbstractControl): ValidationErrors | null => {
+    return (control: AbstractControl): ExtendedValidatorErrors | null => {
       const value = control.value;
       // if (typeof value !== 'string') return { isDomain: 'Value must be a string' };
       return domainRegex.test(value) ? null : { isDomain: { value: 'error.form.domain' }};
@@ -21,9 +21,9 @@ export class CustomValidators {
       /^(25[0-5]|2[0-4]\d|1\d{2}|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d{2}|[1-9]?\d)){3}$/;
     const ipv6 =
       /^(([0-9a-fA-F]{1,4}:){7}([0-9a-fA-F]{1,4}|:)|::1)$/;
-    return (control: AbstractControl): ValidationErrors | null => {
+    return (control: AbstractControl): ExtendedValidatorErrors | null => {
       const value = control.value;
-      if (typeof value !== 'string') return { isIP: 'Value must be a string' };
+      if (typeof value !== 'string') return { isIP: { value: 'Value must be a string' }};
       return ipv4.test(value) || ipv6.test(value) ? null : { isIP: {value: 'error.form.ip' }};
     };
   }
@@ -33,7 +33,7 @@ export class CustomValidators {
   /^[a-zA-Z0-9](?:[a-zA-Z0-9+_-]|(?:\.[a-zA-Z0-9+_-]))*@[a-zA-Z0-9](?:[a-zA-Z0-9-]*[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]*[a-zA-Z0-9])?)*\.[a-zA-Z]+$/;
 
 
-    return (control: AbstractControl): ValidationErrors | null => {
+    return (control: AbstractControl): ExtendedValidatorErrors | null => {
       const email = control.value;
     
       if (!email || typeof email !== 'string') {
@@ -71,7 +71,7 @@ export class CustomValidators {
   }
 
   public static unicode(): ExtendedValidatorFn{
-    return (control: AbstractControl): ValidationErrors | null => {
+    return (control: AbstractControl): ExtendedValidatorErrors | null => {
       const pattern = /^[A-Za-zÀ-ÿ'’ -]+$/;
       const value = control.value;
 
@@ -80,12 +80,12 @@ export class CustomValidators {
       }
 
       const isValid = pattern.test(value);
-      return isValid ? null : { invalidUnicode: { value: 'error.form.invalid_character' }};
+      return isValid ? null : { unicode: { value: 'error.form.invalid_character' }};
     }
   }
 
   public static orgIdentifier(): ExtendedValidatorFn{
-    return (control: AbstractControl): ValidationErrors | null => {
+    return (control: AbstractControl): ExtendedValidatorErrors | null => {
         const pattern = /^[a-zA-Z0-9]+$/;
         const value = control.value;
 
@@ -94,27 +94,27 @@ export class CustomValidators {
         }
 
         if (value.toLowerCase().startsWith('vat')) {
-          return { invalidOrgId: { value: 'error.form.org_id_startsWithVAT' }};
+          return { orgIdentifier: { value: 'error.form.org_id_startsWithVAT' }};
         }
         
 
         const isValid = pattern.test(value);
-        return isValid ? null : { invalidOrgId: { value: 'error.form.pattern' }};
+        return isValid ? null : { orgIdentifier: { value: 'error.form.pattern' }};
       }
   }
 
   public static orgName(): ExtendedValidatorFn{
-    return (control: AbstractControl): ValidationErrors | null => {
-    const pattern = /^[\p{Script=Latin}\p{M}0-9'&\-,.()/ ]+$/u;
-    const value = control.value;
+    return (control: AbstractControl): ExtendedValidatorErrors | null => {
+      const pattern = /^[\p{Script=Latin}\p{M}0-9'&\-,.()/ ]+$/u;
+      const value = control.value;
 
-    if (!value) {
-      return null;
+      if (!value) {
+        return null;
+      }
+
+      const isValid = pattern.test(value);
+      return isValid ? null : { orgName: { value: 'error.form.pattern' }};
     }
-
-    const isValid = pattern.test(value);
-    return isValid ? null : { invalidOrgName: { value: 'error.form.pattern' }};
-  }
   }
 
 }

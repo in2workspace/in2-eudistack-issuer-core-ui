@@ -1,6 +1,6 @@
 // --- Form Schemas ---
 
-import { ValidatorEntry } from "src/app/shared/validators/credential-issuance/issuance-validators";
+import { ValidatorEntry } from "src/app/shared/validators/credential-issuance/all-validators";
 
 // todo canviar a -issuance-form-schema
 

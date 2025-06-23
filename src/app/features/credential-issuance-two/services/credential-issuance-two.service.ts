@@ -1,9 +1,9 @@
-import { ExtendedValidatorFn } from './../../../shared/validators/credential-issuance/issuance-validators';
+import { ExtendedValidatorFn } from '../../../shared/validators/credential-issuance/all-validators';
 import { inject, Injectable } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { CredentialType, EmployeeMandator } from 'src/app/core/models/entity/lear-credential';
 import { CountryService } from 'src/app/shared/components/form-credential/services/country.service';
-import { ALL_VALIDATORS_FACTORY_MAP, ValidatorEntry } from 'src/app/shared/validators/credential-issuance/issuance-validators';
+import { ALL_VALIDATORS_FACTORY_MAP, ValidatorEntry } from 'src/app/shared/validators/credential-issuance/all-validators';
 import { CredentialProcedureService } from 'src/app/core/services/credential-procedure.service';
 import { LearCredentialIssuancePayload, RawCredentialPayload } from 'src/app/core/models/dto/lear-credential-issuance-request.dto';
 import { IssuanceRequestFactoryService } from './issuance-request-factory.service';
