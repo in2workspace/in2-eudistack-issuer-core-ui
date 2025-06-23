@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { IssuancePayloadPower, LearCredentialEmployeeIssuancePayload, LearCredentialIssuancePayload, LearCredentialMachineIssuancePayload, RawCredentialPayload, RawCredentialPayloadWithParsedPower } from 'src/app/core/models/dto/lear-credential-issuance-request.dto';
-import { CredentialType, TmfAction, TmfFunction } from 'src/app/core/models/entity/lear-credential';
+import { IssuanceCredentialType, TmfAction, TmfFunction } from 'src/app/core/models/entity/lear-credential';
 import { RawFormPower } from '../components/credential-issuance-two/credential-issuance-two.component';
 
 @Injectable({
@@ -8,11 +8,11 @@ import { RawFormPower } from '../components/credential-issuance-two/credential-i
 })
 export class IssuanceRequestFactoryService {
 
-  constructor() { }
+  private constructor() { }
 
   public createCredentialRequest(
       credentialData: RawCredentialPayload, 
-      credentialType: CredentialType,
+      credentialType: IssuanceCredentialType,
     ): LearCredentialIssuancePayload{
       //Parse power
       const parsedPower: IssuancePayloadPower[] = this.parsePower(credentialData.power, credentialType);
@@ -24,7 +24,6 @@ export class IssuanceRequestFactoryService {
       }else if(credentialType === 'LEARCredentialMachine'){
         return this.createLearCredentialMachineRequest(credentialDataWithParsedPower);
       }else{
-        //todo
         console.error('Unexpected credential type');
         return {} as LearCredentialIssuancePayload;
       }
@@ -69,7 +68,6 @@ export class IssuanceRequestFactoryService {
       return payload;
     }
 
-    //todo
     private createLearCredentialEmployeeRequest(credentialData: RawCredentialPayloadWithParsedPower): LearCredentialEmployeeIssuancePayload{
       console.log('CREATE LEAR CREDENTIAL EMPLOYEE');
       console.log('Credential data: ');
@@ -122,7 +120,7 @@ export class IssuanceRequestFactoryService {
 
     private parsePower(
       power: RawFormPower,
-      credType: CredentialType
+      credType: IssuanceCredentialType
     ): IssuancePayloadPower[] {
       return Object.entries(power).reduce<IssuancePayloadPower[]>((acc, [funct, pow]) => {
         const tmfFunc = funct as TmfFunction;
@@ -166,7 +164,7 @@ const domePowerBase = {
   domain: "DOME"
 }
 
-const powerMap: Record<CredentialType, Partial<Record<TmfFunction, IssuancePayloadPower>>> = {
+const powerMap: Record<IssuanceCredentialType, Partial<Record<TmfFunction, IssuancePayloadPower>>> = {
       'LEARCredentialEmployee': {
         'Onboarding': {
           ...domePowerBase,
@@ -189,18 +187,6 @@ const powerMap: Record<CredentialType, Partial<Record<TmfFunction, IssuancePaylo
             ...domePowerBase,
             function: 'Onboarding',
             action: ['Execute']
-          },
-          // todo remove
-        //           'ProductOffering': {
-        //   ...domePowerBase,
-        //   function: 'ProductOffering',
-        //   action: ['Create', 'Update', 'Upload']
-        // },
-        // 'Certification': {
-        //   ...domePowerBase,
-        //   function: 'Certification',
-        //   action: ['Attest', 'Upload']
-        // }
+          }
       },
-      'VerifiableCertification': {}
     }

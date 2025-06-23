@@ -1,7 +1,7 @@
 import { ExtendedValidatorFn } from '../../../shared/validators/credential-issuance/all-validators';
 import { inject, Injectable } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
-import { CredentialType, EmployeeMandator } from 'src/app/core/models/entity/lear-credential';
+import { CredentialType, EmployeeMandator, IssuanceCredentialType } from 'src/app/core/models/entity/lear-credential';
 import { CountryService } from 'src/app/shared/components/form-credential/services/country.service';
 import { ALL_VALIDATORS_FACTORY_MAP, ValidatorEntry } from 'src/app/shared/validators/credential-issuance/all-validators';
 import { CredentialProcedureService } from 'src/app/core/services/credential-procedure.service';
@@ -24,26 +24,24 @@ export class CredentialIssuanceTwoService {
   private readonly countryService = inject(CountryService);
   private readonly credentialService = inject(CredentialProcedureService);
   
-  /* BUILD FORM LOGIC */
-  private schemaMap: Record<CredentialType, () => CredentialIssuanceSchemaTuple> = {
-      LEARCredentialEmployee: () =>
-        getLearCredentialEmployeeIssuanceFormSchemas(
-          this.countryService.getCountriesAsSelectorOptions()
-        ),
-      LEARCredentialMachine: () =>
-        getLearCredentialMachineIssuanceFormSchemas(
-          this.countryService.getCountriesAsSelectorOptions()
-        ),
-        // todo remove
-      VerifiableCertification: () => [] as any,
-    };
+  /* FORM BUILDING LOGIC */
+  private schemaMap: Record<IssuanceCredentialType, () => CredentialIssuanceSchemaTuple> = {
+    LEARCredentialEmployee: () =>
+      getLearCredentialEmployeeIssuanceFormSchemas(
+        this.countryService.getCountriesAsSelectorOptions()
+      ),
+    LEARCredentialMachine: () =>
+      getLearCredentialMachineIssuanceFormSchemas(
+        this.countryService.getCountriesAsSelectorOptions()
+      )
+  };
 
   private getValidatorFn(entry: ValidatorEntry): ExtendedValidatorFn | null {
     const factory = ALL_VALIDATORS_FACTORY_MAP[entry.name];
     return factory ? factory(...(entry.args ?? [])) : null;
-}
+  }
 
-  public schemasBuilder(credType:CredentialType, asSigner:boolean): [CredentialIssuanceFormSchema, StaticSchema]{
+  public schemasBuilder(credType:IssuanceCredentialType, asSigner:boolean): [CredentialIssuanceFormSchema, StaticSchema]{
     const rawSchema = this.getFormSchemaFromCredentialType(credType);
     const formSchema = [] as CredentialIssuanceFormSchema;
     let staticSchema = {} as StaticSchema;
@@ -52,7 +50,7 @@ export class CredentialIssuanceTwoService {
       if(!asSigner && display === 'pref_side'){ 
         if(credType === 'LEARCredentialEmployee' || credType === 'LEARCredentialMachine'){
           const mandator = this.getMandatorFromAuth();
-          // todo restore
+          // todo remove after tests
           // const mandator = {
           //   mandator:{
           //     organizationIdentifier: 'ORG123',
@@ -97,19 +95,19 @@ export class CredentialIssuanceTwoService {
     return new FormGroup(group);
   }
 
-  getSchemasFromCredentialType(credType: CredentialType): CredentialIssuanceSchemaTuple {
+  private getSchemasFromCredentialType(credType: IssuanceCredentialType): CredentialIssuanceSchemaTuple {
     return this.schemaMap[credType]();
   }
 
-  private getFormSchemaFromCredentialType(credType: CredentialType): CredentialIssuanceFormSchema{
+  private getFormSchemaFromCredentialType(credType: IssuanceCredentialType): CredentialIssuanceFormSchema{
     return this.getSchemasFromCredentialType(credType)[0];
   }
 
-  getPowersSchemaFromCredentialType(credType: CredentialType): CredentialIssuancePowerFormSchema{
+  public getPowersSchemaFromCredentialType(credType: IssuanceCredentialType): CredentialIssuancePowerFormSchema{
     return this.getSchemasFromCredentialType(credType)[1];
   }
 
-  public getMandatorFromAuth(): { mandator: EmployeeMandator } | null{
+  private getMandatorFromAuth(): { mandator: EmployeeMandator } | null{
     const mandator = this.authService.getRawMandator();
     return mandator ? { mandator } : null;
   }
@@ -117,7 +115,7 @@ export class CredentialIssuanceTwoService {
   /* SUBMISSION LOGIC */
   public submitCredential(
     credentialData: RawCredentialPayload, 
-    credentialType: CredentialType,
+    credentialType: IssuanceCredentialType,
   ): Observable<void>{
    
     const payload: LearCredentialIssuancePayload = this.buildRequestPayload(credentialData, credentialType);
@@ -125,7 +123,7 @@ export class CredentialIssuanceTwoService {
     return this.sendCredential(request);
   }
 
-  private buildRequestPayload(credentialData: RawCredentialPayload, credentialType: CredentialType): LearCredentialIssuancePayload{
+  private buildRequestPayload(credentialData: RawCredentialPayload, credentialType: IssuanceCredentialType): LearCredentialIssuancePayload{
     return this.credentialFactory.createCredentialRequest(credentialData, credentialType);
   }
 

@@ -3,7 +3,7 @@ import { KeyGeneratorComponent } from './../key-generator/key-generator/key-gene
 import { MatLabel } from '@angular/material/form-field';
 import { Component, computed, inject, Signal, signal, WritableSignal, effect, HostListener, OnDestroy } from '@angular/core';
 import { MatFormField, MatOption, MatSelect } from '@angular/material/select';
-import { CredentialType, EmployeeMandator, ISSUANCE_CREDENTIAL_TYPES_ARRAY, TmfAction, TmfFunction } from 'src/app/core/models/entity/lear-credential';
+import { EmployeeMandator, ISSUANCE_CREDENTIAL_TYPES_ARRAY, IssuanceCredentialType, TmfAction, TmfFunction } from 'src/app/core/models/entity/lear-credential';
 import { DynamicFieldComponent } from '../dynamic-field/dynamic-field.component';
 import { FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { NgFor, TitleCasePipe } from '@angular/common';
@@ -46,7 +46,7 @@ export class CredentialIssuanceTwoComponent implements CanDeactivate<CanComponen
   
   //CREDENTIAL TYPE SELECTOR
   public readonly credentialTypesArr = ISSUANCE_CREDENTIAL_TYPES_ARRAY;
-  public selectedCredentialType$: WritableSignal<CredentialType|undefined> = signal(undefined);
+  public selectedCredentialType$: WritableSignal<IssuanceCredentialType|undefined> = signal(undefined);
   public needsKeys$: Signal<boolean> = computed(() => {
     return this.selectedCredentialType$() === 'LEARCredentialMachine'
   });
@@ -172,7 +172,7 @@ export class CredentialIssuanceTwoComponent implements CanDeactivate<CanComponen
     }
   }
 
-  public onSelectionChange(selectedCredentialType: CredentialType, select: MatSelect) {
+  public onSelectionChange(selectedCredentialType: IssuanceCredentialType, select: MatSelect) {
     const currentType = this.selectedCredentialType$();
     const hasChangedType = currentType !== undefined && currentType !== selectedCredentialType
     if (hasChangedType && !this.canLeave()) {
@@ -249,11 +249,11 @@ export class CredentialIssuanceTwoComponent implements CanDeactivate<CanComponen
     return confirm;
   }  
 
-  private getCredentialFormSchemas(credType: CredentialType): [CredentialIssuanceFormSchema, StaticSchema]{
+  private getCredentialFormSchemas(credType: IssuanceCredentialType): [CredentialIssuanceFormSchema, StaticSchema]{
     return this.issuanceService.schemasBuilder(credType, this.asSigner);
   }
 
-  private getPowerSchema(credType: CredentialType): CredentialIssuancePowerFormSchema{
+  private getPowerSchema(credType: IssuanceCredentialType): CredentialIssuancePowerFormSchema{
     return  this.issuanceService.getPowersSchemaFromCredentialType(credType);
   }
 
