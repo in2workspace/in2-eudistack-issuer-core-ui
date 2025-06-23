@@ -25,8 +25,6 @@ export class KeyGeneratorComponent {
 
   public async generateKeys(){
     await this.keyService.generateP256();
-    await this.keyService.generateSecp256k1();
-
   }
 
   public copyToClipboard(text:string){
