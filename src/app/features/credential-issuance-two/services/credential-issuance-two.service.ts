@@ -51,18 +51,18 @@ export class CredentialIssuanceTwoService {
       const { display } = field;
       if(!asSigner && display === 'pref_side'){ 
         if(credType === 'LEARCredentialEmployee' || credType === 'LEARCredentialMachine'){
-          // const mandator = this.getMandatorFromAuth();
+          const mandator = this.getMandatorFromAuth();
           // todo restore
-          const mandator = {
-            mandator:{
-              organizationIdentifier: 'ORG123',
-              organization: 'Test Org',
-              commonName: 'Some Name',
-              emailAddress: 'some@example.com',
-              serialNumber: '123',
-              country: 'SomeCountry'
-            }
-          }
+          // const mandator = {
+          //   mandator:{
+          //     organizationIdentifier: 'ORG123',
+          //     organization: 'Test Org',
+          //     commonName: 'Some Name',
+          //     emailAddress: 'some@example.com',
+          //     serialNumber: '123',
+          //     country: 'SomeCountry'
+          //   }
+          // }
           if(!mandator){
             console.error("Couldn't get mandator.");
           }else{
