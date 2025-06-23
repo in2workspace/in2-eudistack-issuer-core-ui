@@ -10,6 +10,7 @@ import { LearCredentialIssuanceRequestDto } from 'src/app/core/models/dto/proced
 import { AuthService } from 'src/app/core/services/auth.service';
 import { Observable } from 'rxjs';
 import { CredentialIssuanceFormSchema, CredentialIssuancePowerFormSchema, CredentialIssuanceSchemaTuple, getLearCredentialEmployeeIssuanceFormSchemas, getLearCredentialMachineIssuanceFormSchemas } from 'src/app/core/models/schemas/lear-credential-issuance-schemas';
+import { StaticSchema } from '../components/credential-issuance-two/credential-issuance-two.component';
 
 
 @Injectable({
@@ -41,15 +42,38 @@ export class CredentialIssuanceTwoService {
     return factory ? factory(...(entry.args ?? [])) : null;
 }
 
-  public schemaBuilder(credType:CredentialType, asSigner:boolean): CredentialIssuanceFormSchema{
+  public schemasBuilder(credType:CredentialType, asSigner:boolean): [CredentialIssuanceFormSchema, StaticSchema]{
     const rawSchema = this.getFormSchemaFromCredentialType(credType);
-    const schema = [] as CredentialIssuanceFormSchema;
+    const formSchema = [] as CredentialIssuanceFormSchema;
+    let staticSchema = {} as StaticSchema;
     for(const field of rawSchema){
       const { display } = field;
-      if(!asSigner && display === 'pref_side'){ continue; }
-      schema.push(field);
+      if(!asSigner && display === 'pref_side'){ 
+        if(credType === 'LEARCredentialEmployee' || credType === 'LEARCredentialMachine'){
+          // const mandator = this.getMandatorFromAuth();
+          // todo restore
+          const mandator = {
+            mandator:{
+              organizationIdentifier: 'ORG123',
+              organization: 'Test Org',
+              commonName: 'Some Name',
+              emailAddress: 'some@example.com',
+              serialNumber: '123',
+              country: 'SomeCountry'
+            }
+          }
+          if(!mandator){
+            console.error("Couldn't get mandator.");
+          }else{
+            staticSchema = { ...mandator };
+          }
+        }else{
+          console.error('Static data found in unexpected credential type: ' + credType);
+        }
+        continue; }
+      formSchema.push(field);
     }
-    return schema;
+    return [formSchema, staticSchema];
   }
 
   public formBuilder(schema: CredentialIssuanceFormSchema, asSigner: boolean): FormGroup {
@@ -84,7 +108,7 @@ export class CredentialIssuanceTwoService {
     return this.getSchemasFromCredentialType(credType)[1];
   }
 
-  public getRawMandator(): {mandator: EmployeeMandator} | null{
+  public getMandatorFromAuth(): { mandator: EmployeeMandator } | null{
     const mandator = this.authService.getRawMandator();
     return mandator ? { mandator } : null;
   }
