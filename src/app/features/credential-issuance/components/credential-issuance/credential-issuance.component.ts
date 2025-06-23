@@ -64,7 +64,7 @@ export class CredentialIssuanceComponent implements CanDeactivate<CanComponentDe
       null
     });
   
-  public powerFormSchema$ = computed(() => 
+  public powerFormSchema$: Signal<CredentialIssuancePowerFormSchema | undefined> = computed(() => 
     this.selectedCredentialType$()  
     ? this.getPowerSchema(this.selectedCredentialType$()!) 
     : undefined
@@ -80,12 +80,12 @@ export class CredentialIssuanceComponent implements CanDeactivate<CanComponentDe
   public powersValue$ = signal<IssuanceRawPowerForm>({} as IssuanceRawPowerForm);
   public powersHasOneFunction$ = signal<boolean>(false);
   public powersHaveOneAction$ = signal<boolean>(false);
-  public powersIsValid$ = computed(() => {
+  public powersIsValid$: Signal<boolean> = computed(() => {
     return this.powersHasOneFunction$() && this.powersHaveOneAction$()
   });
   //Main form
   public form: FormGroup = new FormGroup({});
-  public formValue$ = signal<FormGroup>(this.form.value);
+  public formValue$ = signal<FormGroup>(this.form.value); //updated by effect
   public isFormValid$ = signal<boolean>(false);
 
   //Global credential states
@@ -104,6 +104,7 @@ export class CredentialIssuanceComponent implements CanDeactivate<CanComponentDe
     console.log('isSubmitDisabled' + isValid);
     return isValid;
   });
+
   // SIDE (STATIC CREDENTIAL DATA)
   public staticData$ = computed<IssuanceStaticDataSchema | null>(() => {
     const schema = this.credentialSchemas$();
@@ -113,9 +114,7 @@ export class CredentialIssuanceComponent implements CanDeactivate<CanComponentDe
   });
 
   public asSigner: boolean;
-
   private hasSubmitted: boolean = false;
-
 
   private readonly issuanceService = inject(CredentialIssuanceTwoService);
   private readonly dialog = inject(DialogWrapperService);
@@ -125,7 +124,7 @@ export class CredentialIssuanceComponent implements CanDeactivate<CanComponentDe
 
   private readonly destroy$ = new Subject();
 
-   // every time a new credential type > credential schema is selected, reset global state
+  // every time a new credential type > credential schema is selected, reset global state
   private updateFormEffect = effect(() => {
     // reset keys
     this.updateKeys(undefined);

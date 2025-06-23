@@ -30,6 +30,43 @@ export class IssuanceRequestFactoryService {
       }
     }
 
+     private createLearCredentialEmployeeRequest(credentialData: IssuanceRawCredentialPayloadWithParsedPower): IssuanceLEARCredentialEmployeePayload{
+      console.log('CREATE LEAR CREDENTIAL EMPLOYEE');
+      console.log('Credential data: ');
+      console.log(credentialData);
+      // Mandatee
+      const mandatee = this.getMandateeFromCredentialData(credentialData);
+      
+      // Mandator
+      const mandator = this.getMandatorFromCredentialData(credentialData);
+      if(!mandator){
+        console.error('Error getting mandator.'); 
+        return {} as IssuanceLEARCredentialEmployeePayload;
+      }
+      const country = mandator['country'];
+      const orgId = mandator['organizationIdentifier'];
+      const vatNumber = this.buildOrganizationId(country, orgId);
+      const mandatorCommonName = mandator['commonName'] ?? this.buildCommonName(mandator['firstName'], mandator['lastName']);
+      
+
+      const payload: IssuanceLEARCredentialEmployeePayload =    
+        {
+        mandator: {
+              emailAddress: mandator['emailAddress'],
+              organization: mandator['organization'],
+              country:  country,
+              commonName:  mandatorCommonName,
+              serialNumber:  mandator['serialNumber'],
+              organizationIdentifier: vatNumber
+          },
+          mandatee: {
+              ...mandatee
+          },
+          power: credentialData.power
+        }
+        return payload;
+    }
+
     private createLearCredentialMachineRequest(credentialData: IssuanceRawCredentialPayloadWithParsedPower): IssuanceLEARCredentialMachinePayload{
       console.log('CREATE LEAR CREDENTIAL MACHINE');
       console.log('Credential data: ');
@@ -69,53 +106,22 @@ export class IssuanceRequestFactoryService {
       return payload;
     }
 
-    private createLearCredentialEmployeeRequest(credentialData: IssuanceRawCredentialPayloadWithParsedPower): IssuanceLEARCredentialEmployeePayload{
-      console.log('CREATE LEAR CREDENTIAL EMPLOYEE');
-      console.log('Credential data: ');
-      console.log(credentialData);
-      // Mandatee
-      const mandatee = this.getMandateeFromCredentialData(credentialData);
-      
-      // Mandator
-      const mandator = this.getMandatorFromCredentialData(credentialData);
-      if(!mandator){
-        console.error('Error getting mandator.'); 
-        return {} as IssuanceLEARCredentialEmployeePayload;
-      }
-      const country = mandator['country'];
-      const orgId = mandator['organizationIdentifier'];
-      const vatNumber = this.buildOrganizationId(country, orgId);
-      const mandatorCommonName = mandator['commonName'] ?? this.buildCommonName(mandator['firstName'], mandator['lastName']);
-      
-
-      const payload: IssuanceLEARCredentialEmployeePayload =    
-        {
-        mandator: {
-              emailAddress: mandator['emailAddress'],
-              organization: mandator['organization'],
-              country:  country,
-              commonName:  mandatorCommonName,
-              serialNumber:  mandator['serialNumber'],
-              organizationIdentifier: vatNumber
-          },
-          mandatee: {
-              ...mandatee
-          },
-          power: credentialData.power
-        }
-        return payload;
-    }
-
-    private buildDidElsi(orgId:string, country:string): string{
+    private buildDidElsi(orgId: string, country: string): string{
       const vatNumber = this.buildOrganizationId(orgId, country);
       return "did:elsi:" + vatNumber;
     }
 
-    private buildOrganizationId(country:string, vatNumber:string): string{
-      return "VAT" + country + '-' + vatNumber;
+    private buildOrganizationId(country: string, vatNumber: string): string{
+      const hasVAT = this.checkIfHasVAT(vatNumber);
+      return  hasVAT ? vatNumber : ("VAT" + country + '-' + vatNumber);
     }
 
-    private buildCommonName(name:string, lastName:string){
+    private checkIfHasVAT(orgId: string){
+      const regex = /^VAT..-/;
+      return regex.test(orgId);
+    }
+
+    private buildCommonName(name: string, lastName: string){
       return name + ' ' + lastName;
     }
 
