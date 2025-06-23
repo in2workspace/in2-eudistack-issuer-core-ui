@@ -191,16 +191,16 @@ const powerMap: Record<CredentialType, Partial<Record<TmfFunction, IssuancePaylo
             action: ['Execute']
           },
           // todo remove
-                  'ProductOffering': {
-          ...domePowerBase,
-          function: 'ProductOffering',
-          action: ['Create', 'Update', 'Upload']
-        },
-        'Certification': {
-          ...domePowerBase,
-          function: 'Certification',
-          action: ['Attest', 'Upload']
-        }
+        //           'ProductOffering': {
+        //   ...domePowerBase,
+        //   function: 'ProductOffering',
+        //   action: ['Create', 'Update', 'Upload']
+        // },
+        // 'Certification': {
+        //   ...domePowerBase,
+        //   function: 'Certification',
+        //   action: ['Attest', 'Upload']
+        // }
       },
       'VerifiableCertification': {}
     }

@@ -8,9 +8,7 @@ export const routes: Routes = [
   { path: '', pathMatch: 'full', redirectTo: 'home' },
   {
     path: 'home',
-    // todo loadChildren: () => import('./features/home/home.routes').then(m => m.default)
-    component: CredentialIssuanceTwoComponent,
-    canDeactivate: [canDeactivateGuard]
+    loadChildren: () => import('./features/home/home.routes').then(m => m.default)
   },
   {
     path: 'settings',
@@ -32,10 +30,12 @@ export const routes: Routes = [
       {
         path: 'create',
         loadChildren: () => import('./features/credential-issuance/credential-issuance.routes').then(m => m.default),
+        canDeactivate: [canDeactivateGuard]
       },
       {
         path: 'create-as-signer',
         loadChildren: () => import('./features/credential-issuance/credential-issuance.routes').then(m => m.default),
+        canDeactivate: [canDeactivateGuard]
       },
     ],
   },

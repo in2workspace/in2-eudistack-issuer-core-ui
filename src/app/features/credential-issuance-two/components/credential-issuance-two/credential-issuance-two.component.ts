@@ -72,11 +72,11 @@ export class CredentialIssuanceTwoComponent implements CanDeactivate<CanComponen
   private readonly translate = inject(TranslateService);
 
   private readonly destroy$ = new Subject();
-  public asSigner: boolean = true;
-  //  todo = this.route.snapshot.pathFromRoot
-  //     .flatMap(r => r.url)
-  //     .map(seg => seg.path)
-  //     .includes('create-as-signer');
+  // todo
+  public asSigner: boolean = this.route.snapshot.pathFromRoot
+      .flatMap(r => r.url)
+      .map(seg => seg.path)
+      .includes('create-as-signer');
 
   //CREDENTIAL TYPE SELECTOR
   public readonly credentialTypesArr = ISSUANCE_CREDENTIAL_TYPES_ARRAY;
@@ -277,10 +277,10 @@ export class CredentialIssuanceTwoComponent implements CanDeactivate<CanComponen
     const credentialType = this.selectedCredentialType$();
     const credentialSchema = this.credentialFormSchema$();
     // todo restore
-    // if(!this.isGlobalValid$()){
-    //   console.error('Invalid global values! Cannot submit.');
-    //   return of(EMPTY);
-    // }
+    if(!this.isGlobalValid$()){
+      console.error('Invalid global values! Cannot submit.');
+      // return of(EMPTY);
+    }
     if(!credentialType || !credentialSchema){
       console.error('SubmitCredential: type or schema missing!');
       return of(EMPTY);
