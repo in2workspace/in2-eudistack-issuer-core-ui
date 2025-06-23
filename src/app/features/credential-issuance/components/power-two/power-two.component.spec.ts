@@ -1,15 +1,14 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { PowerComponent } from './power.component';
+import { PowerComponent } from './power-two.component';
 import { DebugElement, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { FormsModule } from '@angular/forms';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { RouterModule } from '@angular/router';
 import { AuthService } from 'src/app/core/services/auth.service';
-import { FormCredentialService } from '../form-credential/services/form-credential.service';
-import { DialogData } from '../dialog/dialog-component/dialog.component';
 import { of } from 'rxjs';
-import { DialogWrapperService } from '../dialog/dialog-wrapper/dialog-wrapper.service';
+import { DialogWrapperService } from 'src/app/shared/components/dialog/dialog-wrapper/dialog-wrapper.service';
+import { FormCredentialService } from 'src/app/shared/components/form-credential/services/form-credential.service';
 
 const mockDialogRef = {
   afterClosed:jest.fn().mockReturnValue(of(true)) };

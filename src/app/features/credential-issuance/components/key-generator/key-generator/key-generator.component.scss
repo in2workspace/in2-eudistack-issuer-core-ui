@@ -1,0 +1,44 @@
+
+.main-container{
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.keys-container{
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.generate-button{
+    display: block;
+    width: 100%;
+}
+
+.key-container{
+    display: flex;
+    justify-content: center;
+    padding: 8px 12px;
+    gap: 12px;
+    margin: 1px solid black;
+    background-color: rgb(245, 245, 245);
+}
+
+//todo millorar
+.copy-button{
+    margin: 0px;
+    border: 1px solid black;
+    background-color: rgba(0, 0, 0, 0.12);
+    border-radius: 4px;
+    transition: transform 0.5s ease;
+
+    &:hover{
+        transform: scale(1.02);
+    }
+}
+
+.alert{
+    color: red;
+    font-weight: 600px;
+}

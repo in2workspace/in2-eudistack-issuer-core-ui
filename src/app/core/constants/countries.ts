@@ -1,4 +1,4 @@
-import { Country } from "src/app/shared/components/form-credential/services/country.service";
+import { Country } from "../services/country.service";
 
 export const COUNTRIES: Country[] = [
     { name: 'Spain', phoneCode: '34', isoCountryCode: 'ES' },

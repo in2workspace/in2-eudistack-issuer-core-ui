@@ -67,11 +67,6 @@ export class CredentialProcedureService {
     );
   }
 
-  public createProcedure(procedureRequest: LearCredentialProcedureRequest): Observable<void> {
-    return this.http.post<void>(this.saveCredential, procedureRequest).pipe(
-      catchError(this.handleError)
-    );
-  }
   //todo: only one createProcedure
   public createProcedureTwo(procedureRequest: LearCredentialIssuanceRequestDto): Observable<void> {
     console.log('Sending API request to create procedure');
