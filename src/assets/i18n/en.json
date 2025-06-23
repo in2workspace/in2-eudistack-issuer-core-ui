@@ -256,7 +256,7 @@
       "minLength": "Minimum characters: {{0}}",
       "maxLength": "Maximum characters exceeded: {{0}}",
       "pattern": "Invalid pattern",
-      "ip": "Invalid IP",
+      "ip": "Invalid IP address. Please enter a valid IPv4 or IPv6 address.",
       "domain": "Invalid domain",
       "invalid_character": "Invalid character/s",
       "only_letters_and_numbers": "Only letters and numbers are allowed",
