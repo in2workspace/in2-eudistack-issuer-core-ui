@@ -43,49 +43,7 @@ export type RawFormPower = Partial<Record<TmfFunction, Record<TmfAction, boolean
   styleUrl: './credential-issuance-two.component.scss'
 })
 export class CredentialIssuanceTwoComponent implements CanDeactivate<CanComponentDeactivate>, OnDestroy{
-  @HostListener('window:beforeunload', ['$event'])
-  private unloadAlert($event: BeforeUnloadEvent): void{
-    const canLeave = this.canLeave();
-    if(!canLeave){
-      const confirm = this.openLeaveConfirm();
-      //todo maybe use event.returnValue
-      if(!confirm) $event.preventDefault();
-      return;
-    }else{
-      return;
-    }
-  }
-
-  public canDeactivate(): CanDeactivateType {
-    const canLeave = this.canLeave();
-    if(canLeave) return canLeave;
-    return this.openLeaveConfirm();
-  }
-
-  private canLeave(): boolean{
-    const dataHasBeenUpdated = this.form.dirty || !!this.keys$() || this.powersHasOneFunction$();
-    return this.hasSubmitted || !dataHasBeenUpdated;
-  }
-
-  private openLeaveConfirm(): boolean{
-    const alertMsg = this.translate.instant("credentialIssuance.unloadAlert");
-    const confirm = window.confirm(alertMsg);
-    return confirm;
-  }
-
-  private readonly issuanceService = inject(CredentialIssuanceTwoService);
-  private readonly dialog = inject(DialogWrapperService);
-  private readonly route = inject(ActivatedRoute);
-  private readonly router = inject(Router);
-  private readonly translate = inject(TranslateService);
-
-  private readonly destroy$ = new Subject();
-  // todo
-  public asSigner: boolean = this.route.snapshot.pathFromRoot
-      .flatMap(r => r.url)
-      .map(seg => seg.path)
-      .includes('create-as-signer');
-
+  
   //CREDENTIAL TYPE SELECTOR
   public readonly credentialTypesArr = ISSUANCE_CREDENTIAL_TYPES_ARRAY;
   public selectedCredentialType$: WritableSignal<CredentialType|undefined> = signal(undefined);
@@ -146,18 +104,28 @@ export class CredentialIssuanceTwoComponent implements CanDeactivate<CanComponen
     console.log('isSubmitDisabled' + isValid);
     return isValid;
   });
-  private hasSubmitted: boolean = false;
-
   // SIDE (STATIC CREDENTIAL DATA)
   public staticData$ = computed<StaticSchema | null>(() => {
     const schema = this.credentialSchemas$();
       return schema ? 
       schema[1] :
       null
-    });
+  });
 
-  
-  // every time a new credential type > credential schema is selected, reset global state
+  public asSigner: boolean;
+
+  private hasSubmitted: boolean = false;
+
+
+  private readonly issuanceService = inject(CredentialIssuanceTwoService);
+  private readonly dialog = inject(DialogWrapperService);
+  private readonly route = inject(ActivatedRoute);
+  private readonly router = inject(Router);
+  private readonly translate = inject(TranslateService);
+
+  private readonly destroy$ = new Subject();
+
+   // every time a new credential type > credential schema is selected, reset global state
   private updateFormEffect = effect(() => {
     // reset keys
     this.updateKeys(undefined);
@@ -184,6 +152,49 @@ export class CredentialIssuanceTwoComponent implements CanDeactivate<CanComponen
     //No need to reset powers; they are automatically reset when the powersFormSchema passed as input changes
   }, { allowSignalWrites: true});
 
+  private constructor(){
+    this.asSigner = this.route.snapshot.pathFromRoot
+      .flatMap(r => r.url)
+      .map(seg => seg.path)
+      .includes('create-as-signer');
+  }
+
+  @HostListener('window:beforeunload', ['$event'])
+  private unloadAlert($event: BeforeUnloadEvent): void{
+    const canLeave = this.canLeave();
+    if(!canLeave){
+      const confirm = this.openLeaveConfirm();
+      //todo maybe use event.returnValue
+      if(!confirm) $event.preventDefault();
+      return;
+    }else{
+      return;
+    }
+  }
+
+  public onSelectionChange(selectedCredentialType: CredentialType, select: MatSelect) {
+    const currentType = this.selectedCredentialType$();
+    const hasChangedType = currentType !== undefined && currentType !== selectedCredentialType
+    if (hasChangedType && !this.canLeave()) {
+      const alertMsg = this.translate.instant("credentialIssuance.changeCredentialAlert");
+      const shouldChange = window.confirm(alertMsg);
+
+      if (!shouldChange) {
+        // this.selectedCredentialType$.set(currentType);
+        select.value = currentType;
+        return;
+      }
+    }
+    this.form = new FormGroup({});
+    this.selectedCredentialType$.set(selectedCredentialType);
+  }
+
+  public canDeactivate(): CanDeactivateType {
+    const canLeave = this.canLeave();
+    if(canLeave) return canLeave;
+    return this.openLeaveConfirm();
+  }
+
   public updateKeys(event: KeyState | undefined): void{
     this.keys$.set(event);
   }
@@ -196,37 +207,7 @@ export class CredentialIssuanceTwoComponent implements CanDeactivate<CanComponen
     this.powersHaveOneAction$.set(powerState.hasOneActionPerPower);
   }
 
-  private getCredentialFormSchemas(credType: CredentialType): [CredentialIssuanceFormSchema, StaticSchema]{
-    return this.issuanceService.schemasBuilder(credType, this.asSigner);
-  }
-
-  private getPowerSchema(credType: CredentialType): CredentialIssuancePowerFormSchema{
-    return  this.issuanceService.getPowersSchemaFromCredentialType(credType);
-  }
-
-  private getCredentialFormFromSchema(): FormGroup{
-    return this.issuanceService.formBuilder(this.credentialFormSchema$()!, this.asSigner);
-  }
-
-  public onSelectionChange(selectedCredentialType: CredentialType, select: MatSelect) {
-  const currentType = this.selectedCredentialType$();
-  const hasChangedType = currentType !== undefined && currentType !== selectedCredentialType
-  if (hasChangedType && !this.canLeave()) {
-    const alertMsg = this.translate.instant("credentialIssuance.changeCredentialAlert");
-    const shouldChange = window.confirm(alertMsg);
-
-    if (!shouldChange) {
-      // this.selectedCredentialType$.set(currentType);
-      select.value = currentType;
-      return;
-    }
-  }
-  this.form = new FormGroup({});
-  this.selectedCredentialType$.set(selectedCredentialType);
-}
-
-
-// ** SUBMISSION LOGIC **
+  
   public onSubmit() {
     const isGlobalValid = this.isGlobalValid$();
     const globalValue = this.globalValue$();
@@ -248,6 +229,38 @@ export class CredentialIssuanceTwoComponent implements CanDeactivate<CanComponen
     }
   }
 
+  public navigateToCredentials(): Promise<boolean> {
+    return this.router.navigate(['/organization/credentials']);
+  }
+
+  public ngOnDestroy(): void {
+    this.destroy$.next('');
+    this.destroy$.complete();
+  }
+
+  private canLeave(): boolean{
+    const dataHasBeenUpdated = this.form.dirty || !!this.keys$() || this.powersHasOneFunction$();
+    return this.hasSubmitted || !dataHasBeenUpdated;
+  }
+
+  private openLeaveConfirm(): boolean{
+    const alertMsg = this.translate.instant("credentialIssuance.unloadAlert");
+    const confirm = window.confirm(alertMsg);
+    return confirm;
+  }  
+
+  private getCredentialFormSchemas(credType: CredentialType): [CredentialIssuanceFormSchema, StaticSchema]{
+    return this.issuanceService.schemasBuilder(credType, this.asSigner);
+  }
+
+  private getPowerSchema(credType: CredentialType): CredentialIssuancePowerFormSchema{
+    return  this.issuanceService.getPowersSchemaFromCredentialType(credType);
+  }
+
+  private getCredentialFormFromSchema(): FormGroup{
+    return this.issuanceService.formBuilder(this.credentialFormSchema$()!, this.asSigner);
+  }
+
   private openSubmitDialog() {
     const dialogData: DialogData = {
       title: this.translate.instant("credentialIssuance.create-confirm-dialog.title"),
@@ -263,7 +276,7 @@ export class CredentialIssuanceTwoComponent implements CanDeactivate<CanComponen
     this.dialog.openDialogWithCallback(DialogComponent, dialogData, this.submitAsCallback);
   }
 
-  public openLEARCredentialMachineSubmitDialog(){
+  private openLEARCredentialMachineSubmitDialog(){
     const dialogData: ConditionalConfirmDialogData = {
           title: this.translate.instant("credentialIssuance.create-confirm-dialog.title"),
           message: this.translate.instant("credentialIssuance.create-confirm-dialog.message"),
@@ -290,7 +303,7 @@ export class CredentialIssuanceTwoComponent implements CanDeactivate<CanComponen
     // todo restore
     if(!this.isGlobalValid$()){
       console.error('Invalid global values! Cannot submit.');
-      // return of(EMPTY);
+      return of(EMPTY);
     }
     if(!credentialType || !credentialSchema){
       console.error('SubmitCredential: type or schema missing!');
@@ -311,7 +324,7 @@ export class CredentialIssuanceTwoComponent implements CanDeactivate<CanComponen
     );
   }
 
-  public openSuccessfulCreateDialog(): Observable<any>{
+  private openSuccessfulCreateDialog(): Observable<any>{
     const dialogData: DialogData = {
       title: this.translate.instant("credentialIssuance.create-success-dialog.title"),
       message: this.translate.instant("credentialIssuance.create-success-dialog.message"),
@@ -321,14 +334,6 @@ export class CredentialIssuanceTwoComponent implements CanDeactivate<CanComponen
 
     const dialogRef = this.dialog.openDialog(DialogComponent, dialogData);
     return dialogRef.afterClosed();
-  }
-
-  public navigateToCredentials(): Promise<boolean> {
-    return this.router.navigate(['/organization/credentials']);
-  }
-
-  ngOnDestroy(): void {
-    this.destroy$.next('');
   }
 
 }
