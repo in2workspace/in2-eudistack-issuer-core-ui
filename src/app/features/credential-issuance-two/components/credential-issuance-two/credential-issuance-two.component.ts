@@ -47,22 +47,30 @@ export class CredentialIssuanceTwoComponent implements CanDeactivate<CanComponen
   private unloadAlert($event: BeforeUnloadEvent): void{
     const canLeave = this.canLeave();
     if(!canLeave){
-      const alertMsg = this.translate.instant("credentialIssuance.unloadAlert");
-      const confirm = window.confirm(alertMsg);
-      if(confirm) return;
-      $event.preventDefault();
+      const confirm = this.openLeaveConfirm();
+      //todo maybe use event.returnValue
+      if(!confirm) $event.preventDefault();
+      return;
     }else{
       return;
     }
   }
 
   public canDeactivate(): CanDeactivateType {
-    return this.canLeave();
+    const canLeave = this.canLeave();
+    if(canLeave) return canLeave;
+    return this.openLeaveConfirm();
   }
 
   private canLeave(): boolean{
-    const dataHasBeenUpdated = this.form.touched || !!this.keys$() || this.powersHasOneFunction$();
-    return !this.hasSubmitted && !dataHasBeenUpdated;
+    const dataHasBeenUpdated = this.form.dirty || !!this.keys$() || this.powersHasOneFunction$();
+    return this.hasSubmitted || !dataHasBeenUpdated;
+  }
+
+  private openLeaveConfirm(): boolean{
+    const alertMsg = this.translate.instant("credentialIssuance.unloadAlert");
+    const confirm = window.confirm(alertMsg);
+    return confirm;
   }
 
   private readonly issuanceService = inject(CredentialIssuanceTwoService);
