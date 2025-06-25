@@ -1,3 +1,4 @@
+
 export interface LEARCredentialDataDetails {
   procedure_id: string;
   credential_status: CredentialStatus;
@@ -16,13 +17,14 @@ export interface LEARCredentialJwtPayload {
   jti: string;
 }
 
-export type CredentialType =   'LEARCredentialEmployee' | 'LEARCredentialMachine' | 'VerifiableCertification';
-export type ExtendedCredentialType =  'VerifiableCredential' | 'LEARCredentialEmployee' | 'LEARCredentialMachine' | 'VerifiableCertification';
+export type CredentialType =   'LEARCredentialEmployee' | 'LEARCredentialMachine' | 'VerifiableCertification' | 'GxLabelCredential';
+export type ExtendedCredentialType =  'VerifiableCredential' | CredentialType;
 
 export type LEARCredential =
   | LEARCredentialEmployee
   | LEARCredentialMachine
-  | VerifiableCertification;
+  | VerifiableCertification
+  | GxLabelCredential;
 
 // --- Common Types ---
 export interface LifeSpan {
@@ -95,7 +97,7 @@ export interface LEARCredentialEmployee {
       signer: EmployeeSigner;
     };
   };
-  issuer: EmployeeIssuer;
+  issuer?: EmployeeIssuer;
   validFrom: string;
   validUntil: string;
   issuanceDate?: string;
@@ -109,7 +111,7 @@ export interface EmployeeMandatee {
   lastName: string;
   mobile_phone?: string;
   nationality: string;
-};
+}
 export interface EmployeeMandator extends CommonMandator {}
 export interface EmployeeSigner extends CommonSigner {}
 export interface EmployeeIssuer extends CommonIssuer {}
@@ -129,7 +131,7 @@ export interface LEARCredentialMachine {
       signer: MachineSigner;
     };
   };
-  issuer: MachineIssuer;
+  issuer?: MachineIssuer;
   validFrom: string;
   validUntil: string;
 }
@@ -146,7 +148,8 @@ export interface MachineMandatee {
     email: string;
     phone: string;
   };
-};
+}
+
 export interface MachineMandator extends CommonMandator {}
 export interface MachineSigner extends CommonSigner {}
 export interface MachineIssuer extends CommonIssuer {}
@@ -155,7 +158,7 @@ export interface MachineIssuer extends CommonIssuer {}
 export interface VerifiableCertification {
   id: string;
   type: ExtendedCredentialType[];
-  issuer: CertificationIssuer;
+  issuer?: CertificationIssuer;
   credentialSubject: {
     company: {
       address: string;
@@ -208,15 +211,37 @@ export interface Attester {
   country: string;
 }
 
+export interface GxLabelCredential {
+  id: string;
+  type: ExtendedCredentialType[];
+  issuer?: string; //did:elsi:VAT...
+  validFrom: string;
+  validUntil: string;
+  credentialSubject: {
+    id: string, //urn...
+    "gx:labelLevel": string,
+    "gx:engineVersion": string,
+    "gx:rulesVersion": string,
+    "gx:compliantCredentials": CompliantCredential[],
+    "gx:validatedCriteria": string[]
+  };
+}
+
+interface CompliantCredential{
+  id: string, //urn:...
+  type: string
+, "gx:digestSRI": string
+}
+
 export type LearCredentialEmployeeFormData = {
-  issuer: EmployeeIssuer;
+  issuer?: EmployeeIssuer;
   mandatee: LEARCredentialEmployee['credentialSubject']['mandate']['mandatee'];
   mandator: EmployeeMandator;
   power: Power[];
 };
 
 export type LearCredentialMachineFormData = {
-  issuer: MachineIssuer;
+  issuer?: MachineIssuer;
   mandatee: LEARCredentialMachine['credentialSubject']['mandate']['mandatee'];
   mandator: MachineMandator;
   power: Power[];
@@ -229,10 +254,21 @@ export type VerifiableCertificationFormData = {
   attester: VerifiableCertification['attester'];
 };
 
+export type GxLabelCredentialFormData = {
+  issuer: string,
+  basic: {
+    id:GxLabelCredential['credentialSubject']['id']
+    labelLevel: GxLabelCredential['credentialSubject']['gx:labelLevel'],
+    engineVersion: GxLabelCredential['credentialSubject']['gx:engineVersion'],
+    rulesVersion: GxLabelCredential['credentialSubject']['gx:rulesVersion']
+  }
+}
+
 export type CredentialFormDataByType = {
   LEARCredentialEmployee: LearCredentialEmployeeFormData;
   LEARCredentialMachine: LearCredentialMachineFormData;
   VerifiableCertification: VerifiableCertificationFormData;
+  GxLabelCredential: GxLabelCredentialFormData;
 };
 
 export type CredentialFormData<T extends CredentialType = CredentialType> = CredentialFormDataByType[T];

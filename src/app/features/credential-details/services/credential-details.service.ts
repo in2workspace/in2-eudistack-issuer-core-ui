@@ -1,13 +1,14 @@
+import { mockCredentialCertification, mockCredentialEmployee, mockGxLabel } from './../../../core/mocks/details-mocks';
 import { inject, Injectable, signal } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
-import { EMPTY, from, Observable, Observer, switchMap, take, tap } from 'rxjs';
+import { EMPTY, from, Observable, Observer, of, switchMap, take, tap } from 'rxjs';
 import { CredentialProcedureService } from 'src/app/core/services/credential-procedure.service';
 import { buildFormFromSchema, FormSchemaByType, getFormDataByType, getFormSchemaByType } from '../utils/credential-details-utils';
 import { DialogWrapperService } from 'src/app/shared/components/dialog/dialog-wrapper/dialog-wrapper.service';
 import { TranslateService } from '@ngx-translate/core';
 import { Router } from '@angular/router';
 import { DialogData } from 'src/app/shared/components/dialog/dialog.component';
-import { CredentialStatus, CredentialType, LEARCredentialDataDetails } from 'src/app/core/models/entity/lear-credential';
+import { CredentialFormData, CredentialStatus, CredentialType, LEARCredential, LEARCredentialDataDetails } from 'src/app/core/models/entity/lear-credential';
 import { CredentialDetailsFormSchema } from 'src/app/core/models/entity/lear-credential-details-schemas';
 
 @Injectable() //provided in component
@@ -37,11 +38,17 @@ export class CredentialDetailsService {
   }
 
   public loadCredentialDetails(): Observable<LEARCredentialDataDetails> {
-    return this.credentialProcedureService
-      .getCredentialProcedureById(this.procedureId$())
-      .pipe(
-        take(1),
-      tap(data=>{
+    // todo restore
+    // return this.credentialProcedureService
+    //   .getCredentialProcedureById(this.procedureId$())
+    //   .pipe(
+    //     take(1),
+    //   tap(data=>{
+    //     this.credentialDetailsData$.set(data);
+    //     this.credentialStatus$.set(data.credential_status);
+    //   }));
+    return of(mockGxLabel).pipe(
+        tap(data=>{
         this.credentialDetailsData$.set(data);
         this.credentialStatus$.set(data.credential_status);
       }));
@@ -66,7 +73,28 @@ export class CredentialDetailsService {
 
     const credential = data.credential.vc;
 
+    this.setCredentialBasicInfo(credential);
 
+    const type = this.credentialType$();
+    
+    if(!type){
+       throw new Error(`No supported credential type found in: ${credential}`);
+    }
+    
+    const schema: CredentialDetailsFormSchema = getFormSchemaByType(type);
+
+    const formData: CredentialFormData = getFormDataByType(credential, type);
+
+  
+    const builtForm: FormGroup<any> = buildFormFromSchema(this.fb, schema, formData);
+    builtForm.disable();
+
+    this.credentialDetailsFormSchema$.set(schema);
+    this.credentialDetailsForm$.set(builtForm);
+
+  }
+
+  public setCredentialBasicInfo(credential: LEARCredential): void{
     const credentialValidFrom = credential.validFrom;
     this.credentialValidFrom$.set(credentialValidFrom);
 
@@ -81,18 +109,6 @@ export class CredentialDetailsService {
     }
 
     this.credentialType$.set(type);
-    
-    const schema = getFormSchemaByType(type);
-
-    const formData = getFormDataByType(credential, type);
-
-  
-    const builtForm = buildFormFromSchema(this.fb, schema, formData);
-    builtForm.disable();
-
-    this.credentialDetailsFormSchema$.set(schema);
-    this.credentialDetailsForm$.set(builtForm);
-
   }
 
 

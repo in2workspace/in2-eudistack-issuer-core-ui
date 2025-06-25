@@ -1,6 +1,6 @@
-import { CredentialDetailsFormFieldSchema, CredentialDetailsFormSchema, LearCredentialEmployeeDetailsFormSchema, LearCredentialMachineDetailsFormSchema, VerifiableCertificationDetailsFormSchema } from '../../../core/models/entity/lear-credential-details-schemas';
+import { CredentialDetailsFormFieldSchema, CredentialDetailsFormSchema, GxLabelCredentialDetailsFormSchema, LearCredentialEmployeeDetailsFormSchema, LearCredentialMachineDetailsFormSchema, VerifiableCertificationDetailsFormSchema } from '../../../core/models/entity/lear-credential-details-schemas';
 import { FormBuilder, FormGroup, FormControl } from '@angular/forms';
-import { CredentialFormData, CredentialType, Power, LEARCredential, LEARCredentialEmployee, LEARCredentialMachine, VerifiableCertification } from 'src/app/core/models/entity/lear-credential';
+import { CredentialFormData, CredentialType, Power, LEARCredential, LEARCredentialEmployee, LEARCredentialMachine, VerifiableCertification, GxLabelCredential } from 'src/app/core/models/entity/lear-credential';
 
 type ComplianceEntry = {
   id: string;
@@ -50,13 +50,30 @@ export const FormDataExtractorByType: Record<CredentialType, (credential: LEARCr
       product: c.credentialSubject.product,
       compliance: complianceEntries,
     };
+  },
+
+  GxLabelCredential: (credential) => {
+    const c = credential as GxLabelCredential;
+
+    return {
+      issuer: { id: c.issuer},
+      basic: {
+        id: c.id,
+        "gx:labelLevel": c.credentialSubject['gx:labelLevel'],
+        "gx:engineVersion": c.credentialSubject['gx:engineVersion'],
+        "gx:rulesVersion": c.credentialSubject['gx:rulesVersion']
+      },
+      "gx:compliantCredentials": c.credentialSubject['gx:compliantCredentials'],
+      "gx:validatedCriteria": c.credentialSubject['gx:validatedCriteria']
+    }
   }
 };
 
 export const FormSchemaByType: Record<CredentialType, CredentialDetailsFormSchema> = {
     LEARCredentialEmployee: LearCredentialEmployeeDetailsFormSchema,
     LEARCredentialMachine: LearCredentialMachineDetailsFormSchema,
-    VerifiableCertification: VerifiableCertificationDetailsFormSchema
+    VerifiableCertification: VerifiableCertificationDetailsFormSchema,
+    GxLabelCredential: GxLabelCredentialDetailsFormSchema
   };
   
   export function getFormSchemaByType(type: CredentialType): CredentialDetailsFormSchema {
@@ -77,10 +94,14 @@ export const FormSchemaByType: Record<CredentialType, CredentialDetailsFormSchem
     for (const key in schema) {
       const field = schema[key];
   
-      if (shouldSkipIssuer(key, field, data)) continue;
-  
+      if(shouldSkip(key, field, data)) continue;
+
       if (isComplianceGroup(key, field)) {
         group[key] = buildComplianceGroup(fb, data?.[key]);
+      } else if(isGxValidatedCriteriaGroup(key, field)) {
+        group[key] = buildValidatedCriteriaGroup(fb, data?.[key]);
+      } else if(isGxCompliantCredentialsGroup(key, field)){
+        group[key] = buildCompliantCredentialsGroup(fb, data?.[key]);
       } else if (isPowerGroup(key, field)) {
         group[key] = buildPowerGroup(fb, data?.[key]);
       } else if (field.type === 'control') {
@@ -92,14 +113,22 @@ export const FormSchemaByType: Record<CredentialType, CredentialDetailsFormSchem
   
     return fb.group(group);
   }
-  
-  export function shouldSkipIssuer(key: string, field: CredentialDetailsFormFieldSchema, data: any): boolean {
+
+  export function shouldSkip(key: string, field: CredentialDetailsFormFieldSchema, data: any): boolean {
     return (
       key === 'issuer' &&
       field.type === 'group' &&
-      (!data?.issuer?.id || data.issuer.id === '')
+      (!data.issuer && (!data?.issuer?.id || data.issuer.id === ''))
     );
   }
+  export function isGxValidatedCriteriaGroup(key: string, field: CredentialDetailsFormFieldSchema){
+    return key === 'gx:validatedCriteria' && field.type === 'group';
+  }
+
+  export function isGxCompliantCredentialsGroup(key: string, field: CredentialDetailsFormFieldSchema){
+    return key === 'gx:compliantCredentials' && field.type === 'group';
+  }
+  
   
   export function isComplianceGroup(key: string, field: CredentialDetailsFormFieldSchema): boolean {
     return key === 'compliance' && field.type === 'group';
@@ -122,6 +151,67 @@ export const FormSchemaByType: Record<CredentialType, CredentialDetailsFormSchem
     }
   
     return fb.group(group);
+  }
+
+// todo set as array for showing as table
+export function buildCompliantCredentialsGroup(
+  fb: FormBuilder,
+  compliantCredentials: any
+): FormGroup {
+  if (!Array.isArray(compliantCredentials)) {
+    throw new Error('compliantCredentials must be an array of objects');
+  }
+
+  const groupConfig: { [key: string]: FormGroup } = {};
+
+  compliantCredentials.forEach((cred, idx) => {
+    if (typeof cred !== 'object' || cred === null) {
+      throw new Error(`compliantCredentials[${idx}] must be an object`);
+    }
+
+    const { id, type, 'gx:digestSRI': gxDigestSRI } = cred as {
+      id: any;
+      type: any;
+      'gx:digestSRI': any;
+    };
+
+    if (typeof id !== 'string') {
+      throw new Error(`compliantCredentials[${idx}].id must be a string`);
+    }
+    if (typeof type !== 'string') {
+      throw new Error(`compliantCredentials[${idx}].type must be a string`);
+    }
+    if (typeof gxDigestSRI !== 'string') {
+      throw new Error(
+        `compliantCredentials[${idx}]['gx:digestSRI'] must be a string`
+      );
+    }
+
+    groupConfig[id] = fb.group({
+      type: new FormControl(type),
+      gxDigestSRI: new FormControl(gxDigestSRI),
+    });
+  });
+
+  return fb.group(groupConfig);
+}
+
+  export function buildValidatedCriteriaGroup(fb: FormBuilder, validatedCriteria: any): FormGroup {
+  
+    if (!Array.isArray(validatedCriteria)) {
+      throw new Error('validatedCriteria must be an array of strings');
+    }
+
+    const groupConfig: { [key: string]: FormControl } = {};
+
+    validatedCriteria.forEach((value, index) => {
+      if (typeof value !== 'string') {
+        throw new Error(`validatedCriteria[${index}] must be a string`);
+      }
+      groupConfig[index.toString()] = fb.control(value);
+    });
+  
+    return fb.group(groupConfig);
   }
   
   export function buildPowerGroup(fb: FormBuilder, powerData: any): FormGroup {

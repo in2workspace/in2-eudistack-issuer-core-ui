@@ -12,7 +12,7 @@ export const mockCredentialEmployee: LEARCredentialDataDetails = {
     jti: 'jti-emp-123',
     vc: {
       id: 'cred-emp',
-      type: ['LEARCredentialEmployee'],
+      type: ['VerifiableCredential', 'LEARCredentialEmployee'],
       description: 'Mock employee credential',
       issuer: {
         id: 'issuer-emp',
@@ -187,6 +187,62 @@ export const mockCredentialCertification: LEARCredentialDataDetails = {
         firstName: 'Audrey',
         lastName: 'Test',
         country: 'FR'
+      },
+      validFrom: '2024-01-01',
+      validUntil: '2025-01-01',
+      signer: {
+        commonName: 'Signer CERT',
+        country: 'FR',
+        emailAddress: 'signer@cert.com',
+        organization: 'SignerCertOrg',
+        organizationIdentifier: 'SIGN-CERT',
+        serialNumber: 'SN-CERT-123'
+      }
+    }
+  }
+};
+
+export const mockGxLabel: LEARCredentialDataDetails = {
+  procedure_id: 'mock-procedure-gx-label',
+  credential_status: 'PEND_DOWNLOAD',
+  credential: {
+    sub: null,
+    nbf: '1714675200',
+    iss: 'issuer-cert',
+    exp: '1735689600',
+    iat: '1714675200',
+    jti: 'jti-cert-123',
+    vc: {
+      id: 'cred-cert',
+      type: ['VerifiableCredential', 'GxLabelCredential'],
+      issuer: "issueeeeeeer",
+ credentialSubject: {
+        id: 'urn:uuid:123e4567-e89b-12d3-a456-426614174000',
+        "gx:labelLevel": "Gold",
+        "gx:engineVersion": "2.1.0",
+        "gx:rulesVersion": "2025-06-01",
+        "gx:compliantCredentials": [
+          {
+            id: 'urn:uuid:223e4567-e89b-12d3-a456-426614174001',
+            type: 'Employee Credential A',
+            "gx:digestSRI": 'did:elsi:EMP-ORG1',
+          },
+          {
+            id: 'urn:uuid:aaae4567-e89b-12d3-a456-426614174001',
+            type: 'Employee Credential B',
+            "gx:digestSRI": 'did:elsi:EMP-ORG2',
+          },
+          {
+            id: 'urn:uuid:bbbe4567-e89b-12d3-a456-426614174001',
+            type: 'Employee Credential C',
+            "gx:digestSRI": 'did:elsi:EMP-ORG3',
+          }
+        ],
+        "gx:validatedCriteria": [
+          'criterion-identity',
+          'criterion-authenticity',
+          'criterion-integrity'
+        ]
       },
       validFrom: '2024-01-01',
       validUntil: '2025-01-01',

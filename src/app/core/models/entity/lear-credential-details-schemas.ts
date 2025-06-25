@@ -1,5 +1,7 @@
 // --- Form Schemas ---
 
+import { GxLabelCredential } from "./lear-credential";
+
 export type CredentialDetailsFormFieldSchema = {
     type: 'control' | 'group';
     display?: 'main' | 'side'; //should it be displayed in the main space or as a side card?
@@ -132,5 +134,35 @@ export const LearCredentialEmployeeDetailsFormSchema: CredentialDetailsFormSchem
       type: 'group',
       display: 'main',
       fields: {} //content will be set dynamically
+    },
+  };
+
+  export const GxLabelCredentialDetailsFormSchema: CredentialDetailsFormSchema = {
+    basic: {
+      type: 'group',
+      display: 'main',
+      fields: {
+        id: { type: 'control' },
+        "gx:labelLevel": { type: 'control' },
+        "gx:engineVersion": { type: 'control' },
+        "gx:rulesVersion": { type: 'control' },
+      }
+    },
+    "gx:compliantCredentials":{
+      type: 'group',
+      display: 'main',
+      fields: {} //will be set dynamically
+    },
+    "gx:validatedCriteria":{
+      type: 'group',
+      display: 'main',
+      fields: {} //will be set dynamically
+    },
+    issuer: {
+      type: 'group',
+      display: 'side',
+      fields: {
+        id: { type: 'control' }
+      },
     },
   };
