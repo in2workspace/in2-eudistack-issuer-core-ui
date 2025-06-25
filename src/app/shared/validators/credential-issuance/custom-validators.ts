@@ -23,6 +23,10 @@ export class CustomValidators {
       /^(([0-9a-fA-F]{1,4}:){7}([0-9a-fA-F]{1,4}|:)|::1)$/;
     return (control: AbstractControl): ExtendedValidatorErrors | null => {
       const value = control.value;
+
+      if (value == null || value === '') {
+        return null;
+      }
       if (typeof value !== 'string') return { isIP: { value: 'Value must be a string' }};
       return ipv4.test(value) || ipv6.test(value) ? null : { isIP: {value: 'error.form.ip' }};
     };
