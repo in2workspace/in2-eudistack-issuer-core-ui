@@ -9,7 +9,7 @@
         {{ "credentialIssuance.hint." + fieldSchema.hint | translate }}
       </div>
     }
-    @if (fieldSchema.type === 'group' && groupFields$()) {
+    @if (fieldSchema.type === 'group' && fieldSchema.groupFields) {
       <!-- Per als grups, mostrem el FormGroup específic del camp -->
       <mat-card class="mb-4">
         <mat-card-content [formGroup]="group$()!">

@@ -1,4 +1,4 @@
-import { Component, computed, input } from '@angular/core';
+import { Component, computed, input, Signal } from '@angular/core';
 import { FormGroup, FormControl, AbstractControl } from '@angular/forms';
 import { NgIf, NgFor, AsyncPipe, KeyValuePipe } from '@angular/common';
 import { ReactiveFormsModule } from '@angular/forms';
@@ -39,24 +39,21 @@ export class DynamicFieldComponent {
   public fieldName$ = input.required<string>();
 
 
-  public parentFormGroup$ = computed(() => this.abstractControl$() as FormGroup);
+  public parentFormGroup$: Signal<FormGroup<any>> = computed(() => this.abstractControl$() as FormGroup);
   
-  public control$ = computed(() => {
+  public control$: Signal<FormControl<any> | null> = computed(() => {
+    if(this.fieldSchema$().type === 'group') return null;
+
     const parent = this.parentFormGroup$();
     return parent ? parent.get(this.fieldName$()) as FormControl | null : null;
   });
   
-  public group$ = computed(() => {
+  public group$: Signal<FormGroup<any> | null> = computed(() => {
+    if(this.fieldSchema$().type === 'control') return null;
+
     const parent = this.parentFormGroup$();
     return parent ? parent.get(this.fieldName$()) as FormGroup | null : null;
   });
-  public groupFields$ = computed(() =>
-    Object.entries(((this.fieldSchema$().type === 'group') && (this.fieldSchema$().groupFields)) ?? {}).map(([key, value]) => ({
-      key,
-      value,
-    }))
-  );
-
 
   public getErrorMessage(control: AbstractControl | null): string {
     if (!control || !control.errors) return "";

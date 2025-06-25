@@ -3,9 +3,13 @@ import { ReactiveFormsModule, FormControl, FormGroup, AbstractControl } from '@a
 import { ComponentRef, signal, Signal } from '@angular/core';
 import { DynamicFieldComponent } from './dynamic-field.component';
 import { CredentialIssuanceFormFieldSchema } from 'src/app/core/models/schemas/lear-credential-issuance-schemas';
+import { NoopAnimationsModule } from '@angular/platform-browser/animations';
+import { TranslateModule } from '@ngx-translate/core';
 
-  const mockGroup = new FormGroup({prop: new FormControl('value')});
-  const mockControl = new FormControl('field-name');
+const mockControl = new FormControl('field-name');
+const mockGroup = new FormGroup({prop: mockControl});
+const mockControlSchema = { type: 'control' };
+const mockGroupSchema = { type: 'group', fields: [{key:'fieldOne'}] };
 
 describe('DynamicFieldComponent', () => {
   let component: DynamicFieldComponent;
@@ -16,7 +20,8 @@ describe('DynamicFieldComponent', () => {
     await TestBed.configureTestingModule({
       imports: [
         DynamicFieldComponent,
-        ReactiveFormsModule
+        ReactiveFormsModule,
+        TranslateModule.forRoot(), NoopAnimationsModule
       ],
     }).compileComponents();
 
@@ -25,7 +30,8 @@ describe('DynamicFieldComponent', () => {
     componentRef = fixture.componentRef;
 
     componentRef.setInput('abstractControl$', mockGroup);
-    componentRef.setInput('fieldName$', mockControl);
+    componentRef.setInput('fieldName$', 'prop');
+    componentRef.setInput('fieldSchema$', mockControlSchema as any);
   });
 
   it('should create', () => {
@@ -37,78 +43,75 @@ describe('DynamicFieldComponent', () => {
       expect(component.parentFormGroup$()).toBe(mockGroup);
     });
 
+    it('control$() hauria de retornar null si el tipus és group', () => {
+      componentRef.setInput('fieldSchema$', mockGroupSchema);
+      expect(component.control$()).toBe(null);
+    });
+
     it('control$() hauria de retornar el control de formgroup', () => {
       expect(component.control$()).toBe(mockControl);
     });
-    it('control$() retorna un FormControl dins del FormGroup', () => {
-      const ctrl = new FormControl('value');
-      const group = new FormGroup({ test: ctrl });
 
-      (component as any).abstractControl$.set(group);
-      (component as any).fieldName$.set('test');
-
-      expect(component.control$()).toBe(ctrl);
+    it('control$() hauria de retornar null si formgroup és nul', () => {
+      componentRef.setInput('abstractControl$', null);
+      expect(component.control$()).toBe(null);
     });
 
-    it('group$() retorna un FormGroup fill dins del FormGroup', () => {
-      const subgroup = new FormGroup({});
-      const group = new FormGroup({ grp: subgroup });
-
-      (component as any).abstractControl$ = signal(group) as Signal<AbstractControl>;
-      (component as any).fieldName$ = signal('grp') as Signal<string>;
-      (component as any).fieldSchema$ = signal({ type: 'text' } as any);
-
-      expect(component.group$()).toBe(subgroup);
-      expect(component.control$()).toBeNull();
+    it("group$() hauria de retornar null si el type és control", () => {
+      expect(component.group$()).toBe(null);
     });
 
-    it('groupFields$() retorna els camps d’un esquema de tipus "group"', () => {
-      const schema = {
-        type: 'group',
-        groupFields: {
-          a: { type: 'text' },
-          b: { type: 'number' }
-        }
-      } as any;
+    it("group$() hauria de retornar null if parent group is null", () => {
+      componentRef.setInput('fieldSchema$', mockGroupSchema);
+      componentRef.setInput('abstractControl$', null);
+      expect(component.group$()).toBe(null);
+    });
 
-      (component as any).fieldSchema$ = signal(schema);
-      (component as any).abstractControl$ = signal(new FormGroup({})) as Signal<AbstractControl>;
-      (component as any).fieldName$ = signal('') as Signal<string>;
-
-      const fields = component.groupFields$();
-      expect(fields).toEqual([
-        { key: 'a', value: { type: 'string' } },
-        { key: 'b', value: { type: 'number' } }
-      ]);
+    it("group$() hauria d'actualitzar-se", () => {
+      componentRef.setInput('fieldSchema$', mockGroupSchema);
+      expect(component.group$()).toBe(mockControl);
     });
   });
 
-  describe('helpers d’errors', () => {
-    it('getErrorMessage() retorna el valor d’error per defecte', () => {
-      const ctrl = { errors: { required: { value: 'Camp obligatori' } } } as any;
-      expect(component.getErrorMessage(ctrl)).toBe('Camp obligatori');
-    });
-
-    it('getErrorMessage() amb control null o sense errors retorna cadena buida', () => {
+  //todo getters
+    describe('getErrorMessage', () => {
+    it('should return empty string if control is null', () => {
       expect(component.getErrorMessage(null)).toBe('');
-      expect(component.getErrorMessage({} as AbstractControl)).toBe('');
     });
 
-    it('getErrorsArgs() retorna els arguments traduïts correctament', () => {
-      const ctrl = {
-        errors: {
-          custom: {
-            value: 'Err',
-            args: ['uno', 'dos']
-          }
-        }
-      } as any;
-      expect(component.getErrorsArgs(ctrl)).toEqual({ '0': 'uno', '1': 'dos' });
+    it('should return empty string if control has no errors', () => {
+      const ctrl = new FormControl();
+      expect(component.getErrorMessage(ctrl)).toBe('');
     });
 
-    // it('getErrorsArgs() amb control null o sense errors retorna objecte buit', () => {
-    //   expect(component.getErrorsArgs(null)).toEqual({});
-    //   expect(component.getErrorsArgs({ errors: {} } as any)).toEqual({});
-    // });
+    it('should return the value property of the first error', () => {
+      const ctrl = new FormControl();
+      ctrl.setErrors({ customError: { value: 'Error occurred', args: [] } });
+      expect(component.getErrorMessage(ctrl)).toBe('Error occurred');
+    });
   });
+
+  describe('getErrorsArgs', () => {
+    it('should return empty object if control is null', () => {
+      expect(component.getErrorsArgs(null)).toEqual({});
+    });
+
+    it('should return empty object if control has no errors', () => {
+      const ctrl = new FormControl();
+      expect(component.getErrorsArgs(ctrl)).toEqual({});
+    });
+
+    it('should return empty object if error has no args', () => {
+      const ctrl = new FormControl();
+      ctrl.setErrors({ err: { value: 'Error', args: [] } });
+      expect(component.getErrorsArgs(ctrl)).toEqual({});
+    });
+
+    it('should map args array to numeric keys in the returned object', () => {
+      const ctrl = new FormControl();
+      ctrl.setErrors({ err: { value: 'Error', args: ['first', 'second'] } });
+      expect(component.getErrorsArgs(ctrl)).toEqual({ '0': 'first', '1': 'second' });
+    });
+  });
+
 });
