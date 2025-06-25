@@ -32,7 +32,7 @@ export const LearCredentialEmployeeDetailsFormSchema: CredentialDetailsFormSchem
     },
     mandator: {
       type: 'group',
-      display: 'side',
+      display: 'main',
       fields: commonMandatorFields,
     },
     issuer: {
@@ -70,7 +70,7 @@ export const LearCredentialEmployeeDetailsFormSchema: CredentialDetailsFormSchem
     },
     mandator: {
       type: 'group',
-      display: 'side',
+      display: 'main',
       fields: commonMandatorFields,
     },
     issuer: {
