@@ -165,13 +165,13 @@ export function getLearCredentialMachineIssuanceFormSchemas(
             type: 'control',
             controlType: 'text',
             validators: [
-              { name: 'required' },
               { name: 'isIP' }
             ]
           }
         ]
       },
       // MANDATOR
+      //todo add email?
       {
         key: 'mandator',
         type: 'group',
