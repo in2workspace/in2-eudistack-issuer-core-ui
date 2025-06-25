@@ -332,7 +332,8 @@
   "keys": {
     "title": "Private Key",
     "buttonText": "Generate Key",
-    "alert": "Make sure to copy this key."
+    "alert": "Make sure to copy this key.",
+    "tooltip": "Your private key is a secret that lets you sign and prove ownership of your credential. Without it you can’t use your credential. Store it safely, back it up and never share it."
   }
 }
 

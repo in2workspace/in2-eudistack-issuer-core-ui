@@ -1,5 +1,16 @@
+.title-container{
+    display: flex;
+    gap: 12px;
+    padding-bottom: 20px;
+}
+
 h2{
-    margin-top: 0px;
+    margin: 0px;
+}
+
+.tooltip{
+    display: flex;
+    align-items:center;
 }
 
 .main-container{

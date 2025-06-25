@@ -1,5 +1,11 @@
 @let displayedKeys = displayedKeys$();
-<h2>{{ "keys.title" | translate }}</h2>
+<div class="title-container">
+    <h2>{{ "keys.title" | translate }}</h2>
+    <span [matTooltip]="'keys.tooltip' | translate" matTooltipPosition="after" matTooltipclass="tooltip" matTooltipeShowDelay="500" 
+    matTooltipHideDelay="30000" class="tooltip">
+        <mat-icon>help_outline</mat-icon>
+    </span>
+</div>
 <div class="main-container">
     <button type="button" matButton mat-raised-button color="primary" class="generate-button" (click)="generateKeys()">{{ "keys.buttonText" | translate }}</button>
     @if(displayedKeys){

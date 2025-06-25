@@ -4,11 +4,12 @@ import { TranslatePipe } from '@ngx-translate/core';
 import { MatButton } from '@angular/material/button';
 import { KeyGeneratorService, KeyState } from '../../services/key-generator.service';
 import { MatIcon } from '@angular/material/icon';
+import { MatTooltip } from '@angular/material/tooltip';
 
 @Component({
   selector: 'app-key-generator',
   standalone: true,
-  imports: [KeyValuePipe, TranslatePipe, MatButton, MatIcon],
+  imports: [KeyValuePipe, MatButton, MatIcon, MatTooltip, TranslatePipe],
   providers: [KeyGeneratorService],
   templateUrl: './key-generator.component.html',
   styleUrl: './key-generator.component.scss'
