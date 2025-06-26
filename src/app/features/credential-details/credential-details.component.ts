@@ -35,10 +35,10 @@ export class CredentialDetailsComponent implements OnInit {
   public credentialValidUntil$: WritableSignal<string>
   public credentialType$: WritableSignal<DetailsCredentialType | undefined>;
   public credentialStatus$: WritableSignal<CredentialStatus | undefined>
-  // credentialSubject data
-  public mainTemplateModel$: WritableSignal<MappedExtendedDetailsField[] | undefined>;
+  public mainTemplateModel$: WritableSignal<MappedExtendedDetailsField[] | undefined>; // credentialSubject data
   public sideTemplateModel$: WritableSignal<MappedExtendedDetailsField[] | undefined>;
-    public showReminderButton$ = computed(() => {
+ 
+  public showReminderButton$ = computed(() => {
     return (
       (
         this.credentialStatus$() === 'WITHDRAWN' ||
@@ -48,7 +48,7 @@ export class CredentialDetailsComponent implements OnInit {
       this.credentialType$() === 'LearCredentialEmployee'
     );
   });
-
+  
   public showSignCredentialButton$ = computed(()=>{
     return (this.credentialStatus$() === 'PEND_SIGNATURE') && 
     (this.credentialType$() === 'LearCredentialEmployee' || this.credentialType$() === 'VerifiableCertification');

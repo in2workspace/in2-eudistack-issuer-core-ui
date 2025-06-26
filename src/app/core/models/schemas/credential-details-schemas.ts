@@ -81,7 +81,6 @@ export const LearCredentialEmployeeDetailsTemplateSchema: TemplateSchema = {
       type: 'group',
       value: [
         { key: 'name', type: 'key-value', value: (c: LEARCredentialEmployee) => c.issuer?.commonName },
-        { key: 'email', type: 'key-value', value: (c: LEARCredentialEmployee) => c.issuer?.commonName },
         { key: 'serialNumber', type: 'key-value', value: (c: LEARCredentialEmployee) => c.issuer?.serialNumber },
         { key: 'organization', type: 'key-value', value: (c: LEARCredentialEmployee) => c.issuer?.organization  },
         { key: 'organizationId', type: 'key-value', value: (c: LEARCredentialEmployee) => c.issuer?.organizationIdentifier },
@@ -316,7 +315,7 @@ export const GxLabelCredentialDetailsTemplateSchema: TemplateSchema = {
         if(!isGxLabel(c)) return [];
         const criteria = c.credentialSubject['gx:validatedCriteria'] ?? [];
         const mappedCriteria: DetailsKeyValueField[] = criteria.map(c => {
-          return { type: 'key-value', value: c} 
+          return { type: 'key-value', value: c } 
         });
         return mappedCriteria;
       }

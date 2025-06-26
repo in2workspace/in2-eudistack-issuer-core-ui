@@ -1,3 +1,4 @@
+import { mockCredentialCertification, mockCredentialMachine } from './../../../core/mocks/details-mocks';
 import { inject, Injectable, Injector, signal, WritableSignal } from '@angular/core';
 import { EMPTY, from, Observable, of, switchMap, tap } from 'rxjs';
 import { CredentialProcedureService } from 'src/app/core/services/credential-procedure.service';
@@ -7,7 +8,7 @@ import { Router } from '@angular/router';
 import { DialogData } from 'src/app/shared/components/dialog/dialog.component';
 import { CredentialStatus, LEARCredential, LEARCredentialDataDetails } from 'src/app/core/models/entity/lear-credential';
 import { ComponentPortal } from '@angular/cdk/portal';
-import { mockCredentialEmployee } from 'src/app/core/mocks/details-mocks';
+import { mockCredentialEmployee, mockGxLabel } from 'src/app/core/mocks/details-mocks';
 import { DetailsCredentialType, MappedExtendedDetailsField, TemplateSchema, LearCredentialEmployeeDetailsTemplateSchema, LearCredentialMachineDetailsTemplateSchema, VerifiableCertificationDetailsTemplateSchema, GxLabelCredentialDetailsTemplateSchema, MappedTemplateSchema, DetailsField, MappedDetailsField, CustomDetailsField, DetailsKeyValueField, DetailsGroupField, MappedDetailsGroupField, MappedExtendedDetailsGroupField } from 'src/app/core/models/schemas/credential-details-schemas';
 
 @Injectable() //provided in component
@@ -46,13 +47,7 @@ export class CredentialDetailsService {
 
           const schema = this.getSchemaByType(type);
           const mappedSchema = this.mapSchemaValues(schema, vc);
-          const mappedSideSchema = mappedSchema.side;
-          const mappedMainSchema = mappedSchema.main;
-          const processedSideSchema = this.processFields(mappedSideSchema, injector);
-          const processedMainSchema = this.processFields(mappedMainSchema, injector);
-          
-          this.mainTemplateModel$.set(processedMainSchema);
-          this.sideTemplateModel$.set(processedSideSchema);      
+          this.setTemplateModels(mappedSchema, injector);
       });
   }
 
@@ -103,16 +98,16 @@ export class CredentialDetailsService {
     );
   }
 
-    private loadCredentailDetails(): Observable<LEARCredentialDataDetails> {
-      // todo restore
-      // return this.credentialProcedureService.getCredentialProcedureById(this.procedureId$())
-      // return of(mockCredentialEmployee).pipe(take(1));
-        return of(mockCredentialEmployee);
-    }
+  private loadCredentailDetails(): Observable<LEARCredentialDataDetails> {
+    // todo restore
+    // return this.credentialProcedureService.getCredentialProcedureById(this.procedureId$())
+    // return of(mockCredentialEmployee).pipe(take(1));
+      return of(mockGxLabel);
+  }
 
-    private getSchemaByType(credType: DetailsCredentialType): TemplateSchema{
-      return this.schemasByTypeMap[credType];
-    }
+  private getSchemaByType(credType: DetailsCredentialType): TemplateSchema{
+    return this.schemasByTypeMap[credType];
+  }
       
   private getCredentialType(cred: LEARCredential): DetailsCredentialType{
     const type = cred.type.find((t): t is DetailsCredentialType => t in this.schemasByTypeMap);
@@ -137,22 +132,32 @@ export class CredentialDetailsService {
       field: DetailsField,
       credential: LEARCredential
     ): MappedDetailsField {
-      // Helper per processar .custom si existeix
+      // Helper to check if there is .custom
       const mapCustom = (custom: CustomDetailsField): CustomDetailsField => {
         const rawVal = custom.value;
-        const computedVal = typeof rawVal === 'function'
+        let computedVal = typeof rawVal === 'function'
           ? rawVal(credential)
           : rawVal;
+        if(!computedVal){
+          console.error('Value not found in custom field: ');
+          console.error(custom);
+          computedVal = "";
+        }
         return { ...custom, value: computedVal };
       };
   
-      // 1) Si és key-value, mapegem el .value i (si hi ha) el .custom
       if (field.type === 'key-value') {
         const kv = field as DetailsKeyValueField;
         const raw = kv.value;
-        const computed = typeof raw === 'function'
+        let computed = typeof raw === 'function'
           ? raw(credential)
           : raw;
+
+        if(!computed){
+          console.error('Value not found in custom field: ');
+          console.error(computed);
+          computed = "";
+        }
   
         return {
           ...kv,
@@ -160,21 +165,22 @@ export class CredentialDetailsService {
           custom: kv.custom ? mapCustom(kv.custom) : undefined
         };
       }
-  
-      // 2) Si és group, primer normalitzem el .value a DetailsField[]
-      const grp = field as DetailsGroupField;
+
+      const grp = field;
       const rawGroup = grp.value;
       const children: DetailsField[] =
         typeof rawGroup === 'function'
           ? rawGroup(credential)
           : rawGroup;
+      if(!children){
+        console.error('Could not find children in group: ');
+        console.error(grp);
+      }
   
-      // 3) Recorrem recursivament els sub-camps
       const mappedChildren = children.map((sub: DetailsField) =>
         this.mapField(sub, credential)
       );
   
-      // 4) I tornem a construir el grup, mapejant custom si cal
       return {
         ...grp,
         value: mappedChildren,
@@ -198,7 +204,8 @@ export class CredentialDetailsService {
 
   }
 
-  private processFields(fields: MappedDetailsField[], injector: Injector): MappedExtendedDetailsField[] {
+  // add "portal" prop to fields
+  private extendFields(fields: MappedDetailsField[], injector: Injector): MappedExtendedDetailsField[] {
       return fields.map((field) => {
         let extended: MappedExtendedDetailsField = { ...field };
   
@@ -220,12 +227,20 @@ export class CredentialDetailsService {
         if (field.type === 'group') {
           const groupField = field as MappedDetailsGroupField;
           extended = { ...extended } as MappedExtendedDetailsGroupField;
-          extended.value = this.processFields(groupField.value, injector);
+          extended.value = this.extendFields(groupField.value, injector);
         }
   
         return extended;
       });
     }
+
+  private setTemplateModels(schema: MappedTemplateSchema, injector: Injector){
+    const extendedMainSchema = this.extendFields(schema.main, injector);
+    const extendedSideSchema = this.extendFields(schema.side, injector);
+    
+    this.mainTemplateModel$.set(extendedMainSchema);
+    this.sideTemplateModel$.set(extendedSideSchema);     
+  }
 
   private executeCredentialAction(
     action: (procedureId: string) => Observable<void>,
