@@ -1,30 +1,28 @@
-import { mockCredentialCertification, mockCredentialEmployee, mockGxLabel } from './../../../core/mocks/details-mocks';
-import { inject, Injectable, signal } from '@angular/core';
-import { FormBuilder, FormGroup } from '@angular/forms';
-import { EMPTY, from, Observable, Observer, of, switchMap, take, tap } from 'rxjs';
+import { inject, Injectable, Injector, signal, WritableSignal } from '@angular/core';
+import { EMPTY, from, Observable, of, switchMap, tap } from 'rxjs';
 import { CredentialProcedureService } from 'src/app/core/services/credential-procedure.service';
-import { buildFormFromSchema, FormSchemaByType, getFormDataByType, getFormSchemaByType } from '../utils/credential-details-utils';
 import { DialogWrapperService } from 'src/app/shared/components/dialog/dialog-wrapper/dialog-wrapper.service';
 import { TranslateService } from '@ngx-translate/core';
 import { Router } from '@angular/router';
 import { DialogData } from 'src/app/shared/components/dialog/dialog.component';
-import { CredentialFormData, CredentialStatus, CredentialType, LEARCredential, LEARCredentialDataDetails } from 'src/app/core/models/entity/lear-credential';
-import { CredentialDetailsFormSchema } from 'src/app/core/models/entity/lear-credential-details-schemas';
+import { CredentialStatus, LEARCredential, LEARCredentialDataDetails } from 'src/app/core/models/entity/lear-credential';
+import { ComponentPortal } from '@angular/cdk/portal';
+import { mockGxLabel } from 'src/app/core/mocks/details-mocks';
+import { DetailsCredentialType, MappedExtendedDetailsField, TemplateSchema, LearCredentialEmployeeDetailsTemplateSchema, LearCredentialMachineDetailsTemplateSchema, VerifiableCertificationDetailsTemplateSchema, GxLabelCredentialDetailsTemplateSchema, MappedTemplateSchema, DetailsField, MappedDetailsField, CustomDetailsField, DetailsKeyValueField, DetailsGroupField, MappedDetailsGroupField, MappedExtendedDetailsGroupField } from 'src/app/core/models/schemas/credential-details-schemas';
 
 @Injectable() //provided in component
 export class CredentialDetailsService {
   public credentialValidFrom$ = signal('');
   public credentialValidUntil$ = signal('');
-  public credentialType$ = signal<CredentialType | undefined>(undefined);
-  public credentialDetailsData$ = signal<LEARCredentialDataDetails | undefined>(undefined);
-  public credentialDetailsForm$ = signal<FormGroup | undefined>(undefined);
-  public credentialDetailsFormSchema$ = signal<CredentialDetailsFormSchema | undefined>(undefined);
+  public credentialType$ = signal<DetailsCredentialType | undefined>(undefined);
   public procedureId$ = signal<string>('');
   public credentialStatus$ = signal<CredentialStatus | undefined>(undefined);
 
+  public sideTemplateModel$: WritableSignal<MappedExtendedDetailsField[] | undefined> = signal(undefined);
+  public mainTemplateModel$: WritableSignal<MappedExtendedDetailsField[] | undefined> = signal(undefined);
+
   private readonly credentialProcedureService = inject(CredentialProcedureService);
   private readonly dialog = inject(DialogWrapperService);
-  private readonly fb = inject(FormBuilder);
   private readonly router = inject(Router);
   private readonly translate = inject(TranslateService);
 
@@ -32,84 +30,156 @@ export class CredentialDetailsService {
     this.procedureId$.set(id);
   }
 
-  public loadCredentialDetailsAndForm(): void {  
-    this.loadCredentialDetails()
-      .subscribe(this.loadFormObserver);
+  public loadCredentialDetails(injector: Injector): void {  
+    this.loadDetailsModels().subscribe(data => {
+          const vc = data.credential.vc;
+          this.setCredentialBasicInfo(data);
+
+          const type = this.credentialType$();
+          if(!type) throw Error('No credential type found in credential.');
+
+          const schema = this.getSchemaByType(type);
+          const mappedSchema = this.mapSchemaValues(schema, vc);
+          const mappedSideSchema = mappedSchema.side;
+          const mappedMainSchema = mappedSchema.main;
+          const processedSideSchema = this.processFields(mappedSideSchema, injector);
+          const processedMainSchema = this.processFields(mappedMainSchema, injector);
+          
+          this.mainTemplateModel$.set(processedMainSchema);
+          this.sideTemplateModel$.set(processedSideSchema);      
+      });
   }
 
-  public loadCredentialDetails(): Observable<LEARCredentialDataDetails> {
+  public loadDetailsModels(): Observable<LEARCredentialDataDetails> {
     // todo restore
-    // return this.credentialProcedureService
-    //   .getCredentialProcedureById(this.procedureId$())
-    //   .pipe(
-    //     take(1),
-    //   tap(data=>{
-    //     this.credentialDetailsData$.set(data);
-    //     this.credentialStatus$.set(data.credential_status);
-    //   }));
-    return of(mockGxLabel).pipe(
-        tap(data=>{
-        this.credentialDetailsData$.set(data);
-        this.credentialStatus$.set(data.credential_status);
-      }));
+    // return this.credentialProcedureService.getCredentialProcedureById(this.procedureId$())
+    // return of(mockCredentialEmployee).pipe(take(1));
+      return of(mockGxLabel);
   }
 
-  private readonly loadFormObserver: Observer<LEARCredentialDataDetails> = {
-    next: () => {
-      this.loadForm();
-    },
-    error: (err: any) => {
-      console.error('Error loading credential detail', err);
-    },
-    complete: () => {}
+    public getSchemaByType(credType: DetailsCredentialType): TemplateSchema{
+      return this.schemasByTypeMap[credType];
+    }
+
+    private schemasByTypeMap: Record<DetailsCredentialType, TemplateSchema> = {
+      'LearCredentialEmployee': LearCredentialEmployeeDetailsTemplateSchema,
+      'LearCredentialMachine': LearCredentialMachineDetailsTemplateSchema,
+      'VerifiableCertification': VerifiableCertificationDetailsTemplateSchema,
+      'GxLabelCredential': GxLabelCredentialDetailsTemplateSchema,
+    } as const;
+      
+  private getCredentialType(cred: LEARCredential): DetailsCredentialType{
+    const type = cred.type.find((t): t is DetailsCredentialType => t in this.schemasByTypeMap);
+    if(!type) throw Error('No credential tyep found in credential');
+    return type;
   }
 
-  private loadForm(): void {
-    const data = this.credentialDetailsData$();
-    if (!data){
-      console.error('No credential data to load the form.');
-      return;
-    }
-
-    const credential = data.credential.vc;
-
-    this.setCredentialBasicInfo(credential);
-
-    const type = this.credentialType$();
-    
-    if(!type){
-       throw new Error(`No supported credential type found in: ${credential}`);
-    }
-    
-    const schema: CredentialDetailsFormSchema = getFormSchemaByType(type);
-
-    const formData: CredentialFormData = getFormDataByType(credential, type);
-
+  public mapSchemaValues(
+      schema: TemplateSchema,
+      credential: LEARCredential
+    ): MappedTemplateSchema {
+      const mapFields = (fields: DetailsField[]): MappedDetailsField[] =>
+        fields.map(field => this.mapField(field, credential));
   
-    const builtForm: FormGroup<any> = buildFormFromSchema(this.fb, schema, formData);
-    builtForm.disable();
+      return {
+        main: mapFields(schema.main),
+        side: mapFields(schema.side)
+      };
+    }
+  
+     private mapField(
+      field: DetailsField,
+      credential: LEARCredential
+    ): MappedDetailsField {
+      // Helper per processar .custom si existeix
+      const mapCustom = (custom: CustomDetailsField): CustomDetailsField => {
+        const rawVal = custom.value;
+        const computedVal = typeof rawVal === 'function'
+          ? rawVal(credential)
+          : rawVal;
+        return { ...custom, value: computedVal };
+      };
+  
+      // 1) Si és key-value, mapegem el .value i (si hi ha) el .custom
+      if (field.type === 'key-value') {
+        const kv = field as DetailsKeyValueField;
+        const raw = kv.value;
+        const computed = typeof raw === 'function'
+          ? raw(credential)
+          : raw;
+  
+        return {
+          ...kv,
+          value: computed,
+          custom: kv.custom ? mapCustom(kv.custom) : undefined
+        };
+      }
+  
+      // 2) Si és group, primer normalitzem el .value a DetailsField[]
+      const grp = field as DetailsGroupField;
+      const rawGroup = grp.value;
+      const children: DetailsField[] =
+        typeof rawGroup === 'function'
+          ? rawGroup(credential)
+          : rawGroup;
+  
+      // 3) Recorrem recursivament els sub-camps
+      const mappedChildren = children.map((sub: DetailsField) =>
+        this.mapField(sub, credential)
+      );
+  
+      // 4) I tornem a construir el grup, mapejant custom si cal
+      return {
+        ...grp,
+        value: mappedChildren,
+        custom: grp.custom ? mapCustom(grp.custom) : undefined
+      };
+    }
 
-    this.credentialDetailsFormSchema$.set(schema);
-    this.credentialDetailsForm$.set(builtForm);
-
-  }
-
-  public setCredentialBasicInfo(credential: LEARCredential): void{
+  public setCredentialBasicInfo(details: LEARCredentialDataDetails): void{
+    const credential = details.credential.vc;
     const credentialValidFrom = credential.validFrom;
     this.credentialValidFrom$.set(credentialValidFrom);
 
     const credentialValidUntil = credential.validUntil;
     this.credentialValidUntil$.set(credentialValidUntil);
 
-    const credentialTypes = credential.type as string[];
-    const type = credentialTypes.find((t): t is CredentialType => t in FormSchemaByType);
-
-    if (!type) {
-      throw new Error(`No supported credential type found in: ${credentialTypes.join(', ')}`);
-    }
-
+    const type = this.getCredentialType(credential);
     this.credentialType$.set(type);
+
+    const status = details.credential_status;
+    this.credentialStatus$.set(status);
+
   }
+
+  private processFields(fields: MappedDetailsField[], injector: Injector): MappedExtendedDetailsField[] {
+      return fields.map((field) => {
+        let extended: MappedExtendedDetailsField = { ...field };
+  
+        if (field.custom) {
+          const childInjector = Injector.create({
+            parent: injector,
+            providers: [
+              { provide: field.custom.token, useValue: field.custom.value }
+            ]
+          });
+  
+          extended.portal = new ComponentPortal(
+            field.custom.component,
+            null,
+            childInjector
+          );
+        }
+  
+        if (field.type === 'group') {
+          const groupField = field as MappedDetailsGroupField;
+          extended = { ...extended } as MappedExtendedDetailsGroupField;
+          extended.value = this.processFields(groupField.value, injector);
+        }
+  
+        return extended;
+      });
+    }
 
 
   //SEND REMINDER AND SIGN

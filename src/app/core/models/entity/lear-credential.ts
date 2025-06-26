@@ -1,3 +1,4 @@
+import { DetailsCredentialType } from "../schemas/credential-details-schemas";
 
 export interface LEARCredentialDataDetails {
   procedure_id: string;
@@ -18,7 +19,7 @@ export interface LEARCredentialJwtPayload {
 }
 
 export type CredentialType =   'LEARCredentialEmployee' | 'LEARCredentialMachine' | 'VerifiableCertification' | 'GxLabelCredential';
-export type ExtendedCredentialType =  'VerifiableCredential' | CredentialType;
+export type ExtendedCredentialType =  'VerifiableCredential' | DetailsCredentialType;
 
 export type LEARCredential =
   | LEARCredentialEmployee
@@ -168,12 +169,7 @@ export interface VerifiableCertification {
       id: string;
       organization: string;
     };
-    compliance: {
-      id: string;
-      hash: string;
-      scope: string;
-      standard: string;
-    }[];
+    compliance: ComplianceEntry[];
     product: {
       productId: string;
       productName: string;
@@ -211,6 +207,13 @@ export interface Attester {
   country: string;
 }
 
+export interface ComplianceEntry {
+      id: string;
+      hash: string;
+      scope: string;
+      standard: string;
+    }
+
 export interface GxLabelCredential {
   id: string;
   type: ExtendedCredentialType[];
@@ -227,10 +230,10 @@ export interface GxLabelCredential {
   };
 }
 
-interface CompliantCredential{
+export interface CompliantCredential{
   id: string, //urn:...
-  type: string
-, "gx:digestSRI": string
+  type: string, 
+  "gx:digestSRI": string
 }
 
 export type LearCredentialEmployeeFormData = {

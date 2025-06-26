@@ -12,7 +12,7 @@ export const mockCredentialEmployee: LEARCredentialDataDetails = {
     jti: 'jti-emp-123',
     vc: {
       id: 'cred-emp',
-      type: ['VerifiableCredential', 'LEARCredentialEmployee'],
+      type: ['VerifiableCredential', 'LearCredentialEmployee'],
       description: 'Mock employee credential',
       issuer: {
         id: 'issuer-emp',
@@ -77,7 +77,7 @@ export const mockCredentialMachine: LEARCredentialDataDetails = {
     jti: 'jti-mac-123',
     vc: {
       id: 'cred-mac',
-      type: ['LEARCredentialMachine'],
+      type: ['LearCredentialMachine'],
       description: 'Mock machine credential',
       issuer: {
         id: 'issuer-mac',

@@ -1,7 +1,7 @@
 import { MatCard, MatCardContent } from '@angular/material/card';
-import { Component, computed, inject, OnInit } from '@angular/core';
+import { Component, computed, inject, Injector, OnInit, WritableSignal } from '@angular/core';
 import { ActivatedRoute, RouterLink } from '@angular/router';
-import { AbstractControl, FormArray, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 import { CommonModule } from '@angular/common';
 import { MatFormField, MatLabel } from '@angular/material/form-field';
@@ -14,11 +14,15 @@ import { LoaderService } from 'src/app/core/services/loader.service';
 import { CapitalizePipe } from 'src/app/shared/pipes/capitalize.pipe';
 import { AddPrefixPipe } from 'src/app/shared/pipes/add-prefix.pipe';
 import { CredentialDetailsService } from './services/credential-details.service';
+import { PortalModule } from '@angular/cdk/portal';
+import { CredentialStatus } from 'src/app/core/models/entity/lear-credential';
+import { Observable } from 'rxjs';
+import { DetailsCredentialType, MappedExtendedDetailsField } from 'src/app/core/models/schemas/credential-details-schemas';
 
 
 @Component({
   standalone: true,
-  imports: [AddPrefixPipe, CapitalizePipe, CommonModule, FormsModule, MatButton, MatCard, MatCardContent, MatFormField, MatIcon, MatInput, MatLabel, MatSlideToggle, ReactiveFormsModule, RouterLink, TranslatePipe ],
+  imports: [AddPrefixPipe, CapitalizePipe, CommonModule, FormsModule, MatButton, MatCard, MatCardContent, MatFormField, MatIcon, MatInput, MatLabel, MatSlideToggle, PortalModule, ReactiveFormsModule, RouterLink, TranslatePipe ],
   providers:[CredentialDetailsService],
   selector: 'app-credential-details',
   templateUrl: './credential-details.component.html',
@@ -26,54 +30,50 @@ import { CredentialDetailsService } from './services/credential-details.service'
 })
 export class CredentialDetailsComponent implements OnInit {
   
-  private readonly detailsService = inject(CredentialDetailsService);
-  private readonly loader = inject(LoaderService);
-  private readonly route = inject(ActivatedRoute);
-
   //signals
-  public credentialValidFrom$ = this.detailsService.credentialValidFrom$;
-  public credentialValidUntil$ = this.detailsService.credentialValidUntil$;
-  public credentialType$ = this.detailsService.credentialType$;
-  public credentialStatus$ = this.detailsService.credentialStatus$;
-  public credentialDetailsForm$ = this.detailsService.credentialDetailsForm$;
-  public credentialDetailsFormSchema$ = this.detailsService.credentialDetailsFormSchema$;
-
-  public showReminderButton$ = computed(() => {
+  public credentialValidFrom$: WritableSignal<string>;
+  public credentialValidUntil$: WritableSignal<string>
+  public credentialType$: WritableSignal<DetailsCredentialType | undefined>;
+  public credentialStatus$: WritableSignal<CredentialStatus | undefined>
+  public mainTemplateModel$: WritableSignal<MappedExtendedDetailsField[] | undefined>;
+  public sideTemplateModel$: WritableSignal<MappedExtendedDetailsField[] | undefined>;
+    public showReminderButton$ = computed(() => {
     return (
       (
         this.credentialStatus$() === 'WITHDRAWN' ||
         this.credentialStatus$() === 'DRAFT' ||
         this.credentialStatus$() === 'PEND_DOWNLOAD'
       ) &&
-      this.credentialType$() === 'LEARCredentialEmployee'
+      this.credentialType$() === 'LearCredentialEmployee'
     );
   });
 
   public showSignCredentialButton$ = computed(()=>{
     return (this.credentialStatus$() === 'PEND_SIGNATURE') && 
-    (this.credentialType$() === 'LEARCredentialEmployee' || this.credentialType$() === 'VerifiableCertification');
+    (this.credentialType$() === 'LearCredentialEmployee' || this.credentialType$() === 'VerifiableCertification');
   });
+  
+  //observables
+  public isLoading$: Observable<boolean>;
 
-    //observables
-    public isLoading$ = this.loader.isLoading$;
+  private readonly detailsService = inject(CredentialDetailsService);
+  private readonly injector = inject(Injector);
+  private readonly loader = inject(LoaderService);
+  private readonly route = inject(ActivatedRoute);
+
+  public constructor(){
+    this.isLoading$ = this.loader.isLoading$;
+    this.credentialValidFrom$ = this.detailsService.credentialValidFrom$;
+    this.credentialValidUntil$ = this.detailsService.credentialValidUntil$;
+    this.credentialType$ = this.detailsService.credentialType$;
+    this.credentialStatus$ = this.detailsService.credentialStatus$;
+    this.mainTemplateModel$ = this.detailsService.mainTemplateModel$;
+    this.sideTemplateModel$= this.detailsService.sideTemplateModel$;
+  }
 
   public ngOnInit(): void {
     this.getProcedureId();
-    this.initializeForm();
-  }
-  
-  private getProcedureId(): void {
-    const id = this.route.snapshot.paramMap.get('id')!;
-    this.detailsService.setProcedureId(id);
-  }
-  
-
-  private loadCredentialDetailsAndForm(): void {
-    this.detailsService.loadCredentialDetailsAndForm();
-  }
-
-  private initializeForm(): void {
-    this.loadCredentialDetailsAndForm();
+    this.loadTemplateModel();
   }
 
   //SEND REMINDER
@@ -85,25 +85,17 @@ export class CredentialDetailsComponent implements OnInit {
   public openSignCredentialDialog(){
     this.detailsService.openSignCredentialDialog();
   }
-
-  //TEMPLATE FUNCTIONS
-  public formKeys(group: AbstractControl | null | undefined): string[] {
-    if (group instanceof FormGroup) {
-      return Object.keys(group.controls);
-    }
-    return [];
-  }
   
-  public getControlType(control: AbstractControl | null | undefined): 'group' | 'control' {
-    if (control instanceof FormGroup) {
-      return 'group';
-    }
-    return 'control';
+  private getProcedureId(): void {
+    const id = this.route.snapshot.paramMap.get('id')!;
+    this.detailsService.setProcedureId(id);
   }
 
-  public asFormArray(control: AbstractControl | null): FormArray {
-    return control as FormArray;
+  private loadTemplateModel(): void {
+    this.detailsService.loadCredentialDetails(this.injector);
   }
+
+ 
   
 
 }

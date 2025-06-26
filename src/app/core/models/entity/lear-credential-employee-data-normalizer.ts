@@ -36,8 +36,8 @@ export class LEARCredentialDataNormalizer {
     const normalizedData = { ...data };
   
     const credentialTypes = normalizedData.type;
-    const isEmployee = credentialTypes.includes('LEARCredentialEmployee');
-    const isMachine = credentialTypes.includes('LEARCredentialMachine');
+    const isEmployee = credentialTypes.includes('LearCredentialEmployee');
+    const isMachine = credentialTypes.includes('LearCredentialMachine');
     const isVerifiableCertification = credentialTypes.includes('VerifiableCertification');
 
   
