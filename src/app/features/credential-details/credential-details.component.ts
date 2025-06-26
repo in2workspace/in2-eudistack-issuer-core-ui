@@ -35,6 +35,7 @@ export class CredentialDetailsComponent implements OnInit {
   public credentialValidUntil$: WritableSignal<string>
   public credentialType$: WritableSignal<DetailsCredentialType | undefined>;
   public credentialStatus$: WritableSignal<CredentialStatus | undefined>
+  // credentialSubject data
   public mainTemplateModel$: WritableSignal<MappedExtendedDetailsField[] | undefined>;
   public sideTemplateModel$: WritableSignal<MappedExtendedDetailsField[] | undefined>;
     public showReminderButton$ = computed(() => {
@@ -92,10 +93,7 @@ export class CredentialDetailsComponent implements OnInit {
   }
 
   private loadTemplateModel(): void {
-    this.detailsService.loadCredentialDetails(this.injector);
+    this.detailsService.loadCredentialModels(this.injector);
   }
-
- 
-  
 
 }

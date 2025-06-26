@@ -7,7 +7,7 @@ import { Router } from '@angular/router';
 import { DialogData } from 'src/app/shared/components/dialog/dialog.component';
 import { CredentialStatus, LEARCredential, LEARCredentialDataDetails } from 'src/app/core/models/entity/lear-credential';
 import { ComponentPortal } from '@angular/cdk/portal';
-import { mockGxLabel } from 'src/app/core/mocks/details-mocks';
+import { mockCredentialEmployee } from 'src/app/core/mocks/details-mocks';
 import { DetailsCredentialType, MappedExtendedDetailsField, TemplateSchema, LearCredentialEmployeeDetailsTemplateSchema, LearCredentialMachineDetailsTemplateSchema, VerifiableCertificationDetailsTemplateSchema, GxLabelCredentialDetailsTemplateSchema, MappedTemplateSchema, DetailsField, MappedDetailsField, CustomDetailsField, DetailsKeyValueField, DetailsGroupField, MappedDetailsGroupField, MappedExtendedDetailsGroupField } from 'src/app/core/models/schemas/credential-details-schemas';
 
 @Injectable() //provided in component
@@ -25,13 +25,19 @@ export class CredentialDetailsService {
   private readonly dialog = inject(DialogWrapperService);
   private readonly router = inject(Router);
   private readonly translate = inject(TranslateService);
+      private schemasByTypeMap: Record<DetailsCredentialType, TemplateSchema> = {
+      'LearCredentialEmployee': LearCredentialEmployeeDetailsTemplateSchema,
+      'LearCredentialMachine': LearCredentialMachineDetailsTemplateSchema,
+      'VerifiableCertification': VerifiableCertificationDetailsTemplateSchema,
+      'GxLabelCredential': GxLabelCredentialDetailsTemplateSchema,
+    } as const;
 
   public setProcedureId(id: string) {
     this.procedureId$.set(id);
   }
 
-  public loadCredentialDetails(injector: Injector): void {  
-    this.loadDetailsModels().subscribe(data => {
+  public loadCredentialModels(injector: Injector): void {  
+    this.loadCredentailDetails().subscribe(data => {
           const vc = data.credential.vc;
           this.setCredentialBasicInfo(data);
 
@@ -50,23 +56,63 @@ export class CredentialDetailsService {
       });
   }
 
-  public loadDetailsModels(): Observable<LEARCredentialDataDetails> {
-    // todo restore
-    // return this.credentialProcedureService.getCredentialProcedureById(this.procedureId$())
-    // return of(mockCredentialEmployee).pipe(take(1));
-      return of(mockGxLabel);
-  }
+  public openSendReminderDialog(): void {
+    const dialogData: DialogData = {
+      title: this.translate.instant("credentialDetails.sendReminderConfirm.title"),
+      message: this.translate.instant("credentialDetails.sendReminderConfirm.message"),
+      confirmationType: 'async',
+      status: 'default'
+    };
 
-    public getSchemaByType(credType: DetailsCredentialType): TemplateSchema{
-      return this.schemasByTypeMap[credType];
+    const sendReminderAfterConfirm = (): Observable<boolean> => {
+      return this.sendReminder();
     }
 
-    private schemasByTypeMap: Record<DetailsCredentialType, TemplateSchema> = {
-      'LearCredentialEmployee': LearCredentialEmployeeDetailsTemplateSchema,
-      'LearCredentialMachine': LearCredentialMachineDetailsTemplateSchema,
-      'VerifiableCertification': VerifiableCertificationDetailsTemplateSchema,
-      'GxLabelCredential': GxLabelCredentialDetailsTemplateSchema,
-    } as const;
+    this.dialog.openDialogWithCallback(dialogData, sendReminderAfterConfirm);
+  }
+
+  public openSignCredentialDialog(): void {
+    const dialogData: DialogData = {
+      title: this.translate.instant("credentialDetails.signCredentialConfirm.title"),
+      message: this.translate.instant("credentialDetails.signCredentialConfirm.message"),
+      confirmationType: 'async',
+      status: 'default'
+    };
+
+    const signCredentialAfterConfirm = (): Observable<boolean> => {
+      return this.signCredential();
+    }
+    
+    this.dialog.openDialogWithCallback(dialogData, signCredentialAfterConfirm);
+  }
+
+  
+  public sendReminder(): Observable<boolean> {
+    return this.executeCredentialAction(
+      (procedureId) => this.credentialProcedureService.sendReminder(procedureId),
+      "credentialDetails.sendReminderSuccess.title",
+      "credentialDetails.sendReminderSuccess.message"
+    );
+  }
+  
+  public signCredential(): Observable<boolean> {
+    return this.executeCredentialAction(
+      (procedureId) => this.credentialProcedureService.signCredential(procedureId),
+      "credentialDetails.signCredentialSuccess.title",
+      "credentialDetails.signCredentialSuccess.message"
+    );
+  }
+
+    private loadCredentailDetails(): Observable<LEARCredentialDataDetails> {
+      // todo restore
+      // return this.credentialProcedureService.getCredentialProcedureById(this.procedureId$())
+      // return of(mockCredentialEmployee).pipe(take(1));
+        return of(mockCredentialEmployee);
+    }
+
+    private getSchemaByType(credType: DetailsCredentialType): TemplateSchema{
+      return this.schemasByTypeMap[credType];
+    }
       
   private getCredentialType(cred: LEARCredential): DetailsCredentialType{
     const type = cred.type.find((t): t is DetailsCredentialType => t in this.schemasByTypeMap);
@@ -74,7 +120,7 @@ export class CredentialDetailsService {
     return type;
   }
 
-  public mapSchemaValues(
+  private mapSchemaValues(
       schema: TemplateSchema,
       credential: LEARCredential
     ): MappedTemplateSchema {
@@ -136,7 +182,7 @@ export class CredentialDetailsService {
       };
     }
 
-  public setCredentialBasicInfo(details: LEARCredentialDataDetails): void{
+  private setCredentialBasicInfo(details: LEARCredentialDataDetails): void{
     const credential = details.credential.vc;
     const credentialValidFrom = credential.validFrom;
     this.credentialValidFrom$.set(credentialValidFrom);
@@ -181,41 +227,6 @@ export class CredentialDetailsService {
       });
     }
 
-
-  //SEND REMINDER AND SIGN
-  public openSendReminderDialog(): void {
-  
-    const dialogData: DialogData = {
-      title: this.translate.instant("credentialDetails.sendReminderConfirm.title"),
-      message: this.translate.instant("credentialDetails.sendReminderConfirm.message"),
-      confirmationType: 'async',
-      status: 'default'
-    };
-
-    const sendReminderAfterConfirm = (): Observable<boolean> => {
-      return this.sendReminder();
-    }
-
-    this.dialog.openDialogWithCallback(dialogData, sendReminderAfterConfirm);
-
-  }
-
-  public openSignCredentialDialog(): void {
-
-    const dialogData: DialogData = {
-      title: this.translate.instant("credentialDetails.signCredentialConfirm.title"),
-      message: this.translate.instant("credentialDetails.signCredentialConfirm.message"),
-      confirmationType: 'async',
-      status: 'default'
-    };
-
-    const signCredentialAfterConfirm = (): Observable<boolean> => {
-      return this.signCredential();
-    }
-    
-    this.dialog.openDialogWithCallback(dialogData, signCredentialAfterConfirm);
-  }
-
   private executeCredentialAction(
     action: (procedureId: string) => Observable<void>,
     titleKey: string,
@@ -246,19 +257,4 @@ export class CredentialDetailsService {
     );
   }
 
-  public sendReminder(): Observable<boolean> {
-    return this.executeCredentialAction(
-      (procedureId) => this.credentialProcedureService.sendReminder(procedureId),
-      "credentialDetails.sendReminderSuccess.title",
-      "credentialDetails.sendReminderSuccess.message"
-    );
-  }
-  
-  public signCredential(): Observable<boolean> {
-    return this.executeCredentialAction(
-      (procedureId) => this.credentialProcedureService.signCredential(procedureId),
-      "credentialDetails.signCredentialSuccess.title",
-      "credentialDetails.signCredentialSuccess.message"
-    );
-  }
 }

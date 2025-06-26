@@ -1,6 +1,7 @@
 import { LEARCredentialDataDetails } from "../models/entity/lear-credential";
 
-export const mockCredentialEmployee: LEARCredentialDataDetails = {
+// todo restore type
+export const mockCredentialEmployee: any = {
   procedure_id: 'mock-procedure-employee',
   credential_status: 'DRAFT',
   credential: {
@@ -36,7 +37,7 @@ export const mockCredentialEmployee: LEARCredentialDataDetails = {
             nationality: 'ES'
           },
           mandator: {
-            commonName: 'Mandator EMP',
+            // commonName: 'Mandator EMP',
             country: 'ES',
             emailAddress: 'mandator@emp.com',
             organization: 'Org Mandator',
