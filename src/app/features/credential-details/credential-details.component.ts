@@ -45,13 +45,13 @@ export class CredentialDetailsComponent implements OnInit {
         this.credentialStatus$() === 'DRAFT' ||
         this.credentialStatus$() === 'PEND_DOWNLOAD'
       ) &&
-      this.credentialType$() === 'LearCredentialEmployee'
+      this.credentialType$() === 'LEARCredentialEmployee'
     );
   });
   
   public showSignCredentialButton$ = computed(()=>{
     return (this.credentialStatus$() === 'PEND_SIGNATURE') && 
-    (this.credentialType$() === 'LearCredentialEmployee' || this.credentialType$() === 'VerifiableCertification');
+    (this.credentialType$() === 'LEARCredentialEmployee' || this.credentialType$() === 'VerifiableCertification');
   });
   
   //observables

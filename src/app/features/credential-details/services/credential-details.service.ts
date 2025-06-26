@@ -27,8 +27,8 @@ export class CredentialDetailsService {
   private readonly router = inject(Router);
   private readonly translate = inject(TranslateService);
       private schemasByTypeMap: Record<DetailsCredentialType, TemplateSchema> = {
-      'LearCredentialEmployee': LearCredentialEmployeeDetailsTemplateSchema,
-      'LearCredentialMachine': LearCredentialMachineDetailsTemplateSchema,
+      'LEARCredentialEmployee': LearCredentialEmployeeDetailsTemplateSchema,
+      'LEARCredentialMachine': LearCredentialMachineDetailsTemplateSchema,
       'VerifiableCertification': VerifiableCertificationDetailsTemplateSchema,
       'GxLabelCredential': GxLabelCredentialDetailsTemplateSchema,
     } as const;
