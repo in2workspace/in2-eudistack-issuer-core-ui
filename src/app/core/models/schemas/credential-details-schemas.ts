@@ -2,6 +2,7 @@ import { ComponentPortal } from "@angular/cdk/portal";
 import { InjectionToken } from "@angular/core";
 import { GxLabelCredential, LEARCredential, LEARCredentialEmployee, LEARCredentialMachine, VerifiableCertification } from "src/app/core/models/entity/lear-credential";
 import { CompliantCredentialsComponent, compliantCredentialsToken } from "src/app/features/credential-details/components/compliant-credentials/compliant-credentials.component";
+import { URL_LIST_TOKEN, UrlListComponent } from "src/app/features/credential-details/components/url-list/url-list.component";
 import { groupActionsByFunction, isVerifiable, mapComplianceEntries, isGxLabel } from "src/app/features/credential-details/utils/credential-details-utils";
 
 export type DetailsCredentialType = 'LearCredentialEmployee' | 'LearCredentialMachine' | 'VerifiableCertification' | 'GxLabelCredential';
@@ -311,7 +312,10 @@ export const GxLabelCredentialDetailsTemplateSchema: TemplateSchema = {
     {
       key: 'gx:validatedCriteria',
       type: 'group',
-      value: (c: LEARCredential) => { 
+      custom: {
+        component: UrlListComponent,
+        token: URL_LIST_TOKEN,
+        value: (c: LEARCredential) => { 
         if(!isGxLabel(c)) return [];
         const criteria = c.credentialSubject['gx:validatedCriteria'] ?? [];
         const mappedCriteria: DetailsKeyValueField[] = criteria.map(c => {
@@ -319,6 +323,8 @@ export const GxLabelCredentialDetailsTemplateSchema: TemplateSchema = {
         });
         return mappedCriteria;
       }
+      },
+      value: []
     }
   ],
   side: [
