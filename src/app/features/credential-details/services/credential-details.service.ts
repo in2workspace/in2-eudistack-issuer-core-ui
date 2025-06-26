@@ -100,9 +100,9 @@ export class CredentialDetailsService {
 
   private loadCredentailDetails(): Observable<LEARCredentialDataDetails> {
     // todo restore
-    // return this.credentialProcedureService.getCredentialProcedureById(this.procedureId$())
+    return this.credentialProcedureService.getCredentialProcedureById(this.procedureId$());
     // return of(mockCredentialEmployee).pipe(take(1));
-      return of(mockGxLabel);
+      // return of(mockGxLabel);
   }
 
   private getSchemaByType(credType: DetailsCredentialType): TemplateSchema{
