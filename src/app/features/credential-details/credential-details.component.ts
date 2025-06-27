@@ -18,6 +18,7 @@ import { PortalModule } from '@angular/cdk/portal';
 import { CredentialStatus } from 'src/app/core/models/entity/lear-credential';
 import { Observable } from 'rxjs';
 import { DetailsCredentialType, MappedExtendedDetailsField } from 'src/app/core/models/schemas/credential-details-schemas';
+import { credentialTypeHasSendReminderButton, credentialTypeHasSignCredentialButton, statusHasSendReminderlButton, statusHasSignCredentialButton } from './helpers/actions-helpers';
 
 
 @Component({
@@ -38,20 +39,28 @@ export class CredentialDetailsComponent implements OnInit {
   public mainTemplateModel$: WritableSignal<MappedExtendedDetailsField[] | undefined>; // credentialSubject data
   public sideTemplateModel$: WritableSignal<MappedExtendedDetailsField[] | undefined>;
  
-  public showReminderButton$ = computed(() => {
-    return (
-      (
-        this.credentialStatus$() === 'WITHDRAWN' ||
-        this.credentialStatus$() === 'DRAFT' ||
-        this.credentialStatus$() === 'PEND_DOWNLOAD'
-      ) &&
-      this.credentialType$() === 'LEARCredentialEmployee'
+  public showReminderButton$ = computed<boolean>(() => {
+    const type = this.credentialType$();
+    const status = this.credentialStatus$();
+
+    return !!(
+      status 
+      && statusHasSendReminderlButton(status)
+      && type 
+      && credentialTypeHasSendReminderButton(type)
     );
   });
   
-  public showSignCredentialButton$ = computed(()=>{
-    return (this.credentialStatus$() === 'PEND_SIGNATURE') && 
-    (this.credentialType$() === 'LEARCredentialEmployee' || this.credentialType$() === 'VerifiableCertification');
+  public showSignCredentialButton$ = computed<boolean>(()=>{
+    const type = this.credentialType$();
+    const status = this.credentialStatus$();
+
+    return !!(
+      status
+      && statusHasSignCredentialButton(status)
+      && type 
+      && credentialTypeHasSignCredentialButton(type)
+    );
   });
   
   //observables

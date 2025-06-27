@@ -3,7 +3,7 @@ import { InjectionToken } from "@angular/core";
 import { GxLabelCredential, LEARCredential, LEARCredentialEmployee, LEARCredentialMachine, VerifiableCertification } from "src/app/core/models/entity/lear-credential";
 import { CompliantCredentialsComponent, compliantCredentialsToken } from "src/app/features/credential-details/components/compliant-credentials/compliant-credentials.component";
 import { URL_LIST_TOKEN, UrlListComponent } from "src/app/features/credential-details/components/url-list/url-list.component";
-import { groupActionsByFunction, isVerifiable, mapComplianceEntries, isGxLabel } from "src/app/features/credential-details/utils/credential-details-utils";
+import { groupActionsByFunction, isVerifiable, mapComplianceEntries, isGxLabel } from "src/app/features/credential-details/helpers/credential-details-helpers";
 
 export type DetailsCredentialType = 'LEARCredentialEmployee' | 'LEARCredentialMachine' | 'VerifiableCertification' | 'GxLabelCredential';
 
@@ -279,7 +279,7 @@ export const GxLabelCredentialDetailsTemplateSchema: TemplateSchema = {
         {
           key: 'gx:labelLevel',
           type: 'key-value',
-          value: (c: GxLabelCredential) => c.credentialSubject['gx:labelLevel']
+          value: (c: GxLabelCredential) => { return c.credentialSubject['gx:labelLevel'] === 'BL' ? "Base Level" : c.credentialSubject['gx:labelLevel']}
         },
         {
           key: 'gx:engineVersion',

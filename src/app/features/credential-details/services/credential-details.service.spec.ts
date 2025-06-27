@@ -8,7 +8,7 @@ import { DialogWrapperService } from 'src/app/shared/components/dialog/dialog-wr
 import { of } from 'rxjs';
 import { DialogData } from 'src/app/shared/components/dialog/dialog.component';
 import { CredentialFormData, LEARCredentialDataDetails } from 'src/app/core/models/entity/lear-credential';
-import * as utils from '../utils/credential-details-utils';
+import * as utils from '../helpers/credential-details-helpers';
 
 describe('CredentialDetailsService', () => {
   let service: CredentialDetailsService;
