@@ -4,7 +4,7 @@ import { DetailsCredentialType } from "src/app/core/models/schemas/credential-de
 const credentialTypeHasSendReminderButtonArr: DetailsCredentialType[] = ['LEARCredentialEmployee', 'gx:LabelCredential'];
 const credentialTypeHasSignCredentialButtonArr: DetailsCredentialType[] = ['LEARCredentialEmployee', 'VerifiableCertification', 'gx:LabelCredential'];
 
-const statusHasSendReminderButtonArr: CredentialStatus[] = ['WITHDRAWN', 'DRAFT', 'PEND_SIGNATURE'];
+const statusHasSendReminderButtonArr: CredentialStatus[] = ['WITHDRAWN', 'DRAFT', 'PEND_DOWNLOAD'];
 const statusHasSingCredentialButtonArr: CredentialStatus[] = ['PEND_SIGNATURE'];
 
 export function credentialTypeHasSendReminderButton(type: DetailsCredentialType): boolean{
