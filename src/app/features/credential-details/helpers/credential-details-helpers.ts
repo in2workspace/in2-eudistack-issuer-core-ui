@@ -1,5 +1,5 @@
 import { ComplianceEntry, GxLabelCredential, LEARCredential, Power, VerifiableCertification } from "src/app/core/models/entity/lear-credential";
-import { DetailsGroupField, DetailsKeyValueField } from "src/app/core/models/schemas/credential-details-schemas";
+import { DetailsGroupField, DetailsKeyValueField } from "src/app/core/models/entity/lear-credential-details";
 
 export interface FunctionActions {
   function: string; 

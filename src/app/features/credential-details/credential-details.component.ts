@@ -17,8 +17,8 @@ import { CredentialDetailsService } from './services/credential-details.service'
 import { PortalModule } from '@angular/cdk/portal';
 import { CredentialStatus } from 'src/app/core/models/entity/lear-credential';
 import { Observable } from 'rxjs';
-import { DetailsCredentialType, MappedExtendedDetailsField } from 'src/app/core/models/schemas/credential-details-schemas';
 import { credentialTypeHasSendReminderButton, credentialTypeHasSignCredentialButton, statusHasSendReminderlButton, statusHasSignCredentialButton } from './helpers/actions-helpers';
+import { DetailsCredentialType, MappedExtendedDetailsField } from 'src/app/core/models/entity/lear-credential-details';
 
 
 @Component({

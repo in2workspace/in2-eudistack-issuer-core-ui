@@ -1,0 +1,48 @@
+import { groupActionsByFunction } from "src/app/features/credential-details/helpers/credential-details-helpers";
+import { LEARCredentialEmployee } from "../../entity/lear-credential";
+import { TemplateSchema } from "../../entity/lear-credential-details";
+
+
+export const LearCredentialEmployeeDetailsTemplateSchema: TemplateSchema = {
+  main: [
+    {
+      key: 'mandator',
+      type: 'group',
+      value: [
+        { key: 'name', type: 'key-value', value: (c: LEARCredentialEmployee) => c.credentialSubject.mandate.mandator.commonName},
+        { key: 'email', type: 'key-value', value: (c: LEARCredentialEmployee) => c.credentialSubject.mandate.mandator.emailAddress },
+        { key: 'serialNumber', type: 'key-value', value: (c: LEARCredentialEmployee) => c.credentialSubject.mandate.mandator.serialNumber},
+        { key: 'organization', type: 'key-value', value: (c: LEARCredentialEmployee) => c.credentialSubject.mandate.mandator.organization },
+        { key: 'organizationId', type: 'key-value', value: (c: LEARCredentialEmployee) => c.credentialSubject.mandate.mandator.organizationIdentifier },
+        { key: 'country', type: 'key-value', value: (c: LEARCredentialEmployee) => c.credentialSubject.mandate.mandator.country }
+      ]
+    },
+    {
+      key: 'mandatee',
+      type: 'group',
+      value: [
+        { key: 'name', type: 'key-value', value: (c: LEARCredentialEmployee) => c.credentialSubject.mandate.mandatee.firstName + ' ' +c.credentialSubject.mandate.mandatee.lastName },
+        { key: 'email', type: 'key-value', value: (c: LEARCredentialEmployee) => c.credentialSubject.mandate.mandatee.email },
+        { key: 'nationality', type: 'key-value', value: (c: LEARCredentialEmployee) => c.credentialSubject.mandate.mandatee.nationality }
+      ]
+    },
+    {
+      key: 'power',
+      type: 'key-value',
+      value: (c: LEARCredentialEmployee) => groupActionsByFunction(c.credentialSubject.mandate.power)
+    }
+  ],
+  side: [
+    {
+      key: 'issuer',
+      type: 'group',
+      value: [
+        { key: 'name', type: 'key-value', value: (c: LEARCredentialEmployee) => c.issuer?.commonName },
+        { key: 'serialNumber', type: 'key-value', value: (c: LEARCredentialEmployee) => c.issuer?.serialNumber },
+        { key: 'organization', type: 'key-value', value: (c: LEARCredentialEmployee) => c.issuer?.organization  },
+        { key: 'organizationId', type: 'key-value', value: (c: LEARCredentialEmployee) => c.issuer?.organizationIdentifier },
+        { key: 'country', type: 'key-value', value: (c: LEARCredentialEmployee) => c.issuer?.country }
+      ]
+    }
+  ]
+};

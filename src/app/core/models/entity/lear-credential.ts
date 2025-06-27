@@ -1,4 +1,4 @@
-import { DetailsCredentialType } from "../schemas/credential-details-schemas";
+import { DetailsCredentialType } from "./lear-credential-details";
 
 export interface LEARCredentialDataDetails {
   procedure_id: string;

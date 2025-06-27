@@ -1,5 +1,5 @@
 import { CredentialStatus } from "src/app/core/models/entity/lear-credential";
-import { DetailsCredentialType } from "src/app/core/models/schemas/credential-details-schemas";
+import { DetailsCredentialType } from "src/app/core/models/entity/lear-credential-details";
 
 const credentialTypeHasSendReminderButtonArr: DetailsCredentialType[] = ['LEARCredentialEmployee', 'gx:LabelCredential'];
 const credentialTypeHasSignCredentialButtonArr: DetailsCredentialType[] = ['LEARCredentialEmployee', 'VerifiableCertification', 'gx:LabelCredential'];
