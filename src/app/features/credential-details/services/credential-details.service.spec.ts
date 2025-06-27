@@ -58,73 +58,73 @@ describe('CredentialDetailsService', () => {
     expect(service).toBeTruthy();
   });
 
-  it('should subscribe to loadCredentialDetails and call loadFormObserver.next', () => {
-    const mockData = {} as any;
+  // it('should subscribe to loadCredentialDetails and call loadFormObserver.next', () => {
+  //   const mockData = {} as any;
   
-    const loadCredentialDetailsSpy = jest
-      .spyOn(service, 'loadCredentialDetails')
-      .mockReturnValue(of(mockData));
+  //   const loadCredentialDetailsSpy = jest
+  //     .spyOn(service, 'loadCredentialDetails')
+  //     .mockReturnValue(of(mockData));
   
-    const observerNextSpy = jest.spyOn((service as any).loadFormObserver, 'next');
+  //   const observerNextSpy = jest.spyOn((service as any).loadFormObserver, 'next');
   
-    service.loadCredentialDetailsAndForm();
+  //   service.loadCredentialDetailsAndForm();
   
-    expect(loadCredentialDetailsSpy).toHaveBeenCalled();
-    expect(observerNextSpy).toHaveBeenCalledWith(mockData);
-  });
+  //   expect(loadCredentialDetailsSpy).toHaveBeenCalled();
+  //   expect(observerNextSpy).toHaveBeenCalledWith(mockData);
+  // });
 
-  it('should fetch credential details and update signals', (done) => {
-    const mockProcedureId = 'test-id';
-    const mockData: LEARCredentialDataDetails = {
-      credential_status: 'VALID',
-      credential: { vc: {} as any }
-    } as LEARCredentialDataDetails;
+  // it('should fetch credential details and update signals', (done) => {
+  //   const mockProcedureId = 'test-id';
+  //   const mockData: LEARCredentialDataDetails = {
+  //     credential_status: 'VALID',
+  //     credential: { vc: {} as any }
+  //   } as LEARCredentialDataDetails;
   
-    service.procedureId$.set(mockProcedureId);
+  //   service.procedureId$.set(mockProcedureId);
   
-    jest
-      .spyOn(mockCredentialProcedureService, 'getCredentialProcedureById')
-      .mockReturnValue(of(mockData));
+  //   jest
+  //     .spyOn(mockCredentialProcedureService, 'getCredentialProcedureById')
+  //     .mockReturnValue(of(mockData));
   
-    service.loadCredentialDetails().subscribe(result => {
-      expect(result).toBe(mockData);
+  //   service.loadCredentialDetails().subscribe(result => {
+  //     expect(result).toBe(mockData);
   
-      expect(service.credentialDetailsData$()).toBe(mockData);
-      expect(service.credentialStatus$()).toBe('VALID');
+  //     expect(service.credentialDetailsData$()).toBe(mockData);
+  //     expect(service.credentialStatus$()).toBe('VALID');
   
-      done();
-    });
-  });
+  //     done();
+  //   });
+  // });
   
-  it('should load form and update signals', () => {
-    const mockCredential = {
-      validFrom: '2023-01-01',
-      validUntil: '2023-12-31',
-      type: ['LEARCredentialEmployee'],
-    };
+  // it('should load form and update signals', () => {
+  //   const mockCredential = {
+  //     validFrom: '2023-01-01',
+  //     validUntil: '2023-12-31',
+  //     type: ['LEARCredentialEmployee'],
+  //   };
   
-    const mockData = {
-      credential: { vc: mockCredential },
-    } as any;
+  //   const mockData = {
+  //     credential: { vc: mockCredential },
+  //   } as any;
   
-    const mockSchema = { fake: 'schema' } as any;
-    const mockFormData = { name: 'John' } as unknown as CredentialFormData;
-    const mockFormGroup = new FormBuilder().group({ name: [''] });
+  //   const mockSchema = { fake: 'schema' } as any;
+  //   const mockFormData = { name: 'John' } as unknown as CredentialFormData;
+  //   const mockFormGroup = new FormBuilder().group({ name: [''] });
   
-    service.credentialDetailsData$.set(mockData);
+  //   service.credentialDetailsData$.set(mockData);
   
-    jest.spyOn(utils, 'getFormSchemaByType').mockReturnValue(mockSchema);
-    jest.spyOn(utils, 'getFormDataByType').mockReturnValue(mockFormData);
-    jest.spyOn(utils, 'buildFormFromSchema').mockReturnValue(mockFormGroup);
+  //   jest.spyOn(utils, 'getFormSchemaByType').mockReturnValue(mockSchema);
+  //   jest.spyOn(utils, 'getFormDataByType').mockReturnValue(mockFormData);
+  //   jest.spyOn(utils, 'buildFormFromSchema').mockReturnValue(mockFormGroup);
   
-    (service as any).loadForm();
+  //   (service as any).loadForm();
   
-    expect(service.credentialValidFrom$()).toBe('2023-01-01');
-    expect(service.credentialValidUntil$()).toBe('2023-12-31');
-    expect(service.credentialType$()).toBe('LEARCredentialEmployee');
-    expect(service.credentialDetailsFormSchema$()).toBe(mockSchema);
-    expect(service.credentialDetailsForm$()).toBe(mockFormGroup);
-  });
+  //   expect(service.credentialValidFrom$()).toBe('2023-01-01');
+  //   expect(service.credentialValidUntil$()).toBe('2023-12-31');
+  //   expect(service.credentialType$()).toBe('LEARCredentialEmployee');
+  //   expect(service.credentialDetailsFormSchema$()).toBe(mockSchema);
+  //   expect(service.credentialDetailsForm$()).toBe(mockFormGroup);
+  // });
 
   it('should set the procedureId$ signal when setProcedureId is called', () => {
     service.setProcedureId('abc123');

@@ -21,7 +21,6 @@ export function groupActionsByFunction(powers: Power[]): FunctionActions[] {
       function: fn,
       actions: Array.from(actionsSet),
     }));
-    console.log(res);
     return res;
   }
 

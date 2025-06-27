@@ -1,4 +1,3 @@
-import { mockCredentialCertification, mockCredentialMachine } from './../../../core/mocks/details-mocks';
 import { inject, Injectable, Injector, signal, WritableSignal } from '@angular/core';
 import { EMPTY, from, Observable, of, switchMap, tap } from 'rxjs';
 import { CredentialProcedureService } from 'src/app/core/services/credential-procedure.service';
@@ -8,7 +7,7 @@ import { Router } from '@angular/router';
 import { DialogData } from 'src/app/shared/components/dialog/dialog.component';
 import { CredentialStatus, LEARCredential, LEARCredentialDataDetails } from 'src/app/core/models/entity/lear-credential';
 import { ComponentPortal } from '@angular/cdk/portal';
-import { mockCredentialEmployee, mockGxLabel } from 'src/app/core/mocks/details-mocks';
+import { mockCredentialEmployee } from 'src/app/core/mocks/details-mocks';
 import { DetailsCredentialType, MappedExtendedDetailsField, TemplateSchema, LearCredentialEmployeeDetailsTemplateSchema, LearCredentialMachineDetailsTemplateSchema, VerifiableCertificationDetailsTemplateSchema, GxLabelCredentialDetailsTemplateSchema, MappedTemplateSchema, DetailsField, MappedDetailsField, CustomDetailsField, DetailsKeyValueField, DetailsGroupField, MappedDetailsGroupField, MappedExtendedDetailsGroupField } from 'src/app/core/models/schemas/credential-details-schemas';
 
 @Injectable() //provided in component
@@ -100,8 +99,8 @@ export class CredentialDetailsService {
 
   private loadCredentailDetails(): Observable<LEARCredentialDataDetails> {
     // todo restore
-    // return this.credentialProcedureService.getCredentialProcedureById(this.procedureId$());
-    return of(mockCredentialEmployee);
+    return this.credentialProcedureService.getCredentialProcedureById(this.procedureId$());
+    // return of(mockCredentialEmployee);
       // return of(mockGxLabel);
   }
 
