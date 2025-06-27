@@ -1,8 +1,8 @@
 // src/app/core/helpers/credential-helpers.spec.ts
 
 import { CredentialStatus } from 'src/app/core/models/entity/lear-credential';
-import { DetailsCredentialType } from 'src/app/core/models/schemas/credential-details-schemas';
 import { credentialTypeHasSendReminderButton, credentialTypeHasSignCredentialButton, statusHasSendReminderlButton, statusHasSignCredentialButton } from './actions-helpers';
+import { DetailsCredentialType } from 'src/app/core/models/entity/lear-credential-details';
 
 describe('Credential Helpers', () => {
   describe('credentialTypeHasSendReminderButton', () => {

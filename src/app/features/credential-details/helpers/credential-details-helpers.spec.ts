@@ -1,4 +1,4 @@
-// src/app/core/helpers/credential-details-helpers.spec.ts
+import { DetailsGroupField } from 'src/app/core/models/entity/lear-credential-details';
 import {
   groupActionsByFunction,
   mapComplianceEntries,
@@ -6,7 +6,6 @@ import {
   isGxLabel
 } from './credential-details-helpers';
 import { Power, ComplianceEntry, LEARCredential } from 'src/app/core/models/entity/lear-credential';
-import { DetailsGroupField } from 'src/app/core/models/schemas/credential-details-schemas';
 
 describe('Credential Details Helpers', () => {
   describe('groupActionsByFunction', () => {
