@@ -1,9 +1,9 @@
 import { groupActionsByFunction, FunctionActions } from 'src/app/features/credential-details/helpers/credential-details-helpers';
-import { LEARCredentialEmployee } from 'src/app/core/models/entity/lear-credential';
-import { LearCredentialEmployeeDetailsTemplateSchema } from './lear-credential-employee-details-schema';
+import { LEARCredentialMachine } from 'src/app/core/models/entity/lear-credential';
+import { LearCredentialMachineDetailsTemplateSchema } from './lear-credential-machine-details-schema';
 
-describe('LearCredentialEmployeeDetailsTemplateSchema', () => {
-  const sample: LEARCredentialEmployee = {
+describe('LearCredentialMachineDetailsTemplateSchema', () => {
+  const sample: LEARCredentialMachine = {
     credentialSubject: {
       mandate: {
         mandator: {
@@ -15,10 +15,9 @@ describe('LearCredentialEmployeeDetailsTemplateSchema', () => {
           country: 'ES',
         },
         mandatee: {
-          firstName: 'Bob',
-          lastName: 'Builder',
-          email: 'bob@builder.com',
-          nationality: 'ES',
+          id: 'M123',
+          domain: 'machine.local',
+          ipAddress: '192.168.1.1',
         },
         power: [
           { function: 'f1', action: 'a1', domain: 'd', type: 't' },
@@ -33,19 +32,19 @@ describe('LearCredentialEmployeeDetailsTemplateSchema', () => {
       organization: 'IssuerOrg',
       organizationIdentifier: 'ISS-002',
       country: 'DE',
-    },
+    } as any,
     type: [],
     id: '',
     issuanceDate: '',
     credentialSubjectFormat: '',
   } as any;
 
-  const { main, side } = LearCredentialEmployeeDetailsTemplateSchema;
+  const { main, side } = LearCredentialMachineDetailsTemplateSchema;
 
   describe('main section', () => {
-    it('extracts all mandator fields correctly', () => {
+    it('extracts mandator fields correctly', () => {
       const mandatorGroup = main.find(g => g.key === 'mandator')!;
-      const values = mandatorGroup.value.map((f:any) => (f.value as any)(sample));
+      const values = mandatorGroup.value.map((f: any) => (f.value as any)(sample));
       expect(values).toEqual([
         'Alice',
         'alice@example.com',
@@ -56,33 +55,33 @@ describe('LearCredentialEmployeeDetailsTemplateSchema', () => {
       ]);
     });
 
-    it('extracts all mandatee fields correctly', () => {
+    it('extracts mandatee fields correctly', () => {
       const mandateeGroup = main.find(g => g.key === 'mandatee')!;
-      const values = mandateeGroup.value.map((f:any) => (f.value as any)(sample));
+      const values = mandateeGroup.value.map((f: any) => (f.value as any)(sample));
       expect(values).toEqual([
-        'Bob Builder',
-        'bob@builder.com',
-        'ES',
+        'M123',
+        'machine.local',
+        '192.168.1.1',
       ]);
     });
 
-    it('computes power field with groupActionsByFunction', () => {
+    it('computes power field using groupActionsByFunction', () => {
       const powerField = main.find(f => f.key === 'power')!;
       const result = (powerField.value as any)(sample) as FunctionActions[];
       const expected = groupActionsByFunction(sample.credentialSubject.mandate.power);
       expect(result).toEqual(expected);
-      // ensure deduplication and grouping
       expect(expected).toContainEqual({ function: 'f1', actions: expect.arrayContaining(['a1', 'a2']) });
       expect(expected).toContainEqual({ function: 'f2', actions: ['b1'] });
     });
   });
 
   describe('side section', () => {
-    it('extracts issuer group fields when issuer is present', () => {
+    it('extracts issuer fields correctly when issuer is present', () => {
       const issuerGroup = side.find(g => g.key === 'issuer')!;
-      const values = issuerGroup.value.map((f:any) => (f.value as any)(sample));
+      const values = issuerGroup.value.map((f: any) => (f.value as any)(sample));
       expect(values).toEqual([
         'IssuerCo',
+        'IssuerCo',       // email maps to commonName in schema
         'ISBN-456',
         'IssuerOrg',
         'ISS-002',
@@ -90,11 +89,11 @@ describe('LearCredentialEmployeeDetailsTemplateSchema', () => {
       ]);
     });
 
-    it('returns undefined for each issuer field when issuer is missing', () => {
-      const noIssuer = { ...sample, issuer: undefined } as any as LEARCredentialEmployee;
+    it('returns undefined for all issuer fields when issuer is missing', () => {
+      const noIssuer = { ...sample, issuer: undefined } as any as LEARCredentialMachine;
       const issuerGroup = side.find(g => g.key === 'issuer')!;
-      const values = issuerGroup.value.map((f:any) => (f.value as any)(noIssuer));
-      expect(values).toEqual([undefined, undefined, undefined, undefined, undefined]);
+      const values = issuerGroup.value.map((f: any) => (f.value as any)(noIssuer));
+      expect(values).toEqual([undefined, undefined, undefined, undefined, undefined, undefined]);
     });
   });
 });
