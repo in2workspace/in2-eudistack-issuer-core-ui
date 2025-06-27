@@ -26,12 +26,12 @@ export class CredentialDetailsService {
   private readonly dialog = inject(DialogWrapperService);
   private readonly router = inject(Router);
   private readonly translate = inject(TranslateService);
-      private schemasByTypeMap: Record<DetailsCredentialType, TemplateSchema> = {
-      'LEARCredentialEmployee': LearCredentialEmployeeDetailsTemplateSchema,
-      'LEARCredentialMachine': LearCredentialMachineDetailsTemplateSchema,
-      'VerifiableCertification': VerifiableCertificationDetailsTemplateSchema,
-      'GxLabelCredential': GxLabelCredentialDetailsTemplateSchema,
-    } as const;
+  private readonly schemasByTypeMap: Record<DetailsCredentialType, TemplateSchema> = {
+    'LEARCredentialEmployee': LearCredentialEmployeeDetailsTemplateSchema,
+    'LEARCredentialMachine': LearCredentialMachineDetailsTemplateSchema,
+    'VerifiableCertification': VerifiableCertificationDetailsTemplateSchema,
+    'GxLabelCredential': GxLabelCredentialDetailsTemplateSchema,
+  } as const;
 
   public setProcedureId(id: string) {
     this.procedureId$.set(id);
@@ -100,8 +100,8 @@ export class CredentialDetailsService {
 
   private loadCredentailDetails(): Observable<LEARCredentialDataDetails> {
     // todo restore
-    return this.credentialProcedureService.getCredentialProcedureById(this.procedureId$());
-    // return of(mockCredentialEmployee).pipe(take(1));
+    // return this.credentialProcedureService.getCredentialProcedureById(this.procedureId$());
+    return of(mockCredentialEmployee);
       // return of(mockGxLabel);
   }
 
@@ -115,78 +115,131 @@ export class CredentialDetailsService {
     return type;
   }
 
-  private mapSchemaValues(
-      schema: TemplateSchema,
-      credential: LEARCredential
-    ): MappedTemplateSchema {
-      const mapFields = (fields: DetailsField[]): MappedDetailsField[] =>
-        fields.map(field => this.mapField(field, credential));
-  
-      return {
-        main: mapFields(schema.main),
-        side: mapFields(schema.side)
-      };
-    }
-  
-     private mapField(
-      field: DetailsField,
-      credential: LEARCredential
-    ): MappedDetailsField {
-      // Helper to check if there is .custom
-      const mapCustom = (custom: CustomDetailsField): CustomDetailsField => {
-        const rawVal = custom.value;
-        let computedVal = typeof rawVal === 'function'
-          ? rawVal(credential)
-          : rawVal;
-        if(!computedVal){
-          console.error('Value not found in custom field: ');
-          console.error(custom);
-          computedVal = "";
-        }
-        return { ...custom, value: computedVal };
-      };
-  
-      if (field.type === 'key-value') {
-        const kv = field as DetailsKeyValueField;
-        const raw = kv.value;
-        let computed = typeof raw === 'function'
-          ? raw(credential)
-          : raw;
+  //todo review
+private mapSchemaValues(
+  schema: TemplateSchema,
+  credential: LEARCredential
+): MappedTemplateSchema {
+  const mapFieldsMain = (fields: DetailsField[]): MappedDetailsField[] =>
+    fields.map(field => this.mapFieldMain(field, credential));
 
-        if(!computed){
-          console.error('Value not found in custom field: ');
-          console.error(computed);
-          computed = "";
-        }
-  
-        return {
-          ...kv,
-          value: computed,
-          custom: kv.custom ? mapCustom(kv.custom) : undefined
-        };
-      }
+  const mapFieldsSide = (fields: DetailsField[]): MappedDetailsField[] =>
+    fields
+      .map(field => this.mapFieldNullable(field, credential))
+      .filter((f): f is MappedDetailsField => f !== null);
 
-      const grp = field;
-      const rawGroup = grp.value;
-      const children: DetailsField[] =
-        typeof rawGroup === 'function'
-          ? rawGroup(credential)
-          : rawGroup;
-      if(!children){
-        console.error('Could not find children in group: ');
-        console.error(grp);
-      }
-  
-      const mappedChildren = children.map((sub: DetailsField) =>
-        this.mapField(sub, credential)
-      );
-  
-      return {
-        ...grp,
-        value: mappedChildren,
-        custom: grp.custom ? mapCustom(grp.custom) : undefined
-      };
+  return {
+    main: mapFieldsMain(schema.main),
+    side: mapFieldsSide(schema.side)
+  };
+}
+
+private mapFieldMain(
+  field: DetailsField,
+  credential: LEARCredential
+): MappedDetailsField {
+  const mapCustom = (custom: CustomDetailsField): CustomDetailsField => {
+    const rawVal = custom.value;
+    const computedVal =
+      typeof rawVal === 'function' ? rawVal(credential) : rawVal;
+    return { ...custom, value: computedVal ?? "" };
+  };
+
+  if (field.type === 'key-value') {
+    const kv = field as DetailsKeyValueField;
+    const raw = kv.value;
+    const computed =
+      typeof raw === 'function' ? raw(credential) : raw;
+    return {
+      ...kv,
+      value: computed ?? "",
+      custom: kv.custom ? mapCustom(kv.custom) : undefined
+    };
+  }
+
+  // grup
+  const grp = field as DetailsGroupField;
+  const rawGroup = grp.value;
+  const children: DetailsField[] =
+    typeof rawGroup === 'function'
+      ? rawGroup(credential)
+      : rawGroup;
+
+  const mappedChildren = children.map(sub =>
+    this.mapFieldMain(sub, credential)
+  );
+
+  return {
+    ...grp,
+    value: mappedChildren,
+    custom: grp.custom ? mapCustom(grp.custom) : undefined
+  };
+}
+
+
+private mapFieldNullable(
+  field: DetailsField,
+  credential: LEARCredential
+): MappedDetailsField | null {
+  const mapCustom = (custom: CustomDetailsField): CustomDetailsField | null => {
+    const rawVal = custom.value;
+    const computedVal =
+      typeof rawVal === 'function' ? rawVal(credential) : rawVal;
+    if (!computedVal) {
+      console.warn('Omitting side field custom value:');
+      console.warn(field);
+      return null;
     }
+    return { ...custom, value: computedVal };
+  };
+
+  if (field.type === 'key-value') {
+    const kv = field as DetailsKeyValueField;
+    const raw = kv.value;
+    const computed =
+      typeof raw === 'function' ? raw(credential) : raw;
+     if (!computed) {
+      console.warn('Omitting side field value:');
+      console.warn(field);
+      return null;
+    }
+    const custom = kv.custom ? mapCustom(kv.custom) : null;
+    return {
+      ...kv,
+      value: computed,
+      custom: custom ?? undefined
+    };
+  }
+
+  const grp = field as DetailsGroupField;
+  const rawGroup = grp.value;
+  const children: DetailsField[] =
+    typeof rawGroup === 'function'
+      ? rawGroup(credential)
+      : rawGroup;
+  if (!children?.length){
+    console.warn('Ometting empty group:');
+    console.warn(grp);
+    return null;
+  }
+
+  const mappedChildren = children
+    .map(sub => this.mapFieldNullable(sub, credential))
+    .filter((c): c is MappedDetailsField => c !== null);
+
+  if (!mappedChildren.length){
+    console.warn('Ometting empty group:');
+    console.warn(grp);
+    return null;
+  }
+  const custom = grp.custom ? mapCustom(grp.custom) : null;
+
+  return {
+    ...grp,
+    value: mappedChildren,
+    custom: custom ?? undefined
+  };
+}
 
   private setCredentialBasicInfo(details: LEARCredentialDataDetails): void{
     const credential = details.credential.vc;
