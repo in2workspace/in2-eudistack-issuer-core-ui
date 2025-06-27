@@ -18,7 +18,7 @@ export const mockCredentialEmployee: any = {
       issuer: {
         id: 'issuer-emp',
         commonName: 'Employee Issuer',
-        country: 'ES',
+        // country: 'ES',
         organization: 'Org EMP',
         organizationIdentifier: 'IDentifier Org',
         emailAddress: 'email',
@@ -205,7 +205,7 @@ export const mockCredentialCertification: LEARCredentialDataDetails = {
 
 export const mockGxLabel: LEARCredentialDataDetails = {
   procedure_id: 'mock-procedure-gx-label',
-  credential_status: 'PEND_DOWNLOAD',
+  credential_status: 'DRAFT',
   credential: {
     sub: null,
     nbf: '1714675200',
@@ -215,11 +215,11 @@ export const mockGxLabel: LEARCredentialDataDetails = {
     jti: 'jti-cert-123',
     vc: {
       id: 'cred-cert',
-      type: ['VerifiableCredential', 'GxLabelCredential'],
+      type: ['VerifiableCredential', 'gx:LabelCredential'],
       issuer: "issueeeeeeer",
  credentialSubject: {
         id: 'urn:uuid:123e4567-e89b-12d3-a456-426614174000',
-        "gx:labelLevel": "Gold",
+        "gx:labelLevel": "BL",
         "gx:engineVersion": "2.1.0",
         "gx:rulesVersion": "2025-06-01",
         "gx:compliantCredentials": [

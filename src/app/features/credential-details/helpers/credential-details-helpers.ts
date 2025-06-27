@@ -49,5 +49,5 @@ export function isVerifiable(c: LEARCredential): c is VerifiableCertification {
 }
 
 export function isGxLabel(c: LEARCredential): c is GxLabelCredential {
-  return c.type.includes('GxLabelCredential');
+  return c.type.includes('gx:LabelCredential');
 }

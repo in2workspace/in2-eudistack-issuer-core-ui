@@ -5,7 +5,7 @@ import { CompliantCredentialsComponent, compliantCredentialsToken } from "src/ap
 import { URL_LIST_TOKEN, UrlListComponent } from "src/app/features/credential-details/components/url-list/url-list.component";
 import { groupActionsByFunction, isVerifiable, mapComplianceEntries, isGxLabel } from "src/app/features/credential-details/helpers/credential-details-helpers";
 
-export type DetailsCredentialType = 'LEARCredentialEmployee' | 'LEARCredentialMachine' | 'VerifiableCertification' | 'GxLabelCredential';
+export type DetailsCredentialType = 'LEARCredentialEmployee' | 'LEARCredentialMachine' | 'VerifiableCertification' | 'gx:LabelCredential';
 
 export type DetailsField = DetailsKeyValueField | DetailsGroupField;
 

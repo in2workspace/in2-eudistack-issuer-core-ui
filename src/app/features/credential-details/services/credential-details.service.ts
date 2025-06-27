@@ -7,7 +7,7 @@ import { Router } from '@angular/router';
 import { DialogData } from 'src/app/shared/components/dialog/dialog.component';
 import { CredentialStatus, LEARCredential, LEARCredentialDataDetails } from 'src/app/core/models/entity/lear-credential';
 import { ComponentPortal } from '@angular/cdk/portal';
-import { mockCredentialEmployee } from 'src/app/core/mocks/details-mocks';
+import { mockCredentialEmployee, mockGxLabel } from 'src/app/core/mocks/details-mocks';
 import { DetailsCredentialType, MappedExtendedDetailsField, TemplateSchema, LearCredentialEmployeeDetailsTemplateSchema, LearCredentialMachineDetailsTemplateSchema, VerifiableCertificationDetailsTemplateSchema, GxLabelCredentialDetailsTemplateSchema, MappedTemplateSchema, DetailsField, MappedDetailsField, CustomDetailsField, DetailsKeyValueField, DetailsGroupField, MappedDetailsGroupField, MappedExtendedDetailsGroupField } from 'src/app/core/models/schemas/credential-details-schemas';
 
 @Injectable() //provided in component
@@ -29,7 +29,7 @@ export class CredentialDetailsService {
     'LEARCredentialEmployee': LearCredentialEmployeeDetailsTemplateSchema,
     'LEARCredentialMachine': LearCredentialMachineDetailsTemplateSchema,
     'VerifiableCertification': VerifiableCertificationDetailsTemplateSchema,
-    'GxLabelCredential': GxLabelCredentialDetailsTemplateSchema,
+    'gx:LabelCredential': GxLabelCredentialDetailsTemplateSchema,
   } as const;
 
   public setProcedureId(id: string) {
