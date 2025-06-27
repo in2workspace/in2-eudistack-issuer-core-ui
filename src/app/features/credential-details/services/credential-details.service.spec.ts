@@ -9,6 +9,11 @@ import { of } from 'rxjs';
 import { DialogData } from 'src/app/shared/components/dialog/dialog.component';
 import { CredentialFormData, LEARCredentialDataDetails } from 'src/app/core/models/entity/lear-credential';
 import * as utils from '../helpers/credential-details-helpers';
+import { Injector } from '@angular/core';
+import { GxLabelCredentialDetailsTemplateSchema } from 'src/app/core/models/schemas/credential-details/gx-label-credential-details-schema';
+import { LearCredentialEmployeeDetailsTemplateSchema } from 'src/app/core/models/schemas/credential-details/lear-credential-employee-details-schema';
+import { LearCredentialMachineDetailsTemplateSchema } from 'src/app/core/models/schemas/credential-details/lear-credential-machine-details-schema';
+import { VerifiableCertificationDetailsTemplateSchema } from 'src/app/core/models/schemas/credential-details/verifiable-certification-details-schema';
 
 describe('CredentialDetailsService', () => {
   let service: CredentialDetailsService;
@@ -57,74 +62,6 @@ describe('CredentialDetailsService', () => {
   it('should be created', () => {
     expect(service).toBeTruthy();
   });
-
-  // it('should subscribe to loadCredentialDetails and call loadFormObserver.next', () => {
-  //   const mockData = {} as any;
-  
-  //   const loadCredentialDetailsSpy = jest
-  //     .spyOn(service, 'loadCredentialDetails')
-  //     .mockReturnValue(of(mockData));
-  
-  //   const observerNextSpy = jest.spyOn((service as any).loadFormObserver, 'next');
-  
-  //   service.loadCredentialDetailsAndForm();
-  
-  //   expect(loadCredentialDetailsSpy).toHaveBeenCalled();
-  //   expect(observerNextSpy).toHaveBeenCalledWith(mockData);
-  // });
-
-  // it('should fetch credential details and update signals', (done) => {
-  //   const mockProcedureId = 'test-id';
-  //   const mockData: LEARCredentialDataDetails = {
-  //     credential_status: 'VALID',
-  //     credential: { vc: {} as any }
-  //   } as LEARCredentialDataDetails;
-  
-  //   service.procedureId$.set(mockProcedureId);
-  
-  //   jest
-  //     .spyOn(mockCredentialProcedureService, 'getCredentialProcedureById')
-  //     .mockReturnValue(of(mockData));
-  
-  //   service.loadCredentialDetails().subscribe(result => {
-  //     expect(result).toBe(mockData);
-  
-  //     expect(service.credentialDetailsData$()).toBe(mockData);
-  //     expect(service.credentialStatus$()).toBe('VALID');
-  
-  //     done();
-  //   });
-  // });
-  
-  // it('should load form and update signals', () => {
-  //   const mockCredential = {
-  //     validFrom: '2023-01-01',
-  //     validUntil: '2023-12-31',
-  //     type: ['LEARCredentialEmployee'],
-  //   };
-  
-  //   const mockData = {
-  //     credential: { vc: mockCredential },
-  //   } as any;
-  
-  //   const mockSchema = { fake: 'schema' } as any;
-  //   const mockFormData = { name: 'John' } as unknown as CredentialFormData;
-  //   const mockFormGroup = new FormBuilder().group({ name: [''] });
-  
-  //   service.credentialDetailsData$.set(mockData);
-  
-  //   jest.spyOn(utils, 'getFormSchemaByType').mockReturnValue(mockSchema);
-  //   jest.spyOn(utils, 'getFormDataByType').mockReturnValue(mockFormData);
-  //   jest.spyOn(utils, 'buildFormFromSchema').mockReturnValue(mockFormGroup);
-  
-  //   (service as any).loadForm();
-  
-  //   expect(service.credentialValidFrom$()).toBe('2023-01-01');
-  //   expect(service.credentialValidUntil$()).toBe('2023-12-31');
-  //   expect(service.credentialType$()).toBe('LEARCredentialEmployee');
-  //   expect(service.credentialDetailsFormSchema$()).toBe(mockSchema);
-  //   expect(service.credentialDetailsForm$()).toBe(mockFormGroup);
-  // });
 
   it('should set the procedureId$ signal when setProcedureId is called', () => {
     service.setProcedureId('abc123');
@@ -330,4 +267,141 @@ describe('CredentialDetailsService', () => {
     expect(routerNavigateSpy).toHaveBeenCalledWith(['/organization/credentials']);
     expect(locationReloadSpy).toHaveBeenCalled();
   }));
+
+describe('loadCredentialModels', () => {
+  it('ha de cridar getCredentialProcedureById, setear senyals i models', fakeAsync(() => {
+    // prepara
+    service.procedureId$.set('pid-123');
+
+    const fakeDetails = {
+      credential: {
+        vc: {
+          validFrom: '2025-02-02',
+          validUntil: '2025-03-03',
+          type: ['LEARCredentialEmployee'],
+          customField: 'valorX',            // perquè el schema fake llegeixi c.customField
+        }
+      },
+      credential_status: 'APPROVED'
+    } as any;
+
+    jest.spyOn(mockCredentialProcedureService, 'getCredentialProcedureById')
+      .mockReturnValue(of(fakeDetails));
+
+    // schema i spies
+    const fakeSchema = {
+      main: [{
+        type: 'key-value',
+        key: 'cf',
+        value: (c: any) => c.customField,
+        custom: undefined
+      }],
+      side: []
+    };
+    const getSchemaSpy = jest
+      .spyOn(service as any, 'getSchemaByType')
+      .mockReturnValue(fakeSchema);
+
+    const extendSpy = jest
+      .spyOn(service as any, 'extendFields')
+      .mockImplementation((...args: unknown[]) => args[0]); // el primer arg és l'array de fields
+
+    // acció
+    service.loadCredentialModels(TestBed.inject(Injector));
+    tick();
+
+    // asserts de senyals
+    expect(service.credentialValidFrom$()).toBe('2025-02-02');
+    expect(service.credentialValidUntil$()).toBe('2025-03-03');
+    expect(service.credentialType$()).toBe('LEARCredentialEmployee');
+    expect(service.credentialStatus$()).toBe('APPROVED');
+
+    // assegura que getSchemaByType es crida amb el tipus correcte
+    expect(getSchemaSpy).toHaveBeenCalledWith('LEARCredentialEmployee');
+
+    // models
+    expect(service.mainTemplateModel$()).toEqual([{
+      type: 'key-value',
+      key: 'cf',
+      value: 'valorX',    // el computed del value
+      custom: undefined
+    }]);
+    expect(service.sideTemplateModel$()).toEqual([]);
+  }));
+
+  it('lança error si al schema li falta el tipus', fakeAsync(() => {
+    service.procedureId$.set('pid-err');
+
+    const badDetails = {
+      credential: {
+        vc: {
+          validFrom: '2025-01-01',
+          validUntil: '2025-01-02',
+          type: [],   // cap tipus vàlid → getCredentialType throw
+        }
+      },
+      credential_status: 'PEND_DOWNLOAD'
+    } as any;
+
+    jest.spyOn(mockCredentialProcedureService, 'getCredentialProcedureById')
+      .mockReturnValue(of(badDetails));
+
+    // com que el throw està dins el subscribe, cal cridar tick() abans d'esperar-lo
+    expect(() => {
+      service.loadCredentialModels(TestBed.inject(Injector));
+      tick();
+    }).toThrowError('No credential tyep found in credential');  // fixa't en el "tyep"
+  }));
+});
+
+  describe('mapFieldMain / mapFieldNullable', () => {
+    const credStub = { foo: 'bar' } as any;
+
+    it('mapFieldMain fa mapping de key-value i groups', () => {
+      // key-value
+      const kv = {
+        type: 'key-value',
+        key: 'x',
+        value: (c: any) => 'valX',
+        custom: { token: 'T', component: class{}, value: 'V' }
+      } as any;
+      const mappedKv = (service as any).mapFieldMain(kv, credStub);
+      expect(mappedKv.value).toBe('valX');
+      expect(mappedKv.custom!.value).toBe('V');
+
+      // group
+      const grp = {
+        type: 'group',
+        key: 'g',
+        value: (c: any) => [{ type: 'key-value', key: 'y', value: 'valY' }],
+        custom: undefined
+      } as any;
+      const mappedGrp = (service as any).mapFieldMain(grp, credStub);
+      expect(Array.isArray(mappedGrp.value)).toBe(true);
+      expect((mappedGrp.value as any[])[0].value).toBe('valY');
+    });
+
+    it('mapFieldNullable retorna null si el valor és falsy o grup buit', () => {
+      // key-value falsy
+      const kvFalsy = { type: 'key-value', key: 'k', value: () => '', custom: undefined } as any;
+      expect((service as any).mapFieldNullable(kvFalsy, credStub)).toBeNull();
+
+      // group buit
+      const grpEmpty = { type: 'group', key: 'g', value: () => [], custom: undefined } as any;
+      expect((service as any).mapFieldNullable(grpEmpty, credStub)).toBeNull();
+    });
+  });
+
+  describe('getSchemaByType', () => {
+    it('retorna el schema correcte per cada tipus', () => {
+      expect((service as any).getSchemaByType('LEARCredentialEmployee'))
+        .toBe(LearCredentialEmployeeDetailsTemplateSchema);
+      expect((service as any).getSchemaByType('LEARCredentialMachine'))
+        .toBe(LearCredentialMachineDetailsTemplateSchema);
+      expect((service as any).getSchemaByType('VerifiableCertification'))
+        .toBe(VerifiableCertificationDetailsTemplateSchema);
+      expect((service as any).getSchemaByType('gx:LabelCredential'))
+        .toBe(GxLabelCredentialDetailsTemplateSchema);
+    });
+  });
 });
