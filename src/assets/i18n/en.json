@@ -118,7 +118,7 @@
     "standard": "standard",
     "basic": "basic",
     "gx:labelLevel": "Label Level",
-    "gx:engineVersion": "Engine Version",
+    "gx:rulesVersion": "Rules Version",
     "gx:engineRules": "Engine Rules",
     "gx:compliantCredentials": "Compliant Credentials",
     "gx:validatedCriteria": "Validated Criteria",
