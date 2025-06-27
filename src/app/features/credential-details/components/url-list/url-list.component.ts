@@ -1,5 +1,4 @@
 import { InjectionToken, inject, Component } from '@angular/core';
-import { CommonModule } from '@angular/common';
 
 // Define a component-specific injection token for a list of URLs
 export const URL_LIST_TOKEN = new InjectionToken<string[]>('URL_LIST_TOKEN');
@@ -8,6 +7,7 @@ export const URL_LIST_TOKEN = new InjectionToken<string[]>('URL_LIST_TOKEN');
   standalone: true,
   selector: 'app-url-list',
   imports: [],
+  // todo remove mock token
   providers: [{
     provide: URL_LIST_TOKEN,
     useValue: [

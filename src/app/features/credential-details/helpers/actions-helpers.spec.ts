@@ -1,12 +1,11 @@
 // src/app/core/helpers/credential-helpers.spec.ts
 
-import { CredentialStatus } from 'src/app/core/models/entity/lear-credential';
+import { CredentialStatus, CredentialType } from 'src/app/core/models/entity/lear-credential';
 import { credentialTypeHasSendReminderButton, credentialTypeHasSignCredentialButton, statusHasSendReminderlButton, statusHasSignCredentialButton } from './actions-helpers';
-import { DetailsCredentialType } from 'src/app/core/models/entity/lear-credential-details';
 
 describe('Credential Helpers', () => {
   describe('credentialTypeHasSendReminderButton', () => {
-    const allowed: DetailsCredentialType[] = ['LEARCredentialEmployee', 'gx:LabelCredential'];
+    const allowed: CredentialType[] = ['LEARCredentialEmployee', 'gx:LabelCredential'];
     const disallowed: any = 'SomeOtherType';
 
     it.each(allowed)('returns true for allowed type %s', (type) => {
@@ -19,7 +18,7 @@ describe('Credential Helpers', () => {
   });
 
   describe('credentialTypeHasSignCredentialButton', () => {
-    const allowed: DetailsCredentialType[] = ['LEARCredentialEmployee', 'VerifiableCertification', 'gx:LabelCredential'];
+    const allowed: CredentialType[] = ['LEARCredentialEmployee', 'VerifiableCertification', 'gx:LabelCredential'];
     const disallowed: any = 'AnotherType';
 
     it.each(allowed)('returns true for allowed type %s', (type) => {

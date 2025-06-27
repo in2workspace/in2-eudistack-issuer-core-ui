@@ -7,8 +7,6 @@ import { CredentialProcedureService } from 'src/app/core/services/credential-pro
 import { DialogWrapperService } from 'src/app/shared/components/dialog/dialog-wrapper/dialog-wrapper.service';
 import { of } from 'rxjs';
 import { DialogData } from 'src/app/shared/components/dialog/dialog.component';
-import { CredentialFormData, LEARCredentialDataDetails } from 'src/app/core/models/entity/lear-credential';
-import * as utils from '../helpers/credential-details-helpers';
 import { Injector } from '@angular/core';
 import { GxLabelCredentialDetailsTemplateSchema } from 'src/app/core/models/schemas/credential-details/gx-label-credential-details-schema';
 import { LearCredentialEmployeeDetailsTemplateSchema } from 'src/app/core/models/schemas/credential-details/lear-credential-employee-details-schema';

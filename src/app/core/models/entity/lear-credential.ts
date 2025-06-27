@@ -1,5 +1,3 @@
-import { DetailsCredentialType } from "./lear-credential-details";
-
 export interface LEARCredentialDataDetails {
   procedure_id: string;
   credential_status: CredentialStatus;
@@ -18,8 +16,8 @@ export interface LEARCredentialJwtPayload {
   jti: string;
 }
 
-export type CredentialType =   'LEARCredentialEmployee' | 'LEARCredentialMachine' | 'VerifiableCertification' | 'GxLabelCredential';
-export type ExtendedCredentialType =  'VerifiableCredential' | DetailsCredentialType;
+export type CredentialType =   'LEARCredentialEmployee' | 'LEARCredentialMachine' | 'VerifiableCertification' | 'gx:LabelCredential';
+export type ExtendedCredentialType =  'VerifiableCredential' | CredentialType;
 
 export type LEARCredential =
   | LEARCredentialEmployee
@@ -235,43 +233,3 @@ export interface CompliantCredential{
   type: string, 
   "gx:digestSRI": string
 }
-
-export type LearCredentialEmployeeFormData = {
-  issuer?: EmployeeIssuer;
-  mandatee: LEARCredentialEmployee['credentialSubject']['mandate']['mandatee'];
-  mandator: EmployeeMandator;
-  power: Power[];
-};
-
-export type LearCredentialMachineFormData = {
-  issuer?: MachineIssuer;
-  mandatee: LEARCredentialMachine['credentialSubject']['mandate']['mandatee'];
-  mandator: MachineMandator;
-  power: Power[];
-};
-
-export type VerifiableCertificationFormData = {
-  issuer: CertificationIssuer;
-  company: VerifiableCertification['credentialSubject']['company'];
-  product: VerifiableCertification['credentialSubject']['product'];
-  attester: VerifiableCertification['attester'];
-};
-
-export type GxLabelCredentialFormData = {
-  issuer: string,
-  basic: {
-    id:GxLabelCredential['credentialSubject']['id']
-    labelLevel: GxLabelCredential['credentialSubject']['gx:labelLevel'],
-    engineVersion: GxLabelCredential['credentialSubject']['gx:engineVersion'],
-    rulesVersion: GxLabelCredential['credentialSubject']['gx:rulesVersion']
-  }
-}
-
-export type CredentialFormDataByType = {
-  LEARCredentialEmployee: LearCredentialEmployeeFormData;
-  LEARCredentialMachine: LearCredentialMachineFormData;
-  VerifiableCertification: VerifiableCertificationFormData;
-  GxLabelCredential: GxLabelCredentialFormData;
-};
-
-export type CredentialFormData<T extends CredentialType = CredentialType> = CredentialFormDataByType[T];

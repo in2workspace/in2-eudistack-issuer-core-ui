@@ -1,9 +1,8 @@
-import { CommonModule } from '@angular/common';
 import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
 import { MatSort, MatSortModule } from '@angular/material/sort';
 import { MatTableDataSource, MatTableModule } from '@angular/material/table';
 import { CompliantCredential } from './../../../../core/models/entity/lear-credential';
-import { AfterViewInit, Component, inject, InjectionToken, OnInit, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, inject, InjectionToken, ViewChild } from '@angular/core';
 
 export const compliantCredentialsToken = new InjectionToken<CompliantCredential[]>('COMPLIANT_CREDENTIALS_DATA');
 

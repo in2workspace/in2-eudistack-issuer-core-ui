@@ -15,10 +15,10 @@ import { CapitalizePipe } from 'src/app/shared/pipes/capitalize.pipe';
 import { AddPrefixPipe } from 'src/app/shared/pipes/add-prefix.pipe';
 import { CredentialDetailsService } from './services/credential-details.service';
 import { PortalModule } from '@angular/cdk/portal';
-import { CredentialStatus } from 'src/app/core/models/entity/lear-credential';
+import { CredentialStatus, CredentialType } from 'src/app/core/models/entity/lear-credential';
 import { Observable } from 'rxjs';
 import { credentialTypeHasSendReminderButton, credentialTypeHasSignCredentialButton, statusHasSendReminderlButton, statusHasSignCredentialButton } from './helpers/actions-helpers';
-import { DetailsCredentialType, MappedExtendedDetailsField } from 'src/app/core/models/entity/lear-credential-details';
+import { MappedExtendedDetailsField } from 'src/app/core/models/entity/lear-credential-details';
 
 
 @Component({
@@ -34,7 +34,7 @@ export class CredentialDetailsComponent implements OnInit {
   //signals
   public credentialValidFrom$: WritableSignal<string>;
   public credentialValidUntil$: WritableSignal<string>
-  public credentialType$: WritableSignal<DetailsCredentialType | undefined>;
+  public credentialType$: WritableSignal<CredentialType | undefined>;
   public credentialStatus$: WritableSignal<CredentialStatus | undefined>
   public mainTemplateModel$: WritableSignal<MappedExtendedDetailsField[] | undefined>; // credentialSubject data
   public sideTemplateModel$: WritableSignal<MappedExtendedDetailsField[] | undefined>;

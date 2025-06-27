@@ -1,24 +1,23 @@
 import { inject, Injectable, Injector, signal, WritableSignal } from '@angular/core';
-import { EMPTY, from, Observable, of, switchMap, tap } from 'rxjs';
+import { EMPTY, from, Observable, switchMap, tap } from 'rxjs';
 import { CredentialProcedureService } from 'src/app/core/services/credential-procedure.service';
 import { DialogWrapperService } from 'src/app/shared/components/dialog/dialog-wrapper/dialog-wrapper.service';
 import { TranslateService } from '@ngx-translate/core';
 import { Router } from '@angular/router';
 import { DialogData } from 'src/app/shared/components/dialog/dialog.component';
-import { CredentialStatus, LEARCredential, LEARCredentialDataDetails } from 'src/app/core/models/entity/lear-credential';
+import { CredentialStatus, CredentialType, LEARCredential, LEARCredentialDataDetails } from 'src/app/core/models/entity/lear-credential';
 import { ComponentPortal } from '@angular/cdk/portal';
-import { mockCredentialEmployee, mockGxLabel } from 'src/app/core/mocks/details-mocks';
 import { LearCredentialEmployeeDetailsTemplateSchema } from 'src/app/core/models/schemas/credential-details/lear-credential-employee-details-schema';
 import { LearCredentialMachineDetailsTemplateSchema } from 'src/app/core/models/schemas/credential-details/lear-credential-machine-details-schema';
 import { GxLabelCredentialDetailsTemplateSchema } from 'src/app/core/models/schemas/credential-details/gx-label-credential-details-schema';
 import { VerifiableCertificationDetailsTemplateSchema } from 'src/app/core/models/schemas/credential-details/verifiable-certification-details-schema';
-import { DetailsCredentialType, MappedExtendedDetailsField, TemplateSchema, MappedTemplateSchema, DetailsField, MappedDetailsField, CustomDetailsField, DetailsKeyValueField, DetailsGroupField, MappedDetailsGroupField, MappedExtendedDetailsGroupField } from 'src/app/core/models/entity/lear-credential-details';
+import { MappedExtendedDetailsField, TemplateSchema, MappedTemplateSchema, DetailsField, MappedDetailsField, CustomDetailsField, DetailsKeyValueField, DetailsGroupField, MappedDetailsGroupField, MappedExtendedDetailsGroupField } from 'src/app/core/models/entity/lear-credential-details';
 
 @Injectable() //provided in component
 export class CredentialDetailsService {
   public credentialValidFrom$ = signal('');
   public credentialValidUntil$ = signal('');
-  public credentialType$ = signal<DetailsCredentialType | undefined>(undefined);
+  public credentialType$ = signal<CredentialType | undefined>(undefined);
   public procedureId$ = signal<string>('');
   public credentialStatus$ = signal<CredentialStatus | undefined>(undefined);
 
@@ -29,7 +28,7 @@ export class CredentialDetailsService {
   private readonly dialog = inject(DialogWrapperService);
   private readonly router = inject(Router);
   private readonly translate = inject(TranslateService);
-  private readonly schemasByTypeMap: Record<DetailsCredentialType, TemplateSchema> = {
+  private readonly schemasByTypeMap: Record<CredentialType, TemplateSchema> = {
     'LEARCredentialEmployee': LearCredentialEmployeeDetailsTemplateSchema,
     'LEARCredentialMachine': LearCredentialMachineDetailsTemplateSchema,
     'VerifiableCertification': VerifiableCertificationDetailsTemplateSchema,
@@ -108,17 +107,17 @@ export class CredentialDetailsService {
       // return of(mockGxLabel);
   }
 
-  private getSchemaByType(credType: DetailsCredentialType): TemplateSchema{
+  private getSchemaByType(credType: CredentialType): TemplateSchema{
     return this.schemasByTypeMap[credType];
   }
       
-  private getCredentialType(cred: LEARCredential): DetailsCredentialType{
-    const type = cred.type.find((t): t is DetailsCredentialType => t in this.schemasByTypeMap);
+  private getCredentialType(cred: LEARCredential): CredentialType{
+    const type = cred.type.find((t): t is CredentialType => t in this.schemasByTypeMap);
     if(!type) throw Error('No credential tyep found in credential');
     return type;
   }
 
-  //todo review
+  ///todo: add missing fields; in the view, show "-", "N/A" or ""
 private mapSchemaValues(
   schema: TemplateSchema,
   credential: LEARCredential

@@ -2,8 +2,6 @@ import { ComponentPortal } from "@angular/cdk/portal";
 import { InjectionToken } from "@angular/core";
 import { LEARCredential } from "./lear-credential";
 
-export type DetailsCredentialType = 'LEARCredentialEmployee' | 'LEARCredentialMachine' | 'VerifiableCertification' | 'gx:LabelCredential';
-
 export type DetailsField = DetailsKeyValueField | DetailsGroupField;
 
 export type ExtendedDetailsField = ExtendedDetailsGroupField | ExtendedDetailsKeyValueField;

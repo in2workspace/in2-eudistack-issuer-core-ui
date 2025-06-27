@@ -10,9 +10,9 @@ import { TranslateModule } from '@ngx-translate/core';
 import { LoaderService } from 'src/app/core/services/loader.service';
 import { CredentialDetailsService } from './services/credential-details.service';
 import { CredentialDetailsComponent } from './credential-details.component';
-import { DetailsCredentialType, MappedExtendedDetailsField } from 'src/app/core/models/entity/lear-credential-details';
-import { CredentialStatus } from 'src/app/core/models/entity/lear-credential';
+import { CredentialStatus, CredentialType } from 'src/app/core/models/entity/lear-credential';
 import * as actionHelpers from './helpers/actions-helpers';
+import { MappedExtendedDetailsField } from 'src/app/core/models/entity/lear-credential-details';
 
 describe('CredentialDetailsComponent', () => {
   let fixture: ComponentFixture<CredentialDetailsComponent>;
@@ -35,7 +35,7 @@ describe('CredentialDetailsComponent', () => {
     // Prepare signals
     const validFrom$ = signal('2025-01-01');
     const validUntil$ = signal('2025-12-31');
-    const type$ = signal<DetailsCredentialType | undefined>('LEARCredentialEmployee');
+    const type$ = signal<CredentialType | undefined>('LEARCredentialEmployee');
     const status$ = signal<CredentialStatus | undefined>('PEND_DOWNLOAD');
     const mainModel$ = signal<MappedExtendedDetailsField[] | undefined>([{ key: 'foo', type: 'key-value', value: 'bar' }]);
     const sideModel$ = signal<MappedExtendedDetailsField[] | undefined>([]);

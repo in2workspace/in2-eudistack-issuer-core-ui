@@ -1,17 +1,16 @@
-import { CredentialStatus } from "src/app/core/models/entity/lear-credential";
-import { DetailsCredentialType } from "src/app/core/models/entity/lear-credential-details";
+import { CredentialStatus, CredentialType } from "src/app/core/models/entity/lear-credential";
 
-const credentialTypeHasSendReminderButtonArr: DetailsCredentialType[] = ['LEARCredentialEmployee', 'gx:LabelCredential'];
-const credentialTypeHasSignCredentialButtonArr: DetailsCredentialType[] = ['LEARCredentialEmployee', 'VerifiableCertification', 'gx:LabelCredential'];
+const credentialTypeHasSendReminderButtonArr: CredentialType[] = ['LEARCredentialEmployee', 'gx:LabelCredential'];
+const credentialTypeHasSignCredentialButtonArr: CredentialType[] = ['LEARCredentialEmployee', 'VerifiableCertification', 'gx:LabelCredential'];
 
 const statusHasSendReminderButtonArr: CredentialStatus[] = ['WITHDRAWN', 'DRAFT', 'PEND_DOWNLOAD'];
 const statusHasSingCredentialButtonArr: CredentialStatus[] = ['PEND_SIGNATURE'];
 
-export function credentialTypeHasSendReminderButton(type: DetailsCredentialType): boolean{
+export function credentialTypeHasSendReminderButton(type: CredentialType): boolean{
     return credentialTypeHasSendReminderButtonArr.includes(type);
 }
 
-export function credentialTypeHasSignCredentialButton(type: DetailsCredentialType): boolean{
+export function credentialTypeHasSignCredentialButton(type: CredentialType): boolean{
     return credentialTypeHasSignCredentialButtonArr.includes(type);
 }
 
