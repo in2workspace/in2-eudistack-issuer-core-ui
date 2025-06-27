@@ -1,8 +1,8 @@
-import { getFormSchemaByType, mapPowerArrayByFunction, shouldSkipIssuer } from './credential-details-utils';
+import { getFormSchemaByType, mapPowerArrayByFunction, shouldSkipIssuer } from './credential-details-helpers';
 import { CredentialType } from 'src/app/core/models/entity/lear-credential';
 import { LearCredentialEmployeeDetailsFormSchema, LearCredentialMachineDetailsFormSchema, VerifiableCertificationDetailsFormSchema } from 'src/app/core/models/entity/lear-credential-details-schemas';
 import { Power } from 'src/app/core/models/entity/lear-credential';
-import { getFormDataByType } from './credential-details-utils';
+import { getFormDataByType } from './credential-details-helpers';
 import {
   LEARCredentialEmployee,
   LEARCredentialMachine,
@@ -288,7 +288,7 @@ describe('mapPowerArrayByFunction', () => {
   });
 });
 
-import { buildFormFromSchema } from './credential-details-utils';
+import { buildFormFromSchema } from './credential-details-helpers';
 import { FormBuilder, FormGroup, FormControl } from '@angular/forms';
 
 describe('buildFormFromSchema', () => {
