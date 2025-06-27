@@ -237,7 +237,27 @@ export const mockGxLabel: LEARCredentialDataDetails = {
             id: 'urn:uuid:bbbe4567-e89b-12d3-a456-426614174001',
             type: 'Employee Credential C',
             "gx:digestSRI": 'did:elsi:EMP-ORG3',
-          }
+          },
+          {
+            id: 'urn:uuid:bbbe4567-e89b-12d3-a456-426614174001',
+            type: 'Employee Credential C',
+            "gx:digestSRI": 'did:elsi:EMP-ORG3',
+          },
+          {
+            id: 'urn:uuid:bbbe4567-e89b-12d3-a456-426614174001',
+            type: 'Employee Credential C',
+            "gx:digestSRI": 'did:elsi:EMP-ORG3',
+          },
+          {
+            id: 'urn:uuid:bbbe4567-e89b-12d3-a456-426614174001',
+            type: 'Employee Credential C',
+            "gx:digestSRI": 'did:elsi:EMP-ORG3',
+          },
+          {
+            id: 'urn:uuid:bbbe4567-e89b-12d3-a456-426614174001',
+            type: 'Employee Credential C',
+            "gx:digestSRI": 'did:elsi:EMP-ORG3',
+          },
         ],
         "gx:validatedCriteria": [
           'criterion-identity',
