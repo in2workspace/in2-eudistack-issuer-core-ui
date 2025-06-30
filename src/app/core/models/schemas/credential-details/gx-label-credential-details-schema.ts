@@ -1,8 +1,7 @@
 import { CompliantCredentialsComponent, compliantCredentialsToken } from "src/app/features/credential-details/components/compliant-credentials/compliant-credentials.component";
-import { UrlListComponent, URL_LIST_TOKEN } from "src/app/features/credential-details/components/url-list/url-list.component";
 import { isGxLabel } from "src/app/features/credential-details/helpers/credential-details-helpers";
 import { GxLabelCredential, LEARCredential } from "../../entity/lear-credential";
-import { TemplateSchema, DetailsKeyValueField } from "../../entity/lear-credential-details";
+import { TemplateSchema } from "../../entity/lear-credential-details";
 
 export const GxLabelCredentialDetailsTemplateSchema: TemplateSchema = {
   main: [
@@ -49,21 +48,19 @@ export const GxLabelCredentialDetailsTemplateSchema: TemplateSchema = {
       }
     },
     {
-      key: 'gx:validatedCriteria',
+      // todo: now it shows the base URL of the received URLs, since they are not valid at the moment
+      // todo: consider hiding or showing differently
+
+      key: 'gx:validatedCriteriaReference',
       type: 'group',
-      custom: {
-        component: UrlListComponent,
-        token: URL_LIST_TOKEN,
-        value: (c: LEARCredential) => { 
+      value: (c: LEARCredential) => { 
           if(!isGxLabel(c)) return [];
-          const criteria = c.credentialSubject['gx:validatedCriteria'] ?? [];
-          const mappedCriteria: DetailsKeyValueField[] = criteria.map(c => {
-            return { type: 'key-value', value: c } 
-          });
-          return mappedCriteria;
+          const criterionUrl = c.credentialSubject['gx:validatedCriteria']?.[0] ?? null;
+          if (!criterionUrl) return [{type: 'key-value', value: null}];
+          const regex = /\/criterion\/[^/]+$/;
+          const cleanUrl = criterionUrl.replace(regex, '');
+          return [{type: 'key-value', value: cleanUrl}];
         }
-      },
-      value: []
     }
   ],
   side: [

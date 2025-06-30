@@ -1,7 +1,6 @@
 import { isGxLabel } from 'src/app/features/credential-details/helpers/credential-details-helpers';
 import { GxLabelCredential, LEARCredential, CompliantCredential } from 'src/app/core/models/entity/lear-credential';
 import { CompliantCredentialsComponent, compliantCredentialsToken } from 'src/app/features/credential-details/components/compliant-credentials/compliant-credentials.component';
-import { UrlListComponent, URL_LIST_TOKEN } from 'src/app/features/credential-details/components/url-list/url-list.component';
 import { DetailsKeyValueField } from '../../entity/lear-credential-details';
 import { GxLabelCredentialDetailsTemplateSchema } from './gx-label-credential-details-schema';
 
@@ -76,27 +75,40 @@ describe('GxLabelCredentialDetailsTemplateSchema', () => {
       expect(valueFn(sampleNonLabel)).toEqual([]);
     });
 
-    it('defines gx:validatedCriteria group with UrlListComponent and URL_LIST_TOKEN', () => {
-      const critGroup = main.find((g: any) => g.key === 'gx:validatedCriteria')!;
-      expect(critGroup.custom!.component).toBe(UrlListComponent);
-      expect(critGroup.custom!.token).toBe(URL_LIST_TOKEN);
+  it('defines gx:validatedCriteria group', () => {
+    const valGroup = main.find((g: any) => g.key === 'gx:validatedCriteriaReference')!;
+    // comprovar que el group té la clau correcta
+    expect(valGroup.key).toBe('gx:validatedCriteriaReference');
 
-      const valueFn = critGroup.custom!.value as any;
-      // maps strings to DetailsKeyValueField[]
-      const mapped = valueFn(sampleLabel) as DetailsKeyValueField[];
-      expect(mapped).toEqual([
-        { type: 'key-value', value: 'crit1' },
-        { type: 'key-value', value: 'crit2' },
-      ]);
+    const valueFn = valGroup.value as any;
 
-      // returns [] when undefined or non-label
-      const noCritLabel = {
-        ...sampleLabel,
-        credentialSubject: { ...sampleLabel.credentialSubject, 'gx:validatedCriteria': undefined }
-      } as any;
-      expect(valueFn(noCritLabel)).toEqual([]);
-      expect(valueFn(sampleNonLabel)).toEqual([]);
-    });
+    // 1) Quan és un GxLabel amb criteris
+    expect(
+      valueFn(sampleLabel)
+    ).toEqual([
+      { type: 'key-value', value: 'crit1' }
+    ]);
+
+    // 2) Quan no és un GxLabel
+    expect(
+      valueFn(sampleNonLabel)
+    ).toEqual([]);
+
+    // 3) Quan és GxLabel però no té cap criteri
+    const noCritLabel = {
+      ...sampleLabel,
+      credentialSubject: {
+        ...sampleLabel.credentialSubject,
+        'gx:validatedCriteria': []  // buida
+      }
+    } as any;
+    expect(
+      valueFn(noCritLabel)
+    ).toEqual([
+      { type: 'key-value', value: null }
+    ]);
+  });
+
   });
 
   describe('side section', () => {
