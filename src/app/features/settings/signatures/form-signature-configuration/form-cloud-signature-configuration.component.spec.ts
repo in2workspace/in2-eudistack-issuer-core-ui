@@ -1,13 +1,13 @@
 import {ComponentFixture,TestBed} from '@angular/core/testing';
 import { FormBuilder, ReactiveFormsModule } from '@angular/forms';
 import { FormCloudSignatureConfigurationComponent, FORM_MODE, DATA_CREDENTIAL } from './form-cloud-signature-configuration.component';
-import { providersMock } from 'src/app/core/mocks/signatureConfiguration';
+import { providersMock } from 'src/app/core/mocks/signature-configuration.mock';
 import { SignatureConfigurationResponse } from '../../models/signature.models';
 import { SECRETS_FIELDS, SECRET_INITIAL_VALUE } from '../../models/signature.constants';
 import { ProviderService } from '../../services/provider.service';
 import { of, throwError } from 'rxjs';
 import { TranslateModule, TranslatePipe } from '@ngx-translate/core';
-import {signatureConfigurationCloud} from 'src/app/core/mocks/signatureConfiguration';
+import {signatureConfigurationCloud} from 'src/app/core/mocks/signature-configuration.mock';
 
 const providerServiceMock = {
   getAllProvider: jest.fn().mockReturnValue(of(providersMock))

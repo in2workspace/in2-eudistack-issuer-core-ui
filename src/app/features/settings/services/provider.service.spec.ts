@@ -3,7 +3,7 @@ import { ProviderService } from './provider.service';
 import { ProviderRepository } from './provider.repository';
 import { of, throwError } from 'rxjs';
 import { CloudProvider } from '../models/provider.models';
-import {providersMock} from 'src/app/core/mocks/signatureConfiguration'
+import {providersMock} from 'src/app/core/mocks/signature-configuration.mock'
 
 describe('ProviderService', () => {
   let service: ProviderService;
