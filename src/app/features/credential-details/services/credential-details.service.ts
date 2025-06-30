@@ -12,7 +12,7 @@ import { LearCredentialMachineDetailsTemplateSchema } from 'src/app/core/models/
 import { GxLabelCredentialDetailsTemplateSchema } from 'src/app/core/models/schemas/credential-details/gx-label-credential-details-schema';
 import { VerifiableCertificationDetailsTemplateSchema } from 'src/app/core/models/schemas/credential-details/verifiable-certification-details-schema';
 import { MappedExtendedDetailsField, TemplateSchema, MappedTemplateSchema, DetailsField, MappedDetailsField, CustomDetailsField, DetailsKeyValueField, DetailsGroupField, MappedDetailsGroupField, MappedExtendedDetailsGroupField } from 'src/app/core/models/entity/lear-credential-details';
-import { mockGxLabel } from 'src/app/core/mocks/details-mocks';
+import { mockCredentialEmployee, mockCredentialMachine, mockGxLabel } from 'src/app/core/mocks/details-mocks';
 
 @Injectable() //provided in component
 export class CredentialDetailsService {
@@ -46,8 +46,6 @@ export class CredentialDetailsService {
       const vc = data.credential.vc;
 
       const type = this.credentialType$();
-      console.log('type')
-      console.log(type)
       if(!type) throw Error('No credential type found in credential.');
 
       const schema = this.getSchemaByType(type);
@@ -104,10 +102,7 @@ export class CredentialDetailsService {
   }
 
   private loadCredentialDetails(): Observable<LEARCredentialDataDetails> {
-    // todo restore
-    // return this.credentialProcedureService.getCredentialProcedureById(this.procedureId$());
-    // return of(mockCredentialEmployee);
-      return of(mockGxLabel);
+    return this.credentialProcedureService.getCredentialProcedureById(this.procedureId$());
   }
 
   private getSchemaByType(credType: CredentialType): TemplateSchema{
