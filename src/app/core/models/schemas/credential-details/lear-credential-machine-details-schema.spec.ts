@@ -43,7 +43,7 @@ describe('LearCredentialMachineDetailsTemplateSchema', () => {
 
   describe('main section', () => {
     it('extracts mandator fields correctly', () => {
-      const mandatorGroup = main.find(g => g.key === 'mandator')!;
+      const mandatorGroup = main.find(g => g.key === 'mandator')! as any;
       const values = mandatorGroup.value.map((f: any) => (f.value as any)(sample));
       expect(values).toEqual([
         'Alice',
@@ -56,7 +56,7 @@ describe('LearCredentialMachineDetailsTemplateSchema', () => {
     });
 
     it('extracts mandatee fields correctly', () => {
-      const mandateeGroup = main.find(g => g.key === 'mandatee')!;
+      const mandateeGroup = main.find(g => g.key === 'mandatee')!  as any;
       const values = mandateeGroup.value.map((f: any) => (f.value as any)(sample));
       expect(values).toEqual([
         'M123',
@@ -67,8 +67,11 @@ describe('LearCredentialMachineDetailsTemplateSchema', () => {
 
     it('computes power field using groupActionsByFunction', () => {
       const powerField = main.find(f => f.key === 'power')!;
-      const result = (powerField.value as any)(sample) as FunctionActions[];
-      const expected = groupActionsByFunction(sample.credentialSubject.mandate.power);
+      // The value extractor is now on the custom property
+      const extractor = (powerField.custom! as any).value as (c: LEARCredentialMachine) => FunctionActions[];
+      const result = extractor(sample);
+      const expected: FunctionActions[] = groupActionsByFunction(sample.credentialSubject.mandate.power);
+
       expect(result).toEqual(expected);
       expect(expected).toContainEqual({ function: 'f1', actions: expect.arrayContaining(['a1', 'a2']) });
       expect(expected).toContainEqual({ function: 'f2', actions: ['b1'] });
@@ -77,7 +80,7 @@ describe('LearCredentialMachineDetailsTemplateSchema', () => {
 
   describe('side section', () => {
     it('extracts issuer fields correctly when issuer is present', () => {
-      const issuerGroup = side.find(g => g.key === 'issuer')!;
+      const issuerGroup = side.find(g => g.key === 'issuer')!  as any;
       const values = issuerGroup.value.map((f: any) => (f.value as any)(sample));
       expect(values).toEqual([
         'IssuerCo',
@@ -91,7 +94,7 @@ describe('LearCredentialMachineDetailsTemplateSchema', () => {
 
     it('returns undefined for all issuer fields when issuer is missing', () => {
       const noIssuer = { ...sample, issuer: undefined } as any as LEARCredentialMachine;
-      const issuerGroup = side.find(g => g.key === 'issuer')!;
+      const issuerGroup = side.find(g => g.key === 'issuer')!  as any;
       const values = issuerGroup.value.map((f: any) => (f.value as any)(noIssuer));
       expect(values).toEqual([undefined, undefined, undefined, undefined, undefined, undefined]);
     });

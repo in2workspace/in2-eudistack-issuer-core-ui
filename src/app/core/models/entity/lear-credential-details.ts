@@ -33,9 +33,11 @@ export type CustomDetailsField = {
   token: InjectionToken<any>;
   value: any;
 };
+
+//todo set main and side as DetailsGroupFields[]; this requires changing power to group type
 export type TemplateSchema = {
-  main: DetailsField[];
-  side: DetailsField[];
+  main: DetailsGroupField[];
+  side: DetailsGroupField[];
 };
 export type MappedTemplateSchema = {
   main: MappedDetailsField[],

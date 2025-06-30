@@ -113,7 +113,7 @@ describe('GxLabelCredentialDetailsTemplateSchema', () => {
 
   describe('side section', () => {
     it('extracts issuer field correctly', () => {
-      const issuerGroup = side.find((g: any) => g.key === 'issuer')!;
+      const issuerGroup = side.find((g: any) => g.key === 'issuer')! as any;
       const field = issuerGroup.value[0] as any;
       expect(field.key).toBe('id');
       expect((field.value as any)(sampleLabel)).toBe('ISSUER1');

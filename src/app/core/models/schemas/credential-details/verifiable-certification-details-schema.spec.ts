@@ -50,7 +50,7 @@ describe('VerifiableCertificationDetailsTemplateSchema', () => {
 
   describe('main section', () => {
     it('extracts company group fields correctly', () => {
-      const companyGroup = main.find(g => g.key === 'company')!;
+      const companyGroup = main.find(g => g.key === 'company')! as any;
       const values = companyGroup.value.map((f:any) => (f.value as any)(sample));
       expect(values).toEqual([
         'C1',
@@ -63,8 +63,8 @@ describe('VerifiableCertificationDetailsTemplateSchema', () => {
     });
 
     it('extracts product group fields correctly', () => {
-      const productGroup = main.find(g => g.key === 'product')!;
-      const values = productGroup.value.map((f:any) => (f.value as any)(sample));
+      const productGroup = main.find(g => g.key === 'product')! as any;
+      const values = productGroup.value.map((f:any) => (f.value as any)(sample)) as any;
       expect(values).toEqual([
         'P1',
         'ProdName',
@@ -101,7 +101,7 @@ describe('VerifiableCertificationDetailsTemplateSchema', () => {
 
   describe('side section', () => {
     it('extracts attester fields correctly', () => {
-      const attesterGroup = side.find(g => g.key === 'attester')!;
+      const attesterGroup = side.find(g => g.key === 'attester')! as any;
       const values = attesterGroup.value.map((f:any)  => (f.value as any)(sample));
       expect(values).toEqual([
         'A1',
@@ -114,7 +114,7 @@ describe('VerifiableCertificationDetailsTemplateSchema', () => {
     });
 
     it('extracts issuer fields correctly when issuer present', () => {
-      const issuerGroup = side.find(g => g.key === 'issuer')!;
+      const issuerGroup = side.find(g => g.key === 'issuer')! as any;
       const values = issuerGroup.value.map((f:any)  => (f.value as any)(sample));
       expect(values).toEqual([
         'IssCo',
@@ -125,7 +125,7 @@ describe('VerifiableCertificationDetailsTemplateSchema', () => {
 
     it('returns undefined for issuer fields when issuer missing', () => {
       const noIssuer = { ...sample, issuer: undefined } as any as VerifiableCertification;
-      const issuerGroup = side.find(g => g.key === 'issuer')!;
+      const issuerGroup = side.find(g => g.key === 'issuer')!  as any;
       const values = issuerGroup.value.map((f:any)  => (f.value as any)(noIssuer));
       expect(values).toEqual([undefined, undefined, undefined]);
     });

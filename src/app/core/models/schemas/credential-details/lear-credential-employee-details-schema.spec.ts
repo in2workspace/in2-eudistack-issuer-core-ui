@@ -4,7 +4,6 @@ import { FunctionActions } from 'src/app/features/credential-details/helpers/cre
 import { LearCredentialEmployeeDetailsTemplateSchema } from './lear-credential-employee-details-schema';
 
 describe('LearCredentialEmployeeDetailsTemplateSchema', () => {
-  // build a sample credential employee
   const sample: LEARCredentialEmployee = {
     credentialSubject: {
       mandate: {
@@ -42,13 +41,12 @@ describe('LearCredentialEmployeeDetailsTemplateSchema', () => {
     credentialSubjectFormat: '',
   } as any;
 
-  const main = LearCredentialEmployeeDetailsTemplateSchema.main;
-  const side = LearCredentialEmployeeDetailsTemplateSchema.side;
+  const { main, side } = LearCredentialEmployeeDetailsTemplateSchema;
 
   describe('main section', () => {
     const mandatorGroup = main.find(g => g.key === 'mandator')!;
     it('extracts mandator fields correctly', () => {
-      const values = mandatorGroup.value.map((f:any) => (f.value as any)(sample));
+      const values = (mandatorGroup.value as any[]).map((f: any) => (f.value as any)(sample));
       expect(values).toEqual([
         'Alice',
         'alice@example.com',
@@ -61,7 +59,7 @@ describe('LearCredentialEmployeeDetailsTemplateSchema', () => {
 
     const mandateeGroup = main.find(g => g.key === 'mandatee')!;
     it('extracts mandatee fields correctly', () => {
-      const values = mandateeGroup.value.map((f:any) => (f.value as any)(sample));
+      const values = (mandateeGroup.value as any[]).map((f: any) => (f.value as any)(sample));
       expect(values).toEqual([
         'Bob Builder',
         'bob@builder.com',
@@ -71,12 +69,12 @@ describe('LearCredentialEmployeeDetailsTemplateSchema', () => {
 
     it('computes power field using groupActionsByFunction', () => {
       const powerField = main.find(f => f.key === 'power')!;
-      const result = (powerField.value as any)(sample) as FunctionActions[];
+      const extractor = (powerField.custom! as any).value as (c: LEARCredentialEmployee) => FunctionActions[];
+      const result = extractor(sample);
       const expected: FunctionActions[] = groupActionsByFunction(sample.credentialSubject.mandate.power);
-      // should match expected grouping
+
       expect(result).toEqual(expected);
-      // and exercise groupActionsByFunction fully
-      expect(expected).toContainEqual({ function: 'f1', actions: expect.arrayContaining(['a1','a2']) });
+      expect(expected).toContainEqual({ function: 'f1', actions: expect.arrayContaining(['a1', 'a2']) });
       expect(expected).toContainEqual({ function: 'f2', actions: ['b1'] });
     });
   });
@@ -85,7 +83,7 @@ describe('LearCredentialEmployeeDetailsTemplateSchema', () => {
     const issuerGroup = side.find(g => g.key === 'issuer')!;
 
     it('extracts issuer fields correctly when issuer is present', () => {
-      const values = issuerGroup.value.map((f:any) => (f.value as any)(sample));
+      const values = (issuerGroup.value as any[]).map((f: any) => (f.value as any)(sample));
       expect(values).toEqual([
         'IssuerCo',
         'ISBN-456',
@@ -97,7 +95,7 @@ describe('LearCredentialEmployeeDetailsTemplateSchema', () => {
 
     it('returns undefined for issuer fields when issuer is missing', () => {
       const noIssuer = { ...sample, issuer: undefined } as any as LEARCredentialEmployee;
-      const values = issuerGroup.value.map((f:any) => (f.value as any)(noIssuer));
+      const values = (issuerGroup.value as any[]).map((f: any) => (f.value as any)(noIssuer));
       expect(values).toEqual([undefined, undefined, undefined, undefined, undefined]);
     });
   });

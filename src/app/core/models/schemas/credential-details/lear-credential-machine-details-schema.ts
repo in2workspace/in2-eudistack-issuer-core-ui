@@ -1,6 +1,7 @@
 import { groupActionsByFunction } from "src/app/features/credential-details/helpers/credential-details-helpers";
 import { LEARCredentialMachine } from "../../entity/lear-credential";
 import { TemplateSchema } from "../../entity/lear-credential-details";
+import { DetailsPowerComponent, detailsPowerToken } from "src/app/features/credential-details/components/details-power/details-power.component";
 
 export const LearCredentialMachineDetailsTemplateSchema: TemplateSchema = {
   main: [
@@ -25,10 +26,16 @@ export const LearCredentialMachineDetailsTemplateSchema: TemplateSchema = {
         { key: 'ipAddress', type: 'key-value', value: (c: LEARCredentialMachine) => c.credentialSubject.mandate.mandatee.ipAddress }
       ]
     },
+    // change to group - custom
     {
       key: 'power',
-      type: 'key-value',
-      value: (c: LEARCredentialMachine) => groupActionsByFunction(c.credentialSubject.mandate.power)
+      type: 'group',
+      custom: {
+        component: DetailsPowerComponent,
+        token: detailsPowerToken,
+        value: (c: LEARCredentialMachine) => groupActionsByFunction(c.credentialSubject.mandate.power)
+      },
+      value: []
     }
   ],
   side: [

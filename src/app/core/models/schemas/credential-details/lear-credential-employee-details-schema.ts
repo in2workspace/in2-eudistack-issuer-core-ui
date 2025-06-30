@@ -1,6 +1,7 @@
 import { groupActionsByFunction } from "src/app/features/credential-details/helpers/credential-details-helpers";
 import { LEARCredentialEmployee } from "../../entity/lear-credential";
 import { TemplateSchema } from "../../entity/lear-credential-details";
+import { DetailsPowerComponent, detailsPowerToken } from "src/app/features/credential-details/components/details-power/details-power.component";
 
 
 export const LearCredentialEmployeeDetailsTemplateSchema: TemplateSchema = {
@@ -28,8 +29,13 @@ export const LearCredentialEmployeeDetailsTemplateSchema: TemplateSchema = {
     },
     {
       key: 'power',
-      type: 'key-value',
-      value: (c: LEARCredentialEmployee) => groupActionsByFunction(c.credentialSubject.mandate.power)
+      type: 'group',
+      custom: {
+        component: DetailsPowerComponent,
+        token: detailsPowerToken,
+        value: (c: LEARCredentialEmployee) => groupActionsByFunction(c.credentialSubject.mandate.power)
+      },
+      value: []
     }
   ],
   side: [
