@@ -77,29 +77,25 @@ describe('GxLabelCredentialDetailsTemplateSchema', () => {
 
   it('defines gx:validatedCriteria group', () => {
     const valGroup = main.find((g: any) => g.key === 'gx:validatedCriteriaReference')!;
-    // comprovar que el group té la clau correcta
     expect(valGroup.key).toBe('gx:validatedCriteriaReference');
 
     const valueFn = valGroup.value as any;
 
-    // 1) Quan és un GxLabel amb criteris
     expect(
       valueFn(sampleLabel)
     ).toEqual([
       { type: 'key-value', value: 'crit1' }
     ]);
 
-    // 2) Quan no és un GxLabel
     expect(
       valueFn(sampleNonLabel)
     ).toEqual([]);
 
-    // 3) Quan és GxLabel però no té cap criteri
     const noCritLabel = {
       ...sampleLabel,
       credentialSubject: {
         ...sampleLabel.credentialSubject,
-        'gx:validatedCriteria': []  // buida
+        'gx:validatedCriteria': [] 
       }
     } as any;
     expect(

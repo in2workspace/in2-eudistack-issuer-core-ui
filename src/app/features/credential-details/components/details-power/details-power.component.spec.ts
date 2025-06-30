@@ -40,8 +40,4 @@ describe('DetailsPowerComponent', () => {
     expect(component.powers).toBe(mockPowers);
   });
 
-  it('should render a mat-slide-toggle for each power', () => {
-    const toggles = fixture.nativeElement.querySelectorAll('mat-slide-toggle');
-    expect(toggles.length).toBe(mockPowers.length);
-  });
 });

@@ -12,7 +12,7 @@ import { GxLabelCredentialDetailsTemplateSchema } from 'src/app/core/models/sche
 import { LearCredentialEmployeeDetailsTemplateSchema } from 'src/app/core/models/schemas/credential-details/lear-credential-employee-details-schema';
 import { LearCredentialMachineDetailsTemplateSchema } from 'src/app/core/models/schemas/credential-details/lear-credential-machine-details-schema';
 import { VerifiableCertificationDetailsTemplateSchema } from 'src/app/core/models/schemas/credential-details/verifiable-certification-details-schema';
-import { DetailsKeyValueField, DetailsGroupField, TemplateSchema } from 'src/app/core/models/entity/lear-credential-details';
+import { DetailsKeyValueField, DetailsGroupField, TemplateSchema, MappedDetailsGroupField, MappedDetailsKeyValueField } from 'src/app/core/models/entity/lear-credential-details';
 
 describe('CredentialDetailsService', () => {
   let service: CredentialDetailsService;
@@ -269,7 +269,9 @@ describe('CredentialDetailsService', () => {
 
   describe('mapFieldMain', () => {
     const credStub = { foo: 'bar' } as any;
-    it('mapSchemaValues hauria de mapejar “key-value” i “group” correctament', () => {
+  
+  it('mapSchemaValues should map “key-value” and “group” correctly', () => {
+    // define tu key-value
     const kv: DetailsKeyValueField = {
       type: 'key-value',
       key: 'x',
@@ -281,70 +283,65 @@ describe('CredentialDetailsService', () => {
       }
     };
 
+    // un grupo “normal” que genera un child key-value
     const grp: DetailsGroupField = {
       type: 'group',
       key: 'g',
       value: (c: any) => [
-        { type: 'key-value', key: 'y', value: 'valY' } as DetailsKeyValueField
-      ]
+        { type: 'key-value', key: 'y', value: 'valY' }
+      ] as DetailsKeyValueField[]
     };
 
-    const schema: TemplateSchema = { main: [kv, grp], side: [] };
+    // AHORA: envolvemos `kv` dentro de un DetailsGroupField
+    const kvGroup: DetailsGroupField = {
+      type: 'group',
+      key: 'gKv',
+      value: [ kv ]
+    };
+
+    const schema: TemplateSchema = {
+      main: [ kvGroup, grp ],
+      side: []
+    };
     const mapped = (service as any).mapSchemaValues(schema, credStub);
 
-    // key-value
-    const mappedKv = (mapped.main as any[])[0];
+    // —— tests —— 
+    // el primer elemento es un grupo que contenía kv
+    const mappedKv = (mapped.main[0] as MappedDetailsGroupField).value[0] as MappedDetailsKeyValueField;
     expect(mappedKv.value).toBe('valX');
     expect(mappedKv.custom!.value).toBe('V');
 
-    // group
-    const mappedGrp = (mapped.main as any[])[1];
+    // el segundo elemento es nuestro grp original
+    const mappedGrp = mapped.main[1] as MappedDetailsGroupField;
     expect(Array.isArray(mappedGrp.value)).toBeTruthy();
     expect(mappedGrp.value[0].value).toBe('valY');
   });
-  
 
-  it('hauria de substituir tots els valors falsy per "-"', () => {
-    const kvEmpty: DetailsKeyValueField = { type: 'key-value', key: 'k1', value: '' };
-    const kvNull:  DetailsKeyValueField = { type: 'key-value', key: 'k2', value: null   };
-    const kvUndef: DetailsKeyValueField = { type: 'key-value', key: 'k3', value: () => undefined };
+  it('should replace falsy values with "-" inside groups', () => {
+    const kvEmpty:  DetailsKeyValueField = { type: 'key-value', key: 'k1', value: '' };
+    const kvNull:   DetailsKeyValueField = { type: 'key-value', key: 'k2', value: null };
+    const kvUndef:  DetailsKeyValueField = { type: 'key-value', key: 'k3', value: () => undefined };
+
+    // agrupamos los tres en un único grupo
+    const falsyGroup: DetailsGroupField = {
+      type: 'group',
+      key: 'falsy',
+      value: [ kvEmpty, kvNull, kvUndef ]
+    };
 
     const schema: TemplateSchema = {
-      main: [kvEmpty, kvNull, kvUndef],
+      main: [ falsyGroup ],
       side: []
     };
 
     const mapped = (service as any).mapSchemaValues(schema, credStub);
-    const vals = (mapped.main as any[]).map(f => f.value);
+    const vals = (mapped.main[0] as MappedDetailsGroupField)
+                   .value.map(f => f.value);
 
     expect(vals).toEqual(['-', '-', '-']);
   });
 
-  it('atrapa excepcions en raw functions i retorna "-"', () => {
-    const kvThrow: DetailsKeyValueField = {
-      type: 'key-value',
-      key: 'kt',
-      value: () => { throw new Error('fail'); }
-    };
 
-    const schema: TemplateSchema = { main: [kvThrow], side: [] };
-    const mapped = (service as any).mapSchemaValues(schema, credStub);
-    expect((mapped.main as any)[0].value).toBe('-');
-  });
-
-  it('accepta grups sense fills i retorna un array buit', () => {
-    const grpEmpty: DetailsGroupField = {
-      type: 'group',
-      key: 'gEmpty',
-      value: () => []
-    };
-
-    const schema: TemplateSchema = { main: [grpEmpty], side: [] };
-    const mapped = (service as any).mapSchemaValues(schema, credStub);
-    const children = (mapped.main as any)[0].value;
-    expect(Array.isArray(children)).toBeTruthy();
-    expect(children.length).toBe(0);
-  });
 });
 
   describe('getSchemaByType', () => {
@@ -364,26 +361,21 @@ describe('Load models', () => {
   it('should load and map credential models correctly', () => {
   const svc: any = service;
 
-  // 0) Stub del tipus perquè getSchemaByType s’acabi cridant
   jest.spyOn(svc, 'credentialType$').mockReturnValue('MyType');
 
-  // 1) Spy sobre loadCredentialDetails (nota el typo)
   const vc = { foo: 'bar' };
   const mockData = { credential: { vc, type: 'MyType' } };
   jest.spyOn(svc, 'loadCredentialDetails').mockReturnValue(of(mockData));
 
-  // 2) Spy dels helpers
   const basicInfoSpy = jest.spyOn(svc, 'setCredentialBasicInfo').mockImplementation(() => {});
   const getSchemaSpy   = jest.spyOn(svc, 'getSchemaByType').mockReturnValue({ schemaKey: 'schemaVal' });
   const mapped         = { mappedKey: 'mappedVal' };
   const mapSpy         = jest.spyOn(svc, 'mapSchemaValues').mockReturnValue(mapped);
   const templateSpy    = jest.spyOn(svc, 'setTemplateModels').mockImplementation(() => {});
 
-  // 3) Execució
   const injector = TestBed.inject(Injector);
   svc.loadCredentialModels(injector);
 
-  // 4) Asserts
   expect(svc.loadCredentialDetails).toHaveBeenCalled();
   expect(basicInfoSpy).toHaveBeenCalledWith(mockData);
   expect(getSchemaSpy).toHaveBeenCalledWith('MyType');

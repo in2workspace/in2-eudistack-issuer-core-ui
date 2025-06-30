@@ -4,7 +4,6 @@ import { TemplateSchema } from '../../entity/lear-credential-details';
 import { VerifiableCertificationDetailsTemplateSchema } from './verifiable-certification-details-schema';
 
 describe('VerifiableCertificationDetailsTemplateSchema', () => {
-  // Build a sample VerifiableCertification
   const sample: VerifiableCertification = {
     credentialSubject: {
       company: {

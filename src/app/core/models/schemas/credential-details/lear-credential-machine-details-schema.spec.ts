@@ -67,7 +67,6 @@ describe('LearCredentialMachineDetailsTemplateSchema', () => {
 
     it('computes power field using groupActionsByFunction', () => {
       const powerField = main.find(f => f.key === 'power')!;
-      // The value extractor is now on the custom property
       const extractor = (powerField.custom! as any).value as (c: LEARCredentialMachine) => FunctionActions[];
       const result = extractor(sample);
       const expected: FunctionActions[] = groupActionsByFunction(sample.credentialSubject.mandate.power);
@@ -84,7 +83,7 @@ describe('LearCredentialMachineDetailsTemplateSchema', () => {
       const values = issuerGroup.value.map((f: any) => (f.value as any)(sample));
       expect(values).toEqual([
         'IssuerCo',
-        'IssuerCo',       // email maps to commonName in schema
+        'IssuerCo', 
         'ISBN-456',
         'IssuerOrg',
         'ISS-002',

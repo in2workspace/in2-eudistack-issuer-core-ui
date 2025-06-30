@@ -21,7 +21,6 @@ describe('Credential Details Helpers', () => {
       ];
       const result = groupActionsByFunction(powers);
 
-      // Esperem que fn1 tingui accions a1 i a2 (sense duplicats) i fn2 només b1
       expect(result).toEqual([
         { function: 'fn1', actions: ['a1', 'a2'] },
         { function: 'fn2', actions: ['b1'] },

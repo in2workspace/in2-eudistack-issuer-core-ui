@@ -32,7 +32,6 @@ describe('CredentialDetailsComponent', () => {
   let mockLoader: { isLoading$: Observable<boolean> };
 
   beforeEach(async () => {
-    // Prepare signals
     const validFrom$ = signal('2025-01-01');
     const validUntil$ = signal('2025-12-31');
     const type$ = signal<CredentialType | undefined>('LEARCredentialEmployee');
@@ -120,7 +119,6 @@ describe('CredentialDetailsComponent', () => {
     });
 
     it('showSideTemplateCard$ becomes true when sideTemplateModel is non-empty', () => {
-      // Mutem la signal, no la substituïm
       mockDetailsService.sideTemplateModel$.set([{ key: 'x', type: 'key-value', value: 'y' }]);
       expect(component.showSideTemplateCard$()).toBe(true);
     });

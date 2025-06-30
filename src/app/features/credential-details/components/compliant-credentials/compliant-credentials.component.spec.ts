@@ -1,5 +1,4 @@
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
-// src/app/features/credential-details/components/compliant-credentials/compliant-credentials.component.spec.ts
 import { TestBed, ComponentFixture } from '@angular/core/testing';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
@@ -46,11 +45,9 @@ describe('CompliantCredentialsComponent', () => {
   });
 
   it('should set paginator and sort on the dataSource after view init', () => {
-    // ViewChild properties should be defined
     expect(component.paginator).toBeInstanceOf(MatPaginator);
     expect(component.sort).toBeInstanceOf(MatSort);
 
-    // DataSource should have paginator and sort set
     expect(component.dataSource.paginator).toBe(component.paginator);
     expect(component.dataSource.sort).toBe(component.sort);
   });
