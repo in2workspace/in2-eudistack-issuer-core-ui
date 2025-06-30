@@ -1,104 +1,60 @@
-import { DialogComponent, DialogData } from 'src/app/shared/components/dialog/dialog-component/dialog.component';
-import { inject, Injectable, signal } from '@angular/core';
-import { FormBuilder, FormGroup } from '@angular/forms';
-import { EMPTY, from, Observable, Observer, switchMap, take, tap } from 'rxjs';
+import { inject, Injectable, Injector, signal, WritableSignal } from '@angular/core';
+import { EMPTY, from, Observable, switchMap, tap } from 'rxjs';
 import { CredentialProcedureService } from 'src/app/core/services/credential-procedure.service';
-import { detailsFormBuilder, FormSchemaByType, getFormDataByType, getFormSchemaByType } from '../utils/credential-details-utils';
 import { DialogWrapperService } from 'src/app/shared/components/dialog/dialog-wrapper/dialog-wrapper.service';
 import { TranslateService } from '@ngx-translate/core';
 import { Router } from '@angular/router';
-import { CredentialStatus, CredentialType, LEARCredentialDataDetails } from 'src/app/core/models/entity/lear-credential';
-import { CredentialDetailsFormSchema } from 'src/app/core/models/schemas/lear-credential-details-schemas';
+import { CredentialStatus, CredentialType, LEARCredential, LEARCredentialDataDetails } from 'src/app/core/models/entity/lear-credential';
+import { ComponentPortal } from '@angular/cdk/portal';
+import { LearCredentialEmployeeDetailsTemplateSchema } from 'src/app/core/models/schemas/credential-details/lear-credential-employee-details-schema';
+import { LearCredentialMachineDetailsTemplateSchema } from 'src/app/core/models/schemas/credential-details/lear-credential-machine-details-schema';
+import { GxLabelCredentialDetailsTemplateSchema } from 'src/app/core/models/schemas/credential-details/gx-label-credential-details-schema';
+import { VerifiableCertificationDetailsTemplateSchema } from 'src/app/core/models/schemas/credential-details/verifiable-certification-details-schema';
+import { MappedExtendedDetailsField, TemplateSchema, MappedTemplateSchema, DetailsField, MappedDetailsField, CustomDetailsField, MappedExtendedDetailsGroupField } from 'src/app/core/models/entity/lear-credential-details';
+import { DialogComponent } from 'src/app/shared/components/dialog/dialog-component/dialog.component';
+import { DialogData } from 'src/app/shared/components/dialog/dialog-data';
 
 @Injectable() //provided in component
 export class CredentialDetailsService {
   public credentialValidFrom$ = signal('');
   public credentialValidUntil$ = signal('');
   public credentialType$ = signal<CredentialType | undefined>(undefined);
-  public credentialDetailsData$ = signal<LEARCredentialDataDetails | undefined>(undefined);
-  public credentialDetailsForm$ = signal<FormGroup | undefined>(undefined);
-  public credentialDetailsFormSchema$ = signal<CredentialDetailsFormSchema | undefined>(undefined);
   public procedureId$ = signal<string>('');
   public credentialStatus$ = signal<CredentialStatus | undefined>(undefined);
 
+  public sideTemplateModel$: WritableSignal<MappedExtendedDetailsField[] | undefined> = signal(undefined);
+  public mainTemplateModel$: WritableSignal<MappedExtendedDetailsField[] | undefined> = signal(undefined);
+
   private readonly credentialProcedureService = inject(CredentialProcedureService);
   private readonly dialog = inject(DialogWrapperService);
-  private readonly fb = inject(FormBuilder);
   private readonly router = inject(Router);
   private readonly translate = inject(TranslateService);
+  private readonly schemasByTypeMap: Record<CredentialType, TemplateSchema> = {
+    'LEARCredentialEmployee': LearCredentialEmployeeDetailsTemplateSchema,
+    'LEARCredentialMachine': LearCredentialMachineDetailsTemplateSchema,
+    'VerifiableCertification': VerifiableCertificationDetailsTemplateSchema,
+    'gx:LabelCredential': GxLabelCredentialDetailsTemplateSchema,
+  } as const;
 
   public setProcedureId(id: string) {
     this.procedureId$.set(id);
   }
 
-  public loadCredentialDetailsAndForm(): void {  
-    this.loadCredentialDetails()
-      .subscribe(this.loadFormObserver);
+  public loadCredentialModels(injector: Injector): void {  
+    this.loadCredentialDetails().subscribe(data => {
+      this.setCredentialBasicInfo(data);
+      const vc = data.credential.vc;
+
+      const type = this.credentialType$();
+      if(!type) throw Error('No credential type found in credential.');
+
+      const schema = this.getSchemaByType(type);
+      const mappedSchema = this.mapSchemaValues(schema, vc);
+      this.setTemplateModels(mappedSchema, injector);
+    });
   }
 
-  public loadCredentialDetails(): Observable<LEARCredentialDataDetails> {
-    return this.credentialProcedureService
-      .getCredentialProcedureById(this.procedureId$())
-      .pipe(
-        take(1),
-      tap(data=>{
-        this.credentialDetailsData$.set(data);
-        this.credentialStatus$.set(data.credential_status);
-      }));
-  }
-
-  private readonly loadFormObserver: Observer<LEARCredentialDataDetails> = {
-    next: () => {
-      this.loadForm();
-    },
-    error: (err: any) => {
-      console.error('Error loading credential detail', err);
-    },
-    complete: () => {}
-  }
-
-  private loadForm(): void {
-    const data = this.credentialDetailsData$();
-    if (!data){
-      console.error('No credential data to load the form.');
-      return;
-    }
-
-    const credential = data.credential.vc;
-
-
-    const credentialValidFrom = credential.validFrom;
-    this.credentialValidFrom$.set(credentialValidFrom);
-
-    const credentialValidUntil = credential.validUntil;
-    this.credentialValidUntil$.set(credentialValidUntil);
-
-    const credentialTypes = credential.type as string[];
-    const type = credentialTypes.find((t): t is CredentialType => t in FormSchemaByType);
-
-    if (!type) {
-      throw new Error(`No supported credential type found in: ${credentialTypes.join(', ')}`);
-    }
-
-    this.credentialType$.set(type);
-    
-    const schema = getFormSchemaByType(type);
-
-    const formData = getFormDataByType(credential, type);
-
-  
-    const builtForm = detailsFormBuilder(this.fb, schema, formData);
-    builtForm.disable();
-
-    this.credentialDetailsFormSchema$.set(schema);
-    this.credentialDetailsForm$.set(builtForm);
-
-  }
-
-
-  //SEND REMINDER AND SIGN
   public openSendReminderDialog(): void {
-  
     const dialogData: DialogData = {
       title: this.translate.instant("credentialDetails.sendReminderConfirm.title"),
       message: this.translate.instant("credentialDetails.sendReminderConfirm.message"),
@@ -111,11 +67,9 @@ export class CredentialDetailsService {
     }
 
     this.dialog.openDialogWithCallback(DialogComponent, dialogData, sendReminderAfterConfirm);
-
   }
 
   public openSignCredentialDialog(): void {
-
     const dialogData: DialogData = {
       title: this.translate.instant("credentialDetails.signCredentialConfirm.title"),
       message: this.translate.instant("credentialDetails.signCredentialConfirm.message"),
@@ -128,6 +82,190 @@ export class CredentialDetailsService {
     }
     
     this.dialog.openDialogWithCallback(DialogComponent, dialogData, signCredentialAfterConfirm);
+  }
+
+  
+  public sendReminder(): Observable<boolean> {
+    return this.executeCredentialAction(
+      (procedureId) => this.credentialProcedureService.sendReminder(procedureId),
+      "credentialDetails.sendReminderSuccess.title",
+      "credentialDetails.sendReminderSuccess.message"
+    );
+  }
+  
+  public signCredential(): Observable<boolean> {
+    return this.executeCredentialAction(
+      (procedureId) => this.credentialProcedureService.signCredential(procedureId),
+      "credentialDetails.signCredentialSuccess.title",
+      "credentialDetails.signCredentialSuccess.message"
+    );
+  }
+
+  private loadCredentialDetails(): Observable<LEARCredentialDataDetails> {
+    return this.credentialProcedureService.getCredentialProcedureById(this.procedureId$());
+  }
+
+  private getSchemaByType(credType: CredentialType): TemplateSchema{
+    return this.schemasByTypeMap[credType];
+  }
+      
+  private getCredentialType(cred: LEARCredential): CredentialType{
+    const type = cred.type.find((t): t is CredentialType => t in this.schemasByTypeMap);
+    if(!type) throw Error('No credential tyep found in credential');
+    return type;
+  }
+
+private mapSchemaValues(
+  schema: TemplateSchema,
+  credential: LEARCredential
+): MappedTemplateSchema {
+  const mapFields = (fields: DetailsField[]): MappedDetailsField[] =>
+    fields.map(field => this.mapField(field, credential));
+
+  const mainMapped = mapFields(schema.main);
+
+  const sideMapped = mapFields(schema.side)
+    .filter(field => this.shouldIncludeSideField(field));
+
+  return {
+    main: mainMapped,
+    side: sideMapped
+  };
+}
+
+  private mapField(
+  field: DetailsField,
+  credential: LEARCredential
+): MappedDetailsField {
+  const mapCustom = (custom: CustomDetailsField) => ({
+    ...custom,
+    value: this.safeCompute(custom.value, credential, custom.token.toString())
+  });
+  
+
+  if (field.type === 'key-value') {
+    const kv = field;
+    const ob = {
+      ...kv,
+      value: this.safeCompute(kv.value, credential, kv.key),
+      custom: kv.custom ? mapCustom(kv.custom) : undefined
+    };
+    return ob;
+  }
+
+
+  const rawGroup = field.value;
+  let children: DetailsField[];
+  try {
+    children = typeof rawGroup === 'function'
+      ? rawGroup(credential)
+      : rawGroup;
+  } catch (e) {
+    console.warn(`Error mapping group "${field.key}":`, e);
+    children = [];
+  }
+
+  return {
+    ...field,
+    value: children.map(child => this.mapField(child, credential)),
+    custom: field.custom ? mapCustom(field.custom) : undefined
+  };
+}
+
+  private safeCompute<T>(
+    raw: T | ((c: LEARCredential) => T),
+    credential: LEARCredential,
+    fieldKey?: string
+  ): T | null {
+    try {
+      const val = typeof raw === 'function'
+        ? (raw as (c: LEARCredential) => T)(credential)
+        : raw;
+      return val || null;
+    } catch (e) {
+      const keyPart = fieldKey ? ' "' + fieldKey + '"' : '';
+      console.warn(`Error when mapping${keyPart}:`, e);
+      return null;
+    }
+  }
+
+  private shouldIncludeSideField(field: MappedDetailsField): boolean {
+  if (field.key !== 'issuer') {
+    return true;
+  }
+
+  if (field.type === 'key-value') {
+    return field.value !== null;
+  }
+
+  const children = Array.isArray(field.value)
+    ? field.value
+    : [];
+
+  const allChildrenNull = children.every(child => {
+    if (child.type === 'key-value') {
+      return child.value === null;
+    }
+    return true;
+  });
+
+  return !allChildrenNull;
+}
+
+
+  private setCredentialBasicInfo(details: LEARCredentialDataDetails): void{
+    const credential = details.credential.vc;
+
+    const credentialValidFrom = credential.validFrom;
+    this.credentialValidFrom$.set(credentialValidFrom);
+
+    const credentialValidUntil = credential.validUntil;
+    this.credentialValidUntil$.set(credentialValidUntil);
+
+    const type = this.getCredentialType(credential);
+    this.credentialType$.set(type);
+
+    const status = details.credential_status;
+    this.credentialStatus$.set(status);
+
+  }
+
+  // add "portal" prop to fields
+  private extendFields(fields: MappedDetailsField[], injector: Injector): MappedExtendedDetailsField[] {
+      return fields.map((field) => {
+        let extended: MappedExtendedDetailsField = { ...field };
+  
+        if (field.custom) {
+          const childInjector = Injector.create({
+            parent: injector,
+            providers: [
+              { provide: field.custom.token, useValue: field.custom.value }
+            ]
+          });
+  
+          extended.portal = new ComponentPortal(
+            field.custom.component,
+            null,
+            childInjector
+          );
+        }
+  
+        if (field.type === 'group') {
+          const groupField = field;
+          extended = { ...extended } as MappedExtendedDetailsGroupField;
+          extended.value = this.extendFields(groupField.value, injector);
+        }
+  
+        return extended;
+      });
+    }
+
+  private setTemplateModels(schema: MappedTemplateSchema, injector: Injector){
+    const extendedMainSchema = this.extendFields(schema.main, injector);
+    const extendedSideSchema = this.extendFields(schema.side, injector);
+    
+    this.mainTemplateModel$.set(extendedMainSchema);
+    this.sideTemplateModel$.set(extendedSideSchema);     
   }
 
   private executeCredentialAction(
@@ -160,19 +298,4 @@ export class CredentialDetailsService {
     );
   }
 
-  public sendReminder(): Observable<boolean> {
-    return this.executeCredentialAction(
-      (procedureId) => this.credentialProcedureService.sendReminder(procedureId),
-      "credentialDetails.sendReminderSuccess.title",
-      "credentialDetails.sendReminderSuccess.message"
-    );
-  }
-  
-  public signCredential(): Observable<boolean> {
-    return this.executeCredentialAction(
-      (procedureId) => this.credentialProcedureService.signCredential(procedureId),
-      "credentialDetails.signCredentialSuccess.title",
-      "credentialDetails.signCredentialSuccess.message"
-    );
-  }
 }

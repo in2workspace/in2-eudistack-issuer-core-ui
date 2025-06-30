@@ -6,9 +6,14 @@ import { Router } from '@angular/router';
 import { CredentialProcedureService } from 'src/app/core/services/credential-procedure.service';
 import { DialogWrapperService } from 'src/app/shared/components/dialog/dialog-wrapper/dialog-wrapper.service';
 import { of } from 'rxjs';
+
+import { Injector } from '@angular/core';
+import { GxLabelCredentialDetailsTemplateSchema } from 'src/app/core/models/schemas/credential-details/gx-label-credential-details-schema';
+import { LearCredentialEmployeeDetailsTemplateSchema } from 'src/app/core/models/schemas/credential-details/lear-credential-employee-details-schema';
+import { LearCredentialMachineDetailsTemplateSchema } from 'src/app/core/models/schemas/credential-details/lear-credential-machine-details-schema';
+import { VerifiableCertificationDetailsTemplateSchema } from 'src/app/core/models/schemas/credential-details/verifiable-certification-details-schema';
+import { DetailsKeyValueField, DetailsGroupField, TemplateSchema, MappedDetailsGroupField, MappedDetailsKeyValueField } from 'src/app/core/models/entity/lear-credential-details';
 import { DialogData } from 'src/app/shared/components/dialog/dialog-data';
-import { CredentialFormData, LEARCredentialDataDetails } from 'src/app/core/models/entity/lear-credential';
-import * as utils from '../utils/credential-details-utils';
 
 describe('CredentialDetailsService', () => {
   let service: CredentialDetailsService;
@@ -56,74 +61,6 @@ describe('CredentialDetailsService', () => {
 
   it('should be created', () => {
     expect(service).toBeTruthy();
-  });
-
-  it('should subscribe to loadCredentialDetails and call loadFormObserver.next', () => {
-    const mockData = {} as any;
-  
-    const loadCredentialDetailsSpy = jest
-      .spyOn(service, 'loadCredentialDetails')
-      .mockReturnValue(of(mockData));
-  
-    const observerNextSpy = jest.spyOn((service as any).loadFormObserver, 'next');
-  
-    service.loadCredentialDetailsAndForm();
-  
-    expect(loadCredentialDetailsSpy).toHaveBeenCalled();
-    expect(observerNextSpy).toHaveBeenCalledWith(mockData);
-  });
-
-  it('should fetch credential details and update signals', (done) => {
-    const mockProcedureId = 'test-id';
-    const mockData: LEARCredentialDataDetails = {
-      credential_status: 'VALID',
-      credential: { vc: {} as any }
-    } as LEARCredentialDataDetails;
-  
-    service.procedureId$.set(mockProcedureId);
-  
-    jest
-      .spyOn(mockCredentialProcedureService, 'getCredentialProcedureById')
-      .mockReturnValue(of(mockData));
-  
-    service.loadCredentialDetails().subscribe(result => {
-      expect(result).toBe(mockData);
-  
-      expect(service.credentialDetailsData$()).toBe(mockData);
-      expect(service.credentialStatus$()).toBe('VALID');
-  
-      done();
-    });
-  });
-  
-  it('should load form and update signals', () => {
-    const mockCredential = {
-      validFrom: '2023-01-01',
-      validUntil: '2023-12-31',
-      type: ['LEARCredentialEmployee'],
-    };
-  
-    const mockData = {
-      credential: { vc: mockCredential },
-    } as any;
-  
-    const mockSchema = { fake: 'schema' } as any;
-    const mockFormData = { name: 'John' } as unknown as CredentialFormData;
-    const mockFormGroup = new FormBuilder().group({ name: [''] });
-  
-    service.credentialDetailsData$.set(mockData);
-  
-    jest.spyOn(utils, 'getFormSchemaByType').mockReturnValue(mockSchema);
-    jest.spyOn(utils, 'getFormDataByType').mockReturnValue(mockFormData);
-    jest.spyOn(utils, 'buildFormFromSchema').mockReturnValue(mockFormGroup);
-  
-    (service as any).loadForm();
-  
-    expect(service.credentialValidFrom$()).toBe('2023-01-01');
-    expect(service.credentialValidUntil$()).toBe('2023-12-31');
-    expect(service.credentialType$()).toBe('LEARCredentialEmployee');
-    expect(service.credentialDetailsFormSchema$()).toBe(mockSchema);
-    expect(service.credentialDetailsForm$()).toBe(mockFormGroup);
   });
 
   it('should set the procedureId$ signal when setProcedureId is called', () => {
@@ -330,4 +267,97 @@ describe('CredentialDetailsService', () => {
     expect(routerNavigateSpy).toHaveBeenCalledWith(['/organization/credentials']);
     expect(locationReloadSpy).toHaveBeenCalled();
   }));
+
+  describe('mapFieldMain', () => {
+ it('should map “key-value” and “group” correctly', () => {
+    const credStub = { foo: 'bar' } as any;
+
+    const kv: DetailsKeyValueField = {
+      type: 'key-value',
+      key: 'x',
+      value: (c: any) => 'valX',
+      custom: {
+        token: 'T' as any,
+        component: class {},
+        value: (c: any) => 'V'
+      }
+    };
+
+    const grp: DetailsGroupField = {
+      type: 'group',
+      key: 'g',
+      value: (c: any) => [
+        { type: 'key-value', key: 'y', value: 'valY' }
+      ] as DetailsKeyValueField[]
+    };
+
+    const kvGroup: DetailsGroupField = {
+      type: 'group',
+      key: 'gKv',
+      value: [ kv ]
+    };
+
+    const schema: TemplateSchema = {
+      main: [ kvGroup, grp ],
+      side: []
+    };
+
+    const mapped = (service as any).mapSchemaValues(schema, credStub);
+
+    const mappedGroup = mapped.main[0] as any;
+    expect(mappedGroup.key).toBe('gKv');
+    expect(Array.isArray(mappedGroup.value)).toBeTruthy();
+
+    const mappedKv = mappedGroup.value[0] as any;
+    expect(mappedKv.key).toBe('x');
+    expect(mappedKv.value).toBe('valX');
+    expect(mappedKv.custom!.value).toBe('V');
+
+    const mappedDynGroup = mapped.main[1] as any;
+    expect(mappedDynGroup.key).toBe('g');
+    expect(Array.isArray(mappedDynGroup.value)).toBeTruthy();
+    expect((mappedDynGroup.value[0] as any).value).toBe('valY');
+  });
+});
+
+  describe('getSchemaByType', () => {
+    it('retorna el schema correcte per cada tipus', () => {
+      expect((service as any).getSchemaByType('LEARCredentialEmployee'))
+        .toBe(LearCredentialEmployeeDetailsTemplateSchema);
+      expect((service as any).getSchemaByType('LEARCredentialMachine'))
+        .toBe(LearCredentialMachineDetailsTemplateSchema);
+      expect((service as any).getSchemaByType('VerifiableCertification'))
+        .toBe(VerifiableCertificationDetailsTemplateSchema);
+      expect((service as any).getSchemaByType('gx:LabelCredential'))
+        .toBe(GxLabelCredentialDetailsTemplateSchema);
+    });
+  });
+
+describe('Load models', () => {
+  it('should load and map credential models correctly', () => {
+  const svc: any = service;
+
+  jest.spyOn(svc, 'credentialType$').mockReturnValue('MyType');
+
+  const vc = { foo: 'bar' };
+  const mockData = { credential: { vc, type: 'MyType' } };
+  jest.spyOn(svc, 'loadCredentialDetails').mockReturnValue(of(mockData));
+
+  const basicInfoSpy = jest.spyOn(svc, 'setCredentialBasicInfo').mockImplementation(() => {});
+  const getSchemaSpy   = jest.spyOn(svc, 'getSchemaByType').mockReturnValue({ schemaKey: 'schemaVal' });
+  const mapped         = { mappedKey: 'mappedVal' };
+  const mapSpy         = jest.spyOn(svc, 'mapSchemaValues').mockReturnValue(mapped);
+  const templateSpy    = jest.spyOn(svc, 'setTemplateModels').mockImplementation(() => {});
+
+  const injector = TestBed.inject(Injector);
+  svc.loadCredentialModels(injector);
+
+  expect(svc.loadCredentialDetails).toHaveBeenCalled();
+  expect(basicInfoSpy).toHaveBeenCalledWith(mockData);
+  expect(getSchemaSpy).toHaveBeenCalledWith('MyType');
+  expect(mapSpy).toHaveBeenCalledWith({ schemaKey: 'schemaVal' }, vc);
+  expect(templateSpy).toHaveBeenCalledWith(mapped, injector);
+});
+});
+
 });

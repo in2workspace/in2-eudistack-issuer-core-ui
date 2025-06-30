@@ -13,7 +13,7 @@ import { AuthService } from 'src/app/core/services/auth.service';
 import { AuthModule } from 'angular-auth-oidc-client';
 import { By } from '@angular/platform-browser';
 import { CredentialProcedure} from 'src/app/core/models/dto/procedure-response.dto';
-import { credentialProcedureListMock } from 'src/app/core/mocks/credential-procedure-list';
+import { credentialProcedureListMock } from 'src/app/core/mocks/credential-procedure-list.mock';
 import { MatSort } from '@angular/material/sort';
 import { ElementRef } from '@angular/core';
 import { provideHttpClient } from '@angular/common/http';

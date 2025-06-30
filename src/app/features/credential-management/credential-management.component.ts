@@ -15,6 +15,8 @@ import { debounceTime, Subject, take } from 'rxjs';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { animate, state, style, transition, trigger } from '@angular/animations';
 import { MatIcon } from '@angular/material/icon';
+import { SubjectComponent } from './components/subject-component/subject-component.component';
+import { credentialProcedureListMock } from 'src/app/core/mocks/credential-procedure-list.mock';
 
 @Component({
     selector: 'app-credential-management',
@@ -43,6 +45,7 @@ import { MatIcon } from '@angular/material/icon';
         NgClass,
         MatPaginator,
         DatePipe,
+        SubjectComponent,
         TranslatePipe,
     ],
     animations: [
