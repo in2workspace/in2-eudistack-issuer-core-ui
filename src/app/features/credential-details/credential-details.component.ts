@@ -40,7 +40,7 @@ export class CredentialDetailsComponent implements OnInit {
   public sideTemplateModel$: WritableSignal<MappedExtendedDetailsField[] | undefined>;
   public showSideTemplateCard$ = computed<boolean>(() =>
     Boolean(this.sideTemplateModel$()?.length)
-);
+  );
  
   public showReminderButton$ = computed<boolean>(() => {
     const type = this.credentialType$();

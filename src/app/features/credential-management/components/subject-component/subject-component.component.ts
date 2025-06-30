@@ -47,9 +47,11 @@ export class SubjectComponent {
   //  • v4: random
   //  • v5: name-based (SHA-1)
   // and only the RFC 4122 variant (bits 6–7 = 10) in the fourth block.
-  private extractUuid(subject: string): string{
-    const match = subject.match(/([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-5][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12})$/);
-    return match ? match[1] : subject;
+  private extractUuid(subject: string): string {
+    const uuidRegex = /([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-5][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12})$/;
+    const result = uuidRegex.exec(subject);
+    return result ? result[1] : subject;
   }
+
 
 }

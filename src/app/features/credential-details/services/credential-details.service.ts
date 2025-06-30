@@ -114,18 +114,23 @@ export class CredentialDetailsService {
     return type;
   }
 
-  private mapSchemaValues(
+private mapSchemaValues(
   schema: TemplateSchema,
   credential: LEARCredential
-  ): MappedTemplateSchema {
-    const mapFields = (fields: DetailsField[]): MappedDetailsField[] =>
-      fields.map(field => this.mapField(field, credential));
+): MappedTemplateSchema {
+  const mapFields = (fields: DetailsField[]): MappedDetailsField[] =>
+    fields.map(field => this.mapField(field, credential));
 
-    return {
-      main: mapFields(schema.main),
-      side: mapFields(schema.side)
-    };
-  }
+  const mainMapped = mapFields(schema.main);
+
+  const sideMapped = mapFields(schema.side)
+    .filter(field => this.shouldIncludeSideField(field));
+
+  return {
+    main: mainMapped,
+    side: sideMapped
+  };
+}
 
   private mapField(
   field: DetailsField,
@@ -182,6 +187,29 @@ export class CredentialDetailsService {
       return null;
     }
   }
+
+  private shouldIncludeSideField(field: MappedDetailsField): boolean {
+  if (field.key !== 'issuer') {
+    return true;
+  }
+
+  if (field.type === 'key-value') {
+    return field.value !== null;
+  }
+
+  const children = Array.isArray(field.value)
+    ? field.value
+    : [];
+
+  const allChildrenNull = children.every(child => {
+    if (child.type === 'key-value') {
+      return child.value === null;
+    }
+    return true;
+  });
+
+  return !allChildrenNull;
+}
 
 
   private setCredentialBasicInfo(details: LEARCredentialDataDetails): void{

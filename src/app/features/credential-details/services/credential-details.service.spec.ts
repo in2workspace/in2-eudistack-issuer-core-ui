@@ -268,10 +268,9 @@ describe('CredentialDetailsService', () => {
   }));
 
   describe('mapFieldMain', () => {
+ it('should map “key-value” and “group” correctly', () => {
     const credStub = { foo: 'bar' } as any;
-  
-  it('mapSchemaValues should map “key-value” and “group” correctly', () => {
-    // define tu key-value
+
     const kv: DetailsKeyValueField = {
       type: 'key-value',
       key: 'x',
@@ -283,7 +282,6 @@ describe('CredentialDetailsService', () => {
       }
     };
 
-    // un grupo “normal” que genera un child key-value
     const grp: DetailsGroupField = {
       type: 'group',
       key: 'g',
@@ -292,7 +290,6 @@ describe('CredentialDetailsService', () => {
       ] as DetailsKeyValueField[]
     };
 
-    // AHORA: envolvemos `kv` dentro de un DetailsGroupField
     const kvGroup: DetailsGroupField = {
       type: 'group',
       key: 'gKv',
@@ -303,21 +300,23 @@ describe('CredentialDetailsService', () => {
       main: [ kvGroup, grp ],
       side: []
     };
+
     const mapped = (service as any).mapSchemaValues(schema, credStub);
 
-    // —— tests —— 
-    // el primer elemento es un grupo que contenía kv
-    const mappedKv = (mapped.main[0] as MappedDetailsGroupField).value[0] as MappedDetailsKeyValueField;
+    const mappedGroup = mapped.main[0] as any;
+    expect(mappedGroup.key).toBe('gKv');
+    expect(Array.isArray(mappedGroup.value)).toBeTruthy();
+
+    const mappedKv = mappedGroup.value[0] as any;
+    expect(mappedKv.key).toBe('x');
     expect(mappedKv.value).toBe('valX');
     expect(mappedKv.custom!.value).toBe('V');
 
-    // el segundo elemento es nuestro grp original
-    const mappedGrp = mapped.main[1] as MappedDetailsGroupField;
-    expect(Array.isArray(mappedGrp.value)).toBeTruthy();
-    expect(mappedGrp.value[0].value).toBe('valY');
+    const mappedDynGroup = mapped.main[1] as any;
+    expect(mappedDynGroup.key).toBe('g');
+    expect(Array.isArray(mappedDynGroup.value)).toBeTruthy();
+    expect((mappedDynGroup.value[0] as any).value).toBe('valY');
   });
-
-
 });
 
   describe('getSchemaByType', () => {
