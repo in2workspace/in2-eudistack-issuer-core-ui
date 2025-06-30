@@ -16,6 +16,10 @@ describe('UrlListComponent', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [UrlListComponent],
+      providers: [{
+        provide: URL_LIST_TOKEN,
+        useValue: defaultUrls,
+      }]
     }).compileComponents();
 
     fixture = TestBed.createComponent(UrlListComponent);

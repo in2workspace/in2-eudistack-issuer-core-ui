@@ -7,15 +7,6 @@ export const URL_LIST_TOKEN = new InjectionToken<string[]>('URL_LIST_TOKEN');
   standalone: true,
   selector: 'app-url-list',
   imports: [],
-  // todo remove mock token
-  providers: [{
-    provide: URL_LIST_TOKEN,
-    useValue: [
-      'https://example.com',
-      'https://angular.io',
-      'https://openai.com'
-    ],
-  }],
   template: `
   <!-- todo -->
     <ul>
