@@ -7,7 +7,7 @@ export type NormalizedAction = { action: string; value: boolean };
 @Injectable({
   providedIn: 'root'
 })
-export class PowerTwoService {
+export class PowerService {
 
   private fb = inject(FormBuilder);
 

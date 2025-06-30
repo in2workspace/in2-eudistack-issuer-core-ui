@@ -17,7 +17,7 @@ import { ConditionalConfirmDialogComponent } from 'src/app/shared/components/dia
 import { ActivatedRoute, CanDeactivate, Router } from '@angular/router';
 import { MatCard, MatCardContent } from '@angular/material/card';
 import { CanComponentDeactivate, CanDeactivateType } from 'src/app/core/guards/can-component-deactivate.guard';
-import { CredentialIssuanceTwoService } from '../../services/credential-issuance.service';
+import { CredentialIssuanceService } from '../../services/credential-issuance.service';
 import { CredentialIssuanceFormSchema, CredentialIssuancePowerFormSchema } from 'src/app/core/models/schemas/lear-credential-issuance-schemas';
 import { KeyState } from '../../services/key-generator.service';
 import { KeyGeneratorComponent } from '../key-generator/key-generator.component';
@@ -117,7 +117,7 @@ export class CredentialIssuanceComponent implements CanDeactivate<CanComponentDe
   public asSigner: boolean;
   private hasSubmitted: boolean = false;
 
-  private readonly issuanceService = inject(CredentialIssuanceTwoService);
+  private readonly issuanceService = inject(CredentialIssuanceService);
   private readonly dialog = inject(DialogWrapperService);
   private readonly route = inject(ActivatedRoute);
   private readonly router = inject(Router);
