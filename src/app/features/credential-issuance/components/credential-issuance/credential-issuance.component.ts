@@ -108,9 +108,10 @@ export class CredentialIssuanceComponent implements CanDeactivate<CanComponentDe
   // SIDE (STATIC CREDENTIAL DATA)
   public staticData$ = computed<IssuanceStaticDataSchema | null>(() => {
     const schema = this.credentialSchemas$();
-      return schema ? 
-      schema[1] :
-      null
+    const staticData = schema?.[1] ?? null;
+    return staticData && Object.keys(staticData).length > 0
+    ? staticData
+    : null;
   });
 
   public asSigner: boolean;
@@ -151,7 +152,7 @@ export class CredentialIssuanceComponent implements CanDeactivate<CanComponentDe
     //No need to reset powers; they are automatically reset when the powersFormSchema passed as input changes
   }, { allowSignalWrites: true});
 
-  private constructor(){
+  public constructor(){
     this.asSigner = this.route.snapshot.pathFromRoot
       .flatMap(r => r.url)
       .map(seg => seg.path)
