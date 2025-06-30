@@ -122,6 +122,7 @@
     "gx:engineRules": "Engine Rules",
     "gx:compliantCredentials": "Compliant Credentials",
     "gx:validatedCriteria": "Validated Criteria",
+    "gx:validatedCriteriaReference": "Validated Criteria Reference",
     "sendReminderConfirm": {
       "title": "Send Reminder",
       "message": "Are you sure you want to send a reminder for this credential offer?"
