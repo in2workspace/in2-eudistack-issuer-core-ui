@@ -4,7 +4,7 @@ import { MatTableDataSource, MatTableModule } from '@angular/material/table';
 import { CompliantCredential } from './../../../../core/models/entity/lear-credential';
 import { AfterViewInit, Component, inject, InjectionToken, ViewChild } from '@angular/core';
 
-export const compliantCredentialsToken = new InjectionToken<CompliantCredential[]>('COMPLIANT_CREDENTIALS_DATA');
+export const compliantCredentialsToken = new InjectionToken<CompliantCredential[] | null>('COMPLIANT_CREDENTIALS_DATA');
 
 @Component({
   selector: 'app-compliant-credentials',
@@ -20,17 +20,19 @@ export class CompliantCredentialsComponent implements AfterViewInit {
   @ViewChild(MatPaginator) public paginator?: MatPaginator;
   @ViewChild(MatSort) public sort?: MatSort;
 
-  public data: CompliantCredential[] = inject(compliantCredentialsToken);
-  public dataSource: MatTableDataSource<CompliantCredential> = new MatTableDataSource(this.data);
+  public data: CompliantCredential[] | null = inject(compliantCredentialsToken);
+  public dataSource: MatTableDataSource<CompliantCredential> | null = this.data ? new MatTableDataSource(this.data) : null;
   public displayedColumns: string[] = ['id', 'type', "gx:digestSRI"];
 
   public ngAfterViewInit(): void {
+    if(!this.dataSource) return;
     if (this.paginator) {
       this.dataSource.paginator = this.paginator;
     }
     if (this.sort) {
       this.dataSource.sort = this.sort;
     }
+    console.log(this.dataSource.data)
   }
 
 }

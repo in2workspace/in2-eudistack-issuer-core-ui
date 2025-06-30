@@ -37,7 +37,8 @@ describe('CompliantCredentialsComponent', () => {
 
   it('should inject the default data', () => {
     expect(component.data).toEqual(defaultData);
-    expect(component.dataSource.data).toEqual(defaultData);
+    expect(component.dataSource).not.toBeNull();
+    expect(component.dataSource!.data).toEqual(defaultData);
   });
 
   it('should have the correct displayedColumns', () => {
@@ -47,9 +48,8 @@ describe('CompliantCredentialsComponent', () => {
   it('should set paginator and sort on the dataSource after view init', () => {
     expect(component.paginator).toBeInstanceOf(MatPaginator);
     expect(component.sort).toBeInstanceOf(MatSort);
-
-    expect(component.dataSource.paginator).toBe(component.paginator);
-    expect(component.dataSource.sort).toBe(component.sort);
+    expect(component.dataSource!.paginator).toBe(component.paginator);
+    expect(component.dataSource!.sort).toBe(component.sort);
   });
 
   describe('when overriding compliantCredentialsToken', () => {
@@ -73,18 +73,19 @@ describe('CompliantCredentialsComponent', () => {
 
     it('should inject the overridden data', () => {
       expect(component.data).toEqual(customData);
-      expect(component.dataSource.data).toEqual(customData);
+      expect(component.dataSource).not.toBeNull();
+      expect(component.dataSource!.data).toEqual(customData);
     });
 
     it('should still set paginator and sort on the new dataSource', () => {
       expect(component.paginator).toBeInstanceOf(MatPaginator);
       expect(component.sort).toBeInstanceOf(MatSort);
-      expect(component.dataSource.paginator).toBe(component.paginator);
-      expect(component.dataSource.sort).toBe(component.sort);
+      expect(component.dataSource!.paginator).toBe(component.paginator);
+      expect(component.dataSource!.sort).toBe(component.sort);
     });
   });
 
-  describe('when there is no data', () => {
+  describe('when there is no data (empty array)', () => {
     beforeEach(async () => {
       await TestBed.resetTestingModule();
       await TestBed.configureTestingModule({
@@ -100,7 +101,47 @@ describe('CompliantCredentialsComponent', () => {
     });
 
     it('should have an empty dataSource', () => {
-      expect(component.dataSource.data).toEqual([]);
+      expect(component.dataSource).not.toBeNull();
+      expect(component.dataSource!.data).toEqual([]);
+    });
+
+    it('should not render the table or paginator in the DOM', () => {
+      const tableEl = fixture.debugElement.query(By.css('table'));
+      const paginatorEl = fixture.debugElement.query(By.directive(MatPaginator));
+      expect(tableEl).toBeNull();
+      expect(paginatorEl).toBeNull();
+    });
+
+    it('should render the fallback no-data div with "-"', () => {
+      const noDataEl = fixture.debugElement.query(By.css('.no-data'));
+      expect(noDataEl).toBeTruthy();
+      expect(noDataEl.nativeElement.textContent.trim()).toBe('-');
+    });
+
+    it('should have undefined paginator and sort ViewChilds', () => {
+      expect(component.paginator).toBeUndefined();
+      expect(component.sort).toBeUndefined();
+    });
+  });
+
+  describe('when injected data is null', () => {
+    beforeEach(async () => {
+      await TestBed.resetTestingModule();
+      await TestBed.configureTestingModule({
+        imports: [CompliantCredentialsComponent, NoopAnimationsModule],
+        providers: [
+          { provide: compliantCredentialsToken, useValue: null }
+        ]
+      }).compileComponents();
+
+      fixture = TestBed.createComponent(CompliantCredentialsComponent);
+      component = fixture.componentInstance;
+      fixture.detectChanges();
+    });
+
+    it('should have null data and no dataSource', () => {
+      expect(component.data).toBeNull();
+      expect(component.dataSource).toBeNull();
     });
 
     it('should not render the table or paginator in the DOM', () => {
