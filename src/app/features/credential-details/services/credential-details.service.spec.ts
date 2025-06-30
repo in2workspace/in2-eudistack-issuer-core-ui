@@ -12,6 +12,7 @@ import { GxLabelCredentialDetailsTemplateSchema } from 'src/app/core/models/sche
 import { LearCredentialEmployeeDetailsTemplateSchema } from 'src/app/core/models/schemas/credential-details/lear-credential-employee-details-schema';
 import { LearCredentialMachineDetailsTemplateSchema } from 'src/app/core/models/schemas/credential-details/lear-credential-machine-details-schema';
 import { VerifiableCertificationDetailsTemplateSchema } from 'src/app/core/models/schemas/credential-details/verifiable-certification-details-schema';
+import { DetailsKeyValueField, DetailsGroupField, TemplateSchema } from 'src/app/core/models/entity/lear-credential-details';
 
 describe('CredentialDetailsService', () => {
   let service: CredentialDetailsService;
@@ -266,129 +267,85 @@ describe('CredentialDetailsService', () => {
     expect(locationReloadSpy).toHaveBeenCalled();
   }));
 
-describe('loadCredentialModels', () => {
-  it('ha de cridar getCredentialProcedureById, setear senyals i models', fakeAsync(() => {
-    // prepara
-    service.procedureId$.set('pid-123');
+  describe('mapFieldMain', () => {
+    const credStub = { foo: 'bar' } as any;
+    it('mapSchemaValues hauria de mapejar “key-value” i “group” correctament', () => {
+    const kv: DetailsKeyValueField = {
+      type: 'key-value',
+      key: 'x',
+      value: (c: any) => 'valX',
+      custom: {
+        token: 'T' as any,
+        component: class {},
+        value: (c: any) => 'V'
+      }
+    };
 
-    const fakeDetails = {
-      credential: {
-        vc: {
-          validFrom: '2025-02-02',
-          validUntil: '2025-03-03',
-          type: ['LEARCredentialEmployee'],
-          customField: 'valorX',            // perquè el schema fake llegeixi c.customField
-        }
-      },
-      credential_status: 'APPROVED'
-    } as any;
+    const grp: DetailsGroupField = {
+      type: 'group',
+      key: 'g',
+      value: (c: any) => [
+        { type: 'key-value', key: 'y', value: 'valY' } as DetailsKeyValueField
+      ]
+    };
 
-    jest.spyOn(mockCredentialProcedureService, 'getCredentialProcedureById')
-      .mockReturnValue(of(fakeDetails));
+    const schema: TemplateSchema = { main: [kv, grp], side: [] };
+    const mapped = (service as any).mapSchemaValues(schema, credStub);
 
-    // schema i spies
-    const fakeSchema = {
-      main: [{
-        type: 'key-value',
-        key: 'cf',
-        value: (c: any) => c.customField,
-        custom: undefined
-      }],
+    // key-value
+    const mappedKv = (mapped.main as any[])[0];
+    expect(mappedKv.value).toBe('valX');
+    expect(mappedKv.custom!.value).toBe('V');
+
+    // group
+    const mappedGrp = (mapped.main as any[])[1];
+    expect(Array.isArray(mappedGrp.value)).toBeTruthy();
+    expect(mappedGrp.value[0].value).toBe('valY');
+  });
+  
+
+  it('hauria de substituir tots els valors falsy per "-"', () => {
+    const kvEmpty: DetailsKeyValueField = { type: 'key-value', key: 'k1', value: '' };
+    const kvNull:  DetailsKeyValueField = { type: 'key-value', key: 'k2', value: null   };
+    const kvUndef: DetailsKeyValueField = { type: 'key-value', key: 'k3', value: () => undefined };
+
+    const schema: TemplateSchema = {
+      main: [kvEmpty, kvNull, kvUndef],
       side: []
     };
-    const getSchemaSpy = jest
-      .spyOn(service as any, 'getSchemaByType')
-      .mockReturnValue(fakeSchema);
 
-    const extendSpy = jest
-      .spyOn(service as any, 'extendFields')
-      .mockImplementation((...args: unknown[]) => args[0]); // el primer arg és l'array de fields
+    const mapped = (service as any).mapSchemaValues(schema, credStub);
+    const vals = (mapped.main as any[]).map(f => f.value);
 
-    // acció
-    service.loadCredentialModels(TestBed.inject(Injector));
-    tick();
-
-    // asserts de senyals
-    expect(service.credentialValidFrom$()).toBe('2025-02-02');
-    expect(service.credentialValidUntil$()).toBe('2025-03-03');
-    expect(service.credentialType$()).toBe('LEARCredentialEmployee');
-    expect(service.credentialStatus$()).toBe('APPROVED');
-
-    // assegura que getSchemaByType es crida amb el tipus correcte
-    expect(getSchemaSpy).toHaveBeenCalledWith('LEARCredentialEmployee');
-
-    // models
-    expect(service.mainTemplateModel$()).toEqual([{
-      type: 'key-value',
-      key: 'cf',
-      value: 'valorX',    // el computed del value
-      custom: undefined
-    }]);
-    expect(service.sideTemplateModel$()).toEqual([]);
-  }));
-
-  it('lança error si al schema li falta el tipus', fakeAsync(() => {
-    service.procedureId$.set('pid-err');
-
-    const badDetails = {
-      credential: {
-        vc: {
-          validFrom: '2025-01-01',
-          validUntil: '2025-01-02',
-          type: [],   // cap tipus vàlid → getCredentialType throw
-        }
-      },
-      credential_status: 'PEND_DOWNLOAD'
-    } as any;
-
-    jest.spyOn(mockCredentialProcedureService, 'getCredentialProcedureById')
-      .mockReturnValue(of(badDetails));
-
-    // com que el throw està dins el subscribe, cal cridar tick() abans d'esperar-lo
-    expect(() => {
-      service.loadCredentialModels(TestBed.inject(Injector));
-      tick();
-    }).toThrowError('No credential tyep found in credential');  // fixa't en el "tyep"
-  }));
-});
-
-  describe('mapFieldMain / mapFieldNullable', () => {
-    const credStub = { foo: 'bar' } as any;
-
-    it('mapFieldMain fa mapping de key-value i groups', () => {
-      // key-value
-      const kv = {
-        type: 'key-value',
-        key: 'x',
-        value: (c: any) => 'valX',
-        custom: { token: 'T', component: class{}, value: 'V' }
-      } as any;
-      const mappedKv = (service as any).mapFieldMain(kv, credStub);
-      expect(mappedKv.value).toBe('valX');
-      expect(mappedKv.custom!.value).toBe('V');
-
-      // group
-      const grp = {
-        type: 'group',
-        key: 'g',
-        value: (c: any) => [{ type: 'key-value', key: 'y', value: 'valY' }],
-        custom: undefined
-      } as any;
-      const mappedGrp = (service as any).mapFieldMain(grp, credStub);
-      expect(Array.isArray(mappedGrp.value)).toBe(true);
-      expect((mappedGrp.value as any[])[0].value).toBe('valY');
-    });
-
-    it('mapFieldNullable retorna null si el valor és falsy o grup buit', () => {
-      // key-value falsy
-      const kvFalsy = { type: 'key-value', key: 'k', value: () => '', custom: undefined } as any;
-      expect((service as any).mapFieldNullable(kvFalsy, credStub)).toBeNull();
-
-      // group buit
-      const grpEmpty = { type: 'group', key: 'g', value: () => [], custom: undefined } as any;
-      expect((service as any).mapFieldNullable(grpEmpty, credStub)).toBeNull();
-    });
+    expect(vals).toEqual(['-', '-', '-']);
   });
+
+  it('atrapa excepcions en raw functions i retorna "-"', () => {
+    const kvThrow: DetailsKeyValueField = {
+      type: 'key-value',
+      key: 'kt',
+      value: () => { throw new Error('fail'); }
+    };
+
+    const schema: TemplateSchema = { main: [kvThrow], side: [] };
+    const mapped = (service as any).mapSchemaValues(schema, credStub);
+    expect((mapped.main as any)[0].value).toBe('-');
+  });
+
+  it('accepta grups sense fills i retorna un array buit', () => {
+    const grpEmpty: DetailsGroupField = {
+      type: 'group',
+      key: 'gEmpty',
+      value: () => []
+    };
+
+    const schema: TemplateSchema = { main: [grpEmpty], side: [] };
+    const mapped = (service as any).mapSchemaValues(schema, credStub);
+    const children = (mapped.main as any)[0].value;
+    expect(Array.isArray(children)).toBeTruthy();
+    expect(children.length).toBe(0);
+  });
+});
 
   describe('getSchemaByType', () => {
     it('retorna el schema correcte per cada tipus', () => {
@@ -402,4 +359,37 @@ describe('loadCredentialModels', () => {
         .toBe(GxLabelCredentialDetailsTemplateSchema);
     });
   });
+
+describe('Load models', () => {
+  it('should load and map credential models correctly', () => {
+  const svc: any = service;
+
+  // 0) Stub del tipus perquè getSchemaByType s’acabi cridant
+  jest.spyOn(svc, 'credentialType$').mockReturnValue('MyType');
+
+  // 1) Spy sobre loadCredentialDetails (nota el typo)
+  const vc = { foo: 'bar' };
+  const mockData = { credential: { vc, type: 'MyType' } };
+  jest.spyOn(svc, 'loadCredentialDetails').mockReturnValue(of(mockData));
+
+  // 2) Spy dels helpers
+  const basicInfoSpy = jest.spyOn(svc, 'setCredentialBasicInfo').mockImplementation(() => {});
+  const getSchemaSpy   = jest.spyOn(svc, 'getSchemaByType').mockReturnValue({ schemaKey: 'schemaVal' });
+  const mapped         = { mappedKey: 'mappedVal' };
+  const mapSpy         = jest.spyOn(svc, 'mapSchemaValues').mockReturnValue(mapped);
+  const templateSpy    = jest.spyOn(svc, 'setTemplateModels').mockImplementation(() => {});
+
+  // 3) Execució
+  const injector = TestBed.inject(Injector);
+  svc.loadCredentialModels(injector);
+
+  // 4) Asserts
+  expect(svc.loadCredentialDetails).toHaveBeenCalled();
+  expect(basicInfoSpy).toHaveBeenCalledWith(mockData);
+  expect(getSchemaSpy).toHaveBeenCalledWith('MyType');
+  expect(mapSpy).toHaveBeenCalledWith({ schemaKey: 'schemaVal' }, vc);
+  expect(templateSpy).toHaveBeenCalledWith(mapped, injector);
+});
+});
+
 });

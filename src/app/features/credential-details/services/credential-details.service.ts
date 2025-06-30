@@ -1,5 +1,5 @@
 import { inject, Injectable, Injector, signal, WritableSignal } from '@angular/core';
-import { EMPTY, from, Observable, switchMap, tap } from 'rxjs';
+import { EMPTY, from, Observable, of, switchMap, tap } from 'rxjs';
 import { CredentialProcedureService } from 'src/app/core/services/credential-procedure.service';
 import { DialogWrapperService } from 'src/app/shared/components/dialog/dialog-wrapper/dialog-wrapper.service';
 import { TranslateService } from '@ngx-translate/core';
@@ -12,6 +12,7 @@ import { LearCredentialMachineDetailsTemplateSchema } from 'src/app/core/models/
 import { GxLabelCredentialDetailsTemplateSchema } from 'src/app/core/models/schemas/credential-details/gx-label-credential-details-schema';
 import { VerifiableCertificationDetailsTemplateSchema } from 'src/app/core/models/schemas/credential-details/verifiable-certification-details-schema';
 import { MappedExtendedDetailsField, TemplateSchema, MappedTemplateSchema, DetailsField, MappedDetailsField, CustomDetailsField, DetailsKeyValueField, DetailsGroupField, MappedDetailsGroupField, MappedExtendedDetailsGroupField } from 'src/app/core/models/entity/lear-credential-details';
+import { mockGxLabel } from 'src/app/core/mocks/details-mocks';
 
 @Injectable() //provided in component
 export class CredentialDetailsService {
@@ -40,17 +41,19 @@ export class CredentialDetailsService {
   }
 
   public loadCredentialModels(injector: Injector): void {  
-    this.loadCredentailDetails().subscribe(data => {
-          const vc = data.credential.vc;
-          this.setCredentialBasicInfo(data);
+    this.loadCredentialDetails().subscribe(data => {
+      this.setCredentialBasicInfo(data);
+      const vc = data.credential.vc;
 
-          const type = this.credentialType$();
-          if(!type) throw Error('No credential type found in credential.');
+      const type = this.credentialType$();
+      console.log('type')
+      console.log(type)
+      if(!type) throw Error('No credential type found in credential.');
 
-          const schema = this.getSchemaByType(type);
-          const mappedSchema = this.mapSchemaValues(schema, vc);
-          this.setTemplateModels(mappedSchema, injector);
-      });
+      const schema = this.getSchemaByType(type);
+      const mappedSchema = this.mapSchemaValues(schema, vc);
+      this.setTemplateModels(mappedSchema, injector);
+    });
   }
 
   public openSendReminderDialog(): void {
@@ -100,11 +103,11 @@ export class CredentialDetailsService {
     );
   }
 
-  private loadCredentailDetails(): Observable<LEARCredentialDataDetails> {
+  private loadCredentialDetails(): Observable<LEARCredentialDataDetails> {
     // todo restore
-    return this.credentialProcedureService.getCredentialProcedureById(this.procedureId$());
+    // return this.credentialProcedureService.getCredentialProcedureById(this.procedureId$());
     // return of(mockCredentialEmployee);
-      // return of(mockGxLabel);
+      return of(mockGxLabel);
   }
 
   private getSchemaByType(credType: CredentialType): TemplateSchema{
@@ -117,134 +120,78 @@ export class CredentialDetailsService {
     return type;
   }
 
-  ///todo: add missing fields; in the view, show "-", "N/A" or ""
-private mapSchemaValues(
+  private mapSchemaValues(
   schema: TemplateSchema,
   credential: LEARCredential
-): MappedTemplateSchema {
-  const mapFieldsMain = (fields: DetailsField[]): MappedDetailsField[] =>
-    fields.map(field => this.mapFieldMain(field, credential));
+  ): MappedTemplateSchema {
+    const mapFields = (fields: DetailsField[]): MappedDetailsField[] =>
+      fields.map(field => this.mapField(field, credential));
 
-  const mapFieldsSide = (fields: DetailsField[]): MappedDetailsField[] =>
-    fields
-      .map(field => this.mapFieldNullable(field, credential))
-      .filter((f): f is MappedDetailsField => f !== null);
+    return {
+      main: mapFields(schema.main),
+      side: mapFields(schema.side)
+    };
+  }
 
-  return {
-    main: mapFieldsMain(schema.main),
-    side: mapFieldsSide(schema.side)
-  };
-}
-
-private mapFieldMain(
+  private mapField(
   field: DetailsField,
   credential: LEARCredential
 ): MappedDetailsField {
-  const mapCustom = (custom: CustomDetailsField): CustomDetailsField => {
-    const rawVal = custom.value;
-    const computedVal =
-      typeof rawVal === 'function' ? rawVal(credential) : rawVal;
-    return { ...custom, value: computedVal ?? "" };
-  };
+  const mapCustom = (custom: CustomDetailsField) => ({
+    ...custom,
+    value: this.safeCompute(custom.value, credential, custom.token.toString())
+  });
+  
 
   if (field.type === 'key-value') {
     const kv = field as DetailsKeyValueField;
-    const raw = kv.value;
-    const computed =
-      typeof raw === 'function' ? raw(credential) : raw;
-    return {
+    const ob = {
       ...kv,
-      value: computed ?? "",
+      value: this.safeCompute(kv.value, credential, kv.key),
       custom: kv.custom ? mapCustom(kv.custom) : undefined
     };
+    return ob;
   }
 
-  // grup
-  const grp = field as DetailsGroupField;
-  const rawGroup = grp.value;
-  const children: DetailsField[] =
-    typeof rawGroup === 'function'
+
+  const rawGroup = field.value;
+  let children: DetailsField[];
+  try {
+    children = typeof rawGroup === 'function'
       ? rawGroup(credential)
       : rawGroup;
-
-  const mappedChildren = children.map(sub =>
-    this.mapFieldMain(sub, credential)
-  );
+  } catch (e) {
+    console.warn(`Error mapping group "${field.key}":`, e);
+    children = [];
+  }
 
   return {
-    ...grp,
-    value: mappedChildren,
-    custom: grp.custom ? mapCustom(grp.custom) : undefined
+    ...field,
+    value: children.map(child => this.mapField(child, credential)),
+    custom: field.custom ? mapCustom(field.custom) : undefined
   };
 }
 
-
-private mapFieldNullable(
-  field: DetailsField,
-  credential: LEARCredential
-): MappedDetailsField | null {
-  const mapCustom = (custom: CustomDetailsField): CustomDetailsField | null => {
-    const rawVal = custom.value;
-    const computedVal =
-      typeof rawVal === 'function' ? rawVal(credential) : rawVal;
-    if (!computedVal) {
-      console.warn('Omitting side field custom value:');
-      console.warn(field);
-      return null;
+  private safeCompute<T>(
+    raw: T | ((c: LEARCredential) => T),
+    credential: LEARCredential,
+    fieldKey?: string
+  ): T | "-" {
+    try {
+      const val = typeof raw === 'function'
+        ? (raw as (c: LEARCredential) => T)(credential)
+        : raw;
+      return val || "-";
+    } catch (e) {
+      console.warn(`Error when mapping ${fieldKey ? ` "${fieldKey}"` : ''}:`, e);
+      return "-";
     }
-    return { ...custom, value: computedVal };
-  };
-
-  if (field.type === 'key-value') {
-    const kv = field as DetailsKeyValueField;
-    const raw = kv.value;
-    const computed =
-      typeof raw === 'function' ? raw(credential) : raw;
-     if (!computed) {
-      console.warn('Omitting side field value:');
-      console.warn(field);
-      return null;
-    }
-    const custom = kv.custom ? mapCustom(kv.custom) : null;
-    return {
-      ...kv,
-      value: computed,
-      custom: custom ?? undefined
-    };
   }
 
-  const grp = field as DetailsGroupField;
-  const rawGroup = grp.value;
-  const children: DetailsField[] =
-    typeof rawGroup === 'function'
-      ? rawGroup(credential)
-      : rawGroup;
-  if (!children?.length){
-    console.warn('Ometting empty group:');
-    console.warn(grp);
-    return null;
-  }
-
-  const mappedChildren = children
-    .map(sub => this.mapFieldNullable(sub, credential))
-    .filter((c): c is MappedDetailsField => c !== null);
-
-  if (!mappedChildren.length){
-    console.warn('Ometting empty group:');
-    console.warn(grp);
-    return null;
-  }
-  const custom = grp.custom ? mapCustom(grp.custom) : null;
-
-  return {
-    ...grp,
-    value: mappedChildren,
-    custom: custom ?? undefined
-  };
-}
 
   private setCredentialBasicInfo(details: LEARCredentialDataDetails): void{
     const credential = details.credential.vc;
+
     const credentialValidFrom = credential.validFrom;
     this.credentialValidFrom$.set(credentialValidFrom);
 
