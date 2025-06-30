@@ -11,7 +11,7 @@ import { LearCredentialEmployeeDetailsTemplateSchema } from 'src/app/core/models
 import { LearCredentialMachineDetailsTemplateSchema } from 'src/app/core/models/schemas/credential-details/lear-credential-machine-details-schema';
 import { GxLabelCredentialDetailsTemplateSchema } from 'src/app/core/models/schemas/credential-details/gx-label-credential-details-schema';
 import { VerifiableCertificationDetailsTemplateSchema } from 'src/app/core/models/schemas/credential-details/verifiable-certification-details-schema';
-import { MappedExtendedDetailsField, TemplateSchema, MappedTemplateSchema, DetailsField, MappedDetailsField, CustomDetailsField, DetailsKeyValueField, MappedDetailsGroupField, MappedExtendedDetailsGroupField } from 'src/app/core/models/entity/lear-credential-details';
+import { MappedExtendedDetailsField, TemplateSchema, MappedTemplateSchema, DetailsField, MappedDetailsField, CustomDetailsField, MappedExtendedDetailsGroupField } from 'src/app/core/models/entity/lear-credential-details';
 
 @Injectable() //provided in component
 export class CredentialDetailsService {
@@ -170,16 +170,16 @@ export class CredentialDetailsService {
     raw: T | ((c: LEARCredential) => T),
     credential: LEARCredential,
     fieldKey?: string
-  ): T | "-" {
+  ): T | null {
     try {
       const val = typeof raw === 'function'
         ? (raw as (c: LEARCredential) => T)(credential)
         : raw;
-      return val || "-";
+      return val || null;
     } catch (e) {
       const keyPart = fieldKey ? ' "' + fieldKey + '"' : '';
       console.warn(`Error when mapping${keyPart}:`, e);
-      return "-";
+      return null;
     }
   }
 
