@@ -16,7 +16,8 @@ export interface LEARCredentialJwtPayload {
   jti: string;
 }
 
-export type CredentialType =   'LEARCredentialEmployee' | 'LEARCredentialMachine' | 'VerifiableCertification' | 'gx:LabelCredential';
+export const CREDENTIAL_TYPES_ARRAY = ['LEARCredentialEmployee', 'LEARCredentialMachine', 'VerifiableCertification', 'gx:LabelCredential'] as const;
+export type CredentialType = typeof CREDENTIAL_TYPES_ARRAY[number];
 export type ExtendedCredentialType =  'VerifiableCredential' | CredentialType;
 
 export type LEARCredential =
