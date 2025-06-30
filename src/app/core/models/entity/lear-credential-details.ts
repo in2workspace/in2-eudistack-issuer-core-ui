@@ -15,6 +15,7 @@ export type MappedDetailsGroupField = DetailsGroupField & { value: MappedDetails
 export type MappedExtendedDetailsGroupField = ExtendedDetailsGroupField & { value: MappedDetailsField[] }
 export type MappedExtendedDetailsField = ExtendedDetailsField & { value: MappedDetailsField[] }
 
+//todo: separate custom and value (which contains value) in different interfaces, or handle differently
 export type DetailsKeyValueField = {
   key?: string;
   type: 'key-value';
