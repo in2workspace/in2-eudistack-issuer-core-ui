@@ -260,9 +260,9 @@ export const mockGxLabel: LEARCredentialDataDetails = {
           },
         ],
         "gx:validatedCriteria": [
-          'criterion-identity',
-          'criterion-authenticity',
-          'criterion-integrity'
+          'https://w3id.org/gaia-x/specs/cd25.03/criterion/P1.2.5',
+          'https://w3id.org/gaia-x/specs/cd25.03/criterion/P1.2.4',
+          'https://w3id.org/gaia-x/specs/cd25.03/criterion/P1.2.3'
         ]
       },
       validFrom: '2024-01-01',

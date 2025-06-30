@@ -12,7 +12,6 @@ export type MappedDetailsField = MappedDetailsKeyValueField | MappedDetailsGroup
 export type MappedDetailsKeyValueField = DetailsKeyValueField & { value: MappedDetailsField[] }
 export type MappedDetailsGroupField = DetailsGroupField & { value: MappedDetailsField[] }
 
-// export type MappedExtendedDetailsField = MappedExtendedDetailsGroupField | MappedExtendedDetailsField;
 export type MappedExtendedDetailsGroupField = ExtendedDetailsGroupField & { value: MappedDetailsField[] }
 export type MappedExtendedDetailsField = ExtendedDetailsField & { value: MappedDetailsField[] }
 
@@ -34,7 +33,6 @@ export type CustomDetailsField = {
   value: any;
 };
 
-//todo set main and side as DetailsGroupFields[]; this requires changing power to group type
 export type TemplateSchema = {
   main: DetailsGroupField[];
   side: DetailsGroupField[];

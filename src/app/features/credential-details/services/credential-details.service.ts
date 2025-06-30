@@ -1,5 +1,5 @@
 import { inject, Injectable, Injector, signal, WritableSignal } from '@angular/core';
-import { EMPTY, from, Observable, of, switchMap, tap } from 'rxjs';
+import { EMPTY, from, Observable, switchMap, tap } from 'rxjs';
 import { CredentialProcedureService } from 'src/app/core/services/credential-procedure.service';
 import { DialogWrapperService } from 'src/app/shared/components/dialog/dialog-wrapper/dialog-wrapper.service';
 import { TranslateService } from '@ngx-translate/core';
@@ -11,8 +11,7 @@ import { LearCredentialEmployeeDetailsTemplateSchema } from 'src/app/core/models
 import { LearCredentialMachineDetailsTemplateSchema } from 'src/app/core/models/schemas/credential-details/lear-credential-machine-details-schema';
 import { GxLabelCredentialDetailsTemplateSchema } from 'src/app/core/models/schemas/credential-details/gx-label-credential-details-schema';
 import { VerifiableCertificationDetailsTemplateSchema } from 'src/app/core/models/schemas/credential-details/verifiable-certification-details-schema';
-import { MappedExtendedDetailsField, TemplateSchema, MappedTemplateSchema, DetailsField, MappedDetailsField, CustomDetailsField, DetailsKeyValueField, DetailsGroupField, MappedDetailsGroupField, MappedExtendedDetailsGroupField } from 'src/app/core/models/entity/lear-credential-details';
-import { mockCredentialEmployee, mockCredentialMachine, mockGxLabel } from 'src/app/core/mocks/details-mocks';
+import { MappedExtendedDetailsField, TemplateSchema, MappedTemplateSchema, DetailsField, MappedDetailsField, CustomDetailsField, DetailsKeyValueField, MappedDetailsGroupField, MappedExtendedDetailsGroupField } from 'src/app/core/models/entity/lear-credential-details';
 
 @Injectable() //provided in component
 export class CredentialDetailsService {
@@ -139,7 +138,7 @@ export class CredentialDetailsService {
   
 
   if (field.type === 'key-value') {
-    const kv = field as DetailsKeyValueField;
+    const kv = field;
     const ob = {
       ...kv,
       value: this.safeCompute(kv.value, credential, kv.key),
@@ -178,7 +177,8 @@ export class CredentialDetailsService {
         : raw;
       return val || "-";
     } catch (e) {
-      console.warn(`Error when mapping ${fieldKey ? ` "${fieldKey}"` : ''}:`, e);
+      const keyPart = fieldKey ? ' "' + fieldKey + '"' : '';
+      console.warn(`Error when mapping${keyPart}:`, e);
       return "-";
     }
   }
@@ -222,7 +222,7 @@ export class CredentialDetailsService {
         }
   
         if (field.type === 'group') {
-          const groupField = field as MappedDetailsGroupField;
+          const groupField = field;
           extended = { ...extended } as MappedExtendedDetailsGroupField;
           extended.value = this.extendFields(groupField.value, injector);
         }
