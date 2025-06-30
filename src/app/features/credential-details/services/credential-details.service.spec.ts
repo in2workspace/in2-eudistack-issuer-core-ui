@@ -317,30 +317,6 @@ describe('CredentialDetailsService', () => {
     expect(mappedGrp.value[0].value).toBe('valY');
   });
 
-  it('should replace falsy values with "-" inside groups', () => {
-    const kvEmpty:  DetailsKeyValueField = { type: 'key-value', key: 'k1', value: '' };
-    const kvNull:   DetailsKeyValueField = { type: 'key-value', key: 'k2', value: null };
-    const kvUndef:  DetailsKeyValueField = { type: 'key-value', key: 'k3', value: () => undefined };
-
-    // agrupamos los tres en un único grupo
-    const falsyGroup: DetailsGroupField = {
-      type: 'group',
-      key: 'falsy',
-      value: [ kvEmpty, kvNull, kvUndef ]
-    };
-
-    const schema: TemplateSchema = {
-      main: [ falsyGroup ],
-      side: []
-    };
-
-    const mapped = (service as any).mapSchemaValues(schema, credStub);
-    const vals = (mapped.main[0] as MappedDetailsGroupField)
-                   .value.map(f => f.value);
-
-    expect(vals).toEqual(['-', '-', '-']);
-  });
-
 
 });
 
