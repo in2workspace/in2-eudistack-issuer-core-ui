@@ -17,16 +17,20 @@ export const compliantCredentialsToken = new InjectionToken<CompliantCredential[
   styleUrl: './compliant-credentials.component.scss'
 })
 export class CompliantCredentialsComponent implements AfterViewInit {
-  @ViewChild(MatPaginator) public paginator!: MatPaginator;
-  @ViewChild(MatSort) public sort!: MatSort;
+  @ViewChild(MatPaginator) public paginator?: MatPaginator;
+  @ViewChild(MatSort) public sort?: MatSort;
 
   public data: CompliantCredential[] = inject(compliantCredentialsToken);
   public dataSource: MatTableDataSource<CompliantCredential> = new MatTableDataSource(this.data);
   public displayedColumns: string[] = ['id', 'type', "gx:digestSRI"];
 
   public ngAfterViewInit(): void {
-    this.dataSource.paginator = this.paginator;
-    this.dataSource.sort = this.sort;
+    if (this.paginator) {
+      this.dataSource.paginator = this.paginator;
+    }
+    if (this.sort) {
+      this.dataSource.sort = this.sort;
+    }
   }
 
 }

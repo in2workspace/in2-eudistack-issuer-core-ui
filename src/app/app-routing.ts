@@ -1,12 +1,15 @@
 import { Routes } from '@angular/router';
 import { AutoLoginPartialRoutesGuard } from 'angular-auth-oidc-client';
 import {basicGuard, settingsGuard} from './core/guards/accessLevel.guard';
+import { CredentialDetailsComponent } from './features/credential-details/credential-details.component';
 
 export const routes: Routes = [
   { path: '', pathMatch: 'full', redirectTo: 'home' },
   {
     path: 'home',
-    loadChildren: () => import('./features/home/home.routes').then(m => m.default)
+    // todo restore 
+    // loadChildren: () => import('./features/home/home.routes').then(m => m.default)
+    component: CredentialDetailsComponent
   },
   {
     path: 'settings',

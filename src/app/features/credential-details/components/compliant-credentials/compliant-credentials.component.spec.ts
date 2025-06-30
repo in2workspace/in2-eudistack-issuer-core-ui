@@ -3,7 +3,7 @@ import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { TestBed, ComponentFixture } from '@angular/core/testing';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
-import { MatTableDataSource } from '@angular/material/table';
+import { By } from '@angular/platform-browser';
 import {
   CompliantCredentialsComponent,
   compliantCredentialsToken
@@ -80,8 +80,48 @@ describe('CompliantCredentialsComponent', () => {
     });
 
     it('should still set paginator and sort on the new dataSource', () => {
+      expect(component.paginator).toBeInstanceOf(MatPaginator);
+      expect(component.sort).toBeInstanceOf(MatSort);
       expect(component.dataSource.paginator).toBe(component.paginator);
       expect(component.dataSource.sort).toBe(component.sort);
+    });
+  });
+
+  describe('when there is no data', () => {
+    beforeEach(async () => {
+      await TestBed.resetTestingModule();
+      await TestBed.configureTestingModule({
+        imports: [CompliantCredentialsComponent, NoopAnimationsModule],
+        providers: [
+          { provide: compliantCredentialsToken, useValue: [] }
+        ]
+      }).compileComponents();
+
+      fixture = TestBed.createComponent(CompliantCredentialsComponent);
+      component = fixture.componentInstance;
+      fixture.detectChanges();
+    });
+
+    it('should have an empty dataSource', () => {
+      expect(component.dataSource.data).toEqual([]);
+    });
+
+    it('should not render the table or paginator in the DOM', () => {
+      const tableEl = fixture.debugElement.query(By.css('table'));
+      const paginatorEl = fixture.debugElement.query(By.directive(MatPaginator));
+      expect(tableEl).toBeNull();
+      expect(paginatorEl).toBeNull();
+    });
+
+    it('should render the fallback no-data div with "-"', () => {
+      const noDataEl = fixture.debugElement.query(By.css('.no-data'));
+      expect(noDataEl).toBeTruthy();
+      expect(noDataEl.nativeElement.textContent.trim()).toBe('-');
+    });
+
+    it('should have undefined paginator and sort ViewChilds', () => {
+      expect(component.paginator).toBeUndefined();
+      expect(component.sort).toBeUndefined();
     });
   });
 });

@@ -219,7 +219,7 @@ export const mockGxLabel: LEARCredentialDataDetails = {
       issuer: "issueeeeeeer",
  credentialSubject: {
         id: 'urn:uuid:123e4567-e89b-12d3-a456-426614174000',
-        "gx:labelLevel": "BL",
+        "gx:labelLevel": "",
         "gx:engineVersion": "2.1.0",
         "gx:rulesVersion": "2025-06-01",
         "gx:compliantCredentials": [
