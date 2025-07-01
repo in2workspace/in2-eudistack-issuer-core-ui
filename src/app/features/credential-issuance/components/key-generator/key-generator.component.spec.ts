@@ -48,10 +48,6 @@ describe('KeyGeneratorComponent', () => {
   it('should emit updateKeys on state change', () => {
     const spy = jest.spyOn(component.updateKeys, 'emit');
 
-    console.log(component['keyService']);
-    console.log('AFTER FLUSH EFFECT');
-    console.log(component.keyState$);
-    console.log(component.keyState$());
     // Update state via raw signal
     (component.keyState$ as WritableSignal<any>).set({ desmosPrivateKeyValue: 'abc', desmosDidKeyValue: 'did:xyz' });
     fixture.detectChanges();

@@ -1,5 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { CredentialIssuanceComponent } from './credential-issuance.component';
+import { TranslateModule } from '@ngx-translate/core';
 
 
 describe('CredentialIssuanceComponent', () => {
@@ -8,7 +9,7 @@ describe('CredentialIssuanceComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [CredentialIssuanceComponent]
+      imports: [CredentialIssuanceComponent, TranslateModule.forRoot()]
     })
     .compileComponents();
 
