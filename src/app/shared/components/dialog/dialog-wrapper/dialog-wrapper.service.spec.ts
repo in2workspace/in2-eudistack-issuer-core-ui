@@ -49,7 +49,7 @@ describe('DialogWrapperService', () => {
 
     matDialogMock.open.mockReturnValue(mockDialogRef);
 
-    const result = service.openDialog(dialogData);
+    const result = service.openDialog(DialogComponent, dialogData);
 
     expect(matDialogMock.open).toHaveBeenCalledWith(DialogComponent, {
       data: {
@@ -77,7 +77,7 @@ describe('DialogWrapperService', () => {
 
     matDialogMock.open.mockReturnValue(dialogRefMock);
 
-    service.openDialogWithCallback(dialogData, callback);
+    service.openDialogWithCallback(DialogComponent, dialogData, callback);
 
     afterClosedSubject.next(true);
     afterClosedSubject.complete();
@@ -111,7 +111,7 @@ describe('DialogWrapperService', () => {
 
     matDialogMock.open.mockReturnValue(dialogRefMock);
 
-    service.openDialogWithCallback(dialogData, callback);
+    service.openDialogWithCallback(DialogComponent, dialogData, callback);
 
     afterConfirmSubject.next(true);
     afterConfirmSubject.complete();
@@ -121,7 +121,7 @@ describe('DialogWrapperService', () => {
       autoFocus:false,
       disableClose: false
     });
-    expect(dialogRefMock.componentInstance.updateData).toHaveBeenCalledWith(dialogData.loadingData);
+    expect(dialogRefMock.componentInstance.updateData).toHaveBeenCalledWith({ loadingData: dialogData.loadingData});
     expect(loaderServiceMock.updateIsLoading).toHaveBeenCalledWith(true);
     expect(callback).toHaveBeenCalled();
     expect(dialogRefMock.close).toHaveBeenCalled();
@@ -143,7 +143,7 @@ describe('DialogWrapperService', () => {
 
     matDialogMock.open.mockReturnValue(dialogRefMock);
 
-    service.openDialogWithCallback(dialogData, callback);
+    service.openDialogWithCallback(DialogComponent, dialogData, callback);
 
     afterClosedSubject.next(true);
     afterClosedSubject.complete();
@@ -175,7 +175,7 @@ describe('DialogWrapperService', () => {
   
     matDialogMock.open.mockReturnValue(dialogRefMock);
   
-    service.openDialogWithCallback(dialogData, callback, undefined, 'DISABLE_CLOSE');
+    service.openDialogWithCallback(DialogComponent, dialogData, callback, undefined, 'DISABLE_CLOSE');
   
     expect(matDialogMock.open).toHaveBeenCalledWith(DialogComponent, {
       data: { ...dialogData },
@@ -205,7 +205,7 @@ describe('DialogWrapperService', () => {
   
     matDialogMock.open.mockReturnValue(dialogRefMock);
   
-    service.openDialogWithCallback(dialogData, callback);
+    service.openDialogWithCallback(DialogComponent, dialogData, callback);
   
     afterConfirmSubject.next(true);
     afterConfirmSubject.complete();
@@ -235,7 +235,7 @@ describe('DialogWrapperService', () => {
   
     matDialogMock.open.mockReturnValue(dialogRefMock);
   
-    service.openDialogWithCallback(dialogData, callback);
+    service.openDialogWithCallback(DialogComponent, dialogData, callback);
   
     afterConfirmSubject.next(true);
     afterConfirmSubject.complete();
@@ -270,7 +270,7 @@ describe('DialogWrapperService', () => {
 
     matDialogMock.open.mockReturnValue(dialogRefMock);
 
-    service.openDialogWithCallback(dialogData, callback, cancelCallback);
+    service.openDialogWithCallback(DialogComponent, dialogData, callback, cancelCallback);
 
     afterClosedSubject.next(false);
     afterClosedSubject.complete();
@@ -303,7 +303,7 @@ describe('DialogWrapperService', () => {
 
     matDialogMock.open.mockReturnValue(dialogRefMock);
 
-    service.openDialogWithCallback(dialogData, callback, cancelCallback);
+    service.openDialogWithCallback(DialogComponent, dialogData, callback, cancelCallback);
 
     afterClosedSubject.next(false);
     afterClosedSubject.complete();
@@ -353,7 +353,7 @@ describe('DialogWrapperService', () => {
   
     matDialogMock.open.mockReturnValue(dialogRefMock);
   
-    const result = service.openDialogWithCallback(dialogData, callback);
+    const result = service.openDialogWithCallback(DialogComponent, dialogData, callback);
   
     expect(matDialogMock.open).toHaveBeenCalledWith(DialogComponent, {
       data: { ...dialogData },
@@ -394,7 +394,7 @@ describe('DialogWrapperService', () => {
       status: 'default',
     };
   
-    const resultRef = service.openDialogWithForm(
+    const resultRef = service.openDialogWithForm(DialogComponent, 
       dialogData,
       validateForm,
       getFormValue,
@@ -447,7 +447,7 @@ describe('DialogWrapperService', () => {
       status: 'default',
     };
   
-    service.openDialogWithForm(dialogData, validateForm, getFormValue, asyncOperation);
+    service.openDialogWithForm(DialogComponent, dialogData, validateForm, getFormValue, asyncOperation);
   
     afterConfirmSubject.next();
     afterConfirmSubject.complete();
