@@ -14,6 +14,7 @@ import { LearCredentialMachineDetailsTemplateSchema } from 'src/app/core/models/
 import { VerifiableCertificationDetailsTemplateSchema } from 'src/app/core/models/schemas/credential-details/verifiable-certification-details-schema';
 import { DetailsKeyValueField, DetailsGroupField, TemplateSchema, MappedDetailsGroupField, MappedDetailsKeyValueField } from 'src/app/core/models/entity/lear-credential-details';
 import { DialogData } from 'src/app/shared/components/dialog/dialog-data';
+import { DialogComponent } from 'src/app/shared/components/dialog/dialog-component/dialog.component';
 
 describe('CredentialDetailsService', () => {
   let service: CredentialDetailsService;
@@ -88,11 +89,12 @@ describe('CredentialDetailsService', () => {
     };
 
     expect(mockDialogWrapperService.openDialogWithCallback).toHaveBeenCalledWith(
+      DialogComponent,
       expectedDialogData,
       expect.any(Function)
     );
 
-    const callback = mockDialogWrapperService.openDialogWithCallback.mock.calls[0][1];
+    const callback = mockDialogWrapperService.openDialogWithCallback.mock.calls[0][2];
     callback().subscribe();
 
     expect(sendReminderSpy).toHaveBeenCalled();
@@ -117,11 +119,12 @@ describe('CredentialDetailsService', () => {
     };
 
     expect(mockDialogWrapperService.openDialogWithCallback).toHaveBeenCalledWith(
+      DialogComponent, 
       expectedDialogData,
       expect.any(Function)
     );
 
-    const callback = mockDialogWrapperService.openDialogWithCallback.mock.calls[0][1];
+    const callback = mockDialogWrapperService.openDialogWithCallback.mock.calls[0][2];
     callback().subscribe();
 
     expect(signCredentialSpy).toHaveBeenCalled();
@@ -155,7 +158,7 @@ describe('CredentialDetailsService', () => {
       status: 'default',
     };
   
-    expect(mockDialogWrapperService.openDialog).toHaveBeenCalledWith(expectedDialogData);
+    expect(mockDialogWrapperService.openDialog).toHaveBeenCalledWith(DialogComponent, expectedDialogData);
     expect(routerNavigateSpy).toHaveBeenCalledWith(['/organization/credentials']);
     expect(locationReloadSpy).toHaveBeenCalled();
   }));
@@ -218,7 +221,7 @@ describe('CredentialDetailsService', () => {
       complete: () => {
         expect(actionMock).toHaveBeenCalledWith('123');
   
-        expect(mockDialogWrapperService.openDialog).toHaveBeenCalledWith({
+        expect(mockDialogWrapperService.openDialog).toHaveBeenCalledWith(DialogComponent, {
           title: 'Translated: some.title.key',
           message: 'Translated: some.message.key',
           confirmationType: 'none',
@@ -263,7 +266,7 @@ describe('CredentialDetailsService', () => {
       status: 'default',
     };
   
-    expect(mockDialogWrapperService.openDialog).toHaveBeenCalledWith(expectedDialogData);
+    expect(mockDialogWrapperService.openDialog).toHaveBeenCalledWith(DialogComponent, expectedDialogData);
     expect(routerNavigateSpy).toHaveBeenCalledWith(['/organization/credentials']);
     expect(locationReloadSpy).toHaveBeenCalled();
   }));
