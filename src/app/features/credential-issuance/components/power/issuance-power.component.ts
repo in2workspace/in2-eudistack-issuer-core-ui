@@ -32,13 +32,13 @@ export interface IssuancePowerValueAndValidity {
 }
 
 @Component({
-    selector: 'app-power',
-    templateUrl: './power.component.html',
-    styleUrls: ['./power.component.scss'],
+    selector: 'app-issuance-power',
+    templateUrl: './issuance-power.component.html',
+    styleUrls: ['./issuance-power.component.scss'],
     standalone: true,
     imports: [KeyValuePipe, ReactiveFormsModule, NgIf, MatFormField, MatSelect, MatSelectTrigger, MatOption, MatButton, NgFor, NgTemplateOutlet, MatSlideToggle, FormsModule, MatMiniFabButton, MatIcon, MatLabel, MatSelect, AsyncPipe, TranslatePipe]
 })
-export class PowerComponent implements OnInit{
+export class IssuancePowerComponent implements OnInit{
   private readonly authService = inject(AuthService);
   private readonly dialog = inject(DialogWrapperService);
   private readonly translate = inject(TranslateService);

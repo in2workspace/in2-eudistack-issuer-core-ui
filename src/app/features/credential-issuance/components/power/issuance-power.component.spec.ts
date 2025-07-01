@@ -6,16 +6,15 @@ import { RouterModule } from "@angular/router";
 import { TranslateService, TranslateModule } from "@ngx-translate/core";
 import { of } from "rxjs";
 import { AuthService } from "src/app/core/services/auth.service";
-import { DialogData } from "src/app/shared/components/dialog/dialog-data";
 import { DialogWrapperService } from "src/app/shared/components/dialog/dialog-wrapper/dialog-wrapper.service";
-import { PowerComponent } from "./power.component";
+import { IssuancePowerComponent } from "./issuance-power.component";
 
 const mockDialogRef = {
   afterClosed:jest.fn().mockReturnValue(of(true)) };
 
 describe('PowerComponent', () => {
-  let component: PowerComponent;
-  let fixture: ComponentFixture<PowerComponent>;
+  let component: IssuancePowerComponent;
+  let fixture: ComponentFixture<IssuancePowerComponent>;
   let debugElement: DebugElement;
 
   let translateService: TranslateService;
@@ -56,7 +55,7 @@ describe('PowerComponent', () => {
         FormsModule,
         BrowserAnimationsModule,
         RouterModule.forRoot([]),
-        PowerComponent,
+        IssuancePowerComponent,
     ],
     providers: [
       TranslateService,
@@ -68,7 +67,7 @@ describe('PowerComponent', () => {
   });
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(PowerComponent);
+    fixture = TestBed.createComponent(IssuancePowerComponent);
     component = fixture.componentInstance;
     debugElement = fixture.debugElement;
     translateService = TestBed.inject(TranslateService);

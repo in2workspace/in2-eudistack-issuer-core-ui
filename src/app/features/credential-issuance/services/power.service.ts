@@ -1,6 +1,6 @@
 import { inject, Injectable } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
-import { TempIssuanceFormPowerSchema, NormalizedTempIssuanceFormSchemaPower } from '../components/power/power.component';
+import { TempIssuanceFormPowerSchema, NormalizedTempIssuanceFormSchemaPower } from '../components/power/issuance-power.component';
 
 export type NormalizedAction = { action: string; value: boolean };
 
@@ -11,7 +11,7 @@ export class PowerService {
 
   private fb = inject(FormBuilder);
 
-  constructor() { }
+  public constructor() { }
 
   public normalizePowers(powers: TempIssuanceFormPowerSchema[]): NormalizedTempIssuanceFormSchemaPower[] {
     const normalizedPowers = powers.map(p => {

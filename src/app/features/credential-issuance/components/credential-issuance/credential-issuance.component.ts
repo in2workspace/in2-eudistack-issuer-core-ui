@@ -7,7 +7,7 @@ import { DynamicFieldComponent } from '../dynamic-field/dynamic-field.component'
 import { FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { NgFor, TitleCasePipe } from '@angular/common';
 import { KeyValuePipe } from '@angular/common';
-import { PowerComponent, IssuancePowerValueAndValidity } from '../power/power.component';
+import { IssuancePowerValueAndValidity, IssuancePowerComponent } from '../power/issuance-power.component';
 import { EMPTY, from, map, Observable, of, startWith, Subject, switchMap, takeUntil, tap } from 'rxjs';
 import { DialogWrapperService } from 'src/app/shared/components/dialog/dialog-wrapper/dialog-wrapper.service';
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
@@ -38,7 +38,7 @@ export type IssuanceRawPowerForm = Partial<Record<TmfFunction, Record<TmfAction,
 @Component({
   selector: 'app-credential-issuance',
   standalone: true,
-  imports: [KeyValuePipe, NgFor, ReactiveFormsModule, DynamicFieldComponent, KeyGeneratorComponent, MatButton, MatCard, MatCardContent, MatFormField, MatLabel, MatOption, MatSelect, PowerComponent, TitleCasePipe, TranslatePipe],
+  imports: [KeyValuePipe, NgFor, ReactiveFormsModule, DynamicFieldComponent, IssuancePowerComponent, KeyGeneratorComponent, MatButton, MatCard, MatCardContent, MatFormField, MatLabel, MatOption, MatSelect, TitleCasePipe, TranslatePipe],
   templateUrl: './credential-issuance.component.html',
   styleUrl: './credential-issuance.component.scss'
 })
