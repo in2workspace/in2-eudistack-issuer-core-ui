@@ -1,14 +1,11 @@
-import { Component, inject, signal } from '@angular/core';
+import { Component, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { MatDialogRef, MAT_DIALOG_DATA, MatDialogActions, MatDialogContent, MatDialogTitle } from '@angular/material/dialog';
+import { MatDialogActions, MatDialogContent, MatDialogTitle } from '@angular/material/dialog';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatButtonModule } from '@angular/material/button';
-import { Observable, Subject } from 'rxjs';
-import { BaseDialogComponent } from '../dialog-component-abstract';
-import { DialogStatus, DialogData, ConditionalConfirmDialogData } from '../dialog-data';
+import { ConditionalConfirmDialogData } from '../dialog-data';
 import { TranslatePipe } from '@ngx-translate/core';
-
-// todo fer germà de DialogComponent
+import { AbstractDialogComponent } from '../abstract-dialog-component';
 
 @Component({
   selector: 'app-conditional-confirm-dialog',
@@ -19,73 +16,22 @@ import { TranslatePipe } from '@ngx-translate/core';
   templateUrl: './conditional-confirm-dialog.component.html',
   styleUrl: './conditional-confirm-dialog.component.scss',
 })
-export class ConditionalConfirmDialogComponent implements BaseDialogComponent<ConditionalConfirmDialogData> {
-  public readonly dialogRef = inject(MatDialogRef<ConditionalConfirmDialogComponent>);
-  public data = inject<ConditionalConfirmDialogData>(MAT_DIALOG_DATA);
-  
-  public statusColor = 'primary';
-  public currentStatus: DialogStatus | undefined = undefined;
+export class ConditionalConfirmDialogComponent extends AbstractDialogComponent<ConditionalConfirmDialogData> {
 
-  public checkboxChecked = signal(false);
-  private confirm$ = new Subject<boolean>();
+  public checkboxChecked = signal<boolean>(false);
 
-  public constructor(){
-    const dataStyle = this.data.style ?? 'conditional-confirm';
-    this.dialogRef.addPanelClass(dataStyle);
-      this.updateStatus();
+  public override onConfirm(): void {
+    if (this.checkboxChecked()) {
+      super.onConfirm();
     }
-  
-    public updateStatus(): void{
-      const previousStatus = this.currentStatus;
-      this.currentStatus = this.data.status;
-      this.updateStatusPanelClass(previousStatus);
-      this.updateStatusColor();
-    }
-    
-    //ideally this should be done with reactive state management
-    public updateStatusColor(): void{
-      this.statusColor = this.currentStatus === 'error' ? 'warn' : 'primary';
-    }
-  
-    public updateStatusPanelClass(previousStatus: DialogStatus | undefined): void{
-      if(previousStatus !== this.currentStatus){
-        this.dialogRef.removePanelClass(`dialog-${previousStatus}`);
-        this.dialogRef.addPanelClass(`dialog-${this.currentStatus}`);
-      }
-    }
-  
-    public updateData(data: Partial<DialogData>){
-      const resetDefaultOptionalData:Partial<DialogData> = {
-        template: undefined,
-        confirmationLabel: undefined,
-        cancelLabel: undefined
-      }
-      
-      this.data = { 
-        ...this.data, 
-        ...resetDefaultOptionalData,
-        ...data };
-      this.updateStatus();
-    }
-
-  afterConfirm$(): Observable<boolean> {
-    return this.confirm$.asObservable();
   }
 
-  getEmbeddedInstance<T>(): T | null {
-    return null;
-  }
-
-  onConfirm(): void {
-    this.confirm$.next(true);
-    this.dialogRef.close(true);
-  }
-
-  onCancel(): void {
-    this.dialogRef.close(false);
-  }
-
-  toggleCheckbox(checked: boolean) {
+  public toggleCheckbox(checked: boolean): void {
     this.checkboxChecked.set(checked);
   }
+  
+  protected override getDefaultStyle(): string {
+    return 'conditional-confirm';
+  }
+
 }

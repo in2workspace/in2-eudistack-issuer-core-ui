@@ -14,11 +14,6 @@
 
   <!-- DEFAULT DIALOG DATA (NON-LOADING) -->
 }@else{
-  @if(data.fullCustomTemplate){
-    <div mat-dialog-content>
-      <ng-template [cdkPortalOutlet]="data.fullCustomTemplate" #fullCustom></ng-template>
-    </div>
-  }@else{
   <h2 mat-dialog-title>{{ data.title }}</h2>
   <div mat-dialog-content>
     @if(data.template){
@@ -41,5 +36,4 @@
       <button mat-flat-button [color]="statusColor" (click)="onConfirm()">{{ "dialog.close" | translate }}</button>
     }
   </div>
-}
 }

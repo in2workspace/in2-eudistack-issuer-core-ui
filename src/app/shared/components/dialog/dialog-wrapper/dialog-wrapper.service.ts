@@ -1,9 +1,9 @@
 import { DestroyRef, inject, Injectable, Type } from '@angular/core';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
-import { BaseDialogComponent } from './../dialog-component-abstract';
 import { EMPTY, filter, Observable, switchMap, take, tap } from 'rxjs';
 import { LoaderService } from 'src/app/core/services/loader.service';
 import { BaseDialogData, DialogData } from '../dialog-data';
+import { AbstractDialogComponent } from '../abstract-dialog-component';
 
 export type observableCallback = () => Observable<any>;
 
@@ -17,7 +17,7 @@ export class DialogWrapperService {
 
   public openDialog< 
     D extends BaseDialogData,
-    T extends BaseDialogComponent<D>
+    T extends AbstractDialogComponent<D>
   >(
     component: Type<T>,
     dialogData: D
@@ -29,7 +29,7 @@ export class DialogWrapperService {
   }
 
   public openErrorInfoDialog<
-  T extends BaseDialogComponent<BaseDialogData>
+  T extends AbstractDialogComponent<BaseDialogData>
 >(
     component: Type<T>,
     message: string,
@@ -57,7 +57,7 @@ export class DialogWrapperService {
 
   public openDialogWithCallback< 
     D extends BaseDialogData,
-    T extends BaseDialogComponent<D>
+    T extends AbstractDialogComponent<D>
   >(
     component: Type<T>,
     dialogData: D,
@@ -79,7 +79,9 @@ export class DialogWrapperService {
       confirm$ = dialogRef.componentInstance.afterConfirm$().pipe(
         tap(() => {
           if (dialogData.loadingData) {
-            dialogRef.componentInstance.updateData(dialogData.loadingData);
+            dialogRef.componentInstance.updateData({
+              loadingData: dialogData.loadingData
+            } as Partial<D>);
           }
           dialogRef.disableClose = true;
           this.loader.updateIsLoading(true);
@@ -112,7 +114,7 @@ export class DialogWrapperService {
     return dialogRef;
   }
 
-  public openDialogWithForm<T extends BaseDialogComponent<BaseDialogData>, TFormValue>(
+  public openDialogWithForm<T extends AbstractDialogComponent<BaseDialogData>, TFormValue>(
     component: Type<T>,
     dialogData: DialogData,
     validateForm: (formInstance: any) => boolean,
