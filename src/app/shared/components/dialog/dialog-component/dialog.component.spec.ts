@@ -1,19 +1,24 @@
+// dialog.component.spec.ts
 import { TestBed } from '@angular/core/testing';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { of, Subject } from 'rxjs';
-import { DialogComponent, DialogData } from './dialog.component';
 import { LoaderService } from 'src/app/core/services/loader.service';
+import { DialogComponent } from './dialog.component';
+import { DialogData } from '../dialog-data';
 
 describe('DialogComponent', () => {
   let component: DialogComponent;
   let mockDialogRef: jest.Mocked<MatDialogRef<DialogComponent>>;
   let mockLoaderService: jest.Mocked<LoaderService>;
 
-  const mockData: DialogData = {
+  const initialData: DialogData = {
     title: 'Test Title',
     message: 'Test Message',
+    status: 'default',
     confirmationType: 'sync',
-    status: 'default'
+    template: {} as any,
+    confirmationLabel: 'oldOk',
+    cancelLabel: 'oldCancel',
   };
 
   beforeEach(() => {
@@ -24,109 +29,106 @@ describe('DialogComponent', () => {
     } as unknown as jest.Mocked<MatDialogRef<DialogComponent>>;
 
     mockLoaderService = {
-      isLoading$: of(false),
+      isLoading$: of(true),
     } as unknown as jest.Mocked<LoaderService>;
 
     TestBed.configureTestingModule({
       providers: [
         DialogComponent,
-        { provide: MAT_DIALOG_DATA, useValue: mockData },
+        { provide: MAT_DIALOG_DATA, useValue: initialData },
         { provide: MatDialogRef, useValue: mockDialogRef },
         { provide: LoaderService, useValue: mockLoaderService },
       ],
     });
 
     component = TestBed.inject(DialogComponent);
-    jest.spyOn(component, 'updateStatus');
   });
 
-  afterEach(() => {
-    jest.resetAllMocks(); 
-  });
+  afterEach(() => jest.resetAllMocks());
 
   it('should create the component', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should initialize with the provided data', () => {
-    expect(component.data).toEqual(mockData);
-    expect(component.currentStatus).toEqual(mockData.status);
+  it('should expose isLoading$ from LoaderService', () => {
+    let loading: boolean | undefined;
+    component.isLoading$.subscribe(v => (loading = v));
+    expect(loading).toBe(true);
+  });
+
+  it('should call addPanelClass for default style and status in ctor', () => {
     expect(mockDialogRef.addPanelClass).toHaveBeenCalledWith('dialog-custom');
-    expect(mockDialogRef.addPanelClass).toHaveBeenCalledWith(`dialog-${mockData.status}`);
-  });
-
-  it('should update status correctly in updateStatus', () => {
-    jest.spyOn(component, 'updateStatusPanelClass');
-    jest.spyOn(component, 'updateStatusColor');
-
-    component.currentStatus = 'error';
-
-    component.updateStatus();
-
-    // Verify the calls to updateStatusPanelClass and updateStatusColor
-    expect(component.updateStatusPanelClass).toHaveBeenCalledWith('error');
-    expect(component.updateStatusColor).toHaveBeenCalled();
-    expect(component.currentStatus).toEqual(mockData.status);
-
-  });
-
-  it('should set the correct status color in updateStatusColor', () => {
-    component.currentStatus = 'default';
-    component.updateStatusColor();
-    expect(component.statusColor).toEqual('primary');
-
-    component.currentStatus = 'error';
-    component.updateStatusColor();
-    expect(component.statusColor).toEqual('warn');
-  });
-
-  it('should update panel class correctly in updateStatusPanelClass', () => {
-    component.currentStatus = 'default';
-    component.updateStatusPanelClass('error');
-    expect(mockDialogRef.removePanelClass).toHaveBeenCalledWith('dialog-error');
-    expect(mockDialogRef.addPanelClass).toHaveBeenCalledWith('dialog-default');
-
-    component.currentStatus = 'error';
-    component.updateStatusPanelClass('default');
-    expect(mockDialogRef.removePanelClass).toHaveBeenCalledWith('dialog-error');
     expect(mockDialogRef.addPanelClass).toHaveBeenCalledWith('dialog-default');
   });
 
-  it('should update the dialog data', () => {
-    component.updateData({ status: 'error' });
+  describe('updateData override', () => {
+    it('should reset template and labels and update status', () => {
+      mockDialogRef.removePanelClass.mockClear();
+      mockDialogRef.addPanelClass.mockClear();
 
-    expect(mockDialogRef.removePanelClass).toHaveBeenCalledWith('dialog-default');
-    expect(mockDialogRef.addPanelClass).toHaveBeenCalledWith('dialog-error');
-    expect(component.currentStatus).toEqual('error');
+      component.updateData({
+        status: 'error',
+        template: {} as any,
+        confirmationLabel: 'newOk',
+        cancelLabel: 'newCancel',
+      });
+
+      expect(component.data.status).toBe('error');
+      // segons la implementació, es refresca i manté el nou 'template' i labels
+      expect(component.data.template).toEqual({} as any);
+      expect(component.data.confirmationLabel).toBe('newOk');
+      expect(component.data.cancelLabel).toBe('newCancel');
+
+      expect(mockDialogRef.removePanelClass).toHaveBeenCalledWith('dialog-default');
+      expect(mockDialogRef.addPanelClass).toHaveBeenCalledWith('dialog-error');
+    });
   });
 
-  it('should close the dialog with true on confirm for sync type', () => {
-    component.onConfirm();
+  describe('onConfirm override', () => {
+    let confirmSubj: Subject<boolean>;
 
-    expect(mockDialogRef.close).toHaveBeenCalledWith(true);
-  });
-
-  it('should emit confirmation without closing for async type', () => {
-    const confirmSpy = jest.spyOn(component['confirmSubj$'], 'next');
-    component.updateData({ confirmationType: 'async' });
-    component.onConfirm();
-
-    expect(confirmSpy).toHaveBeenCalledWith(true);
-    expect(mockDialogRef.close).not.toHaveBeenCalled();
-  });
-
-  it('should close the dialog with false on cancel', () => {
-    component.onCancel();
-
-    expect(mockDialogRef.close).toHaveBeenCalledWith(false);
-  });
-
-  it('should return an observable from afterConfirm$', (done) => {
-    component.afterConfirm$().subscribe((result) => {
-      expect(result).toBe(true);
-      done();
+    beforeEach(() => {
+      confirmSubj = (component as any).confirmSubject$ as Subject<boolean>;
+      jest.spyOn(confirmSubj, 'next');
+      jest.spyOn(component, 'onCancel');
     });
 
-    component['confirmSubj$'].next(true);
+    it('should call onCancel when confirmationType is "none"', () => {
+      component.data.confirmationType = 'none';
+      component.onConfirm();
+      expect(component.onCancel).toHaveBeenCalled();
+    });
+
+    it('should emit and close when confirmationType is "sync"', () => {
+      component.data.confirmationType = 'sync';
+      component.onConfirm();
+      expect(confirmSubj.next).toHaveBeenCalledWith(true);
+      expect(mockDialogRef.close).toHaveBeenCalledWith(true);
+    });
+
+    it('should only emit when confirmationType is "async"', () => {
+      component.data.confirmationType = 'async';
+      component.onConfirm();
+      expect(confirmSubj.next).toHaveBeenCalledWith(true);
+      expect(mockDialogRef.close).not.toHaveBeenCalled();
+    });
+  });
+
+  describe('getEmbeddedInstance()', () => {
+    it('should return the instance if attachedRef.instance exists', () => {
+      const inst = { foo: 'bar' };
+      component.portalOutlet = { attachedRef: { instance: inst } } as any;
+      expect(component.getEmbeddedInstance<typeof inst>()).toBe(inst);
+    });
+
+    it('should return null if attachedRef is missing', () => {
+      component.portalOutlet = {} as any;
+      expect(component.getEmbeddedInstance()).toBeNull();
+    });
+
+    it('should return null if attachedRef has no instance', () => {
+      component.portalOutlet = { attachedRef: {} } as any;
+      expect(component.getEmbeddedInstance()).toBeNull();
+    });
   });
 });

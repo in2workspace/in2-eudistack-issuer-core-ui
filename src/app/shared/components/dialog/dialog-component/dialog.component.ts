@@ -22,14 +22,14 @@ import { AbstractDialogComponent } from '../abstract-dialog-component';
   standalone: true,
   imports: [
     AsyncPipe,
+    MatButton,
     MatDialogTitle,
     MatDialogContent,
     MatDialogActions,
-    MatButton,
     MatIconModule,
+    MatProgressSpinnerModule,
     NgClass,
     PortalModule,
-    MatProgressSpinnerModule,
     TranslatePipe,
   ],
   templateUrl: './dialog.component.html',
@@ -38,7 +38,7 @@ export class DialogComponent extends AbstractDialogComponent<DialogData> {
   @ViewChild(CdkPortalOutlet) public portalOutlet!: CdkPortalOutlet;
   public isLoading$ = inject(LoaderService).isLoading$;
 
-    public override updateData(patch: Partial<DialogData>){
+    public override updateData(patch: Partial<DialogData>): void{
       const reset:Partial<DialogData> = {
         template: undefined,
         confirmationLabel: undefined,
@@ -48,7 +48,6 @@ export class DialogComponent extends AbstractDialogComponent<DialogData> {
       super.updateData({ ...reset, ...patch });
     }
 
-  /** Canvia la confirm segons el tipus */
   public override onConfirm(): void {
     switch (this.data.confirmationType) {
       case 'none':
@@ -63,7 +62,6 @@ export class DialogComponent extends AbstractDialogComponent<DialogData> {
     }
   }
 
-  /** Retorna la instància del portal si n'hi ha */
   public override getEmbeddedInstance<T>(): T | null {
     const attached = this.portalOutlet?.attachedRef;
     if (attached && 'instance' in attached) {
