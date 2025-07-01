@@ -29,17 +29,17 @@ export class KeyGeneratorComponent {
     this.displayedKeys$ = this.keyService.displayedKeys$;
   }
 
-  public async generateKeys(){
+  public async generateKeys(): Promise<void>{
     await this.keyService.generateP256();
   }
 
-  public copyToClipboard(text:string){
+  public copyToClipboard(text:string): void{
     navigator.clipboard.writeText(text);
     this.copiedKey = text;
     setTimeout(() => this.resetCopiedKey(), 2000);
   }
 
-  public resetCopiedKey(){
+  public resetCopiedKey(): void{
     this.copiedKey = "";
   }
 }

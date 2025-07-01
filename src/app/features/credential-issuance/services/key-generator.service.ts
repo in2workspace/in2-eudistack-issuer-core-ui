@@ -16,7 +16,7 @@ export class KeyGeneratorService {
   public getState(): Signal<KeyState | undefined>{
     return this.keyState$.asReadonly();
   }
-  public updateState(key: keyof(KeyState), value: string){
+  public updateState(key: keyof(KeyState), value: string): void{
     const current = this.keyState$() ?? {
     desmosPrivateKeyValue: '',
     desmosPublicKeyValue: '',
@@ -28,7 +28,7 @@ export class KeyGeneratorService {
     this.keyState$.set({...current, [key]: value});
   }
 
-  public async generateP256() {
+  public async generateP256(): Promise<void> {
           const keyPair = await this.generateP256KeyPair();
 
           const privateKeyHex = await this.generateP256PrivateKeyHex(keyPair);
@@ -43,7 +43,7 @@ export class KeyGeneratorService {
 
       }
 
-  private async generateP256KeyPair() {
+  private async generateP256KeyPair(): Promise<CryptoKeyPair> {
       return await window.crypto.subtle.generateKey(
         {
           name: "ECDSA",
@@ -69,7 +69,7 @@ export class KeyGeneratorService {
     return privateKeyHexBytes;
   }
 
-  private async generateDidKey(publicKeyHex: string){
+  private async generateDidKey(publicKeyHex: string): Promise<string>{
       const publicKeyHexWithout0xAndPrefix = publicKeyHex.slice(4)
 
       const publicKeyX = publicKeyHexWithout0xAndPrefix.slice(0, 64)
@@ -142,6 +142,5 @@ export class KeyGeneratorService {
 
       return s;
   }
-
 
 }
