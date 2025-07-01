@@ -9,10 +9,10 @@ export interface KeyState {
 @Injectable() //not provided in root but in key generator component
 export class KeyGeneratorService {
 
-  private readonly keyState$: WritableSignal<KeyState|undefined> = signal(undefined);
   public readonly displayedKeys$: Signal<Partial<KeyState>|undefined> = computed(() => {
     return {desmosPrivateKeyValue: this.keyState$()?.desmosPrivateKeyValue}
   });
+  private readonly keyState$: WritableSignal<KeyState|undefined> = signal(undefined);
   public getState(): Signal<KeyState | undefined>{
     return this.keyState$.asReadonly();
   }
@@ -28,9 +28,7 @@ export class KeyGeneratorService {
     this.keyState$.set({...current, [key]: value});
   }
 
-//copyToClipboard --util?
-
-  async generateP256() {
+  public async generateP256() {
           const keyPair = await this.generateP256KeyPair();
 
           const privateKeyHex = await this.generateP256PrivateKeyHex(keyPair);
@@ -45,7 +43,7 @@ export class KeyGeneratorService {
 
       }
 
-  async generateP256KeyPair() {
+  private async generateP256KeyPair() {
       return await window.crypto.subtle.generateKey(
         {
           name: "ECDSA",
@@ -56,7 +54,7 @@ export class KeyGeneratorService {
       );
   }
 
-  async generateP256PrivateKeyHex(keyPair: CryptoKeyPair): Promise<string> {
+  private async generateP256PrivateKeyHex(keyPair: CryptoKeyPair): Promise<string> {
     const privateKeyPkcs8: ArrayBuffer = await window.crypto.subtle.exportKey("pkcs8", keyPair.privateKey);
 
     const privateKeyPkcs8Bytes: Uint8Array = new Uint8Array(privateKeyPkcs8);
@@ -71,7 +69,7 @@ export class KeyGeneratorService {
     return privateKeyHexBytes;
   }
 
-  async generateDidKey(publicKeyHex: string){
+  private async generateDidKey(publicKeyHex: string){
       const publicKeyHexWithout0xAndPrefix = publicKeyHex.slice(4)
 
       const publicKeyX = publicKeyHexWithout0xAndPrefix.slice(0, 64)
@@ -94,7 +92,7 @@ export class KeyGeneratorService {
       return 'did:key:z' + multicodecBase58;
   }
 
-  async generateP256PublicKeyHex(keyPair: CryptoKeyPair): Promise<string> {
+  private async generateP256PublicKeyHex(keyPair: CryptoKeyPair): Promise<string> {
       const publicKey: ArrayBuffer = await window.crypto.subtle.exportKey("raw", keyPair.publicKey);
 
       const publicKeyBytes: Uint8Array = new Uint8Array(publicKey);
@@ -102,11 +100,11 @@ export class KeyGeneratorService {
       return this.bytesToHexString(publicKeyBytes);
   }
 
-  bytesToHexString(bytesToTransform: Uint8Array): string {
+  private bytesToHexString(bytesToTransform: Uint8Array): string {
       return `0x${Array.from(bytesToTransform).map(b => b.toString(16).padStart(2, '0')).join('')}`;
   }
 
-  isHexNumberEven(hexNumber: string): boolean {
+  private isHexNumberEven(hexNumber: string): boolean {
       const decimalNumber: bigint = BigInt("0x" + hexNumber);
       const stringNumber: string = decimalNumber.toString();
 
@@ -117,7 +115,7 @@ export class KeyGeneratorService {
       return isEven;
   }
 
-  base58encode(
+  private base58encode(
       B: Uint8Array,     // Raw byte input
       A: string          // Base58 characters, e.g., "123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz"
   ): string {
