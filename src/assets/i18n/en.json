@@ -74,7 +74,6 @@
     "EXPIRED": "EXPIRED",
     "PEND_DOWNLOAD": "PEND_DOWNLOAD",
     "ISSUED": "ISSUED",
-    "basic_info": "Basic info",
     "type" : "type",
     "status": "status",
     "valid_from": "valid from",
