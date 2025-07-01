@@ -15,14 +15,19 @@ import { MatTooltip } from '@angular/material/tooltip';
   styleUrl: './key-generator.component.scss'
 })
 export class KeyGeneratorComponent {
-  @Output() updateKeys = new EventEmitter<KeyState | undefined>();
-  private keyService = inject(KeyGeneratorService);
-  public keyState$: Signal<KeyState | undefined> = this.keyService.getState();
-  public displayedKeys$: Signal<Partial<KeyState> | undefined> = this.keyService.displayedKeys$;
+  @Output() public updateKeys = new EventEmitter<KeyState | undefined>();
+  public keyState$: Signal<KeyState | undefined>;
+  public displayedKeys$: Signal<Partial<KeyState> | undefined>;
   public copiedKey = "";
-  emitOnKeysChange = effect(() => {
+  private keyService = inject(KeyGeneratorService);
+  private emitOnKeysChange = effect(() => {
     this.updateKeys.emit(this.keyState$());
   });
+
+  public constructor(){
+    this.keyState$ = this.keyService.getState();
+    this.displayedKeys$ = this.keyService.displayedKeys$;
+  }
 
   public async generateKeys(){
     await this.keyService.generateP256();
