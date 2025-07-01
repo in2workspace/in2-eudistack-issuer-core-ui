@@ -12,7 +12,7 @@ import {TranslateService} from "@ngx-translate/core";
 import {Router} from "@angular/router";
 import {API} from "../constants/api.constants";
 import { LEARCredentialDataDetails } from '../models/entity/lear-credential';
-import { EmployeeProcedureRequest } from '../models/dto/procedure-request.dto';
+import { IssuanceLEARCredentialRequestDto } from '../models/dto/lear-credential-issuance-request.dto';
 
 const notFoundErrorResp = new HttpErrorResponse({
   error: '404 error',
@@ -125,7 +125,7 @@ describe('CredentialProcedureService', () => {
   });
 
   it('should save credential procedure successfully', () => {
-    const IssuanceRequestMock:EmployeeProcedureRequest = {
+    const IssuanceRequestMock:IssuanceLEARCredentialRequestDto = {
       schema: "LEARCredentialEmployee",
       format: "jwt_vc_json",
       payload: {
@@ -155,7 +155,7 @@ describe('CredentialProcedureService', () => {
   });
 
   it('should handle error when saving credential procedure', () => {
-    const IssuanceRequestMock:EmployeeProcedureRequest = {
+    const IssuanceRequestMock:IssuanceLEARCredentialRequestDto = {
       schema: "LEARCredentialEmployee",
       format: "jwt_vc_json",
       payload: {
