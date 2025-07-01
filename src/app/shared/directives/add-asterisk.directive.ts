@@ -6,26 +6,24 @@ import { FormGroup } from '@angular/forms';
   standalone: true
 })
 export class AddAsteriskDirective implements OnInit {
-  @Input({ required: true }) formGroup!: FormGroup;
-  @Input({ required: true }) controlName!: string;
+  @Input({ required: true }) public formGroup!: FormGroup;
+  @Input({ required: true }) public controlName!: string;
 
-  constructor(
+  public constructor(
     private elementRef: ElementRef,
     private renderer: Renderer2
   ) {}
 
-  ngOnInit(): void {
+  public ngOnInit(): void {
     const control = this.formGroup.get(this.controlName);
     if (!control) {
-      console.warn(`Control '${this.controlName}' no encontrado en el FormGroup`);
+      console.warn(`Control '${this.controlName}' not found in FormGroup`);
       return;
     }
 
-    // Angular 14+: AbstractControl.hasValidator(validatorFn) devuelve boolean
     const isRequired = control.errors?.['required'];
 
     if (isRequired) {
-      // Creamos un nodo de texto con un espacio y el asterisco
       const text = this.renderer.createText(' *');
       this.renderer.appendChild(this.elementRef.nativeElement, text);
     }
