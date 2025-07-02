@@ -27,71 +27,86 @@ interface RawVerifiableCertification extends VerifiableCertification{
 
 export class LEARCredentialDataNormalizer {
 
-  /**
-   * Normalizes the complete LEARCredential object.
-   * It applies normalization to the mandatee object and each element of the power array.
-   */
-public normalizeLearCredential(data: LEARCredential): LEARCredential {
-  const normalizedData: any = { ...data };
-
-  if (normalizedData.credentialSubject && typeof normalizedData.credentialSubject === 'object') {
-    normalizedData.credentialSubject = { ...normalizedData.credentialSubject };
-  }
-
-  const credentialTypes = normalizedData.type;
-  const isEmployee = Array.isArray(credentialTypes) && credentialTypes.includes('LEARCredentialEmployee');
-  const isMachine = Array.isArray(credentialTypes) && credentialTypes.includes('LEARCredentialMachine');
-  const isVerifiableCertification = Array.isArray(credentialTypes) && credentialTypes.includes('VerifiableCertification');
-
-  if ((isEmployee || isMachine) && normalizedData.credentialSubject && 'mandate' in normalizedData.credentialSubject) {
-    const originalMandate = normalizedData.credentialSubject.mandate;
-    normalizedData.credentialSubject.mandate = { ...originalMandate };
-    const mandate = normalizedData.credentialSubject.mandate;
-
-    if (isEmployee && mandate.mandatee) {
-      mandate.mandatee = this.normalizeEmployeeMandatee(mandate.mandatee as RawEmployeeMandatee);
+  public normalizeLearCredential(data: LEARCredential): LEARCredential {
+    // clonem superficialment l’input
+    const normalized: any = { ...data };
+    if (normalized.credentialSubject && typeof normalized.credentialSubject === 'object') {
+      normalized.credentialSubject = { ...normalized.credentialSubject };
     }
 
-    if (Array.isArray(mandate.power)) {
-      mandate.power = mandate.power.map((p:Power) => this.normalizePower(p));
+    // Calcular flags LOCALMENT
+    const types = Array.isArray(normalized.type) ? normalized.type : [];
+    const isEmployee = types.includes('LEARCredentialEmployee');
+    const isMachine  = types.includes('LEARCredentialMachine');
+    const isVerCert  = types.includes('VerifiableCertification');
+
+    // Normalitzacions segons flags
+    this.normalizeMandateIfNeeded(normalized, isEmployee, isMachine);
+    this.normalizeCertificationIfNeeded(normalized, isVerCert);
+
+    return normalized;
+  }
+
+  private normalizeMandateIfNeeded(
+    data: any,
+    isEmployee: boolean,
+    isMachine: boolean
+  ) {
+    if (!(isEmployee || isMachine)) return;
+    const sub = data.credentialSubject;
+    if (!sub || !('mandate' in sub)) return;
+
+    sub.mandate = { ...sub.mandate };
+    if (isEmployee && sub.mandate.mandatee) {
+      sub.mandate.mandatee = this.normalizeEmployeeMandatee(sub.mandate.mandatee);
+    }
+    if (Array.isArray(sub.mandate.power)) {
+      sub.mandate.power = sub.mandate.power.map((p: RawPower) => this.normalizePower(p));
     }
   }
 
-  if (isVerifiableCertification && 'atester' in normalizedData) {
-    const rawData = normalizedData as RawVerifiableCertification;
-    if (rawData.atester) {
-      rawData.attester = rawData.atester;
-      delete rawData.atester;
-    }
+  private normalizeCertificationIfNeeded(
+    data: any,
+    isVerCert: boolean
+  ) {
+    if (!isVerCert || !('atester' in data)) return;
+    const raw = data as RawVerifiableCertification;
+    if (!raw.atester) return;
+    raw.attester = raw.atester;
+    delete raw.atester;
   }
 
-  return normalizedData;
-}
-
-  
-  
-
-  /**
- * Normalizes the mandatee object by unifying "firstName"/"first_name" and "lastName"/"last_name" keys.
- */
 private normalizeEmployeeMandatee(data: RawEmployeeMandatee): EmployeeMandatee {
-  return <EmployeeMandatee>{
-    firstName: data.firstName ?? data.first_name,
-    lastName: data.lastName ?? data.last_name,
-    email: data.email,
-    nationality: data.nationality
+  const firstName = data.firstName   ?? data.first_name;
+  const lastName  = data.lastName    ?? data.last_name;
+  const email     = data.email;
+  const nationality = data.nationality;
+
+  if (!firstName)  throw new Error('Missing mandatee first name');
+  if (!lastName)   throw new Error('Missing mandatee last name');
+  if (!email)      throw new Error('Missing mandatee email');
+  if (!nationality) throw new Error('Missing mandatee nationality');
+
+  return { firstName, lastName, email, nationality };
+}
+
+private normalizePower(data: RawPower): Power {
+  const action = data.action   ?? data.tmf_action;
+  const domain = data.domain   ?? data.tmf_domain;
+  const func   = data.function ?? data.tmf_function;
+  const type   = data.type     ?? data.tmf_type;
+
+  if (!action) throw new Error('Missing power action');
+  if (!domain) throw new Error('Missing power domain');
+  if (!func) throw new Error('Missing power function');
+  if (!type) throw new Error('Missing power type');
+
+  return {
+    action,
+    domain,
+    function: func,
+    type
   };
 }
 
-/**
- * Normalizes a power object by unifying keys like "action"/"tmf_action", "domain"/"tmf_domain", etc.
- */
-private normalizePower(data: RawPower): Power {
-  return <Power>{
-    action: data.action ?? data.tmf_action,
-    domain: data.domain ?? data.tmf_domain,
-    function: data.function ?? data.tmf_function,
-    type: data.type ?? data.tmf_type
-  };
-}
 }

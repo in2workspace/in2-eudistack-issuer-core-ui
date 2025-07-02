@@ -1,10 +1,7 @@
 
 import {
   LEARCredentialEmployee,
-  LEARCredentialMachine,
-  VerifiableCertification,
-  GxLabelCredential,
-  Attester,
+  LEARCredentialMachine, Attester,
   EmployeeMandatee,
   Power
 } from '../../../core/models/entity/lear-credential';
