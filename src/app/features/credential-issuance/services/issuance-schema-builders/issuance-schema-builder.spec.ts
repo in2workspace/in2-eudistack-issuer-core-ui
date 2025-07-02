@@ -2,7 +2,7 @@ import { TestBed } from '@angular/core/testing';
 import {
   CREDENTIAL_SCHEMA_BUILDERS,
   IssuanceSchemaBuilder,
-} from './issuance-schema-builder'; // ajusta la ruta si cal
+} from './issuance-schema-builder';
 import { IssuanceCredentialType } from 'src/app/core/models/entity/lear-credential-issuance';
 
 describe('IssuanceSchemaBuilder', () => {
@@ -25,17 +25,17 @@ describe('IssuanceSchemaBuilder', () => {
     service = TestBed.inject(IssuanceSchemaBuilder);
   });
 
-  it('getIssuanceFormSchema ha de retornar el primer schema del builder', () => {
+  it('getIssuanceFormSchema should return the first schema from the builder', () => {
     builderMock.getSchema.mockReturnValue(['formSchemaValue', 'powerSchemaValue']);
     expect(service.getIssuanceFormSchema(TYPE)).toEqual('formSchemaValue');
   });
 
-  it('getIssuancePowerFormSchema ha de retornar el segon schema del builder', () => {
+  it('getIssuancePowerFormSchema should return the second schema from the builder', () => {
     builderMock.getSchema.mockReturnValue(['formSchemaValue', 'powerSchemaValue']);
     expect(service.getIssuancePowerFormSchema(TYPE)).toEqual('powerSchemaValue');
   });
 
-  it('ha de llençar error si no hi ha builder pel tipus', () => {
+  it('should throw an error if there is no builder for the given type', () => {
     expect(() => service.getIssuanceFormSchema('OTHER' as IssuanceCredentialType))
       .toThrowError('No schema builder for OTHER');
     expect(() => service.getIssuancePowerFormSchema('OTHER' as IssuanceCredentialType))
@@ -76,7 +76,7 @@ describe('IssuanceSchemaBuilder', () => {
       consoleWarnSpy.mockRestore();
     });
 
-    it('com asSigner=false ha de separar formSchema i staticSchema correctament', () => {
+    it('when asSigner=false should separate formSchema and staticSchema correctly', () => {
       const rawSchema = [
         fieldNormal,
         fieldSideGood,
@@ -96,11 +96,10 @@ describe('IssuanceSchemaBuilder', () => {
         fieldPrefSideNoGetter,
       ]);
       expect(staticSchema).toEqual({ k: 'v', k2: 'v2' });
-      // s'han de cridar 2 vegades console.warn (per fieldSideBad i fieldPrefSideBad)
       expect(consoleWarnSpy).toHaveBeenCalledTimes(2);
     });
 
-    it('com asSigner=true inclou pref_side al formSchema i només processa side', () => {
+    it('when asSigner=true should include pref_side in formSchema and only process side', () => {
       const rawSchema = [
         fieldNormal,
         fieldSideGood,
@@ -122,7 +121,6 @@ describe('IssuanceSchemaBuilder', () => {
         fieldPrefSideNoGetter,
       ]);
       expect(staticSchema).toEqual({ k: 'v' });
-      // només per fieldSideBad
       expect(consoleWarnSpy).toHaveBeenCalledTimes(1);
     });
   });

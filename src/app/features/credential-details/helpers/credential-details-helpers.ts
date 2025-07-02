@@ -30,7 +30,6 @@ export function groupActionsByFunction(powers: Power[]): FunctionActions[] {
   return compliances.map(comp => ({
     key: comp.id,
     type: 'group',
-    // Ara .value és l'array de subfields
     value: [
       mapKeyValue('hash', comp.hash),
       mapKeyValue('scope', comp.scope),
@@ -39,7 +38,6 @@ export function groupActionsByFunction(powers: Power[]): FunctionActions[] {
   }));
 }
 
-/** Petit helper per crear un DetailsKeyValueField */
 function mapKeyValue(key: string, value: any): DetailsKeyValueField {
   return { key, type: 'key-value', value };
 }

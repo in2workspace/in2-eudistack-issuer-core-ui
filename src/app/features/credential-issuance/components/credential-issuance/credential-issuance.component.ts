@@ -4,8 +4,7 @@ import { Component, computed, inject, Signal, signal, WritableSignal, effect, Ho
 import { MatFormField, MatOption, MatSelect } from '@angular/material/select';
 import { DynamicFieldComponent } from '../dynamic-field/dynamic-field.component';
 import { FormGroup, ReactiveFormsModule } from '@angular/forms';
-import { NgFor, TitleCasePipe } from '@angular/common';
-import { KeyValuePipe } from '@angular/common';
+import { NgFor, TitleCasePipe, KeyValuePipe } from '@angular/common';
 import { IssuancePowerValueAndValidity, IssuancePowerComponent } from '../power/issuance-power.component';
 import { EMPTY, from, map, Observable, of, startWith, Subject, switchMap, takeUntil, tap } from 'rxjs';
 import { DialogWrapperService } from 'src/app/shared/components/dialog/dialog-wrapper/dialog-wrapper.service';
@@ -126,7 +125,7 @@ export class CredentialIssuanceComponent implements CanDeactivate<CanComponentDe
   private readonly destroy$ = new Subject();
 
   // every time a new credential type > credential schema is selected, reset global state
-  private updateFormEffect = effect(() => {
+  private readonly updateFormEffect = effect(() => {
     // reset keys
     this.updateKeys(undefined);
 
@@ -167,8 +166,6 @@ export class CredentialIssuanceComponent implements CanDeactivate<CanComponentDe
       //todo maybe use event.returnValue
       if(!confirm) $event.preventDefault();
       return;
-    }else{
-      return;
     }
   }
 
@@ -180,7 +177,6 @@ export class CredentialIssuanceComponent implements CanDeactivate<CanComponentDe
       const shouldChange = window.confirm(alertMsg);
 
       if (!shouldChange) {
-        // this.selectedCredentialType$.set(currentType);
         select.value = currentType;
         return;
       }

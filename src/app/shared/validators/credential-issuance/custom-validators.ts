@@ -8,10 +8,9 @@ export class CustomValidators {
 
   public static isDomain(): ExtendedValidatorFn {
     const domainRegex =
-      /^(?!:\/\/)([a-zA-Z0-9-_]+\.)*[a-zA-Z0-9][a-zA-Z0-9-_]+\.[a-zA-Z]{2,11}?$/;
+      /^(?!:\/\/)([a-zA-Z0-9-_]+\.)*[a-zA-Z0-9][a-zA-Z0-9-_]+\.[a-zA-Z]{2,11}$/;
     return (control: AbstractControl): ExtendedValidatorErrors | null => {
       const value = control.value;
-      // if (typeof value !== 'string') return { isDomain: 'Value must be a string' };
       return domainRegex.test(value) ? null : { isDomain: { value: 'error.form.domain' }};
     };
   }

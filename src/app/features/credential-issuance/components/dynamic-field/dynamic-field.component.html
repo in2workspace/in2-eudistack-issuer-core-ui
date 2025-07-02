@@ -10,7 +10,7 @@
       </div>
     }
     @if (fieldSchema.type === 'group' && fieldSchema.groupFields) {
-      <!-- Per als grups, mostrem el FormGroup específic del camp -->
+      <!-- GROUPS -->
       <mat-card class="mb-4">
         <mat-card-content [formGroup]="group$()!">
           @for (field of fieldSchema.groupFields; track $index) {
@@ -23,7 +23,7 @@
         </mat-card-content>
       </mat-card>
     } @else {
-      <!-- Controls individuals -->
+      <!-- INDIVIDUAL CONTROLS -->
       <mat-form-field [formGroup]="parentFormGroup$()">
         <mat-label appAddAsterisk [formGroup]="parentFormGroup$()" [controlName]="fieldName">{{ "credentialIssuance." + fieldName | translate }}</mat-label>
         <!-- todo use switch -->
@@ -41,7 +41,6 @@
             </mat-select>
         }
         @if (control?.invalid && control?.touched) {
-          <!-- <mat-error>{{ control!.errors | firstElement | translate }}</mat-error> -->
            <mat-error>{{getErrorMessage(control) | translate: getErrorsArgs(control) }}</mat-error>
         }
 

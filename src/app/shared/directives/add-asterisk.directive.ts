@@ -10,8 +10,8 @@ export class AddAsteriskDirective implements OnInit {
   @Input({ required: true }) public controlName!: string;
 
   public constructor(
-    private elementRef: ElementRef,
-    private renderer: Renderer2
+    private readonly elementRef: ElementRef,
+    private readonly renderer: Renderer2
   ) {}
 
   public ngOnInit(): void {

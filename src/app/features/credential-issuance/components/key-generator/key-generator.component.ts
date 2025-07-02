@@ -19,8 +19,8 @@ export class KeyGeneratorComponent {
   public keyState$: Signal<KeyState | undefined>;
   public displayedKeys$: Signal<Partial<KeyState> | undefined>;
   public copiedKey = "";
-  private keyService = inject(KeyGeneratorService);
-  private emitOnKeysChange = effect(() => {
+  private readonly keyService = inject(KeyGeneratorService);
+  private readonly emitOnKeysChange = effect(() => {
     this.updateKeys.emit(this.keyState$());
   });
 

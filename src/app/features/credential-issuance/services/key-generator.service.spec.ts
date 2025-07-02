@@ -57,25 +57,25 @@ describe('KeyGeneratorService', () => {
     });
   });
 
-  describe('mètodes privats', () => {
-    it('bytesToHexString hauria de convertir un Uint8Array a string hex amb "0x" prefix', () => {
+  describe('private methods', () => {
+    it('bytesToHexString should convert a Uint8Array to a hex string with "0x" prefix', () => {
       const bytes = new Uint8Array([0, 15, 255]);
       const hex = (service as any).bytesToHexString(bytes);
       expect(hex).toBe('0x000fff');
     });
 
-    it('isHexNumberEven detecta correctament nombres hex parells i senars', () => {
+    it('isHexNumberEven should correctly detect even and odd hex numbers', () => {
       expect((service as any).isHexNumberEven('2')).toBe(true);
       expect((service as any).isHexNumberEven('3')).toBe(false);
     });
 
-    it('base58encode codifica correctament arrays simples', () => {
+    it('base58encode should correctly encode simple arrays', () => {
       const MAP = '123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz';
       expect((service as any).base58encode(new Uint8Array([0]), MAP)).toBe('1');
       expect((service as any).base58encode(new Uint8Array([1]), MAP)).toBe('2');
     });
 
-    it('generateDidKey construeix el did:key fent servir base58encode', async () => {
+    it('generateDidKey should build the did:key using base58encode', async () => {
       const hex = '0x04' + 'a'.repeat(64) + 'b'.repeat(64);
       jest.spyOn(service as any, 'isHexNumberEven').mockReturnValue(true);
       const base58Spy = jest.spyOn(service as any, 'base58encode').mockReturnValue('XYZ');
@@ -88,7 +88,7 @@ describe('KeyGeneratorService', () => {
       );
     });
 
-    it('generateP256PrivateKeyHex extreu correctament els 32 bytes de la clau privada', async () => {
+    it('generateP256PrivateKeyHex should correctly extract the 32 bytes of the private key', async () => {
       const fakeKeyPair = { privateKey: {} } as CryptoKeyPair;
       const full = new Uint8Array(68);
       full.forEach((_, i) => full[i] = i);
@@ -103,7 +103,7 @@ describe('KeyGeneratorService', () => {
       expect(hex).toBe(expected);
     });
 
-    it('generateP256PublicKeyHex converteix raw public key bytes a hex', async () => {
+    it('generateP256PublicKeyHex should convert raw public key bytes to hex', async () => {
       const fakeKeyPair = { publicKey: {} } as CryptoKeyPair;
       const buf = new Uint8Array([1,2,3,4]);
       // @ts-ignore
@@ -113,7 +113,7 @@ describe('KeyGeneratorService', () => {
       expect(hex).toBe('0x01020304');
     });
 
-    it('generateP256KeyPair crida crypto.subtle.generateKey amb els paràmetres adequats', async () => {
+    it('generateP256KeyPair should call crypto.subtle.generateKey with the correct parameters', async () => {
       // @ts-ignore
       const spy = (window.crypto.subtle.generateKey as jest.Mock)
         .mockResolvedValue({} as CryptoKeyPair);
@@ -126,6 +126,5 @@ describe('KeyGeneratorService', () => {
       );
       expect(pair).toBeDefined();
     });
-
   });
 });
