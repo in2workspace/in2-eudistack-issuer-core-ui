@@ -108,7 +108,7 @@ export class IssuanceRequestFactoryService {
     }
 
     private buildDidElsi(orgId: string, country: string): string{
-      const vatNumber = this.buildOrganizationId(orgId, country);
+      const vatNumber = this.buildOrganizationId(country, orgId);
       return "did:elsi:" + vatNumber;
     }
 
