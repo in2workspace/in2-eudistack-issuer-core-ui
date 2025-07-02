@@ -8,7 +8,7 @@ import { of } from "rxjs";
 import { AuthService } from "src/app/core/services/auth.service";
 import { DialogWrapperService } from "src/app/shared/components/dialog/dialog-wrapper/dialog-wrapper.service";
 import { IssuancePowerComponent } from "./issuance-power.component";
-import { IssuanceFormPowerSchema } from "src/app/core/models/schemas/lear-credential-issuance-schemas";
+import { IssuanceFormPowerSchema } from "src/app/core/models/entity/lear-credential-issuance";
 
 describe('IssuancePowerComponent', () => {
   let component: IssuancePowerComponent;

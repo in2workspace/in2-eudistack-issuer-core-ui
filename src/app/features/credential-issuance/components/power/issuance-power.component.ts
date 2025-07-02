@@ -130,10 +130,7 @@ export class IssuancePowerComponent implements OnInit{
           this.formChanges.emit({ value, hasOnePower, hasOneActionPerPower });
         }
       )
-    ).subscribe(val=>{
-      console.log('powers value changed: ');
-      console.log(val)
-    });
+    ).subscribe();
   }
 
   public submit(){

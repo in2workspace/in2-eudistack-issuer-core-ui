@@ -1,12 +1,12 @@
-// todo consider renaming
-// todo enhance typing
-// todo add error/s message field to decouple validation from displayed message responsibilities
 
 import { ValidatorEntry } from "src/app/shared/validators/credential-issuance/all-validators";
 
 export const ISSUANCE_CREDENTIAL_TYPES_ARRAY = ['LEARCredentialEmployee', 'LEARCredentialMachine'] as const;
 export type IssuanceCredentialType = typeof ISSUANCE_CREDENTIAL_TYPES_ARRAY[number];
 
+// todo consider renaming
+// todo enhance typing
+// todo add error/s message field to decouple validation from displayed message responsibilities
 // todo remove display: make a prop/array in CredentialIssuanceFormSchema for each type
 export type CredentialIssuanceFormFieldSchema = {
     key: string, //this is used for models fields names and also as label for transations; i.e. "credentialIssuance.mandatee"

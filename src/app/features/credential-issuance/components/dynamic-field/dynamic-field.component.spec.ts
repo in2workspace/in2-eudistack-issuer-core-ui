@@ -1,8 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { ReactiveFormsModule, FormControl, FormGroup, AbstractControl } from '@angular/forms';
-import { ComponentRef, signal, Signal } from '@angular/core';
+import { ReactiveFormsModule, FormControl, FormGroup } from '@angular/forms';
+import { ComponentRef } from '@angular/core';
 import { DynamicFieldComponent } from './dynamic-field.component';
-import { CredentialIssuanceFormFieldSchema } from 'src/app/core/models/schemas/lear-credential-issuance-schemas';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { TranslateModule } from '@ngx-translate/core';
 

@@ -1,5 +1,5 @@
 
-export interface ProcedureResponse {
+export interface CredentialProceduresResponse {
   credential_procedures: CredentialProcedure[];
 }
 
@@ -8,7 +8,7 @@ export interface CredentialProcedure {
     procedure_id: string;
     subject: string;
     credential_type: string; //ideally, this should be CredentialProcedureType
-    status: string;
+    status: string; //ideally, this should be CredentialProcedureStatus
     updated: string;
   }
 }
