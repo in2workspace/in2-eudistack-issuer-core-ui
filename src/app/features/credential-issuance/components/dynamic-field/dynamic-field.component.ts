@@ -10,9 +10,9 @@ import { MatOption } from '@angular/material/core';
 import { MatButton } from '@angular/material/button';
 import { TranslatePipe } from '@ngx-translate/core';
 import { MatSelect } from '@angular/material/select';
-import { CredentialIssuanceFormFieldSchema } from 'src/app/core/models/schemas/lear-credential-issuance-schemas';
 import { AddAsteriskDirective } from 'src/app/shared/directives/add-asterisk.directive';
 import { FirstElementPipe } from 'src/app/shared/pipes/first-element.pipe';
+import { CredentialIssuanceFormFieldSchema } from 'src/app/core/models/entity/lear-credential-issuance';
 
 @Component({
   selector: 'app-dynamic-field',

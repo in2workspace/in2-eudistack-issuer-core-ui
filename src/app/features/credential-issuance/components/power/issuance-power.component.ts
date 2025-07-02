@@ -12,10 +12,10 @@ import { NgIf, NgFor, NgTemplateOutlet, AsyncPipe, KeyValuePipe } from '@angular
 import { DialogWrapperService } from 'src/app/shared/components/dialog/dialog-wrapper/dialog-wrapper.service';
 import { EMPTY, Observable, tap } from 'rxjs';
 import { DialogData } from 'src/app/shared/components/dialog/dialog-data';
-import { IssuanceFormPowerSchema } from 'src/app/core/models/schemas/lear-credential-issuance-schemas';
 import { AuthService } from 'src/app/core/services/auth.service';
 import { NormalizedAction } from '../../services/power.service';
 import { IssuanceRawPowerForm } from '../credential-issuance/credential-issuance.component';
+import { IssuanceFormPowerSchema } from 'src/app/core/models/entity/lear-credential-issuance';
 
 export interface TempIssuanceFormPowerSchema extends IssuanceFormPowerSchema{
   isDisabled: boolean;

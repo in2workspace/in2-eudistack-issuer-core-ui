@@ -12,11 +12,24 @@ import { routes } from "./app/app-routing";
 import { HttpLoaderFactory } from "./app/core/services/translate-http-loader.factory";
 import { overrideDefaultValueAccessor } from './app/core/overrides/value-accessor.overrides';
 import { IAM_PARAMS, IAM_POST_LOGIN_ROUTE, IAM_POST_LOGOUT_URI, IAM_REDIRECT_URI } from './app/core/constants/iam.constants';
+import { CREDENTIAL_SCHEMA_BUILDERS } from './app/features/credential-issuance/services/issuance-schema-builders/issuance-schema-builder';
+import { LearCredentialEmployeeSchemaBuilder } from './app/features/credential-issuance/services/issuance-schema-builders/lear-credential-employee-issuance-schema-builder';
+import { LearCredentialMachineIssuanceSchemaBuilder } from './app/features/credential-issuance/services/issuance-schema-builders/lear-credential-machine-issuance-schema-builder';
 
 overrideDefaultValueAccessor();
 
 bootstrapApplication(AppComponent, {
     providers: [
+        {
+            provide: CREDENTIAL_SCHEMA_BUILDERS,
+            useClass: LearCredentialEmployeeSchemaBuilder,
+            multi: true
+        },
+        {
+            provide: CREDENTIAL_SCHEMA_BUILDERS,
+            useClass: LearCredentialMachineIssuanceSchemaBuilder,
+            multi: true
+        },
         importProvidersFrom(BrowserModule, RouterModule.forRoot(routes), TranslateModule.forRoot({
             loader: {
                 provide: TranslateLoader,

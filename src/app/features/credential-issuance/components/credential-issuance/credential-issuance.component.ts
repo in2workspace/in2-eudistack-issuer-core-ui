@@ -18,10 +18,10 @@ import { ActivatedRoute, CanDeactivate, Router } from '@angular/router';
 import { MatCard, MatCardContent } from '@angular/material/card';
 import { CanComponentDeactivate, CanDeactivateType } from 'src/app/core/guards/can-component-deactivate.guard';
 import { CredentialIssuanceService } from '../../services/credential-issuance.service';
-import { CredentialIssuanceFormSchema, CredentialIssuancePowerFormSchema } from 'src/app/core/models/schemas/lear-credential-issuance-schemas';
 import { KeyState } from '../../services/key-generator.service';
 import { KeyGeneratorComponent } from '../key-generator/key-generator.component';
 import { IssuanceRawCredentialPayload } from 'src/app/core/models/dto/lear-credential-issuance-request.dto';
+import { CredentialIssuanceFormSchema, CredentialIssuancePowerFormSchema } from 'src/app/core/models/entity/lear-credential-issuance';
 
 export type CredentialIssuanceGlobalFormState = {
     keys: KeyState | undefined;
@@ -30,7 +30,7 @@ export type CredentialIssuanceGlobalFormState = {
 }
 
 export type IssuanceStaticDataSchema = {
-    mandator: EmployeeMandator;
+    mandator?: EmployeeMandator;
 }
 
 export type IssuanceRawPowerForm = Partial<Record<TmfFunction, Record<TmfAction, boolean>>>;

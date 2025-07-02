@@ -4,22 +4,26 @@ import { IssuanceRequestFactoryService } from './issuance-request-factory.servic
 import { CountryService } from 'src/app/core/services/country.service';
 import { AuthService } from 'src/app/core/services/auth.service';
 import { CredentialProcedureService } from 'src/app/core/services/credential-procedure.service';
+import { CREDENTIAL_SCHEMA_BUILDERS, IssuanceSchemaBuilder } from './issuance-schema-builders/issuance-schema-builder';
 
 
 describe('CredentialIssuanceService', () => {
   let service: CredentialIssuanceService;
-  let mockAuthService: { hasIn2OrganizationIdentifier: jest.Mock };
   let mockProcedureService: { createProcedure: jest.Mock };
+  let mockSchemaBuilder: { schemasBuilder: jest.Mock, getIssuancePowerFormSchema: jest.Mock };
+
 
   beforeEach(() => {
-    mockAuthService = {
-      hasIn2OrganizationIdentifier: jest.fn().mockReturnValue(true),
-    };
+
     mockProcedureService = { createProcedure: jest.fn() }
+    mockSchemaBuilder = { schemasBuilder: jest.fn(), getIssuancePowerFormSchema: jest.fn() };
 
     TestBed.configureTestingModule({
       imports: [],
-      providers: [IssuanceRequestFactoryService, CountryService, { provide: AuthService, useValue: mockAuthService }, 
+      providers: [
+        { provide: IssuanceSchemaBuilder, useValue: mockSchemaBuilder },
+        IssuanceRequestFactoryService, 
+        CountryService, 
         { provide: CredentialProcedureService, useValue: mockProcedureService }
       ]
     });

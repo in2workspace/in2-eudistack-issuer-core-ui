@@ -5,7 +5,7 @@ import { EmployeeMandatee, EmployeeMandator, Power, TmfAction } from "../entity/
 export interface IssuanceRawCredentialPayload {
         partialCredentialSubject: Record<string, any>, 
         power: IssuanceRawPowerForm, 
-        optional: { keys?: any, staticData: { mandator: EmployeeMandator } | null},
+        optional: { keys?: any, staticData: { mandator?: EmployeeMandator } | null},
         asSigner: boolean
 }
 
