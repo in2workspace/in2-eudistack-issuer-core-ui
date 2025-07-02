@@ -49,14 +49,14 @@ export class DynamicFieldComponent {
   });
 
   public getErrorMessage(control: AbstractControl | null): string {
-    if (!control || !control.errors) return "";
+    if (!control?.errors) return "";
     const err = Object.values(control.errors)[0];
     const defaultLabel = err.value;
     return defaultLabel;
   }
 
   public getErrorsArgs(control: AbstractControl | null): Record<string, string> {
-    if (!control || !control.errors) return {};
+    if (!control?.errors) return {};
     const err = Object.values(control.errors)[0];
     const args = err.args as [];
     let translateParams = {};

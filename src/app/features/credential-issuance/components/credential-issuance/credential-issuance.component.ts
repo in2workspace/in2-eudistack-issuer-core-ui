@@ -164,7 +164,6 @@ export class CredentialIssuanceComponent implements CanDeactivate<CanComponentDe
       const confirm = this.openLeaveConfirm();
       //todo maybe use event.returnValue
       if(!confirm) $event.preventDefault();
-      return;
     }
   }
 
