@@ -4,6 +4,7 @@
 
 import { ValidatorEntry } from "src/app/shared/validators/credential-issuance/all-validators";
 
+// todo remove display: make a prop/array in CredentialIssuanceFormSchema for each type
 export type CredentialIssuanceFormFieldSchema = {
     key: string, //this is used for models fields names and also as label for transations; i.e. "credentialIssuance.mandatee"
     type: 'control' | 'group';

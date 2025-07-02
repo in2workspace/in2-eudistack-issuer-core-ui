@@ -8,7 +8,7 @@ import {
   EmployeeMandatee,
   Power
 } from '../../../core/models/entity/lear-credential';
-import { LEARCredentialDataNormalizer } from './lear-credential-employee-data-normalizer';
+import { LEARCredentialDataNormalizer } from './lear-credential-data-normalizer';
 
 describe('LEARCredentialDataNormalizer', () => {
   let normalizer: LEARCredentialDataNormalizer;

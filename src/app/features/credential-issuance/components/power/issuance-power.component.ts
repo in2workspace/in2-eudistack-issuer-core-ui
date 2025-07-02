@@ -13,7 +13,6 @@ import { DialogWrapperService } from 'src/app/shared/components/dialog/dialog-wr
 import { EMPTY, Observable, tap } from 'rxjs';
 import { DialogData } from 'src/app/shared/components/dialog/dialog-data';
 import { AuthService } from 'src/app/core/services/auth.service';
-import { NormalizedAction } from '../../services/power.service';
 import { IssuanceRawPowerForm } from '../credential-issuance/credential-issuance.component';
 import { IssuanceFormPowerSchema } from 'src/app/core/models/entity/lear-credential-issuance';
 
@@ -24,6 +23,8 @@ export interface TempIssuanceFormPowerSchema extends IssuanceFormPowerSchema{
 export interface NormalizedTempIssuanceFormSchemaPower extends TempIssuanceFormPowerSchema{
   normalizedActions: NormalizedAction[];
 }
+
+export type NormalizedAction = { action: string; value: boolean };
 
 export interface IssuancePowerValueAndValidity {
   value: IssuanceRawPowerForm, 
@@ -39,33 +40,33 @@ export interface IssuancePowerValueAndValidity {
     imports: [KeyValuePipe, ReactiveFormsModule, NgIf, MatFormField, MatSelect, MatSelectTrigger, MatOption, MatButton, NgFor, NgTemplateOutlet, MatSlideToggle, FormsModule, MatMiniFabButton, MatIcon, MatLabel, MatSelect, AsyncPipe, TranslatePipe]
 })
 export class IssuancePowerComponent implements OnInit{
-  private readonly authService = inject(AuthService);
-  private readonly dialog = inject(DialogWrapperService);
-  private readonly translate = inject(TranslateService);
+  @Output() public formChanges = new EventEmitter<IssuancePowerValueAndValidity>();
 
-  public organizationIdentifierIsIn2: boolean = this.authService.hasIn2OrganizationIdentifier();
+  public organizationIdentifierIsIn2: boolean;
   public _powersInput: IssuanceFormPowerSchema[] = [];
   public selectorPowers: TempIssuanceFormPowerSchema[] = [];
   public selectedPower: TempIssuanceFormPowerSchema | undefined;
   public form: FormGroup = new FormGroup({});
-  //this makes keyvaluePipe respect the order
-  public keepOrder = (_: any, _2: any) => 0;
 
+  private readonly authService = inject(AuthService);
+  private readonly dialog = inject(DialogWrapperService);
+  private readonly translate = inject(TranslateService);
 
- @Output() formChanges = new EventEmitter<IssuancePowerValueAndValidity>();
- @Input()
-  set powersInput(value: IssuanceFormPowerSchema[]) {
+  public constructor(){
+    this.organizationIdentifierIsIn2 = this.authService.hasIn2OrganizationIdentifier();
+  }
+  
+  
+  @Input()
+  public set powersInput(value: IssuanceFormPowerSchema[]) {
     console.warn('Power component received empty list.');
     this._powersInput = value || [];
     this.selectorPowers = this.mapToTempPowerSchema(value) || [];
     this.resetForm();
   }
 
-  public mapToTempPowerSchema(powers: IssuanceFormPowerSchema[]): TempIssuanceFormPowerSchema[]{
-    return powers
-      .map(p => ({...p, isDisabled: false}))
-      .filter(p => this.organizationIdentifierIsIn2 || !p.isIn2Required);
-  }
+  //this makes keyvaluePipe respect the order
+  public keepOrder = (_: any, _2: any) => 0;
 
   public addPower(funcName: string) {
     // update form
@@ -135,15 +136,7 @@ export class IssuancePowerComponent implements OnInit{
     });
   }
 
-  private resetForm() {
-    this.form.reset();            
-    for (const key of Object.keys(this.form.controls)) {
-      this.form.removeControl(key);
-    }
-  }
-
-
-public submit(){
+  public submit(){
   console.log('submit: ');
   
 }
@@ -157,6 +150,19 @@ public getPowerByFunction(functionName: string): TempIssuanceFormPowerSchema | u
 public getFormGroup(control: any): FormGroup {
   return control as FormGroup;
 }
+
+  private mapToTempPowerSchema(powers: IssuanceFormPowerSchema[]): TempIssuanceFormPowerSchema[]{
+    return powers
+      .map(p => ({...p, isDisabled: false}))
+      .filter(p => this.organizationIdentifierIsIn2 || !p.isIn2Required);
+  }
+
+  private resetForm() {
+    this.form.reset();            
+    for (const key of Object.keys(this.form.controls)) {
+      this.form.removeControl(key);
+    }
+  }
   
 
 }
