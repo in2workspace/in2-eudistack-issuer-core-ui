@@ -6,14 +6,13 @@ import { CredentialIssuanceFormSchema, CredentialIssuancePowerFormSchema, Creden
 
 @Injectable({ providedIn: 'root' })
 export class LearCredentialEmployeeSchemaBuilder implements CredentialIssuanceSchemaBuilder {
-  readonly credType: IssuanceCredentialType = 'LEARCredentialEmployee';
+  public readonly credType: IssuanceCredentialType = 'LEARCredentialEmployee';
 
   private readonly authService = inject(AuthService);
   private readonly countriesService = inject(CountryService);
 
-  constructor( ) {}
 
-  getSchema(): CredentialIssuanceSchemaTuple {
+  public getSchema(): CredentialIssuanceSchemaTuple {
     
     const countriesSelectorOptions = this.countriesService.getCountriesAsSelectorOptions();
     

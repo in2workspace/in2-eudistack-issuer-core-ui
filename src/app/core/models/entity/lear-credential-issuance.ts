@@ -3,6 +3,7 @@
 // todo add error/s message field to decouple validation from displayed message responsibilities
 
 import { ValidatorEntry } from "src/app/shared/validators/credential-issuance/all-validators";
+import { IssuanceCredentialType } from "./lear-credential";
 
 // todo remove display: make a prop/array in CredentialIssuanceFormSchema for each type
 export type CredentialIssuanceFormFieldSchema = {
@@ -19,6 +20,7 @@ export type CredentialIssuanceFormFieldSchema = {
 };
 
 export interface CredentialIssuanceSchemaBuilder {
+  readonly credType: IssuanceCredentialType;
   getSchema(): CredentialIssuanceSchemaTuple;
 }
 

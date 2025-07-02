@@ -8,12 +8,12 @@ import { CountryService } from "src/app/core/services/country.service";
 
 @Injectable({ providedIn: 'root' })
 export class LearCredentialMachineIssuanceSchemaBuilder implements CredentialIssuanceSchemaBuilder {
-  readonly credType: IssuanceCredentialType = 'LEARCredentialMachine';
+  public readonly credType: IssuanceCredentialType = 'LEARCredentialMachine';
 
   private readonly authService = inject(AuthService);
   private readonly countryService = inject(CountryService);
 
-  getSchema(): CredentialIssuanceSchemaTuple {
+  public getSchema(): CredentialIssuanceSchemaTuple {
     const countriesSelectorOptions = this.countryService.getCountriesAsSelectorOptions();
 
     const form: CredentialIssuanceFormSchema = [
