@@ -1,6 +1,5 @@
 import { inject, Injectable, InjectionToken } from "@angular/core";
-import { IssuanceCredentialType } from "src/app/core/models/entity/lear-credential";
-import { CredentialIssuanceFormSchema, CredentialIssuancePowerFormSchema, CredentialIssuanceSchemaBuilder } from "src/app/core/models/entity/lear-credential-issuance";
+import { CredentialIssuanceFormSchema, CredentialIssuancePowerFormSchema, CredentialIssuanceSchemaBuilder, IssuanceCredentialType } from "src/app/core/models/entity/lear-credential-issuance";
 import { IssuanceStaticDataSchema } from "../../components/credential-issuance/credential-issuance.component";
 
 export const CREDENTIAL_SCHEMA_BUILDERS = new InjectionToken<CredentialIssuanceSchemaBuilder[]>('CREDENTIAL_SCHEMA_BUILDERS');

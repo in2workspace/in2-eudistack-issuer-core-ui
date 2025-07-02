@@ -2,7 +2,6 @@ import { MatButton } from '@angular/material/button';
 import { MatLabel } from '@angular/material/form-field';
 import { Component, computed, inject, Signal, signal, WritableSignal, effect, HostListener, OnDestroy } from '@angular/core';
 import { MatFormField, MatOption, MatSelect } from '@angular/material/select';
-import { EmployeeMandator, ISSUANCE_CREDENTIAL_TYPES_ARRAY, IssuanceCredentialType, TmfAction, TmfFunction } from 'src/app/core/models/entity/lear-credential';
 import { DynamicFieldComponent } from '../dynamic-field/dynamic-field.component';
 import { FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { NgFor, TitleCasePipe } from '@angular/common';
@@ -21,7 +20,8 @@ import { CredentialIssuanceService } from '../../services/credential-issuance.se
 import { KeyState } from '../../services/key-generator.service';
 import { KeyGeneratorComponent } from '../key-generator/key-generator.component';
 import { IssuanceRawCredentialPayload } from 'src/app/core/models/dto/lear-credential-issuance-request.dto';
-import { CredentialIssuanceFormSchema, CredentialIssuancePowerFormSchema } from 'src/app/core/models/entity/lear-credential-issuance';
+import { CredentialIssuanceFormSchema, CredentialIssuancePowerFormSchema, ISSUANCE_CREDENTIAL_TYPES_ARRAY, IssuanceCredentialType } from 'src/app/core/models/entity/lear-credential-issuance';
+import { EmployeeMandator, TmfFunction, TmfAction } from 'src/app/core/models/entity/lear-credential';
 
 export type CredentialIssuanceGlobalFormState = {
     keys: KeyState | undefined;

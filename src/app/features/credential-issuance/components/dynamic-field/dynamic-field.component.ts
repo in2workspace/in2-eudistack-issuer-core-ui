@@ -1,29 +1,23 @@
 import { Component, computed, input, Signal } from '@angular/core';
 import { FormGroup, FormControl, AbstractControl } from '@angular/forms';
-import { NgIf, NgFor, AsyncPipe, KeyValuePipe } from '@angular/common';
 import { ReactiveFormsModule } from '@angular/forms';
 import { MatCard, MatCardContent } from '@angular/material/card';
 import { MatError, MatFormField, MatLabel } from '@angular/material/form-field';
 import { MatInput } from '@angular/material/input';
-import { MatIcon } from '@angular/material/icon';
 import { MatOption } from '@angular/material/core';
-import { MatButton } from '@angular/material/button';
 import { TranslatePipe } from '@ngx-translate/core';
 import { MatSelect } from '@angular/material/select';
 import { AddAsteriskDirective } from 'src/app/shared/directives/add-asterisk.directive';
-import { FirstElementPipe } from 'src/app/shared/pipes/first-element.pipe';
 import { CredentialIssuanceFormFieldSchema } from 'src/app/core/models/entity/lear-credential-issuance';
 
 @Component({
   selector: 'app-dynamic-field',
   standalone: true,
-  imports: [AddAsteriskDirective, KeyValuePipe, NgIf, NgFor, AsyncPipe, FirstElementPipe, ReactiveFormsModule, MatCard, 
-        MatButton,
+  imports: [AddAsteriskDirective, ReactiveFormsModule, MatCard, 
         MatCard,
         MatCardContent,
         MatError,
         MatFormField,
-        MatIcon,
         MatInput,
         MatLabel,
         MatOption,

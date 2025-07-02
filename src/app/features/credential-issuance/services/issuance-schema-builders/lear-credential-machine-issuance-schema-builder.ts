@@ -1,6 +1,5 @@
 import { inject, Injectable } from "@angular/core";
-import { IssuanceCredentialType } from "src/app/core/models/entity/lear-credential";
-import { CredentialIssuanceFormSchema, CredentialIssuancePowerFormSchema, CredentialIssuanceSchemaBuilder, CredentialIssuanceSchemaTuple } from "src/app/core/models/entity/lear-credential-issuance";
+import { CredentialIssuanceFormSchema, CredentialIssuancePowerFormSchema, CredentialIssuanceSchemaBuilder, CredentialIssuanceSchemaTuple, IssuanceCredentialType } from "src/app/core/models/entity/lear-credential-issuance";
 
 
 import { AuthService } from "src/app/core/services/auth.service";

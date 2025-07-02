@@ -3,7 +3,9 @@
 // todo add error/s message field to decouple validation from displayed message responsibilities
 
 import { ValidatorEntry } from "src/app/shared/validators/credential-issuance/all-validators";
-import { IssuanceCredentialType } from "./lear-credential";
+
+export const ISSUANCE_CREDENTIAL_TYPES_ARRAY = ['LEARCredentialEmployee', 'LEARCredentialMachine'] as const;
+export type IssuanceCredentialType = typeof ISSUANCE_CREDENTIAL_TYPES_ARRAY[number];
 
 // todo remove display: make a prop/array in CredentialIssuanceFormSchema for each type
 export type CredentialIssuanceFormFieldSchema = {

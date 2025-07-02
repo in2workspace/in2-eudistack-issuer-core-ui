@@ -8,7 +8,7 @@ import { MatSlideToggle } from '@angular/material/slide-toggle';
 import { MatButton, MatMiniFabButton } from '@angular/material/button';
 import { MatOption } from '@angular/material/core';
 import { MatFormField, MatLabel } from '@angular/material/form-field';
-import { NgIf, NgFor, NgTemplateOutlet, AsyncPipe, KeyValuePipe } from '@angular/common';
+import { KeyValuePipe } from '@angular/common';
 import { DialogWrapperService } from 'src/app/shared/components/dialog/dialog-wrapper/dialog-wrapper.service';
 import { EMPTY, Observable, tap } from 'rxjs';
 import { DialogData } from 'src/app/shared/components/dialog/dialog-data';
@@ -37,7 +37,7 @@ export interface IssuancePowerValueAndValidity {
     templateUrl: './issuance-power.component.html',
     styleUrls: ['./issuance-power.component.scss'],
     standalone: true,
-    imports: [KeyValuePipe, ReactiveFormsModule, NgIf, MatFormField, MatSelect, MatSelectTrigger, MatOption, MatButton, NgFor, NgTemplateOutlet, MatSlideToggle, FormsModule, MatMiniFabButton, MatIcon, MatLabel, MatSelect, AsyncPipe, TranslatePipe]
+    imports: [KeyValuePipe, ReactiveFormsModule, MatFormField, MatSelect, MatSelectTrigger, MatOption, MatButton, MatSlideToggle, FormsModule, MatMiniFabButton, MatIcon, MatLabel, MatSelect, TranslatePipe]
 })
 export class IssuancePowerComponent implements OnInit{
   @Output() public formChanges = new EventEmitter<IssuancePowerValueAndValidity>();
