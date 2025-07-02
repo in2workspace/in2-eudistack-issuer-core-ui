@@ -31,37 +31,43 @@ export class LEARCredentialDataNormalizer {
    * Normalizes the complete LEARCredential object.
    * It applies normalization to the mandatee object and each element of the power array.
    */
-  public normalizeLearCredential(data: LEARCredential): LEARCredential {
-    // Clone the data to avoid mutating the original object
-    const normalizedData = { ...data };
-  
-    const credentialTypes = normalizedData.type;
-    const isEmployee = credentialTypes.includes('LEARCredentialEmployee');
-    const isMachine = credentialTypes.includes('LEARCredentialMachine');
-    const isVerifiableCertification = credentialTypes.includes('VerifiableCertification');
+public normalizeLearCredential(data: LEARCredential): LEARCredential {
+  const normalizedData: any = { ...data };
 
-  
-    if ((isEmployee || isMachine) && 'mandate' in normalizedData.credentialSubject) {
-      const mandate = normalizedData.credentialSubject.mandate;
-  
-      if (isEmployee && mandate.mandatee) {
-        mandate.mandatee = this.normalizeEmployeeMandatee(mandate.mandatee as RawEmployeeMandatee);
-      }
-  
-      if (Array.isArray(mandate.power)) {
-        mandate.power = mandate.power.map(p => this.normalizePower(p));
-      }
-    }
-    if (isVerifiableCertification && 'atester' in normalizedData) {
-      const rawData = normalizedData as RawVerifiableCertification;
-      if (rawData.atester) {
-        rawData.attester = rawData.atester;
-        delete rawData.atester;
-      }
-    }
-  
-    return normalizedData;
+  if (normalizedData.credentialSubject && typeof normalizedData.credentialSubject === 'object') {
+    normalizedData.credentialSubject = { ...normalizedData.credentialSubject };
   }
+
+  const credentialTypes = normalizedData.type;
+  const isEmployee = Array.isArray(credentialTypes) && credentialTypes.includes('LEARCredentialEmployee');
+  const isMachine = Array.isArray(credentialTypes) && credentialTypes.includes('LEARCredentialMachine');
+  const isVerifiableCertification = Array.isArray(credentialTypes) && credentialTypes.includes('VerifiableCertification');
+
+  if ((isEmployee || isMachine) && normalizedData.credentialSubject && 'mandate' in normalizedData.credentialSubject) {
+    const originalMandate = normalizedData.credentialSubject.mandate;
+    normalizedData.credentialSubject.mandate = { ...originalMandate };
+    const mandate = normalizedData.credentialSubject.mandate;
+
+    if (isEmployee && mandate.mandatee) {
+      mandate.mandatee = this.normalizeEmployeeMandatee(mandate.mandatee as RawEmployeeMandatee);
+    }
+
+    if (Array.isArray(mandate.power)) {
+      mandate.power = mandate.power.map((p:Power) => this.normalizePower(p));
+    }
+  }
+
+  if (isVerifiableCertification && 'atester' in normalizedData) {
+    const rawData = normalizedData as RawVerifiableCertification;
+    if (rawData.atester) {
+      rawData.attester = rawData.atester;
+      delete rawData.atester;
+    }
+  }
+
+  return normalizedData;
+}
+
   
   
 

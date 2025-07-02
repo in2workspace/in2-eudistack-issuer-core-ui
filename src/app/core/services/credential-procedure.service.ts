@@ -12,8 +12,8 @@ import { TranslateService } from "@ngx-translate/core";
 import { Router } from "@angular/router";
 import { API } from "../constants/api.constants";
 import { LEARCredentialDataDetailsResponse } from '../models/dto/lear-credential-data-details-response.dto';
-import { LEARCredentialDataNormalizer } from 'src/app/features/credential-details/utils/lear-credential-employee-data-normalizer';
 import { IssuanceLEARCredentialRequestDto } from '../models/dto/lear-credential-issuance-request.dto';
+import { LEARCredentialDataNormalizer } from 'src/app/features/credential-details/utils/lear-credential-data-normalizer';
 
 //todo rename (backend, api... service)
 @Injectable({

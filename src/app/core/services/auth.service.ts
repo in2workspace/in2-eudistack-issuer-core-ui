@@ -7,7 +7,7 @@ import { Power, EmployeeMandator, LEARCredentialEmployee } from "../models/entit
 import { RoleType } from '../models/enums/auth-rol-type.enum';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { Router } from '@angular/router';
-import { LEARCredentialDataNormalizer } from 'src/app/features/credential-details/utils/lear-credential-employee-data-normalizer';
+import { LEARCredentialDataNormalizer } from 'src/app/features/credential-details/utils/lear-credential-data-normalizer';
 
 @Injectable({
   providedIn: 'root'
@@ -228,7 +228,16 @@ export class AuthService{
     return this.mandatorSubject.asObservable();
   }
   public getRawMandator(): EmployeeMandator | null {
-    return this.mandatorSubject.getValue();
+    // todo restore return this.mandatorSubject.getValue();
+      return {
+              organizationIdentifier: 'ORG123',
+              organization: 'Test Org',
+              commonName: 'Some Name', 
+              emailAddress: 'some@example.com',
+              serialNumber: '123',
+              country: 'SomeCountry'
+            }
+          
   }
 
   public login(): void {
