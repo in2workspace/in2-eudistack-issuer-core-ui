@@ -18,43 +18,42 @@ export class IssuanceSchemaBuilder {
   }
 
   public schemasBuilder(
-    credType: IssuanceCredentialType,
-    asSigner: boolean
+  credType: IssuanceCredentialType,
+  asSigner: boolean
   ): [CredentialIssuanceFormSchema, IssuanceStaticDataSchema] {
     const rawSchema = this.getIssuanceFormSchema(credType);
-  
     const formSchema: CredentialIssuanceFormSchema = [];
     const staticSchema: IssuanceStaticDataSchema = {};
-  
+
     for (const field of rawSchema) {
-      const display = field.display;
-      if(display === 'side'){
-        if (typeof field.staticValueGetter === 'function') {
-          const val = field.staticValueGetter();
-          if (val && typeof val === 'object') {
-            Object.assign(staticSchema, val);
-          }else{
-            console.warn('Could not get value from field ' + field);
-          }
-        }
+      if (this.shouldExtractStatic(field, asSigner)) {
+        this.extractStatic(field, staticSchema);
+        continue;
       }
-      if (display === 'pref_side') {
-        if (!asSigner && typeof field.staticValueGetter === 'function') {
-          const val = field.staticValueGetter();
-          if (val && typeof val === 'object') {
-            Object.assign(staticSchema, val);
-          }else{
-            console.warn('Could not get value from field ' + field);
-          }
-          continue;
-        }
-      }
-  
+
       formSchema.push(field);
     }
-  
+
     return [formSchema, staticSchema];
   }
+
+  private shouldExtractStatic(field: any, asSigner: boolean): boolean {
+    if (field.display === 'side') return true;
+    if (field.display === 'pref_side' && !asSigner) return true;
+    return false;
+  }
+
+  private extractStatic(field: any, staticSchema: IssuanceStaticDataSchema): void {
+    const getter = field.staticValueGetter;
+    if (typeof getter === 'function') {
+      const val = getter();
+      if (val && typeof val === 'object') {
+        Object.assign(staticSchema, val);
+      } else {
+        console.warn(`Could not get static value from field ${field.name || field}`);
+      }
+    }
+}
 
   private getBuilder(type: IssuanceCredentialType): CredentialIssuanceSchemaBuilder {
     const b = this.builders.find(x => (x as any).credType === type);

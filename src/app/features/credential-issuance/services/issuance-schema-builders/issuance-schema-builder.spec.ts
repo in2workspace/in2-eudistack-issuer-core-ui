@@ -89,17 +89,15 @@ describe('IssuanceSchemaBuilder', () => {
 
       const [formSchema, staticSchema] = service.schemasBuilder(TYPE, false);
 
+      // Only the normal field remains in the form schema when not signing
       expect(formSchema).toEqual([
         fieldNormal,
-        fieldSideGood,
-        fieldSideBad,
-        fieldPrefSideNoGetter,
       ]);
       expect(staticSchema).toEqual({ k: 'v', k2: 'v2' });
       expect(consoleWarnSpy).toHaveBeenCalledTimes(2);
     });
 
-    it('when asSigner=true should include pref_side in formSchema and only process side', () => {
+    it('when asSigner=true should include only pref_side in formSchema and only process side', () => {
       const rawSchema = [
         fieldNormal,
         fieldSideGood,
@@ -112,10 +110,9 @@ describe('IssuanceSchemaBuilder', () => {
 
       const [formSchema, staticSchema] = service.schemasBuilder(TYPE, true);
 
+      // Only the normal and pref_side fields appear when signing, side fields are processed statically
       expect(formSchema).toEqual([
         fieldNormal,
-        fieldSideGood,
-        fieldSideBad,
         fieldPrefSideGood,
         fieldPrefSideBad,
         fieldPrefSideNoGetter,
