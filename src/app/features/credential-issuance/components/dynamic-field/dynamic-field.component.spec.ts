@@ -73,7 +73,6 @@ describe('DynamicFieldComponent', () => {
     });
   });
 
-  // todo getters
   describe('getErrorMessage', () => {
     it('should return empty string if control is null', () => {
       expect(component.getErrorMessage(null)).toBe('');

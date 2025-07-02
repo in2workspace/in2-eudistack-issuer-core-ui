@@ -26,7 +26,6 @@
       <!-- INDIVIDUAL CONTROLS -->
       <mat-form-field [formGroup]="parentFormGroup$()">
         <mat-label appAddAsterisk [formGroup]="parentFormGroup$()" [controlName]="fieldName">{{ "credentialIssuance." + fieldName | translate }}</mat-label>
-        <!-- todo use switch -->
         @let controlType = fieldSchema.controlType;
         @if (controlType === 'number' || controlType === 'text') {
           <input matInput [type]="controlType" [formControlName]="fieldName" [id]="fieldName" [class]="fieldSchema.classes"/>

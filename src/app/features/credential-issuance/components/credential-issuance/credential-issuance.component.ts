@@ -75,7 +75,6 @@ export class CredentialIssuanceComponent implements CanDeactivate<CanComponentDe
   //Keys
   public keys$ = signal<KeyState|undefined>(undefined);
   //Power form
-  //todo type
   public powersValue$ = signal<IssuanceRawPowerForm>({} as IssuanceRawPowerForm);
   public powersHasOneFunction$ = signal<boolean>(false);
   public powersHaveOneAction$ = signal<boolean>(false);
