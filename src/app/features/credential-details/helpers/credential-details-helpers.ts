@@ -32,15 +32,15 @@ export function groupActionsByFunction(powers: Power[]): FunctionActions[] {
     type: 'group',
     // Ara .value és l'array de subfields
     value: [
-      mapKV('hash', comp.hash),
-      mapKV('scope', comp.scope),
-      mapKV('standard', comp.standard),
+      mapKeyValue('hash', comp.hash),
+      mapKeyValue('scope', comp.scope),
+      mapKeyValue('standard', comp.standard),
     ]
   }));
 }
 
 /** Petit helper per crear un DetailsKeyValueField */
-function mapKV(key: string, value: any): DetailsKeyValueField {
+function mapKeyValue(key: string, value: any): DetailsKeyValueField {
   return { key, type: 'key-value', value };
 }
 
