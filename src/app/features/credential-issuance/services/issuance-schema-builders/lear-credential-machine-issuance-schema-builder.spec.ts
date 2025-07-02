@@ -1,90 +1,105 @@
 import { TestBed } from '@angular/core/testing';
+import { LearCredentialMachineIssuanceSchemaBuilder } from './lear-credential-machine-issuance-schema-builder'; // ajusta la ruta si cal
 import { AuthService } from 'src/app/core/services/auth.service';
 import { CountryService } from 'src/app/core/services/country.service';
-import { LearCredentialEmployeeSchemaBuilder } from './lear-credential-employee-issuance-schema-builder';
 
-describe('LearCredentialEmployeeSchemaBuilder', () => {
-  let service: LearCredentialEmployeeSchemaBuilder;
+describe('LearCredentialMachineIssuanceSchemaBuilder', () => {
+  let service: LearCredentialMachineIssuanceSchemaBuilder;
   let authServiceStub: { getRawMandator: jest.Mock };
   let countryServiceStub: { getCountriesAsSelectorOptions: jest.Mock };
 
   beforeEach(() => {
-    authServiceStub = {
-      getRawMandator: jest.fn()
-    };
-    countryServiceStub = {
-      getCountriesAsSelectorOptions: jest.fn()
-    };
+    authServiceStub = { getRawMandator: jest.fn() };
+    countryServiceStub = { getCountriesAsSelectorOptions: jest.fn() };
 
     TestBed.configureTestingModule({
       providers: [
         { provide: AuthService, useValue: authServiceStub },
         { provide: CountryService, useValue: countryServiceStub },
-        LearCredentialEmployeeSchemaBuilder
-      ]
+        LearCredentialMachineIssuanceSchemaBuilder,
+      ],
     });
-    service = TestBed.inject(LearCredentialEmployeeSchemaBuilder);
+    service = TestBed.inject(LearCredentialMachineIssuanceSchemaBuilder);
   });
 
   it('should have the correct credType', () => {
-    expect(service.credType).toBe('LEARCredentialEmployee');
+    expect(service.credType).toBe('LEARCredentialMachine');
   });
 
   describe('getSchema()', () => {
+    const mockCountries = [
+      { value: 'FR', label: 'France' },
+      { value: 'DE', label: 'Germany' },
+    ];
+
+    beforeEach(() => {
+      countryServiceStub.getCountriesAsSelectorOptions.mockReturnValue(mockCountries);
+    });
+
     it('builds form & power schemas when mandator is present', () => {
-      const countriesOpts = [
-        { value: 'ES', label: 'Spain' },
-        { value: 'US', label: 'United States' }
-      ];
-      countryServiceStub.getCountriesAsSelectorOptions.mockReturnValue(countriesOpts);
       authServiceStub.getRawMandator.mockReturnValue('MANDATOR_ID');
 
       const [form, power] = service.getSchema();
 
-      // --- form schema checks ---
-      // 1) Two top-level groups: 'mandatee' and 'mandator'
-      expect(form.map((f: any) => f.key)).toEqual(['mandatee', 'mandator']);
+      // Top-level groups
+      expect(form.map(f => f.key)).toEqual(['mandatee', 'mandator']);
 
-      // 2) 'mandatee' group has a 'nationality' selector with our countriesOpts
-      const mandateeGroup = form.find((f: any) => f.key === 'mandatee')!;
-      const nationalityField = (mandateeGroup as any).groupFields.find((g: any) => g.key === 'nationality')!;
-      expect(nationalityField.controlType).toBe('selector');
-      expect(nationalityField.multiOptions).toBe(countriesOpts);
+      // Mandatee group
+      const mandatee = form.find(f => f.key === 'mandatee')!;
+      expect(mandatee.type).toBe('group');
+      const mf = (mandatee as any).groupFields;
+      expect(mf.map((g: any) => g.key)).toEqual(['domain', 'ipAddress']);
 
-      // 3) 'mandator' group staticValueGetter returns object when getRawMandator is truthy
-      const mandatorGroup = form.find((f: any) => f.key === 'mandator')!;
-      const staticVal = (mandatorGroup as any).staticValueGetter();
-      expect(staticVal).toEqual({ mandator: 'MANDATOR_ID' });
+      // domain field
+      const domainField = mf.find((g: any) => g.key === 'domain')!;
+      expect(domainField.controlType).toBe('text');
+      expect(domainField.validators.map((v: any) => v.name)).toEqual([
+        'required',
+        'isDomain',
+      ]);
 
-      // --- power schema checks ---
-      expect(power.power).toHaveLength(3);
+      // ipAddress field
+      const ipField = mf.find((g: any) => g.key === 'ipAddress')!;
+      expect(ipField.controlType).toBe('text');
+      expect(ipField.validators.map((v: any) => v.name)).toEqual(['isIP']);
 
-      // First power entry
+      // Mandator group
+      const mandator = form.find(f => f.key === 'mandator')!;
+      expect(mandator.type).toBe('group');
+      // staticValueGetter returns object
+      expect((mandator as any).staticValueGetter()).toEqual({ mandator: 'MANDATOR_ID' });
+
+      const ag = (mandator as any).groupFields;
+      expect(ag.map((g: any) => g.key)).toEqual([
+        'firstName',
+        'lastName',
+        'serialNumber',
+        'organization',
+        'organizationIdentifier',
+        'country',
+      ]);
+
+      // country selector options
+      const countryField = ag.find((g: any) => g.key === 'country')!;
+      expect(countryField.controlType).toBe('selector');
+      expect(countryField.multiOptions).toBe(mockCountries);
+      expect(countryField.validators.map((v: any) => v.name)).toEqual(['required']);
+
+      // Power schema
+      expect(power.power).toHaveLength(1);
       expect(power.power[0]).toEqual({
         action: ['Execute'],
         function: 'Onboarding',
-        isIn2Required: true
-      });
-      // Second power entry
-      expect(power.power[1].action).toEqual(['Create', 'Update', 'Delete']);
-      expect(power.power[1].function).toBe('ProductOffering');
-      expect(power.power[1].isIn2Required).toBe(false);
-
-      // Third power entry
-      expect(power.power[2]).toMatchObject({
-        action: ['Upload', 'Attest'],
-        function: 'Certification',
-        isIn2Required: true
+        isIn2Required: true,
       });
     });
 
     it('staticValueGetter returns null when getRawMandator is falsy', () => {
-      countryServiceStub.getCountriesAsSelectorOptions.mockReturnValue([]);
       authServiceStub.getRawMandator.mockReturnValue(null);
 
       const [form] = service.getSchema();
-      const mandatorGroup = form.find((f: any) => f.key === 'mandator')!;
-      expect((mandatorGroup as any).staticValueGetter()).toBeNull();
+      const mandator = form.find(f => f.key === 'mandator')!;
+      expect((mandator as any).staticValueGetter()).toBeNull();
     });
   });
 });
