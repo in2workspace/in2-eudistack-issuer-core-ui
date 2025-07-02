@@ -220,24 +220,13 @@ export class AuthService{
       return "VATES-B60645900" === mandatorData.organizationIdentifier;
     }
     return false
-    //todo restore
-    // return true
   }
 
   public getMandator(): Observable<EmployeeMandator | null> {
     return this.mandatorSubject.asObservable();
   }
   public getRawMandator(): EmployeeMandator | null {
-    // todo restore return this.mandatorSubject.getValue();
-      return {
-              organizationIdentifier: 'ORG123',
-              organization: 'Test Org',
-              commonName: 'Some Name', 
-              emailAddress: 'some@example.com',
-              serialNumber: '123',
-              country: 'SomeCountry'
-            }
-          
+    return this.mandatorSubject.getValue();
   }
 
   public login(): void {
