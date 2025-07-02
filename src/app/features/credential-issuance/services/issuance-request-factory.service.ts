@@ -83,7 +83,7 @@ export class IssuanceRequestFactoryService {
       }
       const country = mandator['country'];
       const orgId = mandator['organizationIdentifier'];
-      const mandatorId = this.buildDidElsi(country, orgId); //did-elsi
+      const mandatorId = this.buildDidElsi(orgId, country); //did-elsi
       const mandatorCommonName = mandator['commonName'] ?? this.buildCommonName(mandator['firstName'], mandator['lastName']);
       
       const didKey = credentialData.optional['keys']['desmosDidKeyValue'];
