@@ -53,12 +53,67 @@ describe('CustomValidators', () => {
       expect(validator(new FormControl('::1'))).toBeNull();
     });
 
-    it('should reject invalid IPs', () => {
-      expect(validator(new FormControl('999.999.999.999'))).toEqual({
-        isIP: { value: 'error.form.ip' },
+    describe('CustomValidators – isIP', () => {
+      const validator = CustomValidators.isIP();
+
+      const validIPv4 = [
+        '192.168.0.1',
+        '0.0.0.0',
+        '255.255.255.255',
+        '8.8.4.4',
+        '123.45.67.89',
+      ];
+
+      const invalidIPv4 = [
+        '256.100.50.25',
+        '1234.5.6.7',
+        '1.2.3.4.5',
+        '256.100.50.25',
+        '1234.5.6.7', 
+      ];
+
+      const validIPv6 = [
+        '2001:0db8:0000:0000:0000:ff00:0042:8329',
+        '2001:db8:85a3::8a2e:370:7334',
+        '::1',
+        'fe80::',
+        '::ffff:192.0.2.128'
+      ];
+
+      const invalidIPv6 = [
+        '2001:db8:85a3:::8a2e',
+        '12345::',
+        ':1:2:3:4:5:6:7',
+        '2001:db8:85a3:::8a2e',
+        'hello::world',
+      ];
+
+      it('accepts valid IPv4 ', () => {
+        validIPv4.forEach(addr => {
+          expect(validator(new FormControl(addr))).toBeNull();
+        });
       });
-      expect(validator(new FormControl('1234::abcd'))).toEqual({
-        isIP: { value: 'error.form.ip' },
+
+      it('rejects invalid IPv4', () => {
+        invalidIPv4.forEach(addr => {
+          expect(validator(new FormControl(addr))).toEqual({
+            isIP: { value: 'error.form.ip' },
+          });
+        });
+      });
+
+      it('accepts valid IPv6', () => {
+        validIPv6.forEach(addr => {
+          expect(validator(new FormControl(addr))).toBeNull();
+        });
+      });
+
+      it('rejects invalid IPv6', () => {
+        invalidIPv6.forEach(addr => {
+          expect(validator(new FormControl(addr))).toEqual({
+            isIP: { value: 'error.form.ip' },
+          });
+        });
       });
     });
   });

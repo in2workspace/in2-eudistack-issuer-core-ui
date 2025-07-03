@@ -1,5 +1,7 @@
 import { AbstractControl } from "@angular/forms";
 import { ExtendedValidatorErrors, ExtendedValidatorFn } from "./all-validators";
+import * as ipaddr from 'ipaddr.js';
+
 
 export type CustomValidatorEntry = { name: CustomValidatorName; args?: any[] };
 
@@ -15,19 +17,24 @@ export class CustomValidators {
     };
   }
 
-  public static isIP(): ExtendedValidatorFn {
-    const ipv4 =
-      /^(25[0-5]|2[0-4]\d|1\d{2}|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d{2}|[1-9]?\d)){3}$/;
-    const ipv6 =
-      /^(([0-9a-fA-F]{1,4}:){7}([0-9a-fA-F]{1,4}|:)|::1)$/;
+public static isIP(): ExtendedValidatorFn {
     return (control: AbstractControl): ExtendedValidatorErrors | null => {
       const value = control.value;
 
       if (value == null || value === '') {
         return null;
       }
-      if (typeof value !== 'string') return { isIP: { value: 'Value must be a string' }};
-      return ipv4.test(value) || ipv6.test(value) ? null : { isIP: {value: 'error.form.ip' }};
+      if (typeof value !== 'string') {
+        return { isIP: { value: 'Value must be a string' } };
+      }
+
+      const valid =
+        ipaddr.IPv4.isValid(value) ||
+        ipaddr.IPv6.isValid(value);
+
+      return valid
+        ? null
+        : { isIP: { value: 'error.form.ip' } };
     };
   }
 
