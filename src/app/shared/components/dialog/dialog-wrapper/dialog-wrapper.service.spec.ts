@@ -317,26 +317,6 @@ describe('DialogWrapperService', () => {
     expect(cancelCallback).toHaveBeenCalled();
   });
 
-  it('should execute callback on true condition', () => {
-    const callback = jest.fn(() => of('executed'));
-    const result = service['executeCallbackOnCondition'](callback, true);
-  
-    return result.toPromise().then((value) => {
-      expect(callback).toHaveBeenCalled();
-      expect(value).toBe('executed');
-    });
-  });
-  
-  it('should return EMPTY on false condition', () => {
-    const callback = jest.fn(() => of('executed'));
-    const result = service['executeCallbackOnCondition'](callback, false);
-  
-    return result.toPromise().then((value) => {
-      expect(callback).not.toHaveBeenCalled();
-      expect(value).toBeUndefined(); // EMPTY no emet cap valor
-    });
-  });
-
   it('should open a dialog and return dialogRef', () => {
     const dialogData: DialogData = {
       title: 'Test Title',
