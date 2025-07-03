@@ -114,7 +114,7 @@ export class CredentialIssuanceComponent implements CanDeactivate<CanComponentDe
     // reset keys
     this.updateKeys(undefined);
 
-    //todo fer-ho amb funció recursiva d'eliminar (semblant a power component) i afegir controls per evitar repetir subscribe?
+    //todo use recursive function to remove controls and add controls to avoid multiple subscriptions? (similarly to power component)
     //reset form
     this.form = this.credentialFormSchema$() 
       ? this.getCredentialFormFromSchema()
@@ -188,18 +188,16 @@ export class CredentialIssuanceComponent implements CanDeactivate<CanComponentDe
   }
 
   
-  public onSubmit() {
+  public onSubmit(): void {
     const isGlobalValid = this.isGlobalValid$();
     const globalValue = this.globalValue$();
-    if (isGlobalValid) {
-      console.log('✅ Form valid', globalValue);
-    } 
-    else {
+    if (!isGlobalValid) {
       console.error('Invalid form: ');
       console.log(globalValue);
-      // todo restore
-      // return;
-    }
+      return;
+    } 
+
+    console.log('✅ Form valid', globalValue);
 
     //open confirm
     if(this.selectedCredentialType$() === 'LEARCredentialMachine'){

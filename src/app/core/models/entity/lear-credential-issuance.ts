@@ -7,6 +7,7 @@ export type IssuanceCredentialType = typeof ISSUANCE_CREDENTIAL_TYPES_ARRAY[numb
 // todo enhance typing
 // todo add error/s message field to decouple validation from displayed message responsibilities
 // todo remove display: make a prop/array in CredentialIssuanceFormSchema for each type
+// todo add custom field to allow using a custom component (similar to details)
 export type CredentialIssuanceFormFieldSchema = {
     key: string, //this is used for models fields names and also as label for transations; i.e. "credentialIssuance.mandatee"
     type: 'control' | 'group';

@@ -5,7 +5,7 @@ import { ExtendedValidatorFn, ExtendedValidatorErrors } from "src/app/core/model
 
 export type CustomValidatorEntry = { name: CustomValidatorName; args?: any[] };
 
-//todo retrieve concrete invalid patterns messages from form-credential component
+//todo decouple validation from error message
 export class CustomValidators {
 
   public static isDomain(): ExtendedValidatorFn<"isDomain"> {
