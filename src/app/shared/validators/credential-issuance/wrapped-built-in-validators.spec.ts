@@ -1,10 +1,10 @@
 import { FormControl } from '@angular/forms';
-import { WrappedBuilInValidators, BUILTIN_VALIDATORS_FACTORY_MAP } from './wrapped-built-in-validators';
+import { BUILTIN_VALIDATORS_FACTORY_MAP, WrappedBuiltInValidators } from './wrapped-built-in-validators';
 
 
-describe('WrappedBuilInValidators', () => {
+describe('WrappedBuiltInValidators', () => {
   describe('required', () => {
-    const validator = WrappedBuilInValidators.required();
+    const validator = WrappedBuiltInValidators.required();
 
     it('ha de donar error quan el valor és buit o null', () => {
       expect(validator(new FormControl(''))).toEqual({
@@ -22,7 +22,7 @@ describe('WrappedBuilInValidators', () => {
   });
 
   describe('email', () => {
-    const validator = WrappedBuilInValidators.email();
+    const validator = WrappedBuiltInValidators.email();
 
     it('ha de donar error per correus invàlids', () => {
       expect(validator(new FormControl('no-email'))).toEqual({
@@ -40,11 +40,11 @@ describe('WrappedBuilInValidators', () => {
   });
 
   describe('min', () => {
-    const validator = WrappedBuilInValidators.min(5);
+    const validator = WrappedBuiltInValidators.min(5);
 
     it('ha de donar error si el valor és menor que el mínim', () => {
       expect(validator(new FormControl(3))).toEqual({
-        min: { value: 'error.form.min' },
+        min: { value: 'error.form.min', args:[5] },
       });
     });
 
@@ -55,7 +55,7 @@ describe('WrappedBuilInValidators', () => {
   });
 
   describe('max', () => {
-    const validator = WrappedBuilInValidators.max(10);
+    const validator = WrappedBuiltInValidators.max(10);
 
     it('ha de donar error si el valor excedeix el màxim', () => {
       expect(validator(new FormControl(11))).toEqual({
@@ -70,7 +70,7 @@ describe('WrappedBuilInValidators', () => {
   });
 
   describe('minLength', () => {
-    const validator = WrappedBuilInValidators.minLength(3);
+    const validator = WrappedBuiltInValidators.minLength(3);
 
     it('ha de donar error si la longitud és menors que el mínim', () => {
       expect(validator(new FormControl('hi'))).toEqual({
@@ -85,7 +85,7 @@ describe('WrappedBuilInValidators', () => {
   });
 
   describe('maxLength', () => {
-    const validator = WrappedBuilInValidators.maxLength(5);
+    const validator = WrappedBuiltInValidators.maxLength(5);
 
     it('ha de donar error si la longitud excedeix el màxim', () => {
       expect(validator(new FormControl('massa llarg'))).toEqual({
@@ -101,7 +101,7 @@ describe('WrappedBuilInValidators', () => {
 
   describe('pattern', () => {
     const regex = /^[0-9]+$/;
-    const validator = WrappedBuilInValidators.pattern(regex);
+    const validator = WrappedBuiltInValidators.pattern(regex);
 
     it('ha de donar error si no coincideix amb el patró', () => {
       expect(validator(new FormControl('abc'))).toEqual({
@@ -176,10 +176,10 @@ describe('BUILTIN_VALIDATORS_FACTORY_MAP (comportament)', () => {
   ];
 
   sampleTests.forEach(({ name, args, validValue, invalidValue, expectedErrorKey }) => {
-    it(`factory map "${name}" behave same as WrappedBuilInValidators.${name}`, () => {
+    it(`factory map "${name}" behave same as WrappedBuiltInValidators.${name}`, () => {
       // construir validators
       const factoryFn = (BUILTIN_VALIDATORS_FACTORY_MAP as any)[name] as (...a: any[]) => any;
-      const staticFn = (WrappedBuilInValidators as any)[name] as (...a: any[]) => any;
+      const staticFn = (WrappedBuiltInValidators as any)[name] as (...a: any[]) => any;
 
       const validatorFromFactory = factoryFn(...args);
       const validatorStatic = staticFn(...args);

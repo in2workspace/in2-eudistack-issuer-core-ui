@@ -2,7 +2,7 @@ import { inject, Injectable } from "@angular/core";
 import { AuthService } from "src/app/core/services/auth.service";
 import { CountryService } from "src/app/core/services/country.service";
 import { CredentialIssuanceFormSchema, CredentialIssuancePowerFormSchema, CredentialIssuanceSchemaBuilder, CredentialIssuanceSchemaTuple, IssuanceCredentialType } from "src/app/core/models/entity/lear-credential-issuance";
-import { nameValidatorEntries, emailValidatorEntries, serialNumberValidatorEntries, orgNameValidatorEntries, orgIdValidatorEntries } from "src/app/shared/validators/credential-issuance/all-validators";
+import { nameValidatorEntries, emailValidatorEntries, serialNumberValidatorEntries, orgNameValidatorEntries, orgIdValidatorEntries } from "src/app/shared/validators/credential-issuance/validators-entries";
 
 @Injectable({ providedIn: 'root' })
 export class LearCredentialEmployeeSchemaBuilder implements CredentialIssuanceSchemaBuilder {
@@ -26,7 +26,7 @@ export class LearCredentialEmployeeSchemaBuilder implements CredentialIssuanceSc
           groupFields: [
             { key:'firstName', type: 'control', controlType: 'text', validators: [...nameValidatorEntries] },
             { key:'lastName', type: 'control', controlType: 'text', validators:[...nameValidatorEntries] },
-            { key:'email', type: 'control', controlType: 'text', validators: [...nameValidatorEntries] },
+            { key:'email', type: 'control', controlType: 'text', validators: [...emailValidatorEntries] },
             {
               key:'nationality', 
               type: 'control',

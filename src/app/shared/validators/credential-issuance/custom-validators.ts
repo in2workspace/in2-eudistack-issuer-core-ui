@@ -1,6 +1,6 @@
 import { AbstractControl } from "@angular/forms";
-import { ExtendedValidatorErrors, ExtendedValidatorFn } from "./all-validators";
 import * as ipaddr from 'ipaddr.js';
+import { ExtendedValidatorFn, ExtendedValidatorErrors } from "src/app/core/models/entity/validator-types";
 
 
 export type CustomValidatorEntry = { name: CustomValidatorName; args?: any[] };
@@ -8,7 +8,7 @@ export type CustomValidatorEntry = { name: CustomValidatorName; args?: any[] };
 //todo retrieve concrete invalid patterns messages from form-credential component
 export class CustomValidators {
 
-  public static isDomain(): ExtendedValidatorFn {
+  public static isDomain(): ExtendedValidatorFn<"isDomain"> {
     const domainRegex =
       /^(?!:\/\/)([a-zA-Z0-9-_]+\.)*[a-zA-Z0-9][a-zA-Z0-9-_]+\.[a-zA-Z]{2,11}$/;
     return (control: AbstractControl): ExtendedValidatorErrors | null => {
@@ -17,7 +17,7 @@ export class CustomValidators {
     };
   }
 
-public static isIP(): ExtendedValidatorFn {
+public static isIP(): ExtendedValidatorFn<"isIP"> {
     return (control: AbstractControl): ExtendedValidatorErrors | null => {
       const value = control.value;
 
@@ -38,7 +38,7 @@ public static isIP(): ExtendedValidatorFn {
     };
   }
 
-  public static customEmail(): ExtendedValidatorFn {
+  public static customEmail(): ExtendedValidatorFn<"customEmail"> {
     const localLabel = "(?!.*\\.\\.)" // avoid `..`
                  + "[A-Za-z0-9]" // start with alfanum
                  + "(?:[A-Za-z0-9+_-]" // alfanum o + _ -
@@ -92,7 +92,7 @@ public static isIP(): ExtendedValidatorFn {
     }
   }
 
-  public static unicode(): ExtendedValidatorFn{
+  public static unicode(): ExtendedValidatorFn<"unicode">{
     return (control: AbstractControl): ExtendedValidatorErrors | null => {
       const pattern = /^[A-Za-zÀ-ÿ'’ -]+$/;
       const value = control.value;
@@ -106,7 +106,7 @@ public static isIP(): ExtendedValidatorFn {
     }
   }
 
-  public static orgIdentifier(): ExtendedValidatorFn{
+  public static orgIdentifier(): ExtendedValidatorFn<"orgIdentifier">{
     return (control: AbstractControl): ExtendedValidatorErrors | null => {
         const pattern = /^[a-zA-Z0-9]+$/;
         const value = control.value;
@@ -125,7 +125,7 @@ public static isIP(): ExtendedValidatorFn {
       }
   }
 
-  public static orgName(): ExtendedValidatorFn{
+  public static orgName(): ExtendedValidatorFn<"orgName">{
     return (control: AbstractControl): ExtendedValidatorErrors | null => {
       const pattern = /^[\p{Script=Latin}\p{M}0-9'&\-,.()/ ]+$/u;
       const value = control.value;

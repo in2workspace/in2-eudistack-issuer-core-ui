@@ -1,5 +1,4 @@
-
-import { ValidatorEntry } from "src/app/shared/validators/credential-issuance/all-validators";
+import { ValidatorEntryUnion } from "src/app/shared/validators/credential-issuance/all-validators";
 
 export const ISSUANCE_CREDENTIAL_TYPES_ARRAY = ['LEARCredentialEmployee', 'LEARCredentialMachine'] as const;
 export type IssuanceCredentialType = typeof ISSUANCE_CREDENTIAL_TYPES_ARRAY[number];
@@ -15,7 +14,7 @@ export type CredentialIssuanceFormFieldSchema = {
     controlType?: 'text' | 'number' | 'selector', // for type 'control' only
     multiOptions?: SelectorOption[], //only for 'selector' (and similars if added: 'radio' and 'checkbox')
     groupFields?: CredentialIssuanceFormSchema; //for 'group' only
-    validators?: ValidatorEntry[];
+    validators?: ValidatorEntryUnion[];
     hint?: string; //hint that is shown above the input
     classes?: string; //admits a string of separated clases; i.e.: "classOne classTwo"
     staticValueGetter?: () => any; //in case it is side (or pref_side + asSigner)
