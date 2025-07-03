@@ -1,5 +1,5 @@
 import { DialogComponent } from 'src/app/shared/components/dialog/dialog-component/dialog.component';
-import { Component, EventEmitter, Input, OnInit, Output, inject } from '@angular/core';
+import { Component, EventEmitter, Input, OnDestroy, OnInit, Output, inject } from '@angular/core';
 import { MatSelect, MatSelectTrigger } from '@angular/material/select';
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { MatIcon } from '@angular/material/icon';
@@ -10,7 +10,7 @@ import { MatOption } from '@angular/material/core';
 import { MatFormField, MatLabel } from '@angular/material/form-field';
 import { KeyValuePipe } from '@angular/common';
 import { DialogWrapperService } from 'src/app/shared/components/dialog/dialog-wrapper/dialog-wrapper.service';
-import { EMPTY, Observable, tap } from 'rxjs';
+import { EMPTY, Observable, Subject, takeUntil, tap } from 'rxjs';
 import { DialogData } from 'src/app/shared/components/dialog/dialog-data';
 import { AuthService } from 'src/app/core/services/auth.service';
 import { IssuanceFormPowerSchema, IssuanceRawPowerForm } from 'src/app/core/models/entity/lear-credential-issuance';
@@ -38,7 +38,7 @@ export interface IssuancePowerValueAndValidity {
     standalone: true,
     imports: [KeyValuePipe, ReactiveFormsModule, MatFormField, MatSelect, MatSelectTrigger, MatOption, MatButton, MatSlideToggle, FormsModule, MatMiniFabButton, MatIcon, MatLabel, MatSelect, TranslatePipe]
 })
-export class IssuancePowerComponent implements OnInit{
+export class IssuancePowerComponent implements OnInit, OnDestroy{
   @Output() public formChanges = new EventEmitter<IssuancePowerValueAndValidity>();
 
   public organizationIdentifierIsIn2: boolean;
@@ -47,6 +47,7 @@ export class IssuancePowerComponent implements OnInit{
   public selectedPower: TempIssuanceFormPowerSchema | undefined;
   public form: FormGroup = new FormGroup({});
 
+  private readonly destroy$ = new Subject<void>();
   private readonly authService = inject(AuthService);
   private readonly dialog = inject(DialogWrapperService);
   private readonly translate = inject(TranslateService);
@@ -128,7 +129,8 @@ export class IssuancePowerComponent implements OnInit{
           );
           this.formChanges.emit({ value, hasOnePower, hasOneActionPerPower });
         }
-      )
+      ),
+      takeUntil(this.destroy$)
     ).subscribe();
   }
 
@@ -145,6 +147,11 @@ public getPowerByFunction(functionName: string): TempIssuanceFormPowerSchema | u
 // Mètode per obtenir el FormGroup d'un control
 public getFormGroup(control: any): FormGroup {
   return control as FormGroup;
+}
+
+public ngOnDestroy(): void {
+  this.destroy$.next();
+  this.destroy$.complete();
 }
 
   private mapToTempPowerSchema(powers: IssuanceFormPowerSchema[]): TempIssuanceFormPowerSchema[]{

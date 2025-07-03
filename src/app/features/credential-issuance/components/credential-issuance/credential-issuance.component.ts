@@ -107,7 +107,7 @@ export class CredentialIssuanceComponent implements CanDeactivate<CanComponentDe
   private readonly router = inject(Router);
   private readonly translate = inject(TranslateService);
 
-  private readonly destroy$ = new Subject();
+  private readonly destroy$ = new Subject<void>();
 
   // every time a new credential type > credential schema is selected, reset global state
   private readonly updateFormEffect = effect(() => {
@@ -115,6 +115,7 @@ export class CredentialIssuanceComponent implements CanDeactivate<CanComponentDe
     this.updateKeys(undefined);
 
     //todo use recursive function to remove controls and add controls to avoid multiple subscriptions? (similarly to power component)
+    this.destroy$.next();
     //reset form
     this.form = this.credentialFormSchema$() 
       ? this.getCredentialFormFromSchema()
@@ -122,7 +123,6 @@ export class CredentialIssuanceComponent implements CanDeactivate<CanComponentDe
     console.log('Now form is ');
     console.log(this.form);
 
-    //todo untilDestroyed / formReset
     this.form.valueChanges.pipe(
       map(val => [val, this.form.valid] ),
       startWith([this.form.value, false]),
@@ -212,7 +212,7 @@ export class CredentialIssuanceComponent implements CanDeactivate<CanComponentDe
   }
 
   public ngOnDestroy(): void {
-    this.destroy$.next('');
+    this.destroy$.next();
     this.destroy$.complete();
   }
 

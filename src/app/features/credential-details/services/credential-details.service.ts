@@ -1,5 +1,5 @@
-import { inject, Injectable, Injector, signal, WritableSignal } from '@angular/core';
-import { EMPTY, from, Observable, switchMap, tap } from 'rxjs';
+import { DestroyRef, inject, Injectable, Injector, OnDestroy, signal, WritableSignal } from '@angular/core';
+import { EMPTY, from, Observable, Subject, switchMap, takeUntil, tap } from 'rxjs';
 import { CredentialProcedureService } from 'src/app/core/services/credential-procedure.service';
 import { DialogWrapperService } from 'src/app/shared/components/dialog/dialog-wrapper/dialog-wrapper.service';
 import { TranslateService } from '@ngx-translate/core';
@@ -15,7 +15,7 @@ import { DialogComponent } from 'src/app/shared/components/dialog/dialog-compone
 import { DialogData } from 'src/app/shared/components/dialog/dialog-data';
 
 @Injectable() //provided in component
-export class CredentialDetailsService {
+export class CredentialDetailsService implements OnDestroy {
   public credentialValidFrom$ = signal('');
   public credentialValidUntil$ = signal('');
   public credentialType$ = signal<CredentialType | undefined>(undefined);
@@ -24,6 +24,7 @@ export class CredentialDetailsService {
 
   public sideTemplateModel$: WritableSignal<MappedExtendedDetailsField[] | undefined> = signal(undefined);
   public mainTemplateModel$: WritableSignal<MappedExtendedDetailsField[] | undefined> = signal(undefined);
+  private readonly destroy$ = new Subject<void>();
 
   private readonly credentialProcedureService = inject(CredentialProcedureService);
   private readonly dialog = inject(DialogWrapperService);
@@ -41,7 +42,9 @@ export class CredentialDetailsService {
   }
 
   public loadCredentialModels(injector: Injector): void {  
-    this.loadCredentialDetails().subscribe(data => {
+    this.loadCredentialDetails()
+    .pipe(takeUntil(this.destroy$))
+    .subscribe(data => {
       this.setCredentialBasicInfo(data);
       const vc = data.credential.vc;
 
@@ -99,6 +102,11 @@ export class CredentialDetailsService {
       "credentialDetails.signCredentialSuccess.title",
       "credentialDetails.signCredentialSuccess.message"
     );
+  }
+
+  public ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
   }
 
   private loadCredentialDetails(): Observable<CredentialProcedureDataDetails> {
