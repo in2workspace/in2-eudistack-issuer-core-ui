@@ -4,6 +4,7 @@ import { CredentialIssuanceFormSchema, CredentialIssuancePowerFormSchema, Creden
 
 import { AuthService } from "src/app/core/services/auth.service";
 import { CountryService } from "src/app/core/services/country.service";
+import { nameValidatorEntries, serialNumberValidatorEntries, orgNameValidatorEntries, orgIdValidatorEntries } from "src/app/shared/validators/credential-issuance/all-validators";
 
 @Injectable({ providedIn: 'root' })
 export class LearCredentialMachineIssuanceSchemaBuilder implements CredentialIssuanceSchemaBuilder {
@@ -56,10 +57,7 @@ export class LearCredentialMachineIssuanceSchemaBuilder implements CredentialIss
             type: 'control',
             controlType: 'text',
             validators: [
-              { name: 'required' },
-              { name: 'minLength', args: [2] },
-              { name: 'maxLength', args: [50] },
-              { name: 'unicode' }
+              ...nameValidatorEntries
             ]
           },
           {
@@ -67,10 +65,7 @@ export class LearCredentialMachineIssuanceSchemaBuilder implements CredentialIss
             type: 'control',
             controlType: 'text',
             validators: [
-              { name: 'required' },
-              { name: 'minLength', args: [2] },
-              { name: 'maxLength', args: [50] },
-              { name: 'unicode' }
+              ...nameValidatorEntries
             ]
           },
           {
@@ -79,9 +74,7 @@ export class LearCredentialMachineIssuanceSchemaBuilder implements CredentialIss
             type: 'control',
             controlType: 'text',
             validators: [
-              { name: 'minLength', args: [7] },
-              { name: 'maxLength', args: [15] },
-              { name: 'pattern', args: ["^[a-zA-Z0-9-]+$"] }
+              ...serialNumberValidatorEntries
             ]
           },
           {
@@ -89,22 +82,14 @@ export class LearCredentialMachineIssuanceSchemaBuilder implements CredentialIss
             type: 'control',
             controlType: 'text',
             validators: [
-              { name: 'required' },
-              { name: 'minLength', args: [2] },
-              { name: 'maxLength', args: [50] },
-              { name: 'orgName' }
+              ...orgNameValidatorEntries
             ]
           },
           {
             key: 'organizationIdentifier',
             type: 'control',
             controlType: 'text',
-            validators: [
-              { name: 'required' },
-              { name: 'minLength', args: [7] },
-              { name: 'maxLength', args: [15] },
-              { name: 'orgIdentifier' }
-            ]
+            validators: [ ...orgIdValidatorEntries ]
           },
           {
             key: 'country',

@@ -2,6 +2,7 @@ import { inject, Injectable } from "@angular/core";
 import { AuthService } from "src/app/core/services/auth.service";
 import { CountryService } from "src/app/core/services/country.service";
 import { CredentialIssuanceFormSchema, CredentialIssuancePowerFormSchema, CredentialIssuanceSchemaBuilder, CredentialIssuanceSchemaTuple, IssuanceCredentialType } from "src/app/core/models/entity/lear-credential-issuance";
+import { nameValidatorEntries, emailValidatorEntries, serialNumberValidatorEntries, orgNameValidatorEntries, orgIdValidatorEntries } from "src/app/shared/validators/credential-issuance/all-validators";
 
 @Injectable({ providedIn: 'root' })
 export class LearCredentialEmployeeSchemaBuilder implements CredentialIssuanceSchemaBuilder {
@@ -23,9 +24,9 @@ export class LearCredentialEmployeeSchemaBuilder implements CredentialIssuanceSc
           type: 'group',
           display: 'main',
           groupFields: [
-            { key:'firstName', type: 'control', controlType: 'text', validators: [{name:'required'}, {name:'minLength', args:[2]}, {name:'maxLength', args:[50]}, {name:'unicode'}] },
-            { key:'lastName', type: 'control', controlType: 'text', validators:[{name:'required'}, {name:'minLength', args:[2]}, {name:'maxLength', args:[50]}, {name:'unicode'}] },
-            { key:'email', type: 'control', controlType: 'text', validators: [{name:'required'}, {name:'customEmail'}] },
+            { key:'firstName', type: 'control', controlType: 'text', validators: [...nameValidatorEntries] },
+            { key:'lastName', type: 'control', controlType: 'text', validators:[...nameValidatorEntries] },
+            { key:'email', type: 'control', controlType: 'text', validators: [...nameValidatorEntries] },
             {
               key:'nationality', 
               type: 'control',
@@ -50,42 +51,45 @@ export class LearCredentialEmployeeSchemaBuilder implements CredentialIssuanceSc
               type: 'control',
               controlType: 'text',
               validators: [
-                { name: 'required' },
-                { name: 'minLength', args: [2] },
-                { name: 'maxLength', args: [50] },
-                { name: 'unicode' }
+                ...nameValidatorEntries
               ]
             },
             {
               key: 'lastName',
               type: 'control',
               controlType: 'text',
-              validators: [{name:'required'}, {name:'minLength', args:[2]}, {name:'maxLength', args:[50]}, {name:'unicode'}]
+              validators: [
+                ...nameValidatorEntries
+              ]
             },
             { 
               key:'emailAddress', 
               type: 'control', 
               controlType: 'text', 
-              validators: [{name:'required'}, {name:'customEmail'}] 
+              validators: [
+                ...emailValidatorEntries
+              ] 
             },
             {
               key: 'serialNumber',
               hint: 'serialNumber',
               type: 'control',
               controlType: 'text',
-              validators: [{name:'minLength', args:[7]}, {name:'maxLength', args:[15]}, {name:'pattern', args:["^[a-zA-Z0-9-]+$"]}]
+              validators: [
+                ...serialNumberValidatorEntries
+              ]
             },
             {
               key: 'organization',
               type: 'control',
               controlType: 'text',
-              validators: [{ name: 'required' }, {name:'minLength', args:[2]}, {name:'maxLength', args:[50]}, {name:'orgName'}]
+              validators: [ ...orgNameValidatorEntries ]
             },
             {
               key: 'organizationIdentifier',
               type: 'control',
               controlType: 'text',
-              validators: [{ name: 'required' }, {name:'minLength', args:[7]}, {name:'maxLength', args:[15]}, {name:'orgIdentifier'}]
+              validators: [ ...orgIdValidatorEntries ]
             },
             {
               key: 'country',
