@@ -15,7 +15,6 @@ import { CreateCredentialProcedureResponse } from '../models/dto/create-credenti
 import { IssuanceLEARCredentialRequestDto } from '../models/dto/lear-credential-issuance-request.dto';
 import { LEARCredentialDataNormalizer } from 'src/app/features/credential-details/utils/lear-credential-data-normalizer';
 
-//todo rename (backend, api... service)
 @Injectable({
   providedIn: 'root'
 })
