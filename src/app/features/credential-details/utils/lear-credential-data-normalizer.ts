@@ -29,13 +29,15 @@ export class LEARCredentialDataNormalizer {
 
   public normalizeLearCredential(data: LEARCredential): LEARCredential {
     // clonem superficialment l’input
+    console.log('normalizeLearCredential; data: ')
+    console.log(data)
     const normalized: any = { ...data };
     if (normalized.credentialSubject && typeof normalized.credentialSubject === 'object') {
       normalized.credentialSubject = { ...normalized.credentialSubject };
     }
 
     // Calcular flags LOCALMENT
-    const types = Array.isArray(normalized.type) ? normalized.type : [];
+    const types = Array.isArray(normalized?.type) ? normalized.type : [];
     const isEmployee = types.includes('LEARCredentialEmployee');
     const isMachine  = types.includes('LEARCredentialMachine');
     const isVerCert  = types.includes('VerifiableCertification');
@@ -77,15 +79,14 @@ export class LEARCredentialDataNormalizer {
   }
 
 private normalizeEmployeeMandatee(data: RawEmployeeMandatee): EmployeeMandatee {
-  const firstName = data.firstName   ?? data.first_name;
-  const lastName  = data.lastName    ?? data.last_name;
-  const email     = data.email;
-  const nationality = data.nationality;
+  const firstName = data.firstName || data.first_name || "";
+  const lastName  = data.lastName || data.last_name || "";
+  const email     = data.email || "";
+  const nationality = data.nationality || "";
 
-  if (!firstName)  throw new Error('Missing mandatee first name');
-  if (!lastName)   throw new Error('Missing mandatee last name');
-  if (!email)      throw new Error('Missing mandatee email');
-  if (!nationality) throw new Error('Missing mandatee nationality');
+  console.log('normalizeEmployeeMandatee')
+  console.log(firstName, lastName, email, nationality);
+
 
   return { firstName, lastName, email, nationality };
 }
