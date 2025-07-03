@@ -94,7 +94,8 @@ export class DialogWrapperService {
     confirm$
       .pipe(
         take(1),
-        switchMap(confirmed => this.executeCallbackOnCondition(callback, confirmed))
+        filter(conf => conf),
+        switchMap(() => callback())
       )
       .subscribe({
         next: () => dialogRef.close(),

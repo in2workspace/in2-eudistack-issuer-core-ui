@@ -294,7 +294,6 @@ export class CredentialIssuanceComponent implements CanDeactivate<CanComponentDe
     console.log(credential);
     const credentialType = this.selectedCredentialType$();
     const credentialSchema = this.credentialFormSchema$();
-    // todo restore
     if(!this.isGlobalValid$()){
       console.error('Invalid global values! Cannot submit.');
       return of(EMPTY);
