@@ -16,23 +16,9 @@ import { ActivatedRoute, CanDeactivate, Router } from '@angular/router';
 import { MatCard, MatCardContent } from '@angular/material/card';
 import { CanComponentDeactivate, CanDeactivateType } from 'src/app/core/guards/can-component-deactivate.guard';
 import { CredentialIssuanceService } from '../../services/credential-issuance.service';
-import { KeyState } from '../../services/key-generator.service';
 import { KeyGeneratorComponent } from '../key-generator/key-generator.component';
 import { IssuanceRawCredentialPayload } from 'src/app/core/models/dto/lear-credential-issuance-request.dto';
-import { CredentialIssuanceFormSchema, CredentialIssuancePowerFormSchema, ISSUANCE_CREDENTIAL_TYPES_ARRAY, IssuanceCredentialType } from 'src/app/core/models/entity/lear-credential-issuance';
-import { EmployeeMandator, TmfFunction, TmfAction } from 'src/app/core/models/entity/lear-credential';
-
-export type CredentialIssuanceGlobalFormState = {
-    keys: KeyState | undefined;
-    form: Record<string, any>;
-    power: IssuanceRawPowerForm;
-}
-
-export type IssuanceStaticDataSchema = {
-    mandator?: EmployeeMandator;
-}
-
-export type IssuanceRawPowerForm = Partial<Record<TmfFunction, Record<TmfAction, boolean>>>;
+import { CredentialIssuanceFormSchema, CredentialIssuanceGlobalFormState, CredentialIssuancePowerFormSchema, ISSUANCE_CREDENTIAL_TYPES_ARRAY, IssuanceCredentialType, IssuanceRawPowerForm, IssuanceStaticDataSchema, KeyState } from 'src/app/core/models/entity/lear-credential-issuance';
 
 @Component({
   selector: 'app-credential-issuance',

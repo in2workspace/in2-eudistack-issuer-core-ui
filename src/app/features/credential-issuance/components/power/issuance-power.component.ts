@@ -13,8 +13,7 @@ import { DialogWrapperService } from 'src/app/shared/components/dialog/dialog-wr
 import { EMPTY, Observable, tap } from 'rxjs';
 import { DialogData } from 'src/app/shared/components/dialog/dialog-data';
 import { AuthService } from 'src/app/core/services/auth.service';
-import { IssuanceRawPowerForm } from '../credential-issuance/credential-issuance.component';
-import { IssuanceFormPowerSchema } from 'src/app/core/models/entity/lear-credential-issuance';
+import { IssuanceFormPowerSchema, IssuanceRawPowerForm } from 'src/app/core/models/entity/lear-credential-issuance';
 
 export interface TempIssuanceFormPowerSchema extends IssuanceFormPowerSchema{
   isDisabled: boolean;

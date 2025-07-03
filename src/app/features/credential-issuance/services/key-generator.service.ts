@@ -1,9 +1,5 @@
 import { computed, Injectable, Signal, signal, WritableSignal } from '@angular/core';
-
-export interface KeyState {
-  desmosPrivateKeyValue: string,
-  desmosDidKeyValue: string
-}
+import { KeyState } from 'src/app/core/models/entity/lear-credential-issuance';
 
 
 @Injectable() //not provided in root but in key generator component

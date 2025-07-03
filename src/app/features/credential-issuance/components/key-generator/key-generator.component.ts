@@ -2,9 +2,10 @@ import { Component, effect, EventEmitter, inject, Output, Signal } from '@angula
 import { KeyValuePipe } from '@angular/common';
 import { TranslatePipe } from '@ngx-translate/core';
 import { MatButton } from '@angular/material/button';
-import { KeyGeneratorService, KeyState } from '../../services/key-generator.service';
+import { KeyGeneratorService } from '../../services/key-generator.service';
 import { MatIcon } from '@angular/material/icon';
 import { MatTooltip } from '@angular/material/tooltip';
+import { KeyState } from 'src/app/core/models/entity/lear-credential-issuance';
 
 @Component({
   selector: 'app-key-generator',

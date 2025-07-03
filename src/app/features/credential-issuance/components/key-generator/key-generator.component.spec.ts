@@ -1,9 +1,9 @@
 import { ComponentFixture, TestBed, fakeAsync, tick } from '@angular/core/testing';
 import { KeyGeneratorComponent } from './key-generator.component';
-import { KeyGeneratorService, KeyState } from '../../services/key-generator.service';
+import { KeyGeneratorService } from '../../services/key-generator.service';
 import { signal, WritableSignal, Signal } from '@angular/core';
-import { By } from '@angular/platform-browser';
 import { TranslateModule } from '@ngx-translate/core';
+import { KeyState } from 'src/app/core/models/entity/lear-credential-issuance';
 
 describe('KeyGeneratorComponent', () => {
   let component: KeyGeneratorComponent;

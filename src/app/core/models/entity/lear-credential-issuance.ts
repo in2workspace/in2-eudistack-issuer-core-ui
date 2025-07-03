@@ -1,5 +1,5 @@
 import { ValidatorEntryUnion } from "src/app/shared/validators/credential-issuance/all-validators";
-
+import { EmployeeMandator, TmfAction, TmfFunction } from "./lear-credential";
 export const ISSUANCE_CREDENTIAL_TYPES_ARRAY = ['LEARCredentialEmployee', 'LEARCredentialMachine'] as const;
 export type IssuanceCredentialType = typeof ISSUANCE_CREDENTIAL_TYPES_ARRAY[number];
 
@@ -38,3 +38,20 @@ export interface IssuanceFormPowerSchema{
 export type CredentialIssuancePowerFormSchema = { power: IssuanceFormPowerSchema[]}
 
 export type CredentialIssuanceSchemaTuple = [CredentialIssuanceFormSchema, CredentialIssuancePowerFormSchema];
+
+export type IssuanceStaticDataSchema = {
+    mandator?: EmployeeMandator;
+}
+
+export type CredentialIssuanceGlobalFormState = {
+    keys: KeyState | undefined;
+    form: Record<string, any>;
+    power: IssuanceRawPowerForm;
+}
+
+export type IssuanceRawPowerForm = Partial<Record<TmfFunction, Record<TmfAction, boolean>>>;
+
+export interface KeyState {
+  desmosPrivateKeyValue: string,
+  desmosDidKeyValue: string
+}

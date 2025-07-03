@@ -1,5 +1,5 @@
-import { IssuanceRawPowerForm } from "src/app/features/credential-issuance/components/credential-issuance/credential-issuance.component";
 import { EmployeeMandatee, EmployeeMandator, Power, TmfAction } from "../entity/lear-credential";
+import { IssuanceRawPowerForm } from "../entity/lear-credential-issuance";
 
 // data enviada per component
 export interface IssuanceRawCredentialPayload {

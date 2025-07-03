@@ -3,7 +3,7 @@ import { IssuanceRequestFactoryService } from './issuance-request-factory.servic
 import {
   IssuanceRawCredentialPayload,
 } from '../../../core/models/dto/lear-credential-issuance-request.dto';
-import { IssuanceRawPowerForm } from '../components/credential-issuance/credential-issuance.component';
+import { IssuanceRawPowerForm } from 'src/app/core/models/entity/lear-credential-issuance';
 
 describe('IssuanceRequestFactoryService', () => {
   let service: IssuanceRequestFactoryService;

@@ -2,8 +2,7 @@ import { IssuanceRawCredentialPayload, IssuanceRawCredentialPayloadWithParsedPow
 import { Injectable } from '@angular/core';
 import { IssuancePayloadPower, IssuanceLEARCredentialEmployeePayload, IssuanceLEARCredentialPayload, IssuanceLEARCredentialMachinePayload } from 'src/app/core/models/dto/lear-credential-issuance-request.dto';
 import { TmfAction, TmfFunction } from 'src/app/core/models/entity/lear-credential';
-import { IssuanceRawPowerForm } from '../components/credential-issuance/credential-issuance.component';
-import { IssuanceCredentialType } from 'src/app/core/models/entity/lear-credential-issuance';
+import { IssuanceCredentialType, IssuanceRawPowerForm } from 'src/app/core/models/entity/lear-credential-issuance';
 
 @Injectable({
   providedIn: 'root'
