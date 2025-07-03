@@ -159,11 +159,4 @@ export class DialogWrapperService {
 
     return dialogRef;
   }
-
-  private executeCallbackOnCondition(
-    callback: observableCallback,
-    condition: boolean
-  ): Observable<any> {
-    return condition ? callback() : EMPTY;
-  }
 }

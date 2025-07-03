@@ -39,9 +39,21 @@ public static isIP(): ExtendedValidatorFn {
   }
 
   public static customEmail(): ExtendedValidatorFn {
-    const emailPattern = 
-  /^[a-zA-Z0-9](?:[a-zA-Z0-9+_-]|(?:\.[a-zA-Z0-9+_-]))*@[a-zA-Z0-9](?:[a-zA-Z0-9-]*[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]*[a-zA-Z0-9])?)*\.[a-zA-Z]+$/;
+    const localLabel = "(?!.*\\.\\.)" // avoid `..`
+                 + "[A-Za-z0-9]" // start with alfanum
+                 + "(?:[A-Za-z0-9+_-]" // alfanum o + _ -
+                 + "|\\.(?=[A-Za-z0-9+_-]))*"; // or dot + valid character
 
+    const domainLabel = "[A-Za-z0-9]" // start with alfanum
+                      + "(?:[A-Za-z0-9-]*[A-Za-z0-9])?"; // can have '-' and end with alfanum
+
+    const domainPart = `(?:${domainLabel}\\.)+`; // one or more labels + “.”
+
+    const tld = "[A-Za-z]+"; // TL with >1 characters
+
+    const emailPattern = new RegExp(
+      `^${localLabel}@${domainPart}${tld}$`
+    );
 
     return (control: AbstractControl): ExtendedValidatorErrors | null => {
       const email = control.value;
