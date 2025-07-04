@@ -13,6 +13,7 @@ import { LearCredentialEmployeeDetailsTemplateSchema } from 'src/app/core/models
 import { LearCredentialMachineDetailsTemplateSchema } from 'src/app/core/models/schemas/credential-details/lear-credential-machine-details-schema';
 import { VerifiableCertificationDetailsTemplateSchema } from 'src/app/core/models/schemas/credential-details/verifiable-certification-details-schema';
 import { DetailsKeyValueField, DetailsGroupField, TemplateSchema, MappedDetailsGroupField, MappedDetailsKeyValueField } from 'src/app/core/models/entity/lear-credential-details';
+import { ComponentPortal } from '@angular/cdk/portal';
 
 describe('CredentialDetailsService', () => {
   let service: CredentialDetailsService;
@@ -357,6 +358,233 @@ describe('Load models', () => {
   expect(mapSpy).toHaveBeenCalledWith({ schemaKey: 'schemaVal' }, vc);
   expect(templateSpy).toHaveBeenCalledWith(mapped, injector);
 });
+});
+
+describe('getCredentialType', () => {
+  beforeEach(() => {
+    // Override private schema map to include our test type
+    (service as any).schemasByTypeMap = { 'LearCredentialEmployee': {} };
+  });
+
+  it('should return the correct type when present in schemasByTypeMap', () => {
+    // Arrange a credential with a valid type
+    const cred: any = { type: ['LearCredentialEmployee', 'Foo'] };
+    // Act
+    const type = (service as any).getCredentialType(cred);
+    // Assert
+    expect(type).toBe('LearCredentialEmployee');
+  });
+
+  it('should throw an error when no valid type is found', () => {
+    // Arrange schemas map with a different type
+    (service as any).schemasByTypeMap = { 'SomeOtherType': {} };
+    const cred: any = { type: ['UnknownType', 'Foo'] };
+    // Act & Assert
+    expect(() => (service as any).getCredentialType(cred))
+      .toThrowError('No credential tyep found in credential');
+  });
+});
+
+describe('shouldIncludeSideField', () => {
+  it('should include fields with a key other than "issuer"', () => {
+    const field: any = { key: 'other', type: 'key-value', value: null };
+    expect((service as any).shouldIncludeSideField(field)).toBe(true);
+  });
+
+  it('should exclude issuer when type is key-value and value is null', () => {
+    const field: any = { key: 'issuer', type: 'key-value', value: null };
+    expect((service as any).shouldIncludeSideField(field)).toBe(false);
+  });
+
+  it('should include issuer when type is key-value and value is not null', () => {
+    const field: any = { key: 'issuer', type: 'key-value', value: 'foo' };
+    expect((service as any).shouldIncludeSideField(field)).toBe(true);
+  });
+
+  it('should exclude issuer when type is group and all children values are null', () => {
+    const field: any = {
+      key: 'issuer',
+      type: 'group',
+      value: [
+        { type: 'key-value', value: null },
+        { type: 'key-value', value: null },
+      ],
+    };
+    expect((service as any).shouldIncludeSideField(field)).toBe(false);
+  });
+
+  it('should include issuer when type is group and at least one child value is not null', () => {
+    const field: any = {
+      key: 'issuer',
+      type: 'group',
+      value: [
+        { type: 'key-value', value: null },
+        { type: 'key-value', value: 'bar' },
+      ],
+    };
+    expect((service as any).shouldIncludeSideField(field)).toBe(true);
+  });
+});
+
+describe('setCredentialBasicInfo', () => {
+  let mockValidFrom$: { set: jest.Mock<any, any> };
+  let mockValidUntil$: { set: jest.Mock<any, any> };
+  let mockType$: { set: jest.Mock<any, any> };
+  let mockStatus$: { set: jest.Mock<any, any> };
+
+  beforeEach(() => {
+    // Mock the internal subjects with typed Jest mocks
+    mockValidFrom$ = { set: jest.fn() };
+    mockValidUntil$ = { set: jest.fn() };
+    mockType$ = { set: jest.fn() };
+    mockStatus$ = { set: jest.fn() };
+
+    (service as any).credentialValidFrom$ = mockValidFrom$;
+    (service as any).credentialValidUntil$ = mockValidUntil$;
+    (service as any).credentialType$ = mockType$;
+    (service as any).credentialStatus$ = mockStatus$;
+
+    // Spy on the private getCredentialType to return a fixed type
+    jest.spyOn(service as any, 'getCredentialType').mockReturnValue('TypeA');
+  });
+
+  it('should set validFrom, validUntil, type and status correctly', () => {
+    // Arrange
+    const details: any = {
+      credential: {
+        vc: {
+          validFrom: '2020-01-01',
+          validUntil: '2021-01-01',
+          type: ['foo']
+        }
+      },
+      credential_status: 'active'
+    };
+
+    // Act
+    (service as any).setCredentialBasicInfo(details);
+
+    // Assert
+    expect(mockValidFrom$.set).toHaveBeenCalledWith('2020-01-01');
+    expect(mockValidUntil$.set).toHaveBeenCalledWith('2021-01-01');
+    expect((service as any).getCredentialType).toHaveBeenCalledWith(details.credential.vc);
+    expect(mockType$.set).toHaveBeenCalledWith('TypeA');
+    expect(mockStatus$.set).toHaveBeenCalledWith('active');
+  });
+});
+
+describe('setTemplateModels', () => {
+  let mockMainTemplateModel$: { set: jest.Mock<any, any> };
+  let mockSideTemplateModel$: { set: jest.Mock<any, any> };
+
+  beforeEach(() => {
+    // Mock the internal template model subjects
+    mockMainTemplateModel$ = { set: jest.fn() };
+    mockSideTemplateModel$ = { set: jest.fn() };
+    (service as any).mainTemplateModel$ = mockMainTemplateModel$;
+    (service as any).sideTemplateModel$ = mockSideTemplateModel$;
+  });
+
+  it('should extend main and side schemas and set the template models', () => {
+    // Arrange dummy schema and injector
+    const dummySchema: any = { main: { foo: 'bar' }, side: { baz: 'qux' } };
+    const dummyInjector = {} as Injector;
+
+    // Prepare extended schemas
+    const extendedMain = { foo: 'extended' };
+    const extendedSide = { baz: 'extended' };
+    // Spy on extendFields to return extended schemas in order
+    const extendSpy = jest.spyOn(service as any, 'extendFields')
+      .mockReturnValueOnce(extendedMain)
+      .mockReturnValueOnce(extendedSide);
+
+    // Act: call the private method
+    (service as any).setTemplateModels(dummySchema, dummyInjector);
+
+    // Assert extendFields calls
+    expect(extendSpy).toHaveBeenCalledWith(dummySchema.main, dummyInjector);
+    expect(extendSpy).toHaveBeenCalledWith(dummySchema.side, dummyInjector);
+
+    // Assert that template models are set
+    expect(mockMainTemplateModel$.set).toHaveBeenCalledWith(extendedMain);
+    expect(mockSideTemplateModel$.set).toHaveBeenCalledWith(extendedSide);
+  });
+});
+
+describe('extendFields', () => {
+  it('should return identical fields array when no custom or group', () => {
+    // Arrange
+    const fields: any[] = [
+      { key: 'field1', type: 'key-value', value: 'val', custom: null }
+    ];
+    const injector = Injector.create({ providers: [] });
+
+    // Act
+    const result = (service as any).extendFields(fields, injector);
+
+    // Assert
+    expect(result).toEqual(fields);
+    expect(result[0].portal).toBeUndefined();
+  });
+
+  it('should add portal property when custom is defined', () => {
+    // Arrange dummy component and token/value
+    class DummyComponent {};
+    const token = 'TEST_TOKEN';
+    const tokenInjectionValue = 'injectedValue';
+
+    const fields: any[] = [
+      {
+        key: 'field2',
+        type: 'custom',
+        value: 'val2',
+        custom: {
+          token,
+          value: tokenInjectionValue,
+          component: DummyComponent
+        }
+      }
+    ];
+    const injector = Injector.create({ providers: [] });
+
+    // Act
+    const result = (service as any).extendFields(fields, injector);
+    const extended = result[0];
+
+    // Assert portal instance and injector behavior
+    expect(extended.portal).toBeInstanceOf(ComponentPortal);
+    expect((extended.portal as ComponentPortal<any>).component).toBe(DummyComponent);
+    // The portal.injector should provide the custom value
+    expect(extended.portal.injector.get(token)).toBe(tokenInjectionValue);
+  });
+
+  it('should recursively extend group fields', () => {
+    // Arrange a nested group field
+    const nested: any = {
+      key: 'nested',
+      type: 'key-value',
+      value: 'nestedVal',
+      custom: null
+    };
+    const groupField: any = {
+      key: 'groupField',
+      type: 'group',
+      value: [nested],
+      custom: null
+    };
+    const injector = Injector.create({ providers: [] });
+
+    // Spy on extendFields to track recursive calls
+    const spy = jest.spyOn(service as any, 'extendFields');
+
+    // Act
+    const result = (service as any).extendFields([groupField], injector);
+    const extendedGroup = result[0];
+
+    // Assert top-level call and recursive call
+    expect(spy).toHaveBeenCalledWith([nested], injector);
+    expect(extendedGroup.value).toEqual([nested]);
+  });
 });
 
 });
