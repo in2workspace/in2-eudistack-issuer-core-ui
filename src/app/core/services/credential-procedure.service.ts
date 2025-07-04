@@ -13,6 +13,7 @@ import { API } from "../constants/api.constants";
 import { LEARCredentialDataNormalizer } from '../models/entity/lear-credential-employee-data-normalizer';
 import { EmployeeProcedureRequest } from '../models/dto/procedure-request.dto';
 import { LEARCredentialDataDetailsResponse } from '../models/dto/lear-credential-data-details-response.dto';
+import { CredentialRevokeRequestDto } from '../models/dto/credential-revoke-request.dto';
 
 @Injectable({
   providedIn: 'root'
@@ -24,12 +25,20 @@ export class CredentialProcedureService {
   private readonly credentialOfferUrl = `${environment.server_url}${API.CREDENTIAL_OFFER_PATH}`;
   private readonly notificationProcedure = `${environment.server_url}${API.NOTIFICATION_PATH}`;
   private readonly signCredentialUrl = `${environment.server_url}${API.SIGN_CREDENTIAL_PATH}`;
+  private readonly revokeCredentialUrl = `${environment.server_url}${API.REVOKE}`;
 
   private readonly http = inject(HttpClient);
   private readonly normalizer = new LEARCredentialDataNormalizer();
   private readonly dialog = inject(DialogWrapperService);
   private readonly translate = inject(TranslateService);
   private readonly router = inject(Router);
+
+  public revokeCredential(credentialId: string, listId: string): Observable<void>{
+    const body: CredentialRevokeRequestDto = { credentialId, listId };
+    return this.http.post<void>(this.revokeCredentialUrl, body).pipe(
+      catchError(this.handleError)
+    );
+  }
 
   public getCredentialProcedures(): Observable<ProcedureResponse> {
     return this.http.get<ProcedureResponse>(this.organizationProcedures).pipe(
