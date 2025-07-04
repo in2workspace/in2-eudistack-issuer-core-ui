@@ -2,8 +2,9 @@ import { inject, Injectable } from "@angular/core";
 import { AuthService } from "src/app/core/services/auth.service";
 import { CountryService } from "src/app/core/services/country.service";
 import { CredentialIssuanceFormSchema, CredentialIssuancePowerFormSchema, CredentialIssuanceSchemaBuilder, CredentialIssuanceSchemaTuple, IssuanceCredentialType } from "src/app/core/models/entity/lear-credential-issuance";
-import { nameValidatorEntries, emailValidatorEntries, serialNumberValidatorEntries, orgNameValidatorEntries, orgIdValidatorEntries } from "src/app/shared/validators/credential-issuance/validators-entries";
+import { emailValidatorEntries, serialNumberValidatorEntries, orgNameValidatorEntries, orgIdValidatorEntries } from "src/app/shared/validators/credential-issuance/validators-entries";
 import { convertToOrderedArray, mandatorFieldsOrder } from "../../helpers/fields-order-helpers";
+import { firstNameField, lastNameField, organizationField, organizationIdentifierField, serialNumberField } from "./common-fields";
 
 @Injectable({ providedIn: 'root' })
 export class LearCredentialEmployeeSchemaBuilder implements CredentialIssuanceSchemaBuilder {
@@ -25,9 +26,9 @@ export class LearCredentialEmployeeSchemaBuilder implements CredentialIssuanceSc
           type: 'group',
           display: 'main',
           groupFields: [
-            { key:'firstName', type: 'control', controlType: 'text', validators: [...nameValidatorEntries] },
-            { key:'lastName', type: 'control', controlType: 'text', validators:[...nameValidatorEntries] },
-            { key:'email', type: 'control', controlType: 'text', validators: [...emailValidatorEntries] },
+            { ...firstNameField },
+            { ...lastNameField },
+            { key: 'email', type: 'control', controlType: 'text', validators: [...emailValidatorEntries] },
             {
               key:'nationality', 
               type: 'control',
@@ -48,20 +49,10 @@ export class LearCredentialEmployeeSchemaBuilder implements CredentialIssuanceSc
           },
           groupFields: [
             {
-              key: 'firstName',
-              type: 'control',
-              controlType: 'text',
-              validators: [
-                ...nameValidatorEntries
-              ]
+              ...firstNameField
             },
             {
-              key: 'lastName',
-              type: 'control',
-              controlType: 'text',
-              validators: [
-                ...nameValidatorEntries
-              ]
+              ...lastNameField
             },
             { 
               key:'emailAddress', 
@@ -72,26 +63,13 @@ export class LearCredentialEmployeeSchemaBuilder implements CredentialIssuanceSc
               ] 
             },
             {
-              key: 'serialNumber',
-              hint: 'serialNumber',
-              type: 'control',
-              controlType: 'text',
-              validators: [
-                ...serialNumberValidatorEntries
-              ]
+              ...serialNumberField
             },
             {
-              key: 'organization',
-              type: 'control',
-              controlType: 'text',
-              validators: [ ...orgNameValidatorEntries ]
+              ...organizationField
             },
             {
-              key: 'organizationIdentifier',
-              type: 'control',
-              controlType: 'text',
-              validators: [ ...orgIdValidatorEntries ],
-              hint: 'organizationIdentifier',
+              ...organizationIdentifierField
             },
             {
               key: 'country',

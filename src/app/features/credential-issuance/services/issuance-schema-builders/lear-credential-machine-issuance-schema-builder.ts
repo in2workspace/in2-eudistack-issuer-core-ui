@@ -2,8 +2,9 @@ import { inject, Injectable } from "@angular/core";
 import { CredentialIssuanceFormSchema, CredentialIssuancePowerFormSchema, CredentialIssuanceSchemaBuilder, CredentialIssuanceSchemaTuple, IssuanceCredentialType } from "src/app/core/models/entity/lear-credential-issuance";
 import { AuthService } from "src/app/core/services/auth.service";
 import { CountryService } from "src/app/core/services/country.service";
-import { nameValidatorEntries, serialNumberValidatorEntries, orgNameValidatorEntries, orgIdValidatorEntries } from "src/app/shared/validators/credential-issuance/validators-entries";
+import { orgNameValidatorEntries, orgIdValidatorEntries } from "src/app/shared/validators/credential-issuance/validators-entries";
 import { convertToOrderedArray, mandatorFieldsOrder } from "../../helpers/fields-order-helpers";
+import { firstNameField, lastNameField, organizationField, organizationIdentifierField, serialNumberField } from "./common-fields";
 
 @Injectable({ providedIn: 'root' })
 export class LearCredentialMachineIssuanceSchemaBuilder implements CredentialIssuanceSchemaBuilder {
@@ -52,43 +53,19 @@ export class LearCredentialMachineIssuanceSchemaBuilder implements CredentialIss
           },
         groupFields: [
           {
-            key: 'firstName',
-            type: 'control',
-            controlType: 'text',
-            validators: [
-              ...nameValidatorEntries
-            ]
+            ...firstNameField
           },
           {
-            key: 'lastName',
-            type: 'control',
-            controlType: 'text',
-            validators: [
-              ...nameValidatorEntries
-            ]
+            ...lastNameField
           },
           {
-            key: 'serialNumber',
-            type: 'control',
-            controlType: 'text',
-            validators: [
-              ...serialNumberValidatorEntries
-            ]
+            ...serialNumberField
           },
           {
-            key: 'organization',
-            type: 'control',
-            controlType: 'text',
-            validators: [
-              ...orgNameValidatorEntries
-            ]
+            ...organizationField
           },
           {
-            key: 'organizationIdentifier',
-            type: 'control',
-            controlType: 'text',
-            validators: [ ...orgIdValidatorEntries ],
-            hint: 'organizationIdentifier',
+            ...organizationIdentifierField
           },
           {
             key: 'country',
