@@ -137,7 +137,7 @@ export class CredentialIssuanceComponent implements CanDeactivate<CanComponentDe
   }, { allowSignalWrites: true});
 
   public constructor(){
-    this.asSigner = this.route.snapshot.pathFromRoot
+  this.asSigner = this.route.snapshot.pathFromRoot
       .flatMap(r => r.url)
       .map(seg => seg.path)
       .includes('create-as-signer');
@@ -289,7 +289,7 @@ export class CredentialIssuanceComponent implements CanDeactivate<CanComponentDe
     const dataForCredentialPayload: IssuanceRawCredentialPayload = { 
       partialCredentialSubject: credential.form, 
       power: credential.power, 
-      optional: { keys: credential.keys, staticData:this.staticData$() },
+      optional: { keys: credential.keys, staticData: this.staticData$() },
       asSigner: this.asSigner
     }
     return this.issuanceService.submitCredential(dataForCredentialPayload, credentialType).pipe(

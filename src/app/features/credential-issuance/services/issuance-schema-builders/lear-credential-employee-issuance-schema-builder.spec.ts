@@ -2,6 +2,8 @@ import { TestBed } from '@angular/core/testing';
 import { AuthService } from 'src/app/core/services/auth.service';
 import { CountryService } from 'src/app/core/services/country.service';
 import { LearCredentialEmployeeSchemaBuilder } from './lear-credential-employee-issuance-schema-builder';
+import { mandatorMock } from 'src/app/core/mocks/details.mock';
+import { convertToOrderedArray, mandatorFieldsOrder } from '../../helpers/fields-order-helpers';
 
 describe('LearCredentialEmployeeSchemaBuilder', () => {
   let service: LearCredentialEmployeeSchemaBuilder;
@@ -37,7 +39,7 @@ describe('LearCredentialEmployeeSchemaBuilder', () => {
         { value: 'US', label: 'United States' }
       ];
       countryServiceStub.getCountriesAsSelectorOptions.mockReturnValue(countriesOpts);
-      authServiceStub.getRawMandator.mockReturnValue('MANDATOR_ID');
+      authServiceStub.getRawMandator.mockReturnValue(mandatorMock);
 
       const [form, power] = service.getSchema();
 
@@ -54,7 +56,7 @@ describe('LearCredentialEmployeeSchemaBuilder', () => {
       // 3) 'mandator' group staticValueGetter returns object when getRawMandator is truthy
       const mandatorGroup = form.find((f: any) => f.key === 'mandator')!;
       const staticVal = (mandatorGroup as any).staticValueGetter();
-      expect(staticVal).toEqual({ mandator: 'MANDATOR_ID' });
+      expect(staticVal).toEqual({ mandator: convertToOrderedArray(mandatorMock, mandatorFieldsOrder) });
 
       // --- power schema checks ---
       expect(power.power).toHaveLength(3);

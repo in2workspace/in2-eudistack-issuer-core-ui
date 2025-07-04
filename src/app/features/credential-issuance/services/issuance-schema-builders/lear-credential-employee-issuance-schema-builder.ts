@@ -3,6 +3,7 @@ import { AuthService } from "src/app/core/services/auth.service";
 import { CountryService } from "src/app/core/services/country.service";
 import { CredentialIssuanceFormSchema, CredentialIssuancePowerFormSchema, CredentialIssuanceSchemaBuilder, CredentialIssuanceSchemaTuple, IssuanceCredentialType } from "src/app/core/models/entity/lear-credential-issuance";
 import { nameValidatorEntries, emailValidatorEntries, serialNumberValidatorEntries, orgNameValidatorEntries, orgIdValidatorEntries } from "src/app/shared/validators/credential-issuance/validators-entries";
+import { convertToOrderedArray, mandatorFieldsOrder } from "../../helpers/fields-order-helpers";
 
 @Injectable({ providedIn: 'root' })
 export class LearCredentialEmployeeSchemaBuilder implements CredentialIssuanceSchemaBuilder {
@@ -43,7 +44,7 @@ export class LearCredentialEmployeeSchemaBuilder implements CredentialIssuanceSc
           display: 'pref_side',
           staticValueGetter: () => {
             const mandator = this.authService.getRawMandator();
-            return mandator ? { mandator } : null;
+            return mandator ? { mandator: convertToOrderedArray(mandator, mandatorFieldsOrder) } : null;
           },
           groupFields: [
             {
@@ -89,7 +90,8 @@ export class LearCredentialEmployeeSchemaBuilder implements CredentialIssuanceSc
               key: 'organizationIdentifier',
               type: 'control',
               controlType: 'text',
-              validators: [ ...orgIdValidatorEntries ]
+              validators: [ ...orgIdValidatorEntries ],
+              hint: 'organizationIdentifier',
             },
             {
               key: 'country',

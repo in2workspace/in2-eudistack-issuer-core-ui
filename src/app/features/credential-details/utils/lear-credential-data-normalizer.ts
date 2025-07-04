@@ -79,10 +79,10 @@ export class LEARCredentialDataNormalizer {
   }
 
 private normalizeEmployeeMandatee(data: RawEmployeeMandatee): EmployeeMandatee {
-  const firstName = data.firstName || data.first_name || "";
-  const lastName  = data.lastName || data.last_name || "";
-  const email     = data.email || "";
-  const nationality = data.nationality || "";
+  const firstName = data.firstName ?? data.first_name ?? "";
+  const lastName  = data.lastName ?? data.last_name ?? "";
+  const email     = data.email ?? "";
+  const nationality = data.nationality ?? "";
 
   console.log('normalizeEmployeeMandatee')
   console.log(firstName, lastName, email, nationality);
@@ -92,15 +92,23 @@ private normalizeEmployeeMandatee(data: RawEmployeeMandatee): EmployeeMandatee {
 }
 
 private normalizePower(data: RawPower): Power {
-  const action = data.action   ?? data.tmf_action;
-  const domain = data.domain   ?? data.tmf_domain;
-  const func   = data.function ?? data.tmf_function;
-  const type   = data.type     ?? data.tmf_type;
+  const action = data.action   ?? data.tmf_action ?? '';
+  const domain = data.domain   ?? data.tmf_domain ?? '';
+  const func   = data.function ?? data.tmf_function ?? '';
+  const type   = data.type     ?? data.tmf_type ?? '';
 
-  if (!action) throw new Error('Missing power action');
-  if (!domain) throw new Error('Missing power domain');
-  if (!func) throw new Error('Missing power function');
-  if (!type) throw new Error('Missing power type');
+  if (!action) {
+    console.warn('Missing power action. Using default: ""');
+  }
+  if (!domain) {
+    console.warn('Missing power domain. Using default:  ""');
+  }
+  if (!func) {
+    console.warn('Missing power function. Using default:  ""');
+  }
+  if (!type) {
+    console.warn('Missing power type. Using default:  ""');
+  }
 
   return {
     action,

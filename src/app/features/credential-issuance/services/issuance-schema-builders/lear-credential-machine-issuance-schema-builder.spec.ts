@@ -2,6 +2,8 @@ import { TestBed } from '@angular/core/testing';
 import { LearCredentialMachineIssuanceSchemaBuilder } from './lear-credential-machine-issuance-schema-builder'; // ajusta la ruta si cal
 import { AuthService } from 'src/app/core/services/auth.service';
 import { CountryService } from 'src/app/core/services/country.service';
+import { mandatorMock } from 'src/app/core/mocks/details.mock';
+import { convertToOrderedArray, mandatorFieldsOrder } from '../../helpers/fields-order-helpers';
 
 describe('LearCredentialMachineIssuanceSchemaBuilder', () => {
   let service: LearCredentialMachineIssuanceSchemaBuilder;
@@ -37,7 +39,7 @@ describe('LearCredentialMachineIssuanceSchemaBuilder', () => {
     });
 
     it('builds form & power schemas when mandator is present', () => {
-      authServiceStub.getRawMandator.mockReturnValue('MANDATOR_ID');
+      authServiceStub.getRawMandator.mockReturnValue(mandatorMock);
 
       const [form, power] = service.getSchema();
 
@@ -67,7 +69,7 @@ describe('LearCredentialMachineIssuanceSchemaBuilder', () => {
       const mandator = form.find(f => f.key === 'mandator')!;
       expect(mandator.type).toBe('group');
       // staticValueGetter returns object
-      expect((mandator as any).staticValueGetter()).toEqual({ mandator: 'MANDATOR_ID' });
+      expect((mandator as any).staticValueGetter()).toEqual({ mandator: convertToOrderedArray(mandatorMock, mandatorFieldsOrder) });
 
       const ag = (mandator as any).groupFields;
       expect(ag.map((g: any) => g.key)).toEqual([

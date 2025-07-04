@@ -1,4 +1,4 @@
-import { DestroyRef, inject, Injectable, Injector, OnDestroy, signal, WritableSignal } from '@angular/core';
+import { inject, Injectable, Injector, OnDestroy, signal, WritableSignal } from '@angular/core';
 import { EMPTY, from, Observable, Subject, switchMap, takeUntil, tap } from 'rxjs';
 import { CredentialProcedureService } from 'src/app/core/services/credential-procedure.service';
 import { DialogWrapperService } from 'src/app/shared/components/dialog/dialog-wrapper/dialog-wrapper.service';

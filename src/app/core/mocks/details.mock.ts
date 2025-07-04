@@ -1,5 +1,13 @@
-import { CredentialProcedureDataDetails } from "../models/entity/lear-credential";
+import { CommonMandator, CredentialProcedureDataDetails } from "../models/entity/lear-credential";
 
+export const mandatorMock: CommonMandator = {
+  country: "ES",
+  emailAddress: "mand@manda.com",
+  commonName: "mandator name",
+  organization: "ORG",
+  serialNumber: "",
+  organizationIdentifier: "VAT-21345",
+}
 
 export const mockCredentialEmployee: CredentialProcedureDataDetails = {
   procedure_id: 'mock-procedure-employee',

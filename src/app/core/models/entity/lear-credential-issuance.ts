@@ -1,5 +1,5 @@
 import { ValidatorEntryUnion } from "src/app/shared/validators/credential-issuance/all-validators";
-import { EmployeeMandator, TmfAction, TmfFunction } from "./lear-credential";
+import { TmfAction, TmfFunction } from "./lear-credential";
 export const ISSUANCE_CREDENTIAL_TYPES_ARRAY = ['LEARCredentialEmployee', 'LEARCredentialMachine'] as const;
 export type IssuanceCredentialType = typeof ISSUANCE_CREDENTIAL_TYPES_ARRAY[number];
 
@@ -18,7 +18,7 @@ export type CredentialIssuanceFormFieldSchema = {
     validators?: ValidatorEntryUnion[];
     hint?: string; //hint that is shown above the input
     classes?: string; //admits a string of separated clases; i.e.: "classOne classTwo"
-    staticValueGetter?: () => any; //in case it is side (or pref_side + asSigner)
+    staticValueGetter?: () => IssuanceStaticDataSchema | null; //in case it is side (or pref_side + asSigner)
 };
 
 export interface CredentialIssuanceSchemaBuilder {
@@ -41,7 +41,7 @@ export type CredentialIssuancePowerFormSchema = { power: IssuanceFormPowerSchema
 export type CredentialIssuanceSchemaTuple = [CredentialIssuanceFormSchema, CredentialIssuancePowerFormSchema];
 
 export type IssuanceStaticDataSchema = {
-    mandator?: EmployeeMandator;
+    mandator?: {key:string, value:string}[];
 }
 
 export type CredentialIssuanceGlobalFormState = {

@@ -1,11 +1,11 @@
 import { EmployeeMandatee, EmployeeMandator, Power, TmfAction } from "../entity/lear-credential";
-import { IssuanceRawPowerForm } from "../entity/lear-credential-issuance";
+import { IssuanceRawPowerForm, IssuanceStaticDataSchema } from "../entity/lear-credential-issuance";
 
 // data enviada per component
 export interface IssuanceRawCredentialPayload {
         partialCredentialSubject: Record<string, any>, 
         power: IssuanceRawPowerForm, 
-        optional: { keys?: any, staticData: { mandator?: EmployeeMandator } | null},
+        optional: { keys?: any, staticData: IssuanceStaticDataSchema | null },
         asSigner: boolean
 }
 
