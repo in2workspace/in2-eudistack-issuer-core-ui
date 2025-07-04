@@ -1,4 +1,4 @@
-import { CredentialProcedure } from "../models/dto/procedure-response.dto";
+import { CredentialProcedure } from "../models/dto/credential-procedure-response.dto";
 
 export const credentialProcedureListMock: CredentialProcedure[] =[
     {

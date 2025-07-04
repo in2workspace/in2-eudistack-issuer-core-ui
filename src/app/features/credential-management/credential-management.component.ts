@@ -5,7 +5,7 @@ import { Router } from '@angular/router';
 import { CredentialProcedureService } from 'src/app/core/services/credential-procedure.service';
 import { AuthService } from 'src/app/core/services/auth.service';
 import { MatSort, MatSortHeader } from '@angular/material/sort';
-import { CredentialProcedure, ProcedureResponse } from "../../core/models/dto/procedure-response.dto";
+import { CredentialProcedure, ProcedureResponse } from "../../core/models/dto/credential-procedure-response.dto";
 import { TranslatePipe } from '@ngx-translate/core';
 import { NgClass, DatePipe } from '@angular/common';
 import { MatButton, MatButtonModule } from '@angular/material/button';

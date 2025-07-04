@@ -1,4 +1,4 @@
-export interface LEARCredentialDataDetails {
+export interface CredentialProcedureDataDetails {
   procedure_id: string;
   credential_status: CredentialStatus;
   credential: LEARCredentialJwtPayload;

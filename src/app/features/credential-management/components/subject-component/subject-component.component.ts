@@ -1,6 +1,6 @@
 import { Component, computed, input } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { CredentialProcedureType } from 'src/app/core/models/dto/procedure-response.dto';
+import { CredentialProcedureType } from 'src/app/core/models/dto/credential-procedure-response.dto';
 import { MatTooltip } from '@angular/material/tooltip';
 
 /**

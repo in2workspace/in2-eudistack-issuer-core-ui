@@ -5,7 +5,7 @@ import { DialogWrapperService } from 'src/app/shared/components/dialog/dialog-wr
 import { TranslateService } from '@ngx-translate/core';
 import { Router } from '@angular/router';
 import { DialogData } from 'src/app/shared/components/dialog/dialog.component';
-import { CredentialStatus, CredentialType, LEARCredential, LEARCredentialDataDetails } from 'src/app/core/models/entity/lear-credential';
+import { CredentialStatus, CredentialType, LEARCredential, CredentialProcedureDataDetails } from 'src/app/core/models/entity/lear-credential';
 import { ComponentPortal } from '@angular/cdk/portal';
 import { LearCredentialEmployeeDetailsTemplateSchema } from 'src/app/core/models/schemas/credential-details/lear-credential-employee-details-schema';
 import { LearCredentialMachineDetailsTemplateSchema } from 'src/app/core/models/schemas/credential-details/lear-credential-machine-details-schema';
@@ -100,7 +100,7 @@ export class CredentialDetailsService {
     );
   }
 
-  private loadCredentialDetails(): Observable<LEARCredentialDataDetails> {
+  private loadCredentialDetails(): Observable<CredentialProcedureDataDetails> {
     return this.credentialProcedureService.getCredentialProcedureById(this.procedureId$());
   }
 
@@ -212,7 +212,7 @@ private mapSchemaValues(
 }
 
 
-  private setCredentialBasicInfo(details: LEARCredentialDataDetails): void{
+  private setCredentialBasicInfo(details: CredentialProcedureDataDetails): void{
     const credential = details.credential.vc;
 
     const credentialValidFrom = credential.validFrom;

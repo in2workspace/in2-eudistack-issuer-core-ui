@@ -4,15 +4,15 @@ import {CredentialProcedureService} from './credential-procedure.service';
 import {environment} from 'src/environments/environment';
 import {HttpErrorResponse, provideHttpClient} from '@angular/common/http';
 
-import {ProcedureResponse} from "../models/dto/procedure-response.dto";
+import {ProcedureResponse} from "../models/dto/credential-procedure-response.dto";
 
 import {throwError} from 'rxjs';
 import {DialogWrapperService} from "../../shared/components/dialog/dialog-wrapper/dialog-wrapper.service";
 import {TranslateService} from "@ngx-translate/core";
 import {Router} from "@angular/router";
 import {API} from "../constants/api.constants";
-import { LEARCredentialDataDetails } from '../models/entity/lear-credential';
-import { EmployeeProcedureRequest } from '../models/dto/procedure-request.dto';
+import { CredentialProcedureDataDetails } from '../models/entity/lear-credential';
+import { EmployeeProcedureRequest } from '../models/dto/credential-procedure-request.dto';
 
 const notFoundErrorResp = new HttpErrorResponse({
   error: '404 error',
@@ -97,7 +97,7 @@ describe('CredentialProcedureService', () => {
 
   it('should fetch credential procedure by id successfully', () => {
     const procedureId = '1';
-    const mockData: LEARCredentialDataDetails =
+    const mockData: CredentialProcedureDataDetails =
       { procedure_id: '1', credential_status: 'VALID', credential: { mandatee: {}, mandator: {}, power: [] } as any }
     ;
 

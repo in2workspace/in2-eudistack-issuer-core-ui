@@ -1,7 +1,7 @@
-import { LEARCredentialDataDetails } from "../models/entity/lear-credential";
+import { CredentialProcedureDataDetails } from "../models/entity/lear-credential";
 
 // todo restore type
-export const mockCredentialEmployee: any = {
+export const mockCredentialEmployee: CredentialProcedureDataDetails = {
   procedure_id: 'mock-procedure-employee',
   credential_status: 'DRAFT',
   credential: {
@@ -18,7 +18,7 @@ export const mockCredentialEmployee: any = {
       issuer: {
         id: 'issuer-emp',
         commonName: 'Employee Issuer',
-        // country: 'ES',
+        country: 'ES',
         organization: 'Org EMP',
         organizationIdentifier: 'IDentifier Org',
         emailAddress: 'email',
@@ -37,7 +37,7 @@ export const mockCredentialEmployee: any = {
             nationality: 'ES'
           },
           mandator: {
-            // commonName: 'Mandator EMP',
+            commonName: 'Mandator EMP',
             country: 'ES',
             emailAddress: 'mandator@emp.com',
             organization: 'Org Mandator',
@@ -66,7 +66,7 @@ export const mockCredentialEmployee: any = {
   }
 };
 
-export const mockCredentialMachine: LEARCredentialDataDetails = {
+export const mockCredentialMachine: CredentialProcedureDataDetails = {
   procedure_id: 'mock-procedure-machine',
   credential_status: 'PEND_SIGNATURE',
   credential: {
@@ -133,7 +133,7 @@ export const mockCredentialMachine: LEARCredentialDataDetails = {
   }
 };
 
-export const mockCredentialCertification: LEARCredentialDataDetails = {
+export const mockCredentialCertification: CredentialProcedureDataDetails = {
   procedure_id: 'mock-procedure-cert',
   credential_status: 'PEND_DOWNLOAD',
   credential: {
@@ -203,7 +203,7 @@ export const mockCredentialCertification: LEARCredentialDataDetails = {
   }
 };
 
-export const mockGxLabel: LEARCredentialDataDetails = {
+export const mockGxLabel: CredentialProcedureDataDetails = {
   procedure_id: 'mock-procedure-gx-label',
   credential_status: 'DRAFT',
   credential: {
