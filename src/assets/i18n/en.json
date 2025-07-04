@@ -37,7 +37,6 @@
   },
   "mandator": {
     "organizationid": "Company VAT number",
-    "organizationidHint": "Enter only the characters after 'VAT...-'. For example, if 'VATEU-123ABC', enter '123ABC'",
     "organization": "Company name",
     "name": "Name",
     "first-name": "First name",
@@ -242,7 +241,7 @@
     "ipAddress": "IP Address",
     "selectA": "Select a ",
     "hint": {
-      "serialNumber": "Enter only the characters after 'VAT...-'. For example, if 'VATEU-123ABC', enter '123ABC'"
+      "organizationIdentifier": "Enter only the characters after 'VAT...-'. For example, if 'VATEU-123ABC', enter '123ABC'"
     },
     "changeCredentialAlert": "Are you sure you want to change the type of credential? Your progress will be lost.",
     "unloadAlert": "Are you sure yo want to leave? Your progress will be lost."
