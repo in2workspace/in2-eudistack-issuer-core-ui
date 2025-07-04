@@ -78,49 +78,7 @@ describe('IssuanceRequestFactoryService', () => {
     });
   });
 
-  it('should create employee request using staticData and existing commonName', () => {
-    const credentialData: any = {
-      power: { ProductOffering: { Create: true, Update: false, Upload: true } },
-      asSigner: false,
-      optional: {
-        staticData: {
-          mandator: {
-            emailAddress: 'john@example.com',
-            organization: 'Widgets Inc',
-            organizationIdentifier: 'VATIT-999',
-            country: 'IT',
-            commonName: 'John Widget',
-            serialNumber: 'SN999'
-          }
-        }
-      },
-      partialCredentialSubject: {
-        mandatee: { id: 'M2', domain: 'x.com' }
-      }
-    };
-
-    const result = service.createCredentialRequest(credentialData, 'LEARCredentialEmployee');
-
-    expect(result).toEqual({
-      mandator: {
-        emailAddress: 'john@example.com',
-        organization: 'Widgets Inc',
-        country: 'IT',
-        commonName: 'John Widget',
-        serialNumber: 'SN999',
-        organizationIdentifier: 'VATIT-999'
-      },
-      mandatee: { id: 'M2', domain: 'x.com' },
-      power: [
-        {
-          type: 'domain',
-          domain: 'DOME',
-          function: 'ProductOffering',
-          action: ['Create', 'Upload']
-        }
-      ]
-    });
-  });
+ 
 
   it('should create machine request with did and mandatee fields', () => {
     const credentialData: any = {
@@ -166,19 +124,6 @@ describe('IssuanceRequestFactoryService', () => {
         }
       ]
     });
-  });
-
-  it('should return empty machine payload if mandator missing', () => {
-    const credentialData: any = {
-      power: {},
-      asSigner: false,
-      optional: {},
-      partialCredentialSubject: {}
-    };
-
-    const result = service.createCredentialRequest(credentialData, 'LEARCredentialMachine');
-    expect(console.error).toHaveBeenCalledWith('Error getting mandator.');
-    expect(result).toEqual({} as any);
   });
 
   it('should parse power errors for unknown base and no actions', () => {

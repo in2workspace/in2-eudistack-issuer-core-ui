@@ -158,7 +158,14 @@ export class IssuanceRequestFactoryService {
     }
 
 private getMandatorFromCredentialData(credentialData: IssuanceRawCredentialPayloadWithParsedPower){
-  return credentialData.asSigner ? credentialData.partialCredentialSubject['mandator'] : credentialData.optional.staticData?.mandator;
+  console.log('credData')
+  console.log(credentialData);
+  if(!credentialData.asSigner){
+    const unparsedMandator = credentialData.optional.staticData?.mandator;
+    if(!unparsedMandator) throw Error('Could not get valid mandator as signer');
+    return Object.fromEntries(unparsedMandator.map(item => [item.key, item.value]));
+  }
+  return credentialData.partialCredentialSubject['mandator'];
 }
     
 private getMandateeFromCredentialData(credentialData: IssuanceRawCredentialPayloadWithParsedPower){
