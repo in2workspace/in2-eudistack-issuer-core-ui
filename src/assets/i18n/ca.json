@@ -118,6 +118,14 @@
     "signCredentialSuccess": {
       "title": "Credencial signada",
       "message": "La credencial s'ha signat correctament."
+    },
+    "revokeCredentialConfirm": {
+      "title": "Revocar Credencial",
+      "message": "Estàs segur que vols revocar la credencial?"
+    },
+    "revokeCredentialSuccess": {
+      "title": "Credencial revocada",
+      "message": "La credencial ha estat revocada."
     }
   },  
   "credentialOffer": {

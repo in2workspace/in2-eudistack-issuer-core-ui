@@ -4,7 +4,7 @@ export interface LEARCredentialDataDetails {
   credential: LEARCredentialJwtPayload;
 }
 
-export type CredentialStatus = 'WITHDRAWN' | 'VALID' | 'EXPIRED' | 'PEND_DOWNLOAD' | 'PEND_SIGNATURE' | 'DRAFT' | 'ISSUED';
+export type CredentialStatus = 'WITHDRAWN' | 'VALID' | 'EXPIRED' | 'PEND_DOWNLOAD' | 'PEND_SIGNATURE' | 'DRAFT' | 'ISSUED' | 'REVOKED';
 export interface CredentialStatusJson {   
   "id": string,
   "type": CredentialStatusType,   

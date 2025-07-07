@@ -52,10 +52,9 @@ export class CredentialActionsService {
 
   public openRevokeCredentialDialog(credentialId: string, credentialList: string): void {
 
-    // todo
     const dialogData: DialogData = {
-      title: this.translate.instant("credentialDetails.signCredentialConfirm.title"),
-      message: this.translate.instant("credentialDetails.signCredentialConfirm.message"),
+      title: this.translate.instant("credentialDetails.revokeCredentialConfirm.title"),
+      message: this.translate.instant("credentialDetails.revokeCredentialConfirm.message"),
       confirmationType: 'async',
       status: 'default'
     };

@@ -1,4 +1,12 @@
-import { LEARCredentialDataDetails } from "../models/entity/lear-credential";
+import { CredentialStatusJson, LEARCredentialDataDetails } from "../models/entity/lear-credential";
+
+export const mockCredentialStatusJson: CredentialStatusJson = {   
+  id: "https://issuer.dome-marketplace.eu/credentials/status/1#<nonce>",
+  type: "PlainListEntity",   
+  statusPurpose: "revocation",   
+  statusListIndex: "<nonce>",
+  statusListCredential: "https://issuer.dome-marketplace.eu/credentials/status/1" 
+} 
 
 export const mockCredentialEmployee: LEARCredentialDataDetails = {
   procedure_id: 'mock-procedure-employee',
@@ -14,6 +22,9 @@ export const mockCredentialEmployee: LEARCredentialDataDetails = {
       id: 'cred-emp',
       type: ['LEARCredentialEmployee'],
       description: 'Mock employee credential',
+      credentialStatus: {
+        ...mockCredentialStatusJson
+      },
       issuer: {
         id: 'issuer-emp',
         commonName: 'Employee Issuer',
@@ -79,6 +90,9 @@ export const mockCredentialMachine: LEARCredentialDataDetails = {
       id: 'cred-mac',
       type: ['LEARCredentialMachine'],
       description: 'Mock machine credential',
+      credentialStatus: {
+        ...mockCredentialStatusJson
+      },
       issuer: {
         id: 'issuer-mac',
         commonName: 'Machine Issuer',
@@ -145,6 +159,9 @@ export const mockCredentialCertification: LEARCredentialDataDetails = {
     vc: {
       id: 'cred-cert',
       type: ['VerifiableCertification'],
+      credentialStatus: {
+        ...mockCredentialStatusJson
+      },
       issuer: {
         id: 'issuer-cert',
         commonName: 'Cert Issuer',
@@ -201,3 +218,4 @@ export const mockCredentialCertification: LEARCredentialDataDetails = {
     }
   }
 };
+

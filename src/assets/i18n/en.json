@@ -118,6 +118,14 @@
     "signCredentialSuccess": {
       "title": "Credential signed",
       "message": "The credential was signed successfully."
+    },
+    "revokeCredentialConfirm": {
+      "title": "Revoke Credential",
+      "message": "Are you sure you want to revoke this credential?"
+    },
+    "revokeCredentialSuccess": {
+      "title": "Credential revoked",
+      "message": "The credential was revoked successfully."
     }
   },
   "credentialOffer": {

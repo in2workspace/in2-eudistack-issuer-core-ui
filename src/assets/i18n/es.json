@@ -118,6 +118,14 @@
     "signCredentialSuccess": {
       "title": "Credencial firmada",
       "message": "La credencial se firmó correctamente."
+    },
+    "revokeCredentialConfirm": {
+      "title": "Revocar Credencial",
+      "message": "Estás seguro de que deseas revocar la credencial?"
+    },
+    "revokeCredentialSuccess": {
+      "title": "Credencial revocada",
+      "message": "La credencial ha sido revocada."
     }
   },
   "credentialOffer": {
