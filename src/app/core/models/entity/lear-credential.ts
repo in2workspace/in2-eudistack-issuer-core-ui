@@ -5,6 +5,17 @@ export interface LEARCredentialDataDetails {
 }
 
 export type CredentialStatus = 'WITHDRAWN' | 'VALID' | 'EXPIRED' | 'PEND_DOWNLOAD' | 'PEND_SIGNATURE' | 'DRAFT' | 'ISSUED';
+export interface CredentialStatusJson {   
+  "id": string,
+  "type": CredentialStatusType,   
+  "statusPurpose": CredentialStatusPurpose,   
+  "statusListIndex": CredentialStatusListIndex,
+  "statusListCredential": string;
+} 
+export type CredentialStatusType = 'PlainListEntity';
+export type CredentialStatusPurpose = 'revocation';
+export type CredentialStatusListIndex = '<nonce>';
+
 
 export interface LEARCredentialJwtPayload {
   sub: string | null;
@@ -100,6 +111,7 @@ export interface LEARCredentialEmployee {
   validUntil: string;
   issuanceDate?: string;
   expirationDate?: string;
+  credentialStatus: CredentialStatusJson;
 }
 
 export interface EmployeeMandatee {
@@ -132,6 +144,7 @@ export interface LEARCredentialMachine {
   issuer: MachineIssuer;
   validFrom: string;
   validUntil: string;
+  credentialStatus: CredentialStatusJson;
 }
 
 export interface MachineMandatee {
@@ -181,6 +194,7 @@ export interface VerifiableCertification {
   attester: Attester;
   validUntil: string;
   signer: CertificationSigner;
+  credentialStatus: CredentialStatusJson;
 }
 
 export interface CertificationIssuer {

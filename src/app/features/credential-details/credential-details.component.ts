@@ -54,26 +54,12 @@ export class CredentialDetailsComponent implements OnInit {
     (this.credentialType$() === 'LEARCredentialEmployee' || this.credentialType$() === 'VerifiableCertification');
   });
 
-    //observables
-    public isLoading$ = this.loader.isLoading$;
+  //observables
+  public isLoading$ = this.loader.isLoading$;
 
   public ngOnInit(): void {
     this.getProcedureId();
     this.initializeForm();
-  }
-  
-  private getProcedureId(): void {
-    const id = this.route.snapshot.paramMap.get('id')!;
-    this.detailsService.setProcedureId(id);
-  }
-  
-
-  private loadCredentialDetailsAndForm(): void {
-    this.detailsService.loadCredentialDetailsAndForm();
-  }
-
-  private initializeForm(): void {
-    this.loadCredentialDetailsAndForm();
   }
 
   //SEND REMINDER
@@ -84,6 +70,11 @@ export class CredentialDetailsComponent implements OnInit {
   // SIGN
   public openSignCredentialDialog(){
     this.detailsService.openSignCredentialDialog();
+  }
+
+  // REVOKE
+  public openRevokeCredentialDialog(){
+    this.detailsService.openRevokeCredentialDialog();
   }
 
   //TEMPLATE FUNCTIONS
@@ -103,6 +94,20 @@ export class CredentialDetailsComponent implements OnInit {
 
   public asFormArray(control: AbstractControl | null): FormArray {
     return control as FormArray;
+  }
+
+  private getProcedureId(): void {
+    const id = this.route.snapshot.paramMap.get('id')!;
+    this.detailsService.setProcedureId(id);
+  }
+  
+
+  private loadCredentialDetailsAndForm(): void {
+    this.detailsService.loadCredentialDetailsAndForm();
+  }
+
+  private initializeForm(): void {
+    this.loadCredentialDetailsAndForm();
   }
   
 
