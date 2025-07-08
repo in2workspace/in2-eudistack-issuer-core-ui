@@ -145,8 +145,8 @@ export class CredentialActionsService {
     return this.executeCredentialAction(
       credentialId,
       (credentialId) => this.credentialProcedureService.revokeCredential(credentialId, credentialList),
-      "credentialDetails.signCredentialSuccess.title",
-      "credentialDetails.signCredentialSuccess.message"
+      "credentialDetails.revokeCredentialSuccess.title",
+      "credentialDetails.revokeCredentialSuccess.message"
     );
   }
 }
