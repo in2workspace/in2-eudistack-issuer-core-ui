@@ -19,7 +19,7 @@ export const mockCredentialEmployee: LEARCredentialDataDetails = {
     iat: '1714675200',
     jti: 'jti-emp-123',
     vc: {
-      id: 'cred-emp',
+      id: 'cred-employee-id',
       type: ['LEARCredentialEmployee'],
       description: 'Mock employee credential',
       credentialStatus: {
@@ -87,7 +87,7 @@ export const mockCredentialMachine: LEARCredentialDataDetails = {
     iat: '1714675200',
     jti: 'jti-mac-123',
     vc: {
-      id: 'cred-mac',
+      id: 'cred-machine-id',
       type: ['LEARCredentialMachine'],
       description: 'Mock machine credential',
       credentialStatus: {
@@ -157,7 +157,7 @@ export const mockCredentialCertification: LEARCredentialDataDetails = {
     iat: '1714675200',
     jti: 'jti-cert-123',
     vc: {
-      id: 'cred-cert',
+      id: 'cred-certification-id',
       type: ['VerifiableCertification'],
       credentialStatus: {
         ...mockCredentialStatusJson

@@ -60,7 +60,7 @@ export class CredentialDetailsService {
       this.dialog.openErrorInfoDialog('error.unknown_error');
       return;
     }
-    const listId = this.getCredentialList();
+    const listId = this.getCredentialListId();
     if(!listId){
       console.error("Couldn't get credential list from vc.");
       // todo
@@ -82,8 +82,17 @@ export class CredentialDetailsService {
     return this.getCredential()?.id;
   }
 
-  private getCredentialList(): string | undefined {
-    return this.getCredential()?.credentialStatus.statusListIndex;
+  private getCredentialListId(): string {
+    const statusListCredential = this.getCredential()?.credentialStatus.statusListCredential;
+    
+    if(!statusListCredential){
+      console.error('No Status List Credential found in vc: ');
+      console.error(this.getCredential());
+      return "";
+    }
+    
+    const id = statusListCredential[statusListCredential.length - 1];
+    return id;
   }
 
   private loadCredentialDetails(): Observable<LEARCredentialDataDetails> {
