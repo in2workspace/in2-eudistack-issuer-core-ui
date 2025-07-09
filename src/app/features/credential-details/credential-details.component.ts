@@ -36,6 +36,7 @@ export class CredentialDetailsComponent implements OnInit {
   public credentialValidUntil$ = this.detailsService.credentialValidUntil$;
   public credentialType$ = this.detailsService.credentialType$;
   public credentialStatus$ = this.detailsService.credentialStatus$;
+  public credentialStatusJson$ = this.detailsService.credentialStatusJson$;
   public credentialDetailsForm$ = this.detailsService.credentialDetailsForm$;
   public credentialDetailsFormSchema$ = this.detailsService.credentialDetailsFormSchema$;
 
@@ -58,7 +59,11 @@ export class CredentialDetailsComponent implements OnInit {
 
   // todo: assegurar que té credentialStatus
   public showRevokeCredentialButton$ = computed(() => {
-    return (this.credentialStatus$() !== 'REVOKED');
+    const isRevoked = this.credentialStatus$() === 'REVOKED';
+    // todo remove this condition?
+    const hasCredentialStatusJson = !!this.credentialStatusJson$();
+
+    return (!isRevoked && hasCredentialStatusJson);
   });
 
   public showActionsButtonsContainer$ = computed<boolean>(() => {

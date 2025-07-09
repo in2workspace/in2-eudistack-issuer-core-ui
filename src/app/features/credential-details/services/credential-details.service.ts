@@ -1,13 +1,12 @@
 import { inject, Injectable, signal } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
-import { Observable, Observer, of, take, tap } from 'rxjs';
+import { Observable, Observer, take, tap } from 'rxjs';
 import { CredentialProcedureService } from 'src/app/core/services/credential-procedure.service';
 import { buildFormFromSchema, FormSchemaByType, getFormDataByType, getFormSchemaByType } from '../utils/credential-details-utils';
-import { CredentialStatus, CredentialType, LEARCredential, LEARCredentialDataDetails } from 'src/app/core/models/entity/lear-credential';
+import { CredentialStatus, CredentialStatusJson, CredentialType, LEARCredential, LEARCredentialDataDetails } from 'src/app/core/models/entity/lear-credential';
 import { CredentialDetailsFormSchema } from 'src/app/core/models/entity/lear-credential-details-schemas';
 import { CredentialActionsService } from './credential-actions.service';
 import { DialogWrapperService } from 'src/app/shared/components/dialog/dialog-wrapper/dialog-wrapper.service';
-import { mockCredentialEmployee } from 'src/app/core/mocks/details-mocks';
 
 @Injectable() //provided in component
 export class CredentialDetailsService {
@@ -19,6 +18,7 @@ export class CredentialDetailsService {
   public credentialDetailsFormSchema$ = signal<CredentialDetailsFormSchema | undefined>(undefined);
   public procedureId$ = signal<string>('');
   public credentialStatus$ = signal<CredentialStatus | undefined>(undefined);
+  public credentialStatusJson$ = signal<CredentialStatusJson | undefined>(undefined);
 
   private readonly actionsService = inject(CredentialActionsService);
   private readonly credentialProcedureService = inject(CredentialProcedureService);
@@ -104,6 +104,7 @@ export class CredentialDetailsService {
       tap(data=>{
         this.credentialDetailsData$.set(data);
         this.credentialStatus$.set(data.credential_status);
+        this.credentialStatusJson$.set(data.credential.vc.credentialStatus);
       }));
   }
 
