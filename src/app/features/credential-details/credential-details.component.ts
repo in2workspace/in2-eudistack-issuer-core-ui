@@ -56,9 +56,13 @@ export class CredentialDetailsComponent implements OnInit {
     (this.credentialType$() === 'LEARCredentialEmployee' || this.credentialType$() === 'VerifiableCertification');
   });
 
-  // todo
+  // todo: assegurar que té credentialStatus
   public showRevokeCredentialButton$ = computed(() => {
     return (this.credentialStatus$() !== 'REVOKED');
+  });
+
+  public showActionsButtonsContainer$ = computed<boolean>(() => {
+    return this.showSignCredentialButton$() || this.showReminderButton$() || this.showRevokeCredentialButton$()
   });
 
   //observables
