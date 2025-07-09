@@ -1,4 +1,4 @@
-import { inject, Injectable, signal } from '@angular/core';
+import { computed, inject, Injectable, Signal, signal } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { Observable, Observer, take, tap } from 'rxjs';
 import { CredentialProcedureService } from 'src/app/core/services/credential-procedure.service';
@@ -7,6 +7,8 @@ import { CredentialStatus, CredentialStatusJson, CredentialType, LEARCredential,
 import { CredentialDetailsFormSchema } from 'src/app/core/models/entity/lear-credential-details-schemas';
 import { CredentialActionsService } from './credential-actions.service';
 import { DialogWrapperService } from 'src/app/shared/components/dialog/dialog-wrapper/dialog-wrapper.service';
+import { StatusService } from 'src/app/shared/services/status.service';
+import { StatusClass } from 'src/app/core/models/entity/lear-credential-management';
 
 @Injectable() //provided in component
 export class CredentialDetailsService {
@@ -18,12 +20,15 @@ export class CredentialDetailsService {
   public credentialDetailsFormSchema$ = signal<CredentialDetailsFormSchema | undefined>(undefined);
   public procedureId$ = signal<string>('');
   public credentialStatus$ = signal<CredentialStatus | undefined>(undefined);
+  public credentialStatusClass$: Signal<StatusClass | undefined>;
   public credentialStatusJson$ = signal<CredentialStatusJson | undefined>(undefined);
 
   private readonly actionsService = inject(CredentialActionsService);
   private readonly credentialProcedureService = inject(CredentialProcedureService);
   private readonly fb = inject(FormBuilder);
   private readonly dialog = inject(DialogWrapperService);
+  private readonly statusService = inject(StatusService);
+
 
   private readonly loadFormObserver: Observer<LEARCredentialDataDetails> = {
     next: () => {
@@ -33,6 +38,14 @@ export class CredentialDetailsService {
       console.error('Error loading credential detail', err);
     },
     complete: () => {}
+  }
+
+  public constructor(){
+    this.credentialStatusClass$ = computed(() => {
+      const status = this.credentialStatus$();
+      if(!status) return status;
+      return this.statusService.mapStatusToClass(status)
+    });
   }
 
   public setProcedureId(id: string) {

@@ -36,6 +36,7 @@ export class CredentialDetailsComponent implements OnInit {
   public credentialValidUntil$ = this.detailsService.credentialValidUntil$;
   public credentialType$ = this.detailsService.credentialType$;
   public credentialStatus$ = this.detailsService.credentialStatus$;
+  public credentialStatusClass$ = this.detailsService.credentialStatusClass$;
   public credentialStatusJson$ = this.detailsService.credentialStatusJson$;
   public credentialDetailsForm$ = this.detailsService.credentialDetailsForm$;
   public credentialDetailsFormSchema$ = this.detailsService.credentialDetailsFormSchema$;

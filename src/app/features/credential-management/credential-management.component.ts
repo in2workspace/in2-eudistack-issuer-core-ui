@@ -17,6 +17,7 @@ import { animate, state, style, transition, trigger } from '@angular/animations'
 import { MatIcon } from '@angular/material/icon';
 import { CredentialProcedureWithClass, DefinedStatusClass, StatusClass, StatusClassFromDefined, STATUSES_WITH_DEFINED_CLASS } from 'src/app/core/models/entity/lear-credential-management';
 import { CredentialStatus } from 'src/app/core/models/entity/lear-credential';
+import { StatusService } from 'src/app/shared/services/status.service';
 
 
 @Component({
@@ -84,9 +85,9 @@ export class CredentialManagementComponent implements OnInit, AfterViewInit {
   private readonly credentialProcedureService = inject(CredentialProcedureService);
   private readonly destroyRef = inject(DestroyRef);
   private readonly router = inject(Router);
+  private readonly statusService = inject(StatusService);
 
   private readonly searchSubject = new Subject<string>();
-  private readonly statusesWithDefinedClass = STATUSES_WITH_DEFINED_CLASS;
 
   public ngOnInit() {
     this.isValidOrganizationIdentifier = this.authService.hasIn2OrganizationIdentifier();
@@ -147,7 +148,7 @@ export class CredentialManagementComponent implements OnInit, AfterViewInit {
         // todo
         console.log('Credentials from backend: ');
         console.log(data);
-        this.dataSource.data = this.addStatusClass(data.credential_procedures);
+        this.dataSource.data = this.statusService.addStatusClass(data.credential_procedures);
         console.log('mapped data');
         console.log(this.dataSource.data);
       },
@@ -197,23 +198,6 @@ export class CredentialManagementComponent implements OnInit, AfterViewInit {
         this.dataSource.paginator.firstPage();
       }
     }
-  }
-
-  private addStatusClass(credentialProcedure: CredentialProcedure[]): CredentialProcedureWithClass[]{
-    const procedureWithStatus: CredentialProcedureWithClass[] = credentialProcedure.map(cred => {
-      const credStatus: string = this.mapStatusToClass(cred.credential_procedure.status);
-      return { ...cred, statusClass: credStatus };
-    
-    });
-    return procedureWithStatus;
-  }
-
-  private mapStatusToClass(status: CredentialStatus): StatusClass{
-    if (this.statusesWithDefinedClass.includes(status as DefinedStatusClass)) {
-      const slug = status.toLowerCase().replace(/_/g, '-'); //for statuses like "PEND_DOWNLOAD"
-      return `status-${slug}` as StatusClassFromDefined;
-    }
-    return 'status-default';
   }
 
 }
