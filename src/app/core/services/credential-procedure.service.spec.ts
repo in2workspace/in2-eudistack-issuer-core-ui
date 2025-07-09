@@ -36,6 +36,7 @@ describe('CredentialProcedureService', () => {
   const notificationUrl = `${environment.server_url}${API.NOTIFICATION_PATH}`;
   const credentialOfferUrl = `${environment.server_url}${API.CREDENTIAL_OFFER_PATH}`;
   const signCredentialUrl = `${environment.server_url}${API.SIGN_CREDENTIAL_PATH}`;
+  const revokeCredentialUrl = `${environment.server_url}${API.REVOKE}`;
 
   beforeEach(() => {
     TestBed.configureTestingModule({
@@ -216,7 +217,7 @@ describe('CredentialProcedureService', () => {
     req.flush({});
   });
 
-  it('should handle error when sending reminder or signing credential', () => {
+  it('should handle error when sending reminder, revoking or signing credential', () => {
     const procedureId = '1';
     const errorResponse = new HttpErrorResponse({
       error: '500 error',
@@ -238,6 +239,16 @@ describe('CredentialProcedureService', () => {
       }
     );
 
+
+    const credentialId = '1234';
+    const listId = '1111';
+    service.revokeCredential(credentialId, listId).subscribe(
+      data => fail('should have failed with 500 error'),
+      (error: string) => {
+        expect(error).toContain('Server-side error: 500');
+      }
+    );
+
     const requests = httpMock.match(() => true);
 
     expect(requests.length).toBeGreaterThanOrEqual(2);
@@ -247,6 +258,22 @@ describe('CredentialProcedureService', () => {
       req.flush('500 error', errorResponse);
     });
   });
+
+   it('should revoke credential successfully', () => {
+    const credentialId = '1234';
+    const listId = '1111';
+    const body = { credentialId, listId };
+
+    service.revokeCredential(credentialId, listId).subscribe(data => {
+      expect(data).toBeTruthy();
+    });
+
+    const req = httpMock.expectOne(`${revokeCredentialUrl}`);
+    expect(req.request.method).toBe('POST');
+    expect(req.request.body).toEqual(body);
+    req.flush({});
+  });
+
 
   describe('Get credential offer by transaction code', () => {
   it('should get credential offer successfully', () => {
