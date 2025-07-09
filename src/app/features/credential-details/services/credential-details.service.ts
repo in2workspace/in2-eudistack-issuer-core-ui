@@ -69,14 +69,12 @@ export class CredentialDetailsService {
     const credentialId = this.getCredentialId();
     if(!credentialId){
       console.error("Couldn't get credential id from vc.");
-      // todo
       this.dialog.openErrorInfoDialog('error.unknown_error');
       return;
     }
     const listId = this.getCredentialListId();
     if(!listId){
       console.error("Couldn't get credential list from vc.");
-      // todo
       this.dialog.openErrorInfoDialog('error.unknown_error');
       return;
     }
@@ -88,7 +86,7 @@ export class CredentialDetailsService {
   }
 
   private getCredential(): LEARCredential | undefined{
-    return this.credentialDetailsData$()?.credential.vc;
+    return this.credentialDetailsData$()?.credential?.vc;
   }
 
   private getCredentialId(): string | undefined {
@@ -96,7 +94,7 @@ export class CredentialDetailsService {
   }
 
   private getCredentialListId(): string {
-    const statusListCredential = this.getCredential()?.credentialStatus.statusListCredential;
+    const statusListCredential = this.getCredential()?.credentialStatus?.statusListCredential;
     
     if(!statusListCredential){
       console.error('No Status List Credential found in vc: ');
@@ -111,7 +109,6 @@ export class CredentialDetailsService {
   private loadCredentialDetails(): Observable<LEARCredentialDataDetails> {
     return this.credentialProcedureService
     .getCredentialProcedureById(this.procedureId$())
-    // return of(mockCredentialEmployee)
       .pipe(
         take(1),
       tap(data=>{

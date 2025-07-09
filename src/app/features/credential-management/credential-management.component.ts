@@ -15,8 +15,7 @@ import { debounceTime, Subject, take } from 'rxjs';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { animate, state, style, transition, trigger } from '@angular/animations';
 import { MatIcon } from '@angular/material/icon';
-import { CredentialProcedureWithClass, DefinedStatusClass, StatusClass, StatusClassFromDefined, STATUSES_WITH_DEFINED_CLASS } from 'src/app/core/models/entity/lear-credential-management';
-import { CredentialStatus } from 'src/app/core/models/entity/lear-credential';
+import { CredentialProcedureWithClass } from 'src/app/core/models/entity/lear-credential-management';
 import { StatusService } from 'src/app/shared/services/status.service';
 
 
@@ -145,18 +144,12 @@ export class CredentialManagementComponent implements OnInit, AfterViewInit {
     .pipe(take(1))
     .subscribe({
       next: (data: ProcedureResponse) => {
-        // todo
-        console.log('Credentials from backend: ');
-        console.log(data);
         this.dataSource.data = this.statusService.addStatusClass(data.credential_procedures);
-        console.log('mapped data');
-        console.log(this.dataSource.data);
       },
       error: (error) => {
         console.error('Error fetching credentials for table', error);
       }
     });
-    // this.dataSource.data = this.addStatusClass(credentialProcedureListMock);
   }
 
   public navigateToCreateCredential(): void {

@@ -14,7 +14,6 @@ import { LoaderService } from 'src/app/core/services/loader.service';
 import { CapitalizePipe } from 'src/app/shared/pipes/capitalize.pipe';
 import { AddPrefixPipe } from 'src/app/shared/pipes/add-prefix.pipe';
 import { CredentialDetailsService } from './services/credential-details.service';
-import { mockCredentialEmployee } from 'src/app/core/mocks/details-mocks';
 
 
 @Component({
@@ -41,7 +40,6 @@ export class CredentialDetailsComponent implements OnInit {
   public credentialDetailsForm$ = this.detailsService.credentialDetailsForm$;
   public credentialDetailsFormSchema$ = this.detailsService.credentialDetailsFormSchema$;
 
-  //  todo move logic to service
   public showReminderButton$ = computed(() => {
     return (
       (
@@ -58,10 +56,8 @@ export class CredentialDetailsComponent implements OnInit {
     (this.credentialType$() === 'LEARCredentialEmployee' || this.credentialType$() === 'VerifiableCertification');
   });
 
-  // todo: assegurar que té credentialStatus
   public showRevokeCredentialButton$ = computed(() => {
     const isRevoked = this.credentialStatus$() === 'REVOKED';
-    // todo remove this condition?
     const hasCredentialStatusJson = !!this.credentialStatusJson$();
 
     return (!isRevoked && hasCredentialStatusJson);
@@ -116,7 +112,6 @@ export class CredentialDetailsComponent implements OnInit {
   private getProcedureId(): void {
     const id = this.route.snapshot.paramMap.get('id')!;
     this.detailsService.setProcedureId(id);
-    // this.detailsService.setProcedureId(mockCredentialEmployee.procedure_id);
   }
   
 

@@ -10,8 +10,6 @@ export class StatusService {
 
   private readonly statusesWithDefinedClass = STATUSES_WITH_DEFINED_CLASS;
 
-  constructor() { }
-
     public addStatusClass(credentialProcedure: CredentialProcedure[]): CredentialProcedureWithClass[]{
       const procedureWithStatus: CredentialProcedureWithClass[] = credentialProcedure.map(cred => {
         const credStatus: string = this.mapStatusToClass(cred.credential_procedure.status);

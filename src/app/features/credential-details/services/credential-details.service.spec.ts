@@ -24,7 +24,9 @@ describe('CredentialDetailsService', () => {
     openRevokeCredentialDialog: jest.fn(),
   };
 
-  const mockDialogWrapperService = {} as any;
+  const mockDialogWrapperService = {
+    openErrorInfoDialog: jest.fn()
+  } as any;
   const mockRouter = {} as any;
 
   beforeEach(() => {
@@ -131,5 +133,26 @@ describe('CredentialDetailsService', () => {
     service.openRevokeCredentialDialog();
     expect(mockCredentialActionsService.openRevokeCredentialDialog)
       .toHaveBeenCalledWith('cred789', 'list2');
+  });
+
+    it('should show error dialog if credential id is missing', () => {
+    const mockWithoutId = { credential: { vc: { id: undefined } } } as any;
+    service.credentialDetailsData$.set(mockWithoutId);
+
+    service.openRevokeCredentialDialog();
+
+    expect(mockDialogWrapperService.openErrorInfoDialog).toHaveBeenCalledWith('error.unknown_error');
+    expect(mockCredentialActionsService.openRevokeCredentialDialog).not.toHaveBeenCalled();
+  });
+
+  it('should show error dialog if statusListCredential is missing', () => {
+    const mockCredential = { id: 'credXYZ' } as any;
+    const mockData = { credential: { vc: mockCredential } } as any;
+    service.credentialDetailsData$.set(mockData);
+
+    service.openRevokeCredentialDialog();
+
+    expect(mockDialogWrapperService.openErrorInfoDialog).toHaveBeenCalledWith('error.unknown_error');
+    expect(mockCredentialActionsService.openRevokeCredentialDialog).not.toHaveBeenCalled();
   });
 });
