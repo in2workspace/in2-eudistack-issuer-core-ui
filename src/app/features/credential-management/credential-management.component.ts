@@ -15,6 +15,9 @@ import { debounceTime, Subject, take } from 'rxjs';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { animate, state, style, transition, trigger } from '@angular/animations';
 import { MatIcon } from '@angular/material/icon';
+import { CredentialProcedureWithClass, DefinedStatusClass, StatusClass, StatusClassFromDefined, STATUSES_WITH_DEFINED_CLASS } from 'src/app/core/models/entity/lear-credential-management';
+import { CredentialStatus } from 'src/app/core/models/entity/lear-credential';
+
 
 @Component({
     selector: 'app-credential-management',
@@ -69,9 +72,9 @@ import { MatIcon } from '@angular/material/icon';
 export class CredentialManagementComponent implements OnInit, AfterViewInit {
   @ViewChild(MatPaginator) public paginator!: MatPaginator;
   @ViewChild(MatSort) public sort!: MatSort;
-  @ViewChild('searchInput') searchInput!: ElementRef<HTMLInputElement>;
+  @ViewChild('searchInput') public searchInput!: ElementRef<HTMLInputElement>;
   public displayedColumns: string[] = ['subject', 'credential_type', 'updated','status'];
-  public dataSource = new MatTableDataSource<CredentialProcedure>();
+  public dataSource = new MatTableDataSource<CredentialProcedureWithClass>();
   public isValidOrganizationIdentifier = false;
 
   public hideSearchBar: boolean = true;
@@ -83,6 +86,7 @@ export class CredentialManagementComponent implements OnInit, AfterViewInit {
   private readonly router = inject(Router);
 
   private readonly searchSubject = new Subject<string>();
+  private readonly statusesWithDefinedClass = STATUSES_WITH_DEFINED_CLASS;
 
   public ngOnInit() {
     this.isValidOrganizationIdentifier = this.authService.hasIn2OrganizationIdentifier();
@@ -140,12 +144,13 @@ export class CredentialManagementComponent implements OnInit, AfterViewInit {
     .pipe(take(1))
     .subscribe({
       next: (data: ProcedureResponse) => {
-        this.dataSource.data = data.credential_procedures;
+        this.dataSource.data = this.addStatusClass(data.credential_procedures);
       },
       error: (error) => {
-        console.error('Error fetching credentials', error);
+        console.error('Error fetching credentials for table', error);
       }
     });
+    // this.dataSource.data = this.addStatusClass(credentialProcedureListMock);
   }
 
   public navigateToCreateCredential(): void {
@@ -187,6 +192,23 @@ export class CredentialManagementComponent implements OnInit, AfterViewInit {
         this.dataSource.paginator.firstPage();
       }
     }
+  }
+
+  private addStatusClass(credentialProcedure: CredentialProcedure[]): CredentialProcedureWithClass[]{
+    const procedureWithStatus: CredentialProcedureWithClass[] = credentialProcedure.map(cred => {
+      const credStatus: string = this.mapStatusToClass(cred.credential_procedure.status);
+      return { ...cred, statusClass: credStatus };
+    
+    });
+    return procedureWithStatus;
+  }
+
+  private mapStatusToClass(status: CredentialStatus): StatusClass{
+    if (this.statusesWithDefinedClass.includes(status as DefinedStatusClass)) {
+      const slug = status.toLowerCase().replace(/_/g, '-'); //for statuses like "PEND_DOWNLOAD"
+      return `status-${slug}` as StatusClassFromDefined;
+    }
+    return 'status-default';
   }
 
 }
