@@ -67,8 +67,8 @@ describe('CredentialProcedureService', () => {
 
   it('should fetch credential procedures successfully', () => {
     const mockData: ProcedureResponse = {credential_procedures:[
-      { credential_procedure:{procedure_id: '1', status: 'completed', subject: 'John Doe', updated: '2023-01-01', credential_type: 'LEARCredentialEmployee'}},
-      { credential_procedure:{ procedure_id: '2', status: 'pending', subject: 'Jane Doe', updated: '2023-01-02', credential_type: 'VerifiableCertification'}}
+      { credential_procedure:{procedure_id: '1', status: 'VALID', subject: 'John Doe', updated: '2023-01-01', credential_type: 'LEARCredentialEmployee'}},
+      { credential_procedure:{ procedure_id: '2', status: 'REVOKED', subject: 'Jane Doe', updated: '2023-01-02', credential_type: 'VerifiableCertification'}}
     ]};
 
     service.getCredentialProcedures().subscribe(data => {

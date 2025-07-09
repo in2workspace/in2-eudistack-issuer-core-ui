@@ -11,7 +11,8 @@ import { TranslateModule } from '@ngx-translate/core';
 import { of } from 'rxjs';
 import { mockCredentialEmployee } from 'src/app/core/mocks/details-mocks';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
-import { CredentialStatus, CredentialType } from 'src/app/core/models/entity/lear-credential';
+import { CredentialStatus, CredentialStatusJson, CredentialType } from 'src/app/core/models/entity/lear-credential';
+import { StatusClass } from 'src/app/core/models/entity/lear-credential-management';
 
 describe('CredentialDetailsComponent', () => {
   let component: CredentialDetailsComponent;
@@ -22,7 +23,9 @@ describe('CredentialDetailsComponent', () => {
     credentialValidUntil$: signal('2023-12-31'),
     credentialType$: signal<CredentialType>('LEARCredentialEmployee'),
     credentialStatus$: signal<CredentialStatus>('DRAFT'),
-    credentialDetailsForm$: signal(new FormGroup({})),
+    credentialStatusJson$: signal<CredentialStatusJson>({} as any),
+    credentialStatusClass$: signal<StatusClass|undefined>(undefined)
+,   credentialDetailsForm$: signal(new FormGroup({})),
     credentialDetailsFormSchema$: signal({}),
     setProcedureId: jest.fn(),
     loadCredentialDetailsAndForm: jest.fn(),
