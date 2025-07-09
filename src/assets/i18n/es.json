@@ -103,6 +103,7 @@
     "hash": "hash",
     "scope": "alcance",
     "standard": "estándar",
+    "revoke": "revocar",
     "sendReminderConfirm": {
       "title": "Enviar recordatorio",
       "message": "¿Estás seguro de que deseas enviar un recordatorio para esta oferta de credencial?"

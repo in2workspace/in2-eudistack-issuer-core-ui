@@ -103,6 +103,7 @@
     "hash": "hash",
     "scope": "abast",
     "standard": "estàndard",
+    "revoke": "revocar",
     "sendReminderConfirm": {
       "title": "Enviar recordatori",
       "message": "Estàs segur que vols enviar un recordatori per aquesta oferta de credencial?"
