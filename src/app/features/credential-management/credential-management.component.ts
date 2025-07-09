@@ -144,7 +144,12 @@ export class CredentialManagementComponent implements OnInit, AfterViewInit {
     .pipe(take(1))
     .subscribe({
       next: (data: ProcedureResponse) => {
+        // todo
+        console.log('Credentials from backend: ');
+        console.log(data);
         this.dataSource.data = this.addStatusClass(data.credential_procedures);
+        console.log('mapped data');
+        console.log(this.dataSource.data);
       },
       error: (error) => {
         console.error('Error fetching credentials for table', error);
