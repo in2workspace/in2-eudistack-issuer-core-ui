@@ -1,6 +1,6 @@
 {
   "name": "in2-issuer-ui",
-  "version": "1.13.3",
+  "version": "1.13.2",
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
