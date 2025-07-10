@@ -66,6 +66,16 @@ export class CredentialDetailsService {
     return this.actionsService.openSignCredentialDialog(procedureId);
   }
   public openRevokeCredentialDialog(): void{
+    if(this.credentialStatus$() !== 'VALID'){
+      console.error("Only credentials with status VALID can be revoked.");
+      this.dialog.openErrorInfoDialog('error.unknown_error');
+      return;
+    }
+    if(!this.credentialStatusJson$()){
+      console.error("Only credentials with statusCredential field can be revoked.");
+      this.dialog.openErrorInfoDialog('error.unknown_error');
+      return;
+    }
     const credentialId = this.getCredentialId();
     if(!credentialId){
       console.error("Couldn't get credential id from vc.");

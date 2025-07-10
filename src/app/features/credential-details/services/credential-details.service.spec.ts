@@ -127,8 +127,10 @@ describe('CredentialDetailsService', () => {
       id: 'cred789',
       credentialStatus: { statusListCredential: ['list1', 'list2'] }
     } as any;
-    const mockData = { credential: { vc: mockCredential } } as any;
+    const mockData = { credential_status: 'VALID', credential: { vc: mockCredential } } as any;
     service.credentialDetailsData$.set(mockData);
+    service.credentialStatus$.set('VALID');
+    service.credentialStatusJson$.set({prop:'value'}  as any);
 
     service.openRevokeCredentialDialog();
     expect(mockCredentialActionsService.openRevokeCredentialDialog)

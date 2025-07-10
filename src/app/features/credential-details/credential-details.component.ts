@@ -2,7 +2,6 @@ import { MatCard, MatCardContent } from '@angular/material/card';
 import { Component, computed, inject, OnInit } from '@angular/core';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { AbstractControl, FormArray, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
-
 import { CommonModule } from '@angular/common';
 import { MatFormField, MatLabel } from '@angular/material/form-field';
 import { MatInput } from '@angular/material/input';
@@ -57,10 +56,10 @@ export class CredentialDetailsComponent implements OnInit {
   });
 
   public showRevokeCredentialButton$ = computed(() => {
-    const isRevoked = this.credentialStatus$() === 'REVOKED';
+    const isValid = this.credentialStatus$() === 'VALID';
     const hasCredentialStatusJson = !!this.credentialStatusJson$();
 
-    return (!isRevoked && hasCredentialStatusJson);
+    return (isValid && hasCredentialStatusJson);
   });
 
   public showActionsButtonsContainer$ = computed<boolean>(() => {
