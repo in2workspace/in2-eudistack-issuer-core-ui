@@ -104,6 +104,7 @@
     "scope": "abast",
     "standard": "estàndard",
     "revoke": "revocar",
+    "revokeTooltip": "This credential cannot be revoked because it was issued using a legacy type. Please check our Knowlegebase.",
     "sendReminderConfirm": {
       "title": "Enviar recordatori",
       "message": "Estàs segur que vols enviar un recordatori per aquesta oferta de credencial?"

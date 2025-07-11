@@ -1,3 +1,5 @@
+import { CustomTooltipDirective } from './../../shared/directives/custom-tooltip.directive';
+import { MatTooltip } from '@angular/material/tooltip';
 import { MatCard, MatCardContent } from '@angular/material/card';
 import { Component, computed, inject, OnInit } from '@angular/core';
 import { ActivatedRoute, RouterLink } from '@angular/router';
@@ -13,11 +15,13 @@ import { LoaderService } from 'src/app/core/services/loader.service';
 import { CapitalizePipe } from 'src/app/shared/pipes/capitalize.pipe';
 import { AddPrefixPipe } from 'src/app/shared/pipes/add-prefix.pipe';
 import { CredentialDetailsService } from './services/credential-details.service';
+import { environment } from 'src/environments/environment';
+import { KNOWLEDGEBASE_PATH } from 'src/app/core/constants/knowledge.constants';
 
 
 @Component({
   standalone: true,
-  imports: [AddPrefixPipe, CapitalizePipe, CommonModule, FormsModule, MatButton, MatCard, MatCardContent, MatFormField, MatIcon, MatInput, MatLabel, MatSlideToggle, ReactiveFormsModule, RouterLink, TranslatePipe ],
+  imports: [AddPrefixPipe, CapitalizePipe, CommonModule, CustomTooltipDirective, FormsModule, MatButton, MatCard, MatCardContent, MatFormField, MatIcon, MatInput, MatLabel, MatSlideToggle, MatTooltip, ReactiveFormsModule, RouterLink, TranslatePipe ],
   providers:[CredentialDetailsService],
   selector: 'app-credential-details',
   templateUrl: './credential-details.component.html',
@@ -38,6 +42,8 @@ export class CredentialDetailsComponent implements OnInit {
   public credentialStatusJson$ = this.detailsService.credentialStatusJson$;
   public credentialDetailsForm$ = this.detailsService.credentialDetailsForm$;
   public credentialDetailsFormSchema$ = this.detailsService.credentialDetailsFormSchema$;
+  public tooltipText: string = "credentialDetails.revokeTooltip";
+  public knowledgeBaseUrl = environment.knowledge_base_url + KNOWLEDGEBASE_PATH.ISSUER + KNOWLEDGEBASE_PATH.ISSUER_REVOKATION;
 
   public showReminderButton$ = computed(() => {
     return (
@@ -56,10 +62,11 @@ export class CredentialDetailsComponent implements OnInit {
   });
 
   public showRevokeCredentialButton$ = computed(() => {
-    const isValid = this.credentialStatus$() === 'VALID';
-    const hasCredentialStatusJson = !!this.credentialStatusJson$();
+    return this.credentialStatus$() === 'VALID';
+  });
 
-    return (isValid && hasCredentialStatusJson);
+  public enableRevokeCredentialButton$ = computed(() => {
+    return !!this.credentialStatusJson$();
   });
 
   public showActionsButtonsContainer$ = computed<boolean>(() => {

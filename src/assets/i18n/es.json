@@ -104,6 +104,7 @@
     "scope": "alcance",
     "standard": "estándar",
     "revoke": "revocar",
+    "revokeTooltip": "This credential cannot be revoked because it was issued using a legacy type. Please check our Knowlegebase.",
     "sendReminderConfirm": {
       "title": "Enviar recordatorio",
       "message": "¿Estás seguro de que deseas enviar un recordatorio para esta oferta de credencial?"

@@ -104,6 +104,7 @@
     "scope": "scope",
     "standard": "standard",
     "revoke": "Revoke",
+    "revokeTooltip": "This credential cannot be revoked because it was issued using a legacy type. Please check our <a href='{{url}}' target='_blank' rel='noopener noreferrer'>guide</a>.",
     "sendReminderConfirm": {
       "title": "Send Reminder",
       "message": "Are you sure you want to send a reminder for this credential offer?"
