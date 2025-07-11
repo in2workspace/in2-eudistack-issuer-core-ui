@@ -17,6 +17,7 @@ import { Subscription } from 'rxjs';
 export class CustomTooltipDirective implements OnDestroy {
   @Input('appCustomTooltip') public tooltipKey: string = '';
   @Input() public tooltipParams: Record<string, string> = {};
+  @Input() public appCustomTooltipDisabled = false;
 
   private tooltipElement: HTMLElement | null = null;
   private hideTimeout: any;
@@ -27,20 +28,26 @@ export class CustomTooltipDirective implements OnDestroy {
   private readonly renderer = inject(Renderer2);
   private readonly translate = inject(TranslateService);
 
-  @HostListener('mouseenter')
-  public onMouseEnter() {
-    if (!this.tooltipElement) {
-      this.subscribeToTranslation();
-      this.showTooltip();
-    }
+@HostListener('mouseenter')
+public onMouseEnter() {
+  if (this.appCustomTooltipDisabled) {
+    return;
   }
+  if (!this.tooltipElement) {
+    this.subscribeToTranslation();
+    this.showTooltip();
+  }
+}
 
-  @HostListener('mouseleave')
-  public onMouseLeave() {
-    this.hideTimeout = setTimeout(() => {
-      this.hideTooltip();
-    }, 100);
+@HostListener('mouseleave')
+public onMouseLeave() {
+  if (this.appCustomTooltipDisabled) {
+    return;
   }
+  this.hideTimeout = setTimeout(() => {
+    this.hideTooltip();
+  }, 100);
+}
 
   public ngOnDestroy() {
     this.unsubscribeTranslation();
