@@ -1,10 +1,14 @@
 export interface LEARCredentialDataDetails {
   procedure_id: string;
+  // In the future, "credential_status" will be replaced by "lifecycle_procedure_status"
   credential_status: CredentialStatus;
   credential: LEARCredentialJwtPayload;
 }
 
+// WITHDRAWN, PEND_DOWNLOAD and ISSUED are legacy statuses. Some of them will be reused in the future
 export type CredentialStatus = 'WITHDRAWN' | 'VALID' | 'EXPIRED' | 'PEND_DOWNLOAD' | 'PEND_SIGNATURE' | 'DRAFT' | 'ISSUED' | 'REVOKED';
+
+// This corresponds to the current credentialStatus field in LEARCredential, which is different from the "credential_status". In the future, "credential_status" will be replaced by "lifecycle_procedure_status"
 export interface CredentialStatusJson {   
   "id": string,
   "type": CredentialStatusType,   

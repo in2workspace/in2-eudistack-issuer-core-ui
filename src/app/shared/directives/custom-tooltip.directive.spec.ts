@@ -46,12 +46,10 @@ describe('CustomTooltipDirective', () => {
     const buttonDebugElement = fixture.debugElement.query(By.css('button'));
     const buttonElement = buttonDebugElement.nativeElement as HTMLButtonElement;
 
-    // Simular mouseenter
     buttonDebugElement.triggerEventHandler('mouseenter', {});
-    tick(); // processa subscripcions
+    tick();
     fixture.detectChanges();
 
-    // El tooltip ha d'estar creat en el document.body
     const tooltipElement = Array.from(document.body.children).find(
       el => el.textContent?.includes('Click')
     ) as HTMLElement | undefined;
@@ -61,12 +59,10 @@ describe('CustomTooltipDirective', () => {
     expect(tooltipElement!.innerHTML).toContain('Click');
     expect(tooltipElement!.querySelector('a')?.getAttribute('href')).toBe('https://test-url.com/');
 
-    // Simular mouseleave
     buttonDebugElement.triggerEventHandler('mouseleave', {});
-    tick(150); // superar el delay de 100ms
+    tick(150);
     fixture.detectChanges();
 
-    // El tooltip ha de desaparèixer
     const tooltipStillPresent = Array.from(document.body.children).find(
       el => el.textContent?.includes('Click')
     );
