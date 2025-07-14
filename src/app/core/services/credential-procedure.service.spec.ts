@@ -13,6 +13,7 @@ import {Router} from "@angular/router";
 import {API} from "../constants/api.constants";
 import { LEARCredentialDataDetails } from '../models/entity/lear-credential';
 import { EmployeeProcedureRequest } from '../models/dto/procedure-request.dto';
+import { API_PATH } from '../constants/api-paths.constants';
 
 const notFoundErrorResp = new HttpErrorResponse({
   error: '404 error',
@@ -31,12 +32,12 @@ describe('CredentialProcedureService', () => {
   let dialogSpy: jest.Mocked<DialogWrapperService>;
   let translateSpy: jest.Mocked<TranslateService>;
   let routerSpy: jest.Mocked<Router>;
-  const apiUrl = `${environment.server_url}${API.SAVE_CREDENTIAL_PATH}`;
-  const proceduresURL = `${environment.server_url}${API.PROCEDURES_PATH}`;
-  const notificationUrl = `${environment.server_url}${API.NOTIFICATION_PATH}`;
-  const credentialOfferUrl = `${environment.server_url}${API.CREDENTIAL_OFFER_PATH}`;
-  const signCredentialUrl = `${environment.server_url}${API.SIGN_CREDENTIAL_PATH}`;
-  const revokeCredentialUrl = `${environment.server_url}${API.REVOKE}`;
+  const apiUrl = `${environment.server_url}${API_PATH.SAVE_CREDENTIAL}`;
+  const proceduresURL = `${environment.server_url}${API_PATH.PROCEDURES}`;
+  const notificationUrl = `${environment.server_url}${API_PATH.NOTIFICATION}`;
+  const credentialOfferUrl = `${environment.server_url}${API_PATH.CREDENTIAL_OFFER}`;
+  const signCredentialUrl = `${environment.server_url}${API_PATH.SIGN_CREDENTIAL}`;
+  const revokeCredentialUrl = `${environment.server_url}${API_PATH.REVOKE}`;
 
   beforeEach(() => {
     TestBed.configureTestingModule({

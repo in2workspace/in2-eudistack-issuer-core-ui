@@ -14,18 +14,19 @@ import { LEARCredentialDataNormalizer } from '../models/entity/lear-credential-e
 import { EmployeeProcedureRequest } from '../models/dto/procedure-request.dto';
 import { LEARCredentialDataDetailsResponse } from '../models/dto/lear-credential-data-details-response.dto';
 import { CredentialRevokeRequestDto } from '../models/dto/credential-revoke-request.dto';
+import { API_PATH } from '../constants/api-paths.constants';
 
 @Injectable({
   providedIn: 'root'
 })
 export class CredentialProcedureService {
 
-  private readonly saveCredential = `${environment.server_url}${API.SAVE_CREDENTIAL_PATH}`;
-  private readonly organizationProcedures = `${environment.server_url}${API.PROCEDURES_PATH}`;
-  private readonly credentialOfferUrl = `${environment.server_url}${API.CREDENTIAL_OFFER_PATH}`;
-  private readonly notificationProcedure = `${environment.server_url}${API.NOTIFICATION_PATH}`;
-  private readonly signCredentialUrl = `${environment.server_url}${API.SIGN_CREDENTIAL_PATH}`;
-  private readonly revokeCredentialUrl = `${environment.server_url}${API.REVOKE}`;
+  private readonly organizationProcedures = `${environment.server_url}${API_PATH.PROCEDURES}`;
+  private readonly saveCredential = `${environment.server_url}${API_PATH.SAVE_CREDENTIAL}`;
+  private readonly credentialOfferUrl = `${environment.server_url}${API_PATH.CREDENTIAL_OFFER}`;
+  private readonly notificationProcedure = `${environment.server_url}${API_PATH.NOTIFICATION}`;
+  private readonly signCredentialUrl = `${environment.server_url}${API_PATH.SIGN_CREDENTIAL}`;
+  private readonly revokeCredentialUrl = `${environment.server_url}${API_PATH.REVOKE}`;
 
   private readonly http = inject(HttpClient);
   private readonly normalizer = new LEARCredentialDataNormalizer();
