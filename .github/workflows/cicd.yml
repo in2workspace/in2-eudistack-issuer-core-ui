@@ -28,7 +28,6 @@ jobs:
           cache: 'npm'
           cache-dependency-path: package-lock.json
 
-      # {4}
       - name: Install dependencies
         run: npm ci
 
@@ -42,6 +41,13 @@ jobs:
           zip -r $ZIP_FILE dist/out
           echo "ZIP_FILE=$ZIP_FILE" >> $GITHUB_ENV
       
+      - name: Configure AWS Credentials  
+        uses: aws-actions/configure-aws-credentials@v2  
+        with:  
+          aws-access-key-id:     ${{ secrets.AWS_ACCESS_KEY_ID_DEV }}  
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY_DEV }}  
+          aws-region:            'eu-west-1'    
+
       - name: Extract Amplify App ID
         run: |
           AMPLIFY_APP_ID=$(aws amplify list-apps --query "apps[?name=='${{ env.AMPLIFY_APP_NAME }}'].appId" --output text)
