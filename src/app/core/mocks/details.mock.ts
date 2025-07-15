@@ -234,6 +234,9 @@ export const mockGxLabel: CredentialProcedureDataDetails = {
     vc: {
       id: 'cred-cert',
       type: ['VerifiableCredential', 'gx:LabelCredential'],
+            credentialStatus: {
+        ...mockCredentialStatus
+      },
       issuer: "issueeeeeeer",
  credentialSubject: {
         id: 'urn:uuid:123e4567-e89b-12d3-a456-426614174000',
