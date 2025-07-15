@@ -103,7 +103,7 @@
     "hash": "hash",
     "scope": "scope",
     "standard": "standard",
-    "revoke": "Revoke",
+    "revoke": "revoke",
     "revokeTooltip": "This credential cannot be revoked because it was issued using a legacy type. To learn how to revoke this type of credential, please check our <a href='{{url}}' style='color: white; font-weight:700' target='_blank' rel='noopener noreferrer'>guide</a>.",
     "sendReminderConfirm": {
       "title": "Send Reminder",
