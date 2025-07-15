@@ -54,17 +54,17 @@ jobs:
           echo "AMPLIFY_APP_ID=$AMPLIFY_APP_ID" >> $GITHUB_ENV
           echo "Found App ID: $AMPLIFY_APP_ID for app: ${{ env.AMPLIFY_APP_NAME }}"
       
-      # - name: Create AWS Amplify Deployment
-      #   run: |
-      #     read ZIP_UPLOAD_URL JOB_ID <<< $(aws amplify create-deployment --app-id ${{ env.AMPLIFY_APP_ID }} --branch-name ${{ env.BRANCH_NAME }} --query 'join(` `, [zipUploadUrl, jobId])' --output text)
-      #     curl -X PUT --upload-file ${{ env.ZIP_FILE }} "$ZIP_UPLOAD_URL"
-      #     aws amplify start-deployment --app-id ${{ env.AMPLIFY_APP_ID }} --branch-name ${{ env.BRANCH_NAME }} --job-id $JOB_ID       
-      - uses: luisgreen/amplify_deployment@main
-        with:
-          appId: ${{ env.AMPLIFY_APP_ID }}
-          branchName: ${{ env.BRANCH_NAME }}
-          artifactPath: ${{ env.ZIP_FILE }}
-          region: 'eu-west-1'
+      - name: Create AWS Amplify Deployment
+        run: |
+          read ZIP_UPLOAD_URL JOB_ID <<< $(aws amplify create-deployment --app-id ${{ env.AMPLIFY_APP_ID }} --branch-name ${{ env.BRANCH_NAME }} --query 'join(` `, [zipUploadUrl, jobId])' --output text)
+          echo "ZIP_UPLOAD_URL=$ZIP_UPLOAD_URL" >> $GITHUB_ENV
+          echo "JOB_ID=$JOB_ID" >> $GITHUB_ENV
+          echo "Deployment created with Job ID: $JOB_ID and Upload URL: $ZIP_UPLOAD_URL"
+          
+          echo "Uploading zip file to AWS Amplify..."
+        
+          curl -X PUT --upload-file ${{ env.ZIP_FILE }} "$ZIP_UPLOAD_URL"
+          aws amplify start-deployment --app-id ${{ env.AMPLIFY_APP_ID }} --branch-name ${{ env.BRANCH_NAME }} --job-id $JOB_ID       
 
       - name: Notify Deployment
         run: |
