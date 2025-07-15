@@ -10,9 +10,9 @@ import {throwError} from 'rxjs';
 import {DialogWrapperService} from "../../shared/components/dialog/dialog-wrapper/dialog-wrapper.service";
 import {TranslateService} from "@ngx-translate/core";
 import {Router} from "@angular/router";
-import { EmployeeProcedureRequest } from '../models/dto/procedure-request.dto';
 import { API_PATH } from '../constants/api-paths.constants';
 import { CredentialProcedureDataDetails } from '../models/entity/lear-credential';
+import { EmployeeProcedureRequest } from '../models/dto/credential-procedure-request.dto';
 
 const notFoundErrorResp = new HttpErrorResponse({
   error: '404 error',
@@ -99,7 +99,7 @@ describe('CredentialProcedureService', () => {
   it('should fetch credential procedure by id successfully', () => {
     const procedureId = '1';
     const mockData: CredentialProcedureDataDetails =
-      { procedure_id: '1', credential_status: 'VALID', credential: { mandatee: {}, mandator: {}, power: [] } as any }
+      { procedure_id: '1', lifeCycleStatus: 'VALID', credential: { mandatee: {}, mandator: {}, power: [] } as any }
     ;
 
     service.getCredentialProcedureById(procedureId).subscribe(data => {

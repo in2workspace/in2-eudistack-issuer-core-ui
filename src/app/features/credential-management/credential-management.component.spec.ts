@@ -10,8 +10,8 @@ import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { provideHttpClient } from '@angular/common/http';
 import { of, throwError } from 'rxjs';
 import { LifeCycleStatusService } from 'src/app/shared/services/life-cycle-status.service';
-import { CredentialProcedure, ProcedureResponse } from 'src/app/core/models/dto/procedure-response.dto';
 import { CredentialProcedureWithClass } from 'src/app/core/models/entity/lear-credential-management';
+import { ProcedureResponse, CredentialProcedure } from 'src/app/core/models/dto/credential-procedure-response.dto';
 
 describe('CredentialManagementComponent', () => {
   let component: CredentialManagementComponent;

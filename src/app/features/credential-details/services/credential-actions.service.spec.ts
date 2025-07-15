@@ -1,11 +1,10 @@
 import { TestBed } from '@angular/core/testing';
 import { Router } from '@angular/router';
-import { of, EMPTY } from 'rxjs';
+import { of } from 'rxjs';
 import { TranslateService } from '@ngx-translate/core';
 import { CredentialActionsService } from './credential-actions.service';
 import { CredentialProcedureService } from 'src/app/core/services/credential-procedure.service';
 import { DialogWrapperService } from 'src/app/shared/components/dialog/dialog-wrapper/dialog-wrapper.service';
-import { DialogData } from 'src/app/shared/components/dialog/dialog.component';
 
 describe('CredentialActionsService', () => {
   let service: CredentialActionsService;

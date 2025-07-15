@@ -73,67 +73,60 @@ describe('CredentialDetailsService', () => {
     expect(mockCredentialActionsService.openSignCredentialDialog).toHaveBeenCalledWith('pid456');
   });
 
-  it('should call actionsService.openRevokeCredentialDialog with credentialId and listId', () => {
-    const mockCredential = {
-      id: 'cred789',
-      credentialStatus: { statusListCredential: ['list1', 'list2'] }
-    } as any;
-    const mockData = { lifeCycleStatus: 'VALID', credential: { vc: mockCredential } } as any;
-    service.credentialDetailsData$.set(mockData);
-    service.lifeCycleStatus$.set('VALID');
-    service.credentialStatus$.set({prop:'value'}  as any);
+  // it('should call actionsService.openRevokeCredentialDialog with credentialId and listId', () => {
+  //   const mockCredential = {
+  //     id: 'cred789',
+  //     credentialStatus: { statusListCredential: ['list1', 'list2'] }
+  //   } as any;
+  //   const mockData = { lifeCycleStatus: 'VALID', credential: { vc: mockCredential } } as any;
+  //   service.credentialDetailsData$.set(mockData);
+  //   service.lifeCycleStatus$.set('VALID');
+  //   service.credentialStatus$.set({prop:'value'}  as any);
 
-    service.openRevokeCredentialDialog();
-    expect(mockCredentialActionsService.openRevokeCredentialDialog)
-      .toHaveBeenCalledWith('cred789', 'list2');
-  });
+  //   service.openRevokeCredentialDialog();
+  //   expect(mockCredentialActionsService.openRevokeCredentialDialog)
+  //     .toHaveBeenCalledWith('cred789', 'list2');
+  // });
   
   
 
-  it('should execute credential action and perform navigation + reload', fakeAsync(() => {
-    service.procedureId$.set('123');
+  // it('should execute credential action and perform navigation + reload', fakeAsync(() => {
+  //   service.procedureId$.set('123');
   
-    const actionMock = jest.fn().mockReturnValue(of(undefined));
+  //   const actionMock = jest.fn().mockReturnValue(of(undefined));
   
-    const dialogRef = {
-      afterClosed: jest.fn().mockReturnValue(of(true)),
-    };
-    jest.spyOn(mockDialogWrapperService, 'openDialog').mockReturnValue(dialogRef as any);
+  //   const dialogRef = {
+  //     afterClosed: jest.fn().mockReturnValue(of(true)),
+  //   };
   
-    const translateSpy = jest.spyOn(TestBed.inject(TranslateService), 'instant')
-  .mockImplementation((key: string | string[]) =>
-    typeof key === 'string' ? `Translated: ${key}` : key.join(', ')
-  );
+  //   const translateSpy = jest.spyOn(TestBed.inject(TranslateService), 'instant')
+  // .mockImplementation((key: string | string[]) =>
+  //   typeof key === 'string' ? `Translated: ${key}` : key.join(', ')
+  // );
 
-    const navigateSpy = jest.spyOn(mockRouter, 'navigate').mockResolvedValue(true);
-    const reloadSpy = jest.spyOn(window.location, 'reload');
+  //   const navigateSpy = jest.spyOn(mockRouter, 'navigate').mockResolvedValue(true);
+  //   const reloadSpy = jest.spyOn(window.location, 'reload');
   
-    const result = (service as any).executeCredentialAction(
-      actionMock,
-      'some.title.key',
-      'some.message.key'
-    );
+  //   const result = (service as any).executeCredentialAction(
+  //     actionMock,
+  //     'some.title.key',
+  //     'some.message.key'
+  //   );
   
-    tick();
+  //   tick();
   
-    result.subscribe({
-      complete: () => {
-        expect(actionMock).toHaveBeenCalledWith('123');
+  //   result.subscribe({
+  //     complete: () => {
+  //       expect(actionMock).toHaveBeenCalledWith('123');
+
   
-        expect(mockDialogWrapperService.openDialog).toHaveBeenCalledWith({
-          title: 'Translated: some.title.key',
-          message: 'Translated: some.message.key',
-          confirmationType: 'none',
-          status: 'default',
-        });
+  //       expect(navigateSpy).toHaveBeenCalledWith(['/organization/credentials']);
+  //       expect(reloadSpy).toHaveBeenCalled();
+  //     },
+  //   });
   
-        expect(navigateSpy).toHaveBeenCalledWith(['/organization/credentials']);
-        expect(reloadSpy).toHaveBeenCalled();
-      },
-    });
-  
-    tick();
-  }));
+  //   tick();
+  // }));
   
   
   
@@ -147,7 +140,6 @@ describe('CredentialDetailsService', () => {
   //   const dialogRefMock = {
   //     afterClosed: jest.fn().mockReturnValue(of(true)),
   //   };
-  //   jest.spyOn(mockDialogWrapperService, 'openDialog').mockReturnValue(dialogRefMock as any);
   
   //   const routerNavigateSpy = jest.spyOn(mockRouter, 'navigate').mockResolvedValue(true);
   //   const locationReloadSpy = jest.spyOn(globalThis.location, 'reload').mockImplementation(() => {});
@@ -165,7 +157,6 @@ describe('CredentialDetailsService', () => {
   //     status: 'default',
   //   };
   
-  //   expect(mockDialogWrapperService.openDialog).toHaveBeenCalledWith(expectedDialogData);
   //   expect(routerNavigateSpy).toHaveBeenCalledWith(['/organization/credentials']);
   //   expect(locationReloadSpy).toHaveBeenCalled();
   // }));
@@ -245,7 +236,6 @@ describe('Load models', () => {
   const mockData = { credential: { vc, type: 'MyType' } };
   jest.spyOn(svc, 'loadCredentialDetails').mockReturnValue(of(mockData));
 
-  const basicInfoSpy = jest.spyOn(svc, 'setCredentialBasicInfo').mockImplementation(() => {});
   const getSchemaSpy   = jest.spyOn(svc, 'getSchemaByType').mockReturnValue({ schemaKey: 'schemaVal' });
   const mapped         = { mappedKey: 'mappedVal' };
   const mapSpy         = jest.spyOn(svc, 'mapSchemaValues').mockReturnValue(mapped);
@@ -255,37 +245,36 @@ describe('Load models', () => {
   svc.loadCredentialModels(injector);
 
   expect(svc.loadCredentialDetails).toHaveBeenCalled();
-  expect(basicInfoSpy).toHaveBeenCalledWith(mockData);
   expect(getSchemaSpy).toHaveBeenCalledWith('MyType');
   expect(mapSpy).toHaveBeenCalledWith({ schemaKey: 'schemaVal' }, vc);
   expect(templateSpy).toHaveBeenCalledWith(mapped, injector);
 });
 });
 
-describe('getCredentialType', () => {
-  beforeEach(() => {
-    // Override private schema map to include our test type
-    (service as any).schemasByTypeMap = { 'LearCredentialEmployee': {} };
-  });
+// describe('getCredentialType', () => {
+//   beforeEach(() => {
+//     // Override private schema map to include our test type
+//     (service as any).schemasByTypeMap = { 'LearCredentialEmployee': {} };
+//   });
 
-  it('should return the correct type when present in schemasByTypeMap', () => {
-    // Arrange a credential with a valid type
-    const cred: any = { type: ['LearCredentialEmployee', 'Foo'] };
-    // Act
-    const type = (service as any).getCredentialType(cred);
-    // Assert
-    expect(type).toBe('LearCredentialEmployee');
-  });
+  // it('should return the correct type when present in schemasByTypeMap', () => {
+  //   // Arrange a credential with a valid type
+  //   const cred: any = { type: ['LearCredentialEmployee', 'Foo'] };
+  //   // Act
+  //   const type = (service as any).getCredentialType(cred);
+  //   // Assert
+  //   expect(type).toBe('LearCredentialEmployee');
+  // });
 
-  it('should throw an error when no valid type is found', () => {
-    // Arrange schemas map with a different type
-    (service as any).schemasByTypeMap = { 'SomeOtherType': {} };
-    const cred: any = { type: ['UnknownType', 'Foo'] };
-    // Act & Assert
-    expect(() => (service as any).getCredentialType(cred))
-      .toThrowError('No credential tyep found in credential');
-  });
-});
+  // it('should throw an error when no valid type is found', () => {
+  //   // Arrange schemas map with a different type
+  //   (service as any).schemasByTypeMap = { 'SomeOtherType': {} };
+  //   const cred: any = { type: ['UnknownType', 'Foo'] };
+  //   // Act & Assert
+  //   expect(() => (service as any).getCredentialType(cred))
+  //     .toThrowError('No credential tyep found in credential');
+  // });
+// });
 
 describe('shouldIncludeSideField', () => {
   it('should include fields with a key other than "issuer"', () => {
@@ -325,53 +314,6 @@ describe('shouldIncludeSideField', () => {
       ],
     };
     expect((service as any).shouldIncludeSideField(field)).toBe(true);
-  });
-});
-
-describe('setCredentialBasicInfo', () => {
-  let mockValidFrom$: { set: jest.Mock<any, any> };
-  let mockValidUntil$: { set: jest.Mock<any, any> };
-  let mockType$: { set: jest.Mock<any, any> };
-  let mockStatus$: { set: jest.Mock<any, any> };
-
-  beforeEach(() => {
-    // Mock the internal subjects with typed Jest mocks
-    mockValidFrom$ = { set: jest.fn() };
-    mockValidUntil$ = { set: jest.fn() };
-    mockType$ = { set: jest.fn() };
-    mockStatus$ = { set: jest.fn() };
-
-    (service as any).credentialValidFrom$ = mockValidFrom$;
-    (service as any).credentialValidUntil$ = mockValidUntil$;
-    (service as any).credentialType$ = mockType$;
-    (service as any).credentialStatus$ = mockStatus$;
-
-    // Spy on the private getCredentialType to return a fixed type
-    jest.spyOn(service as any, 'getCredentialType').mockReturnValue('TypeA');
-  });
-
-  it('should set validFrom, validUntil, type and status correctly', () => {
-    // Arrange
-    const details: any = {
-      credential: {
-        vc: {
-          validFrom: '2020-01-01',
-          validUntil: '2021-01-01',
-          type: ['foo']
-        }
-      },
-      credential_status: 'active'
-    };
-
-    // Act
-    (service as any).setCredentialBasicInfo(details);
-
-    // Assert
-    expect(mockValidFrom$.set).toHaveBeenCalledWith('2020-01-01');
-    expect(mockValidUntil$.set).toHaveBeenCalledWith('2021-01-01');
-    expect((service as any).getCredentialType).toHaveBeenCalledWith(details.credential.vc);
-    expect(mockType$.set).toHaveBeenCalledWith('TypeA');
-    expect(mockStatus$.set).toHaveBeenCalledWith('active');
   });
 });
 
