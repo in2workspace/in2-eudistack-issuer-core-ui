@@ -9,7 +9,7 @@ import { AuthService } from 'src/app/core/services/auth.service';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { provideHttpClient } from '@angular/common/http';
 import { of, throwError } from 'rxjs';
-import { StatusService } from 'src/app/shared/services/status.service';
+import { LifeCycleStatusService } from 'src/app/shared/services/life-cycle-status.service';
 import { CredentialProcedure, ProcedureResponse } from 'src/app/core/models/dto/procedure-response.dto';
 import { CredentialProcedureWithClass } from 'src/app/core/models/entity/lear-credential-management';
 
@@ -20,7 +20,7 @@ describe('CredentialManagementComponent', () => {
   let credentialProcedureSpy: jest.SpyInstance;
   let authService: jest.Mocked<any>;
   let router: Router;
-  let statusService: StatusService;
+  let statusService: LifeCycleStatusService;
 
   beforeEach(async () => {
     authService = {
@@ -60,7 +60,7 @@ describe('CredentialManagementComponent', () => {
     credentialProcedureSpy = jest.spyOn(credentialProcedureService, 'getCredentialProcedures');
     router = TestBed.inject(Router);
     jest.spyOn(router, 'navigate');
-    statusService = TestBed.inject(StatusService);
+    statusService = TestBed.inject(LifeCycleStatusService);
   });
 
   beforeEach(() => {

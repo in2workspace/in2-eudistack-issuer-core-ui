@@ -1,5 +1,5 @@
 import { getFormSchemaByType, mapPowerArrayByFunction, shouldSkipIssuer } from './credential-details-utils';
-import { CredentialStatusJson, CredentialType } from 'src/app/core/models/entity/lear-credential';
+import { CredentialStatus, CredentialType } from 'src/app/core/models/entity/lear-credential';
 import { LearCredentialEmployeeDetailsFormSchema, LearCredentialMachineDetailsFormSchema, VerifiableCertificationDetailsFormSchema } from 'src/app/core/models/entity/lear-credential-details-schemas';
 import { Power } from 'src/app/core/models/entity/lear-credential';
 import { getFormDataByType } from './credential-details-utils';
@@ -62,7 +62,7 @@ describe('getFormDataByType', () => {
       id: '1',
       type: ['LEARCredentialEmployee'],
       description: 'desc',
-      credentialStatus: {} as CredentialStatusJson,
+      credentialStatus: {} as CredentialStatus,
       credentialSubject: {
         mandate: {
           id: 'm1',
@@ -131,7 +131,7 @@ it('should return extracted form data for LEARCredentialMachine', () => {
       id: '2',
       type: ['LEARCredentialMachine'],
       description: 'machine cred',
-      credentialStatus: {} as CredentialStatusJson,
+      credentialStatus: {} as CredentialStatus,
       credentialSubject: {
         mandate: {
           id: 'm2',
@@ -199,7 +199,7 @@ it('should return extracted form data for LEARCredentialMachine', () => {
     const credential: VerifiableCertification = {
       id: '3',
       type: ['VerifiableCertification'],
-      credentialStatus: {} as CredentialStatusJson,
+      credentialStatus: {} as CredentialStatus,
       issuer: {
         id: 'issuer3',
         organization: 'CertOrg',

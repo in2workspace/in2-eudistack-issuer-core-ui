@@ -1,4 +1,4 @@
-import { CredentialStatus } from "../entity/lear-credential";
+import { LifeCycleStatus } from "../entity/lear-credential";
 
 export interface ProcedureResponse {
   credential_procedures: CredentialProcedure[];
@@ -9,7 +9,7 @@ export interface CredentialProcedure {
     procedure_id: string;
     subject: string;
     credential_type: string;
-    status: CredentialStatus;
+    status: LifeCycleStatus;
     updated: string;
   }
 }

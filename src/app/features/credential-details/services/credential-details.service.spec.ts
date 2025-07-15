@@ -1,4 +1,4 @@
-import { fakeAsync, TestBed, tick } from '@angular/core/testing';
+import { TestBed } from '@angular/core/testing';
 import { CredentialDetailsService } from './credential-details.service';
 import { FormBuilder } from '@angular/forms';
 import { TranslateModule } from '@ngx-translate/core';
@@ -9,7 +9,6 @@ import { CredentialActionsService } from './credential-actions.service';
 import { of } from 'rxjs';
 import * as utils from '../utils/credential-details-utils';
 import { LEARCredentialDataDetails } from 'src/app/core/models/entity/lear-credential';
-import { FormGroup } from '@angular/forms';
 
 describe('CredentialDetailsService', () => {
   let service: CredentialDetailsService;
@@ -65,7 +64,7 @@ describe('CredentialDetailsService', () => {
   it('should fetch credential details and update signals', (done) => {
     const mockProcedureId = 'test-id';
     const mockData = {
-      credential_status: 'VALID',
+      lifeCycleStatus: 'VALID',
       credential: { vc: {} as any }
     } as LEARCredentialDataDetails;
 
@@ -75,7 +74,7 @@ describe('CredentialDetailsService', () => {
     (service as any).loadCredentialDetails().subscribe((result: any) => {
       expect(result).toBe(mockData);
       expect(service.credentialDetailsData$()).toBe(mockData);
-      expect(service.credentialStatus$()).toBe('VALID');
+      expect(service.lifeCycleStatus$()).toBe('VALID');
       done();
     });
   });
@@ -127,10 +126,10 @@ describe('CredentialDetailsService', () => {
       id: 'cred789',
       credentialStatus: { statusListCredential: ['list1', 'list2'] }
     } as any;
-    const mockData = { credential_status: 'VALID', credential: { vc: mockCredential } } as any;
+    const mockData = { lifeCycleStatus: 'VALID', credential: { vc: mockCredential } } as any;
     service.credentialDetailsData$.set(mockData);
-    service.credentialStatus$.set('VALID');
-    service.credentialStatusJson$.set({prop:'value'}  as any);
+    service.lifeCycleStatus$.set('VALID');
+    service.credentialStatus$.set({prop:'value'}  as any);
 
     service.openRevokeCredentialDialog();
     expect(mockCredentialActionsService.openRevokeCredentialDialog)

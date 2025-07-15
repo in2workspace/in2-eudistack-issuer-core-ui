@@ -1,6 +1,6 @@
-import { CredentialStatusJson, LEARCredentialDataDetails } from "../models/entity/lear-credential";
+import { CredentialStatus, LEARCredentialDataDetails } from "../models/entity/lear-credential";
 
-export const mockCredentialStatusJson: CredentialStatusJson = {   
+export const mockCredentialStatus: CredentialStatus = {   
   id: "https://issuer.dome-marketplace.eu/credentials/status/1#<nonce>",
   type: "PlainListEntity",   
   statusPurpose: "revocation",   
@@ -10,7 +10,7 @@ export const mockCredentialStatusJson: CredentialStatusJson = {
 
 export const mockCredentialEmployee: LEARCredentialDataDetails = {
   procedure_id: 'mock-procedure-employee',
-  credential_status: 'DRAFT',
+  lifeCycleStatus: 'DRAFT',
   credential: {
     sub: null,
     nbf: '1714675200',
@@ -23,7 +23,7 @@ export const mockCredentialEmployee: LEARCredentialDataDetails = {
       type: ['LEARCredentialEmployee'],
       description: 'Mock employee credential',
       credentialStatus: {
-        ...mockCredentialStatusJson
+        ...mockCredentialStatus
       },
       issuer: {
         id: 'issuer-emp',
@@ -78,7 +78,7 @@ export const mockCredentialEmployee: LEARCredentialDataDetails = {
 
 export const mockCredentialMachine: LEARCredentialDataDetails = {
   procedure_id: 'mock-procedure-machine',
-  credential_status: 'PEND_SIGNATURE',
+  lifeCycleStatus: 'PEND_SIGNATURE',
   credential: {
     sub: null,
     nbf: '1714675200',
@@ -91,7 +91,7 @@ export const mockCredentialMachine: LEARCredentialDataDetails = {
       type: ['LEARCredentialMachine'],
       description: 'Mock machine credential',
       credentialStatus: {
-        ...mockCredentialStatusJson
+        ...mockCredentialStatus
       },
       issuer: {
         id: 'issuer-mac',
@@ -148,7 +148,7 @@ export const mockCredentialMachine: LEARCredentialDataDetails = {
 
 export const mockCredentialCertification: LEARCredentialDataDetails = {
   procedure_id: 'mock-procedure-cert',
-  credential_status: 'PEND_DOWNLOAD',
+  lifeCycleStatus: 'PEND_DOWNLOAD',
   credential: {
     sub: null,
     nbf: '1714675200',
@@ -160,7 +160,7 @@ export const mockCredentialCertification: LEARCredentialDataDetails = {
       id: 'cred-certification-id',
       type: ['VerifiableCertification'],
       credentialStatus: {
-        ...mockCredentialStatusJson
+        ...mockCredentialStatus
       },
       issuer: {
         id: 'issuer-cert',

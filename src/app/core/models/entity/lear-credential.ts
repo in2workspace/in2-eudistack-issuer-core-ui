@@ -1,15 +1,13 @@
 export interface LEARCredentialDataDetails {
   procedure_id: string;
-  // In the future, "credential_status" will be replaced by "lifecycle_procedure_status"
-  credential_status: CredentialStatus;
+  // In the future, "lifeCycleStatus" will be replaced by "lifecycle_procedure_status"
+  lifeCycleStatus: LifeCycleStatus;
   credential: LEARCredentialJwtPayload;
 }
 
-// WITHDRAWN, PEND_DOWNLOAD and ISSUED are legacy statuses. Some of them will be reused in the future
-export type CredentialStatus = 'WITHDRAWN' | 'VALID' | 'EXPIRED' | 'PEND_DOWNLOAD' | 'PEND_SIGNATURE' | 'DRAFT' | 'ISSUED' | 'REVOKED';
+export type LifeCycleStatus = 'WITHDRAWN' | 'VALID' | 'EXPIRED' | 'PEND_DOWNLOAD' | 'PEND_SIGNATURE' | 'DRAFT' | 'ISSUED' | 'REVOKED';
 
-// This corresponds to the current credentialStatus field in LEARCredential, which is different from the "credential_status". In the future, "credential_status" will be replaced by "lifecycle_procedure_status"
-export interface CredentialStatusJson {   
+export interface CredentialStatus {   
   "id": string,
   "type": CredentialStatusType,   
   "statusPurpose": CredentialStatusPurpose,   
@@ -115,7 +113,7 @@ export interface LEARCredentialEmployee {
   validUntil: string;
   issuanceDate?: string;
   expirationDate?: string;
-  credentialStatus: CredentialStatusJson;
+  credentialStatus: CredentialStatus;
 }
 
 export interface EmployeeMandatee {
@@ -148,7 +146,7 @@ export interface LEARCredentialMachine {
   issuer: MachineIssuer;
   validFrom: string;
   validUntil: string;
-  credentialStatus: CredentialStatusJson;
+  credentialStatus: CredentialStatus;
 }
 
 export interface MachineMandatee {
@@ -198,7 +196,7 @@ export interface VerifiableCertification {
   attester: Attester;
   validUntil: string;
   signer: CertificationSigner;
-  credentialStatus: CredentialStatusJson;
+  credentialStatus: CredentialStatus;
 }
 
 export interface CertificationIssuer {

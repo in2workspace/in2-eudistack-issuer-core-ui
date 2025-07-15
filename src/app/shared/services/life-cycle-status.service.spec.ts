@@ -1,18 +1,18 @@
-import { StatusService } from './status.service';
+import { LifeCycleStatusService } from './life-cycle-status.service';
 import { CredentialProcedure } from 'src/app/core/models/dto/procedure-response.dto';
-import { CredentialStatus } from 'src/app/core/models/entity/lear-credential';
+import { LifeCycleStatus } from 'src/app/core/models/entity/lear-credential';
 import { STATUSES_WITH_DEFINED_CLASS } from 'src/app/core/models/entity/lear-credential-management';
 
 describe('StatusService', () => {
-  let service: StatusService;
+  let service: LifeCycleStatusService;
 
   beforeEach(() => {
-    service = new StatusService();
+    service = new LifeCycleStatusService();
   });
 
   describe('mapStatusToClass', () => {
     it('should return "status-default" for statuses not in STATUSES_WITH_DEFINED_CLASS', () => {
-      const result = service.mapStatusToClass('UNKNOWN' as CredentialStatus);
+      const result = service.mapStatusToClass('UNKNOWN' as LifeCycleStatus);
       expect(result).toBe('status-default');
     });
 
@@ -25,7 +25,7 @@ describe('StatusService', () => {
 
     it('should convert underscores to hyphens for custom statuses when included', () => {
       (service as any).statusesWithDefinedClass = ['PEND_DOWNLOAD'];
-      const result = service.mapStatusToClass('PEND_DOWNLOAD' as CredentialStatus);
+      const result = service.mapStatusToClass('PEND_DOWNLOAD' as LifeCycleStatus);
       expect(result).toBe('status-pend-download');
     });
   });
@@ -47,7 +47,7 @@ describe('StatusService', () => {
             procedure_id: '2',
             subject: 'Beta',
             credential_type: 'TypeB',
-            status: 'UNKNOWN' as CredentialStatus,
+            status: 'UNKNOWN' as LifeCycleStatus,
             updated: '2025-07-09T13:00:00Z',
           },
         },

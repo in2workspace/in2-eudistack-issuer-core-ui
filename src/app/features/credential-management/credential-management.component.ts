@@ -16,7 +16,7 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { animate, state, style, transition, trigger } from '@angular/animations';
 import { MatIcon } from '@angular/material/icon';
 import { CredentialProcedureWithClass } from 'src/app/core/models/entity/lear-credential-management';
-import { StatusService } from 'src/app/shared/services/status.service';
+import { LifeCycleStatusService } from 'src/app/shared/services/life-cycle-status.service';
 
 
 @Component({
@@ -84,7 +84,7 @@ export class CredentialManagementComponent implements OnInit, AfterViewInit {
   private readonly credentialProcedureService = inject(CredentialProcedureService);
   private readonly destroyRef = inject(DestroyRef);
   private readonly router = inject(Router);
-  private readonly statusService = inject(StatusService);
+  private readonly statusService = inject(LifeCycleStatusService);
 
   private readonly searchSubject = new Subject<string>();
 

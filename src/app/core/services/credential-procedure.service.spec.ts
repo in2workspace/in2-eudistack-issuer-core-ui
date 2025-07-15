@@ -100,7 +100,7 @@ describe('CredentialProcedureService', () => {
   it('should fetch credential procedure by id successfully', () => {
     const procedureId = '1';
     const mockData: LEARCredentialDataDetails =
-      { procedure_id: '1', credential_status: 'VALID', credential: { mandatee: {}, mandator: {}, power: [] } as any }
+      { procedure_id: '1', lifeCycleStatus: 'VALID', credential: { mandatee: {}, mandator: {}, power: [] } as any }
     ;
 
     service.getCredentialProcedureById(procedureId).subscribe(data => {

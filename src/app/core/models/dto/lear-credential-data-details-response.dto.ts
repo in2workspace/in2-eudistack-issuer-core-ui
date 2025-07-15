@@ -2,6 +2,6 @@ import { LEARCredential, LEARCredentialJwtPayload } from "../entity/lear-credent
 
 export interface LEARCredentialDataDetailsResponse {
   procedure_id: string;
-  credential_status: string;
+  lifeCycleStatus: string;
   credential: LEARCredentialJwtPayload | LEARCredential;
 }

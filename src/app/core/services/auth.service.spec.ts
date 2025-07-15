@@ -3,7 +3,7 @@ import { finalize, of, Subject, throwError } from 'rxjs';
 import { AuthService } from './auth.service';
 import { EventTypes, OidcSecurityService, PublicEventsService } from 'angular-auth-oidc-client';
 import { UserDataAuthenticationResponse } from '../models/dto/user-data-authentication-response.dto';
-import { CredentialStatusJson, LEARCredentialEmployee } from '../models/entity/lear-credential';
+import { CredentialStatus, LEARCredentialEmployee } from '../models/entity/lear-credential';
 import { RoleType } from '../models/enums/auth-rol-type.enum';
 import { LEARCredentialDataNormalizer } from '../models/entity/lear-credential-employee-data-normalizer';
 
@@ -15,7 +15,7 @@ const mockCredentialEmployee: LEARCredentialEmployee = {
   id: 'some-id',
   type: ['VerifiableCredential', 'LEARCredentialEmployee'],
   description: 'Test credential',
-  credentialStatus: {} as CredentialStatusJson,
+  credentialStatus: {} as CredentialStatus,
   credentialSubject: {
     mandate: {
       id: 'mandate-id',

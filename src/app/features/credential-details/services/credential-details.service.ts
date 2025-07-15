@@ -3,11 +3,11 @@ import { FormBuilder, FormGroup } from '@angular/forms';
 import { Observable, Observer, take, tap } from 'rxjs';
 import { CredentialProcedureService } from 'src/app/core/services/credential-procedure.service';
 import { buildFormFromSchema, FormSchemaByType, getFormDataByType, getFormSchemaByType } from '../utils/credential-details-utils';
-import { CredentialStatus, CredentialStatusJson, CredentialType, LEARCredential, LEARCredentialDataDetails } from 'src/app/core/models/entity/lear-credential';
+import { LifeCycleStatus, CredentialStatus, CredentialType, LEARCredential, LEARCredentialDataDetails } from 'src/app/core/models/entity/lear-credential';
 import { CredentialDetailsFormSchema } from 'src/app/core/models/entity/lear-credential-details-schemas';
 import { CredentialActionsService } from './credential-actions.service';
 import { DialogWrapperService } from 'src/app/shared/components/dialog/dialog-wrapper/dialog-wrapper.service';
-import { StatusService } from 'src/app/shared/services/status.service';
+import { LifeCycleStatusService } from 'src/app/shared/services/life-cycle-status.service';
 import { StatusClass } from 'src/app/core/models/entity/lear-credential-management';
 
 @Injectable() //provided in component
@@ -19,15 +19,15 @@ export class CredentialDetailsService {
   public credentialDetailsForm$ = signal<FormGroup | undefined>(undefined);
   public credentialDetailsFormSchema$ = signal<CredentialDetailsFormSchema | undefined>(undefined);
   public procedureId$ = signal<string>('');
+  public lifeCycleStatus$ = signal<LifeCycleStatus | undefined>(undefined);
+  public lifeCycleStatusClass$: Signal<StatusClass | undefined>;
   public credentialStatus$ = signal<CredentialStatus | undefined>(undefined);
-  public credentialStatusClass$: Signal<StatusClass | undefined>;
-  public credentialStatusJson$ = signal<CredentialStatusJson | undefined>(undefined);
 
   private readonly actionsService = inject(CredentialActionsService);
   private readonly credentialProcedureService = inject(CredentialProcedureService);
   private readonly fb = inject(FormBuilder);
   private readonly dialog = inject(DialogWrapperService);
-  private readonly statusService = inject(StatusService);
+  private readonly statusService = inject(LifeCycleStatusService);
 
 
   private readonly loadFormObserver: Observer<LEARCredentialDataDetails> = {
@@ -41,8 +41,8 @@ export class CredentialDetailsService {
   }
 
   public constructor(){
-    this.credentialStatusClass$ = computed(() => {
-      const status = this.credentialStatus$();
+    this.lifeCycleStatusClass$ = computed(() => {
+      const status = this.lifeCycleStatus$();
       if(!status) return status;
       return this.statusService.mapStatusToClass(status)
     });
@@ -66,12 +66,12 @@ export class CredentialDetailsService {
     return this.actionsService.openSignCredentialDialog(procedureId);
   }
   public openRevokeCredentialDialog(): void{
-    if(this.credentialStatus$() !== 'VALID'){
+    if(this.lifeCycleStatus$() !== 'VALID'){
       console.error("Only credentials with status VALID can be revoked.");
       this.dialog.openErrorInfoDialog('error.unknown_error');
       return;
     }
-    if(!this.credentialStatusJson$()){
+    if(!this.credentialStatus$()){
       console.error("Only credentials with statusCredential field can be revoked.");
       this.dialog.openErrorInfoDialog('error.unknown_error');
       return;
@@ -123,8 +123,8 @@ export class CredentialDetailsService {
         take(1),
       tap(data=>{
         this.credentialDetailsData$.set(data);
-        this.credentialStatus$.set(data.credential_status);
-        this.credentialStatusJson$.set(data.credential.vc.credentialStatus);
+        this.lifeCycleStatus$.set(data.lifeCycleStatus);
+        this.credentialStatus$.set(data.credential.vc.credentialStatus);
       }));
   }
 
