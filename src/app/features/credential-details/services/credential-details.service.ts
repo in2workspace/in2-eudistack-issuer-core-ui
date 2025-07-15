@@ -1,5 +1,5 @@
 import { computed, inject, Injectable, Injector, Signal, signal, WritableSignal } from '@angular/core';
-import { Observable } from 'rxjs';
+import { Observable, of } from 'rxjs';
 import { CredentialProcedureService } from 'src/app/core/services/credential-procedure.service';
 import { DialogWrapperService } from 'src/app/shared/components/dialog/dialog-wrapper/dialog-wrapper.service';
 import { CredentialStatus, CredentialType, LEARCredential, CredentialProcedureDataDetails, LifeCycleStatus, CREDENTIAL_TYPES_ARRAY } from 'src/app/core/models/entity/lear-credential';
@@ -13,6 +13,7 @@ import { LifeCycleStatusService } from 'src/app/shared/services/life-cycle-statu
 import { CredentialActionsService } from './credential-actions.service';
 import { StatusClass } from 'src/app/core/models/entity/lear-credential-management';
 import { statusHasSendReminderlButton, credentialTypeHasSendReminderButton, statusHasSignCredentialButton, credentialTypeHasSignCredentialButton, statusHasRevokeCredentialButton, credentialTypeHasRevokeCredentialButton } from '../helpers/actions-helpers';
+import { mockCredentialEmployee } from 'src/app/core/mocks/details.mock';
 
 @Injectable() //provided in component
 export class CredentialDetailsService {
@@ -119,7 +120,8 @@ export class CredentialDetailsService {
   }
 
   public loadCredentialModels(injector: Injector): void {  
-    this.loadCredentialDetails().subscribe(data => {
+    this.loadCredentialDetails()
+    .subscribe(data => {
       this.credentialDetailsData$.set(data);
       const vc = this.credential$();
       if(!vc) throw Error('No credential found.');
@@ -204,7 +206,9 @@ export class CredentialDetailsService {
   }
       
   private getCredentialType(cred: LEARCredential): CredentialType{
-    const type = cred.type.find((t): t is CredentialType => t in CREDENTIAL_TYPES_ARRAY);
+    console.log(cred.type);
+    console.log(CREDENTIAL_TYPES_ARRAY)
+    const type = cred.type.find((t): t is CredentialType => CREDENTIAL_TYPES_ARRAY.includes(t as CredentialType));
     if(!type) throw Error('No credential type found in credential');
     return type;
   }
