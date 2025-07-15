@@ -19,10 +19,6 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v4
 
-      - name: Get Project Version
-        id: get_version
-        run: echo "VERSION=$(jq -r '.version' package.json)" >> $GITHUB_ENV
-
       - name: Npm Build
         run: npm run build -- --output-path=./dist/out --configuration "production"
 
@@ -41,12 +37,9 @@ jobs:
       
       - name: Create AWS Amplify Deployment
         run: |
-         UPLOAD_URL JOB_ID <<< $(aws amplify create-deployment --app-id ${{ env.AMPLIFY_APP_ID }} --branch-name ${{ env.BRANCH_NAME }} --query 'join(` `, [uploadUrl, jobId])' --output text)
-
-         
-          curl -X PUT --upload-file ${{ env.ZIP_FILE }} "$UPLOAD_URL"
-          aws amplify start-deployment --app-id ${{ env.AMPLIFY_APP_ID }} --branch-name ${{ env.BRANCH_NAME }} --job-id $JOB_ID
-      
+         UPLOAD_URL JOB_ID <<< $(aws amplify create-deployment --app-id ${{ env.AMPLIFY_APP_ID }} --branch-name ${{ env.BRANCH_NAME }} --query 'join(` `, [uploadUrl, jobId])' --output text) 
+         curl -X PUT --upload-file ${{ env.ZIP_FILE }} "$UPLOAD_URL" 
+         aws amplify start-deployment --app-id ${{ env.AMPLIFY_APP_ID }} --branch-name ${{ env.BRANCH_NAME }} --job-id $JOB_ID       
 
       - name: Notify Deployment
         run: |
