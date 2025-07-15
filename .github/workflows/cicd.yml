@@ -1,0 +1,54 @@
+name: Release
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  
+  release:
+    name: Release
+    runs-on: ubuntu-latest
+    environment: local
+    env:
+      AMPLIFY_APP_NAME: issuer-ui
+      BRANCH_NAME: main
+    
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Get Project Version
+        id: get_version
+        run: echo "VERSION=$(jq -r '.version' package.json)" >> $GITHUB_ENV
+
+      - name: Npm Build
+        run: npm run build -- --output-path=./dist/out --configuration "production"
+
+      # create a zip file of the dist folder
+      - name: Create Zip File
+        run: |
+          ZIP_FILE="dist/out.zip"
+          zip -r $ZIP_FILE dist/out
+          echo "ZIP_FILE=$ZIP_FILE" >> $GITHUB_ENV
+      
+      - name: Extract Amplify App ID
+        run: |
+          AMPLIFY_APP_ID=$(aws amplify list-apps --query "apps[?name=='${{ env.AMPLIFY_APP_NAME }}'].appId" --output text)
+          echo "AMPLIFY_APP_ID=$AMPLIFY_APP_ID" >> $GITHUB_ENV
+          echo "Found App ID: $AMPLIFY_APP_ID for app: ${{ env.AMPLIFY_APP_NAME }}"
+      
+      - name: Create AWS Amplify Deployment
+        run: |
+         UPLOAD_URL JOB_ID <<< $(aws amplify create-deployment --app-id ${{ env.AMPLIFY_APP_ID }} --branch-name ${{ env.BRANCH_NAME }} --query 'join(` `, [uploadUrl, jobId])' --output text)
+
+         
+          curl -X PUT --upload-file ${{ env.ZIP_FILE }} "$UPLOAD_URL"
+          aws amplify start-deployment --app-id ${{ env.AMPLIFY_APP_ID }} --branch-name ${{ env.BRANCH_NAME }} --job-id $JOB_ID
+      
+
+      - name: Notify Deployment
+        run: |
+          echo "Deployment started for version ${{ env.VERSION }}. Check the AWS Amplify console for progress."
+          echo "Deployment URL: https://$JOB_ID.amplifyapp.com"
