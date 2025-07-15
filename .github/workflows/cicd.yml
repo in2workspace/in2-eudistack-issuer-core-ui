@@ -56,7 +56,7 @@ jobs:
       
       - name: Create AWS Amplify Deployment
         run: |
-          read ZIP_UPLOAD_URL JOB_ID <<< $(aws amplify create-deployment --app-id ${{ env.AMPLIFY_APP_ID }} --branch-name ${{ env.BRANCH_NAME }} --query 'join(` `, [zipUploadUrl, jobId])' --output text)
+          read ZIP_UPLOAD_URL JOB_ID <<< $(aws amplify create-deployment --app-id ${{ env.AMPLIFY_APP_ID }} --branch-name ${{ env.BRANCH_NAME }} --file-map ${{ env.ZIP_FILE }} --query 'join(` `, [zipUploadUrl, jobId])' --output text)
           curl -X PUT --upload-file ${{ env.ZIP_FILE }} "$ZIP_UPLOAD_URL"
           aws amplify start-deployment --app-id ${{ env.AMPLIFY_APP_ID }} --branch-name ${{ env.BRANCH_NAME }} --job-id $JOB_ID       
 
