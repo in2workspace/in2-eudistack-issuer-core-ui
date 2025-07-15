@@ -34,12 +34,11 @@ jobs:
       - name: Npm Build
         run: npm run build -- --output-path=./dist/out --configuration "production"
 
-      # create a zip file of the dist folder
-      - name: Create Zip File
-        run: |
-          ZIP_FILE="dist/out.zip"
-          zip -r $ZIP_FILE dist/out
-          echo "ZIP_FILE=$ZIP_FILE" >> $GITHUB_ENV
+      - name: Create Zip File  
+        run: |  
+          cd dist/out  
+          zip -r ../out.zip .  
+          echo "ZIP_FILE=dist/out.zip" >> $GITHUB_ENV  
       
       - name: Configure AWS Credentials  
         uses: aws-actions/configure-aws-credentials@v2  
