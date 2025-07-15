@@ -56,7 +56,10 @@ jobs:
       
       - name: Create AWS Amplify Deployment
         run: |
-          read ZIP_UPLOAD_URL JOB_ID <<< $(aws amplify create-deployment --app-id ${{ env.AMPLIFY_APP_ID }} --branch-name ${{ env.BRANCH_NAME }} --query 'join(` `, [zipUploadUrl, jobId])' --output text)
+          # Get deployment info and extract values separately
+          DEPLOYMENT_OUTPUT=$(aws amplify create-deployment --app-id ${{ env.AMPLIFY_APP_ID }} --branch-name ${{ env.BRANCH_NAME }} --output json)
+          ZIP_UPLOAD_URL=$(echo $DEPLOYMENT_OUTPUT | jq -r '.zipUploadUrl')
+          JOB_ID=$(echo $DEPLOYMENT_OUTPUT | jq -r '.jobId')
           echo "ZIP_UPLOAD_URL=$ZIP_UPLOAD_URL" >> $GITHUB_ENV
           echo "JOB_ID=$JOB_ID" >> $GITHUB_ENV
           echo "Deployment created with Job ID: $JOB_ID and Upload URL: $ZIP_UPLOAD_URL"
