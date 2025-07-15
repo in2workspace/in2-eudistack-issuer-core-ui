@@ -56,12 +56,8 @@ jobs:
       
       - name: Create AWS Amplify Deployment
         run: |
-          AWS_OUTPUT=$(aws amplify create-deployment --app-id ${{ env.AMPLIFY_APP_ID }} --branch-name ${{ env.BRANCH_NAME }} --query 'join(` `, [uploadUrl, jobId])' --output text)
-          UPLOAD_URL=$(echo $AWS_OUTPUT | cut -d' ' -f1)
-          JOB_ID=$(echo $AWS_OUTPUT | cut -d' ' -f2)
-          echo "UPLOAD_URL=$UPLOAD_URL" >> $GITHUB_ENV
-          echo "JOB_ID=$JOB_ID" >> $GITHUB_ENV
-          curl -X PUT --upload-file ${{ env.ZIP_FILE }} "$UPLOAD_URL" 
+          read ZIP_UPLOAD_URL JOB_ID <<< $(aws amplify create-deployment --app-id ${{ env.AMPLIFY_APP_ID }} --branch-name ${{ env.BRANCH_NAME }} --query 'join(` `, [zipUploadUrl, jobId])' --output text)
+          curl -X PUT --upload-file ${{ env.ZIP_FILE }} "$ZIP_UPLOAD_URL"
           aws amplify start-deployment --app-id ${{ env.AMPLIFY_APP_ID }} --branch-name ${{ env.BRANCH_NAME }} --job-id $JOB_ID       
 
       - name: Notify Deployment
