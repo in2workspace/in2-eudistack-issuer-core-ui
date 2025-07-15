@@ -11,7 +11,8 @@ import { TranslateModule } from '@ngx-translate/core';
 import { of } from 'rxjs';
 import { mockCredentialEmployee } from 'src/app/core/mocks/details-mocks';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
-import { CredentialStatus, CredentialType } from 'src/app/core/models/entity/lear-credential';
+import { LifeCycleStatus, CredentialType, CredentialStatus } from 'src/app/core/models/entity/lear-credential';
+import { StatusClass } from 'src/app/core/models/entity/lear-credential-management';
 
 describe('CredentialDetailsComponent', () => {
   let component: CredentialDetailsComponent;
@@ -21,8 +22,10 @@ describe('CredentialDetailsComponent', () => {
     credentialValidFrom$: signal('2023-01-01'),
     credentialValidUntil$: signal('2023-12-31'),
     credentialType$: signal<CredentialType>('LEARCredentialEmployee'),
-    credentialStatus$: signal<CredentialStatus>('DRAFT'),
-    credentialDetailsForm$: signal(new FormGroup({})),
+    lifeCycleStatus$: signal<LifeCycleStatus>('DRAFT'),
+    credentialStatus$: signal<CredentialStatus>({} as any),
+    lifeCycleStatusClass$: signal<LifeCycleStatus|undefined>(undefined)
+,   credentialDetailsForm$: signal(new FormGroup({})),
     credentialDetailsFormSchema$: signal({}),
     setProcedureId: jest.fn(),
     loadCredentialDetailsAndForm: jest.fn(),
@@ -71,31 +74,31 @@ describe('CredentialDetailsComponent', () => {
   });
 
   it('should show reminder button', () => {
-    mockDetailsService.credentialStatus$.set('WITHDRAWN');
+    mockDetailsService.lifeCycleStatus$.set('WITHDRAWN');
     mockDetailsService.credentialType$.set('LEARCredentialEmployee');
     expect(component.showReminderButton$()).toBe(true);
 
-    mockDetailsService.credentialStatus$.set('WITHDRAWN');
+    mockDetailsService.lifeCycleStatus$.set('WITHDRAWN');
     mockDetailsService.credentialType$.set('LEARCredentialMachine');
     expect(component.showReminderButton$()).toBe(false);
 
-    mockDetailsService.credentialStatus$.set('DRAFT');
+    mockDetailsService.lifeCycleStatus$.set('DRAFT');
     mockDetailsService.credentialType$.set('LEARCredentialEmployee');
     expect(component.showReminderButton$()).toBe(true);
 
-    mockDetailsService.credentialStatus$.set('WITHDRAWN');
+    mockDetailsService.lifeCycleStatus$.set('WITHDRAWN');
     mockDetailsService.credentialType$.set('VerifiableCertification');
     expect(component.showReminderButton$()).toBe(false);
 
-    mockDetailsService.credentialStatus$.set('VALID');
+    mockDetailsService.lifeCycleStatus$.set('VALID');
     mockDetailsService.credentialType$.set('LEARCredentialEmployee');
     expect(component.showReminderButton$()).toBe(false);
 
-    mockDetailsService.credentialStatus$.set('VALID');
+    mockDetailsService.lifeCycleStatus$.set('VALID');
     mockDetailsService.credentialType$.set('LEARCredentialMachine');
     expect(component.showReminderButton$()).toBe(false);
 
-    mockDetailsService.credentialStatus$.set('VALID');
+    mockDetailsService.lifeCycleStatus$.set('VALID');
     mockDetailsService.credentialType$.set('VerifiableCertification');
     expect(component.showReminderButton$()).toBe(false);
 
@@ -103,28 +106,28 @@ describe('CredentialDetailsComponent', () => {
 
   it('should show sign credential button', () => {
     // Cas positiu: status i type correctes
-    mockDetailsService.credentialStatus$.set('PEND_SIGNATURE');
+    mockDetailsService.lifeCycleStatus$.set('PEND_SIGNATURE');
     mockDetailsService.credentialType$.set('LEARCredentialEmployee');
     expect(component.showSignCredentialButton$()).toBe(true);
   
-    mockDetailsService.credentialStatus$.set('PEND_SIGNATURE');
+    mockDetailsService.lifeCycleStatus$.set('PEND_SIGNATURE');
     mockDetailsService.credentialType$.set('VerifiableCertification');
     expect(component.showSignCredentialButton$()).toBe(true);
   
     // Casos negatius: status o type incorrectes
-    mockDetailsService.credentialStatus$.set('PEND_SIGNATURE');
+    mockDetailsService.lifeCycleStatus$.set('PEND_SIGNATURE');
     mockDetailsService.credentialType$.set('LEARCredentialMachine');
     expect(component.showSignCredentialButton$()).toBe(false);
   
-    mockDetailsService.credentialStatus$.set('DRAFT');
+    mockDetailsService.lifeCycleStatus$.set('DRAFT');
     mockDetailsService.credentialType$.set('LEARCredentialEmployee');
     expect(component.showSignCredentialButton$()).toBe(false);
   
-    mockDetailsService.credentialStatus$.set('DRAFT');
+    mockDetailsService.lifeCycleStatus$.set('DRAFT');
     mockDetailsService.credentialType$.set('LEARCredentialMachine');
     expect(component.showSignCredentialButton$()).toBe(false);
   
-    mockDetailsService.credentialStatus$.set('VALID');
+    mockDetailsService.lifeCycleStatus$.set('VALID');
     mockDetailsService.credentialType$.set('VerifiableCertification');
     expect(component.showSignCredentialButton$()).toBe(false);
   });

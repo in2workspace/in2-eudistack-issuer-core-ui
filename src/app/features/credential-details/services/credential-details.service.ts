@@ -1,14 +1,14 @@
-import { inject, Injectable, signal } from '@angular/core';
+import { computed, inject, Injectable, Signal, signal } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
-import { EMPTY, from, Observable, Observer, switchMap, take, tap } from 'rxjs';
+import { Observable, Observer, take, tap } from 'rxjs';
 import { CredentialProcedureService } from 'src/app/core/services/credential-procedure.service';
 import { buildFormFromSchema, FormSchemaByType, getFormDataByType, getFormSchemaByType } from '../utils/credential-details-utils';
-import { DialogWrapperService } from 'src/app/shared/components/dialog/dialog-wrapper/dialog-wrapper.service';
-import { TranslateService } from '@ngx-translate/core';
-import { Router } from '@angular/router';
-import { DialogData } from 'src/app/shared/components/dialog/dialog.component';
-import { CredentialStatus, CredentialType, LEARCredentialDataDetails } from 'src/app/core/models/entity/lear-credential';
+import { LifeCycleStatus, CredentialStatus, CredentialType, LEARCredential, LEARCredentialDataDetails } from 'src/app/core/models/entity/lear-credential';
 import { CredentialDetailsFormSchema } from 'src/app/core/models/entity/lear-credential-details-schemas';
+import { CredentialActionsService } from './credential-actions.service';
+import { DialogWrapperService } from 'src/app/shared/components/dialog/dialog-wrapper/dialog-wrapper.service';
+import { LifeCycleStatusService } from 'src/app/shared/services/life-cycle-status.service';
+import { StatusClass } from 'src/app/core/models/entity/lear-credential-management';
 
 @Injectable() //provided in component
 export class CredentialDetailsService {
@@ -19,13 +19,34 @@ export class CredentialDetailsService {
   public credentialDetailsForm$ = signal<FormGroup | undefined>(undefined);
   public credentialDetailsFormSchema$ = signal<CredentialDetailsFormSchema | undefined>(undefined);
   public procedureId$ = signal<string>('');
+  public lifeCycleStatus$ = signal<LifeCycleStatus | undefined>(undefined);
+  public lifeCycleStatusClass$: Signal<StatusClass | undefined>;
   public credentialStatus$ = signal<CredentialStatus | undefined>(undefined);
 
+  private readonly actionsService = inject(CredentialActionsService);
   private readonly credentialProcedureService = inject(CredentialProcedureService);
-  private readonly dialog = inject(DialogWrapperService);
   private readonly fb = inject(FormBuilder);
-  private readonly router = inject(Router);
-  private readonly translate = inject(TranslateService);
+  private readonly dialog = inject(DialogWrapperService);
+  private readonly statusService = inject(LifeCycleStatusService);
+
+
+  private readonly loadFormObserver: Observer<LEARCredentialDataDetails> = {
+    next: () => {
+      this.loadForm();
+    },
+    error: (err: Error) => {
+      console.error('Error loading credential detail', err);
+    },
+    complete: () => {}
+  }
+
+  public constructor(){
+    this.lifeCycleStatusClass$ = computed(() => {
+      const status = this.lifeCycleStatus$();
+      if(!status) return status;
+      return this.statusService.mapStatusToClass(status)
+    });
+  }
 
   public setProcedureId(id: string) {
     this.procedureId$.set(id);
@@ -36,25 +57,75 @@ export class CredentialDetailsService {
       .subscribe(this.loadFormObserver);
   }
 
-  public loadCredentialDetails(): Observable<LEARCredentialDataDetails> {
+  public openSendReminderDialog(): void{
+    const procedureId = this.getProcedureId();
+    return this.actionsService.openSendReminderDialog(procedureId);
+  }
+  public openSignCredentialDialog(): void{
+    const procedureId = this.getProcedureId();
+    return this.actionsService.openSignCredentialDialog(procedureId);
+  }
+  public openRevokeCredentialDialog(): void{
+    if(this.lifeCycleStatus$() !== 'VALID'){
+      console.error("Only credentials with status VALID can be revoked.");
+      this.dialog.openErrorInfoDialog('error.unknown_error');
+      return;
+    }
+    if(!this.credentialStatus$()){
+      console.error("Only credentials with statusCredential field can be revoked.");
+      this.dialog.openErrorInfoDialog('error.unknown_error');
+      return;
+    }
+    const credentialId = this.getCredentialId();
+    if(!credentialId){
+      console.error("Couldn't get credential id from vc.");
+      this.dialog.openErrorInfoDialog('error.unknown_error');
+      return;
+    }
+    const listId = this.getCredentialListId();
+    if(!listId){
+      console.error("Couldn't get credential list from vc.");
+      this.dialog.openErrorInfoDialog('error.unknown_error');
+      return;
+    }
+    return this.actionsService.openRevokeCredentialDialog(credentialId, listId);
+  }
+
+  private getProcedureId(): string{
+    return this.procedureId$();
+  }
+
+  private getCredential(): LEARCredential | undefined{
+    return this.credentialDetailsData$()?.credential?.vc;
+  }
+
+  private getCredentialId(): string | undefined {
+    return this.getCredential()?.id;
+  }
+
+  private getCredentialListId(): string {
+    const statusListCredential = this.getCredential()?.credentialStatus?.statusListCredential;
+    
+    if(!statusListCredential){
+      console.error('No Status List Credential found in vc: ');
+      console.error(this.getCredential());
+      return "";
+    }
+    
+    const id = statusListCredential[statusListCredential.length - 1];
+    return id;
+  }
+
+  private loadCredentialDetails(): Observable<LEARCredentialDataDetails> {
     return this.credentialProcedureService
-      .getCredentialProcedureById(this.procedureId$())
+    .getCredentialProcedureById(this.procedureId$())
       .pipe(
         take(1),
       tap(data=>{
         this.credentialDetailsData$.set(data);
-        this.credentialStatus$.set(data.credential_status);
+        this.lifeCycleStatus$.set(data.lifeCycleStatus);
+        this.credentialStatus$.set(data.credential.vc.credentialStatus);
       }));
-  }
-
-  private readonly loadFormObserver: Observer<LEARCredentialDataDetails> = {
-    next: () => {
-      this.loadForm();
-    },
-    error: (err: any) => {
-      console.error('Error loading credential detail', err);
-    },
-    complete: () => {}
   }
 
   private loadForm(): void {
@@ -96,83 +167,7 @@ export class CredentialDetailsService {
   }
 
 
-  //SEND REMINDER AND SIGN
-  public openSendReminderDialog(): void {
-  
-    const dialogData: DialogData = {
-      title: this.translate.instant("credentialDetails.sendReminderConfirm.title"),
-      message: this.translate.instant("credentialDetails.sendReminderConfirm.message"),
-      confirmationType: 'async',
-      status: 'default'
-    };
 
-    const sendReminderAfterConfirm = (): Observable<boolean> => {
-      return this.sendReminder();
-    }
 
-    this.dialog.openDialogWithCallback(dialogData, sendReminderAfterConfirm);
-
-  }
-
-  public openSignCredentialDialog(): void {
-
-    const dialogData: DialogData = {
-      title: this.translate.instant("credentialDetails.signCredentialConfirm.title"),
-      message: this.translate.instant("credentialDetails.signCredentialConfirm.message"),
-      confirmationType: 'async',
-      status: 'default'
-    };
-
-    const signCredentialAfterConfirm = (): Observable<boolean> => {
-      return this.signCredential();
-    }
-    
-    this.dialog.openDialogWithCallback(dialogData, signCredentialAfterConfirm);
-  }
-
-  private executeCredentialAction(
-    action: (procedureId: string) => Observable<void>,
-    titleKey: string,
-    messageKey: string
-  ): Observable<boolean> {
-    const procedureId = this.procedureId$();
-    if (!procedureId) {
-      console.error('No procedure id.');
-      return EMPTY;
-    }
-  
-    return action(procedureId).pipe(
-      switchMap(() => {
-        const dialogData: DialogData = {
-          title: this.translate.instant(titleKey),
-          message: this.translate.instant(messageKey),
-          confirmationType: 'none',
-          status: 'default'
-        };
-  
-        const dialogRef = this.dialog.openDialog(dialogData);
-        return dialogRef.afterClosed();
-      }),
-      switchMap(()  =>
-        from(this.router.navigate(['/organization/credentials']))
-      ),
-      tap(() => location.reload())
-    );
-  }
-
-  public sendReminder(): Observable<boolean> {
-    return this.executeCredentialAction(
-      (procedureId) => this.credentialProcedureService.sendReminder(procedureId),
-      "credentialDetails.sendReminderSuccess.title",
-      "credentialDetails.sendReminderSuccess.message"
-    );
-  }
-  
-  public signCredential(): Observable<boolean> {
-    return this.executeCredentialAction(
-      (procedureId) => this.credentialProcedureService.signCredential(procedureId),
-      "credentialDetails.signCredentialSuccess.title",
-      "credentialDetails.signCredentialSuccess.message"
-    );
-  }
+ 
 }

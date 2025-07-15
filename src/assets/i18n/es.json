@@ -103,6 +103,8 @@
     "hash": "hash",
     "scope": "alcance",
     "standard": "estándar",
+    "revoke": "revocar",
+    "revokeTooltip": "Esta credencial no puede ser revocada porque es de tipo legacy. Para consultar cómo revocar este tipo de credencial, consulte nuestra <a href='{{url}}' style='color: white; font-weight:700' target='_blank' rel='noopener noreferrer'>guía</a>.",
     "sendReminderConfirm": {
       "title": "Enviar recordatorio",
       "message": "¿Estás seguro de que deseas enviar un recordatorio para esta oferta de credencial?"
@@ -118,6 +120,14 @@
     "signCredentialSuccess": {
       "title": "Credencial firmada",
       "message": "La credencial se firmó correctamente."
+    },
+    "revokeCredentialConfirm": {
+      "title": "Revocar Credencial",
+      "message": "Estás seguro de que deseas revocar la credencial?"
+    },
+    "revokeCredentialSuccess": {
+      "title": "Credencial revocada",
+      "message": "La credencial ha sido revocada."
     }
   },
   "credentialOffer": {

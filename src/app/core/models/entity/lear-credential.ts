@@ -1,10 +1,23 @@
 export interface LEARCredentialDataDetails {
   procedure_id: string;
-  credential_status: CredentialStatus;
+  // In the future, "lifeCycleStatus" will be replaced by "lifecycle_procedure_status"
+  lifeCycleStatus: LifeCycleStatus;
   credential: LEARCredentialJwtPayload;
 }
 
-export type CredentialStatus = 'WITHDRAWN' | 'VALID' | 'EXPIRED' | 'PEND_DOWNLOAD' | 'PEND_SIGNATURE' | 'DRAFT' | 'ISSUED';
+export type LifeCycleStatus = 'WITHDRAWN' | 'VALID' | 'EXPIRED' | 'PEND_DOWNLOAD' | 'PEND_SIGNATURE' | 'DRAFT' | 'ISSUED' | 'REVOKED';
+
+export interface CredentialStatus {   
+  "id": string,
+  "type": CredentialStatusType,   
+  "statusPurpose": CredentialStatusPurpose,   
+  "statusListIndex": CredentialStatusListIndex,
+  "statusListCredential": string;
+} 
+export type CredentialStatusType = 'PlainListEntity';
+export type CredentialStatusPurpose = 'revocation';
+export type CredentialStatusListIndex = '<nonce>';
+
 
 export interface LEARCredentialJwtPayload {
   sub: string | null;
@@ -100,6 +113,7 @@ export interface LEARCredentialEmployee {
   validUntil: string;
   issuanceDate?: string;
   expirationDate?: string;
+  credentialStatus: CredentialStatus;
 }
 
 export interface EmployeeMandatee {
@@ -132,6 +146,7 @@ export interface LEARCredentialMachine {
   issuer: MachineIssuer;
   validFrom: string;
   validUntil: string;
+  credentialStatus: CredentialStatus;
 }
 
 export interface MachineMandatee {
@@ -181,6 +196,7 @@ export interface VerifiableCertification {
   attester: Attester;
   validUntil: string;
   signer: CertificationSigner;
+  credentialStatus: CredentialStatus;
 }
 
 export interface CertificationIssuer {
