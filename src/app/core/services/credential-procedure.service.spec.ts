@@ -10,9 +10,9 @@ import {throwError} from 'rxjs';
 import {DialogWrapperService} from "../../shared/components/dialog/dialog-wrapper/dialog-wrapper.service";
 import {TranslateService} from "@ngx-translate/core";
 import {Router} from "@angular/router";
-import {API} from "../constants/api.constants";
+import { EmployeeProcedureRequest } from '../models/dto/procedure-request.dto';
+import { API_PATH } from '../constants/api-paths.constants';
 import { CredentialProcedureDataDetails } from '../models/entity/lear-credential';
-import { EmployeeProcedureRequest } from '../models/dto/credential-procedure-request.dto';
 
 const notFoundErrorResp = new HttpErrorResponse({
   error: '404 error',
@@ -31,11 +31,12 @@ describe('CredentialProcedureService', () => {
   let dialogSpy: jest.Mocked<DialogWrapperService>;
   let translateSpy: jest.Mocked<TranslateService>;
   let routerSpy: jest.Mocked<Router>;
-  const apiUrl = `${environment.server_url}${API.SAVE_CREDENTIAL_PATH}`;
-  const proceduresURL = `${environment.server_url}${API.PROCEDURES_PATH}`;
-  const notificationUrl = `${environment.server_url}${API.NOTIFICATION_PATH}`;
-  const credentialOfferUrl = `${environment.server_url}${API.CREDENTIAL_OFFER_PATH}`;
-  const signCredentialUrl = `${environment.server_url}${API.SIGN_CREDENTIAL_PATH}`;
+  const apiUrl = `${environment.server_url}${API_PATH.SAVE_CREDENTIAL}`;
+  const proceduresURL = `${environment.server_url}${API_PATH.PROCEDURES}`;
+  const notificationUrl = `${environment.server_url}${API_PATH.NOTIFICATION}`;
+  const credentialOfferUrl = `${environment.server_url}${API_PATH.CREDENTIAL_OFFER}`;
+  const signCredentialUrl = `${environment.server_url}${API_PATH.SIGN_CREDENTIAL}`;
+  const revokeCredentialUrl = `${environment.server_url}${API_PATH.REVOKE}`;
 
   beforeEach(() => {
     TestBed.configureTestingModule({
@@ -67,8 +68,8 @@ describe('CredentialProcedureService', () => {
 
   it('should fetch credential procedures successfully', () => {
     const mockData: ProcedureResponse = {credential_procedures:[
-      { credential_procedure:{procedure_id: '1', status: 'completed', subject: 'John Doe', updated: '2023-01-01', credential_type: 'LEARCredentialEmployee'}},
-      { credential_procedure:{ procedure_id: '2', status: 'pending', subject: 'Jane Doe', updated: '2023-01-02', credential_type: 'VerifiableCertification'}}
+      { credential_procedure:{procedure_id: '1', status: 'VALID', subject: 'John Doe', updated: '2023-01-01', credential_type: 'LEARCredentialEmployee'}},
+      { credential_procedure:{ procedure_id: '2', status: 'REVOKED', subject: 'Jane Doe', updated: '2023-01-02', credential_type: 'VerifiableCertification'}}
     ]};
 
     service.getCredentialProcedures().subscribe(data => {
@@ -216,7 +217,7 @@ describe('CredentialProcedureService', () => {
     req.flush({});
   });
 
-  it('should handle error when sending reminder or signing credential', () => {
+  it('should handle error when sending reminder, revoking or signing credential', () => {
     const procedureId = '1';
     const errorResponse = new HttpErrorResponse({
       error: '500 error',
@@ -238,6 +239,16 @@ describe('CredentialProcedureService', () => {
       }
     );
 
+
+    const credentialId = '1234';
+    const listId = '1111';
+    service.revokeCredential(credentialId, listId).subscribe(
+      data => fail('should have failed with 500 error'),
+      (error: string) => {
+        expect(error).toContain('Server-side error: 500');
+      }
+    );
+
     const requests = httpMock.match(() => true);
 
     expect(requests.length).toBeGreaterThanOrEqual(2);
@@ -247,6 +258,22 @@ describe('CredentialProcedureService', () => {
       req.flush('500 error', errorResponse);
     });
   });
+
+   it('should revoke credential successfully', () => {
+    const credentialId = '1234';
+    const listId = '1111';
+    const body = { credentialId, listId };
+
+    service.revokeCredential(credentialId, listId).subscribe(data => {
+      expect(data).toBeTruthy();
+    });
+
+    const req = httpMock.expectOne(`${revokeCredentialUrl}`);
+    expect(req.request.method).toBe('POST');
+    expect(req.request.body).toEqual(body);
+    req.flush({});
+  });
+
 
   describe('Get credential offer by transaction code', () => {
   it('should get credential offer successfully', () => {

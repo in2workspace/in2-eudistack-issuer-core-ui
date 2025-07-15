@@ -1,9 +1,17 @@
-import { CredentialProcedureDataDetails } from "../models/entity/lear-credential";
+import { CredentialProcedureDataDetails, CredentialStatus } from "../models/entity/lear-credential";
+
+export const mockCredentialStatus: CredentialStatus = {   
+  id: "https://issuer.dome-marketplace.eu/credentials/status/1#<nonce>",
+  type: "PlainListEntity",   
+  statusPurpose: "revocation",   
+  statusListIndex: "<nonce>",
+  statusListCredential: "https://issuer.dome-marketplace.eu/credentials/status/1" 
+} 
 
 // todo restore type
 export const mockCredentialEmployee: CredentialProcedureDataDetails = {
   procedure_id: 'mock-procedure-employee',
-  credential_status: 'DRAFT',
+  lifeCycleStatus: 'DRAFT',
   credential: {
     sub: null,
     nbf: '1714675200',
@@ -12,9 +20,12 @@ export const mockCredentialEmployee: CredentialProcedureDataDetails = {
     iat: '1714675200',
     jti: 'jti-emp-123',
     vc: {
-      id: 'cred-emp',
-      type: ['VerifiableCredential', 'LEARCredentialEmployee'],
+      id: 'cred-emp-id',
+      type: ['LEARCredentialEmployee'],
       description: 'Mock employee credential',
+      credentialStatus: {
+        ...mockCredentialStatus
+      },
       issuer: {
         id: 'issuer-emp',
         commonName: 'Employee Issuer',
@@ -68,7 +79,7 @@ export const mockCredentialEmployee: CredentialProcedureDataDetails = {
 
 export const mockCredentialMachine: CredentialProcedureDataDetails = {
   procedure_id: 'mock-procedure-machine',
-  credential_status: 'PEND_SIGNATURE',
+  lifeCycleStatus: 'PEND_SIGNATURE',
   credential: {
     sub: null,
     nbf: '1714675200',
@@ -77,9 +88,12 @@ export const mockCredentialMachine: CredentialProcedureDataDetails = {
     iat: '1714675200',
     jti: 'jti-mac-123',
     vc: {
-      id: 'cred-mac',
+      id: 'cred-machine-id',
       type: ['LEARCredentialMachine'],
       description: 'Mock machine credential',
+      credentialStatus: {
+        ...mockCredentialStatus
+      },
       issuer: {
         id: 'issuer-mac',
         commonName: 'Machine Issuer',
@@ -135,7 +149,7 @@ export const mockCredentialMachine: CredentialProcedureDataDetails = {
 
 export const mockCredentialCertification: CredentialProcedureDataDetails = {
   procedure_id: 'mock-procedure-cert',
-  credential_status: 'PEND_DOWNLOAD',
+  lifeCycleStatus: 'PEND_DOWNLOAD',
   credential: {
     sub: null,
     nbf: '1714675200',
@@ -144,8 +158,11 @@ export const mockCredentialCertification: CredentialProcedureDataDetails = {
     iat: '1714675200',
     jti: 'jti-cert-123',
     vc: {
-      id: 'cred-cert',
+      id: 'cred-certification-id',
       type: ['VerifiableCertification'],
+      credentialStatus: {
+        ...mockCredentialStatus
+      },
       issuer: {
         id: 'issuer-cert',
         commonName: 'Cert Issuer',
@@ -203,9 +220,10 @@ export const mockCredentialCertification: CredentialProcedureDataDetails = {
   }
 };
 
+
 export const mockGxLabel: CredentialProcedureDataDetails = {
   procedure_id: 'mock-procedure-gx-label',
-  credential_status: 'DRAFT',
+  lifeCycleStatus: 'DRAFT',
   credential: {
     sub: null,
     nbf: '1714675200',

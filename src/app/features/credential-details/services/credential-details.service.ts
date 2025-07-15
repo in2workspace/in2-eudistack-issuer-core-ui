@@ -1,33 +1,43 @@
-import { inject, Injectable, Injector, signal, WritableSignal } from '@angular/core';
-import { EMPTY, from, Observable, switchMap, tap } from 'rxjs';
+import { computed, inject, Injectable, Injector, Signal, signal, WritableSignal } from '@angular/core';
+import { Observable } from 'rxjs';
 import { CredentialProcedureService } from 'src/app/core/services/credential-procedure.service';
 import { DialogWrapperService } from 'src/app/shared/components/dialog/dialog-wrapper/dialog-wrapper.service';
 import { TranslateService } from '@ngx-translate/core';
 import { Router } from '@angular/router';
-import { DialogData } from 'src/app/shared/components/dialog/dialog.component';
-import { CredentialStatus, CredentialType, LEARCredential, CredentialProcedureDataDetails } from 'src/app/core/models/entity/lear-credential';
+import { CredentialStatus, CredentialType, LEARCredential, CredentialProcedureDataDetails, LifeCycleStatus } from 'src/app/core/models/entity/lear-credential';
 import { ComponentPortal } from '@angular/cdk/portal';
 import { LearCredentialEmployeeDetailsTemplateSchema } from 'src/app/core/models/schemas/credential-details/lear-credential-employee-details-schema';
 import { LearCredentialMachineDetailsTemplateSchema } from 'src/app/core/models/schemas/credential-details/lear-credential-machine-details-schema';
 import { GxLabelCredentialDetailsTemplateSchema } from 'src/app/core/models/schemas/credential-details/gx-label-credential-details-schema';
 import { VerifiableCertificationDetailsTemplateSchema } from 'src/app/core/models/schemas/credential-details/verifiable-certification-details-schema';
 import { MappedExtendedDetailsField, TemplateSchema, MappedTemplateSchema, DetailsField, MappedDetailsField, CustomDetailsField, MappedExtendedDetailsGroupField } from 'src/app/core/models/entity/lear-credential-details';
+import { LifeCycleStatusService } from 'src/app/shared/services/life-cycle-status.service';
+import { CredentialActionsService } from './credential-actions.service';
+import { StatusClass } from 'src/app/core/models/entity/lear-credential-management';
 
 @Injectable() //provided in component
 export class CredentialDetailsService {
   public credentialValidFrom$ = signal('');
   public credentialValidUntil$ = signal('');
+  public credentialDetailsData$ = signal<CredentialProcedureDataDetails | undefined>(undefined);
+  //todo the states below should derive ("computed") from credentialDetailsData
   public credentialType$ = signal<CredentialType | undefined>(undefined);
   public procedureId$ = signal<string>('');
+  public lifeCycleStatus$ = signal<LifeCycleStatus | undefined>(undefined);
+  public lifeCycleStatusClass$: Signal<StatusClass | undefined>;
   public credentialStatus$ = signal<CredentialStatus | undefined>(undefined);
 
   public sideTemplateModel$: WritableSignal<MappedExtendedDetailsField[] | undefined> = signal(undefined);
   public mainTemplateModel$: WritableSignal<MappedExtendedDetailsField[] | undefined> = signal(undefined);
 
+  private readonly actionsService = inject(CredentialActionsService);
   private readonly credentialProcedureService = inject(CredentialProcedureService);
   private readonly dialog = inject(DialogWrapperService);
   private readonly router = inject(Router);
   private readonly translate = inject(TranslateService);
+  private readonly statusService = inject(LifeCycleStatusService);
+
+  
   private readonly schemasByTypeMap: Record<CredentialType, TemplateSchema> = {
     'LEARCredentialEmployee': LearCredentialEmployeeDetailsTemplateSchema,
     'LEARCredentialMachine': LearCredentialMachineDetailsTemplateSchema,
@@ -35,12 +45,21 @@ export class CredentialDetailsService {
     'gx:LabelCredential': GxLabelCredentialDetailsTemplateSchema,
   } as const;
 
+  public constructor(){
+    this.lifeCycleStatusClass$ = computed(() => {
+      const status = this.lifeCycleStatus$();
+      if(!status) return status;
+      return this.statusService.mapStatusToClass(status)
+    });
+  }
+
   public setProcedureId(id: string) {
     this.procedureId$.set(id);
   }
 
   public loadCredentialModels(injector: Injector): void {  
     this.loadCredentialDetails().subscribe(data => {
+      this.credentialDetailsData$.set(data);
       this.setCredentialBasicInfo(data);
       const vc = data.credential.vc;
 
@@ -54,52 +73,67 @@ export class CredentialDetailsService {
   }
 
   public openSendReminderDialog(): void {
-    const dialogData: DialogData = {
-      title: this.translate.instant("credentialDetails.sendReminderConfirm.title"),
-      message: this.translate.instant("credentialDetails.sendReminderConfirm.message"),
-      confirmationType: 'async',
-      status: 'default'
-    };
-
-    const sendReminderAfterConfirm = (): Observable<boolean> => {
-      return this.sendReminder();
-    }
-
-    this.dialog.openDialogWithCallback(dialogData, sendReminderAfterConfirm);
+    const procedureId = this.getProcedureId();
+    return this.actionsService.openSendReminderDialog(procedureId);
   }
 
   public openSignCredentialDialog(): void {
-    const dialogData: DialogData = {
-      title: this.translate.instant("credentialDetails.signCredentialConfirm.title"),
-      message: this.translate.instant("credentialDetails.signCredentialConfirm.message"),
-      confirmationType: 'async',
-      status: 'default'
-    };
+    const procedureId = this.getProcedureId();
+    return this.actionsService.openSignCredentialDialog(procedureId);
+  }
 
-    const signCredentialAfterConfirm = (): Observable<boolean> => {
-      return this.signCredential();
+  public openRevokeCredentialDialog(): void{
+    if(this.lifeCycleStatus$() !== 'VALID'){
+      console.error("Only credentials with status VALID can be revoked.");
+      this.dialog.openErrorInfoDialog('error.unknown_error');
+      return;
+    }
+    if(!this.credentialStatus$()){
+      console.error("Only credentials with statusCredential field can be revoked.");
+      this.dialog.openErrorInfoDialog('error.unknown_error');
+      return;
+    }
+    const credentialId = this.getCredentialId();
+    if(!credentialId){
+      console.error("Couldn't get credential id from vc.");
+      this.dialog.openErrorInfoDialog('error.unknown_error');
+      return;
+    }
+    const listId = this.getCredentialListId();
+    if(!listId){
+      console.error("Couldn't get credential list from vc.");
+      this.dialog.openErrorInfoDialog('error.unknown_error');
+      return;
+    }
+    return this.actionsService.openRevokeCredentialDialog(credentialId, listId);
+  }
+
+    private getProcedureId(): string{
+    return this.procedureId$();
+  }
+
+  private getCredential(): LEARCredential | undefined{
+    return this.credentialDetailsData$()?.credential?.vc;
+  }
+
+  private getCredentialId(): string | undefined {
+    return this.getCredential()?.id;
+  }
+
+  private getCredentialListId(): string {
+    const statusListCredential = this.getCredential()?.credentialStatus?.statusListCredential;
+    
+    if(!statusListCredential){
+      console.error('No Status List Credential found in vc: ');
+      console.error(this.getCredential());
+      return "";
     }
     
-    this.dialog.openDialogWithCallback(dialogData, signCredentialAfterConfirm);
+    const id = statusListCredential[statusListCredential.length - 1];
+    return id;
   }
 
   
-  public sendReminder(): Observable<boolean> {
-    return this.executeCredentialAction(
-      (procedureId) => this.credentialProcedureService.sendReminder(procedureId),
-      "credentialDetails.sendReminderSuccess.title",
-      "credentialDetails.sendReminderSuccess.message"
-    );
-  }
-  
-  public signCredential(): Observable<boolean> {
-    return this.executeCredentialAction(
-      (procedureId) => this.credentialProcedureService.signCredential(procedureId),
-      "credentialDetails.signCredentialSuccess.title",
-      "credentialDetails.signCredentialSuccess.message"
-    );
-  }
-
   private loadCredentialDetails(): Observable<CredentialProcedureDataDetails> {
     return this.credentialProcedureService.getCredentialProcedureById(this.procedureId$());
   }
@@ -224,8 +258,11 @@ private mapSchemaValues(
     const type = this.getCredentialType(credential);
     this.credentialType$.set(type);
 
-    const status = details.credential_status;
-    this.credentialStatus$.set(status);
+    const lifeCycleStatus = details.lifeCycleStatus;
+    this.lifeCycleStatus$.set(lifeCycleStatus);
+
+    const credStatus = details.credential.vc.credentialStatus;
+    this.credentialStatus$.set(credStatus);
 
   }
 
@@ -265,36 +302,6 @@ private mapSchemaValues(
     
     this.mainTemplateModel$.set(extendedMainSchema);
     this.sideTemplateModel$.set(extendedSideSchema);     
-  }
-
-  private executeCredentialAction(
-    action: (procedureId: string) => Observable<void>,
-    titleKey: string,
-    messageKey: string
-  ): Observable<boolean> {
-    const procedureId = this.procedureId$();
-    if (!procedureId) {
-      console.error('No procedure id.');
-      return EMPTY;
-    }
-  
-    return action(procedureId).pipe(
-      switchMap(() => {
-        const dialogData: DialogData = {
-          title: this.translate.instant(titleKey),
-          message: this.translate.instant(messageKey),
-          confirmationType: 'none',
-          status: 'default'
-        };
-  
-        const dialogRef = this.dialog.openDialog(dialogData);
-        return dialogRef.afterClosed();
-      }),
-      switchMap(()  =>
-        from(this.router.navigate(['/organization/credentials']))
-      ),
-      tap(() => location.reload())
-    );
   }
 
 }

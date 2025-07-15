@@ -1,5 +1,5 @@
 import { MatCard, MatCardContent } from '@angular/material/card';
-import { Component, computed, inject, Injector, OnInit, WritableSignal } from '@angular/core';
+import { Component, computed, inject, Injector, OnInit, Signal, WritableSignal } from '@angular/core';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
@@ -15,15 +15,19 @@ import { CapitalizePipe } from 'src/app/shared/pipes/capitalize.pipe';
 import { AddPrefixPipe } from 'src/app/shared/pipes/add-prefix.pipe';
 import { CredentialDetailsService } from './services/credential-details.service';
 import { PortalModule } from '@angular/cdk/portal';
-import { CredentialStatus, CredentialType } from 'src/app/core/models/entity/lear-credential';
+import { CredentialStatus, CredentialType, LifeCycleStatus } from 'src/app/core/models/entity/lear-credential';
 import { Observable } from 'rxjs';
-import { credentialTypeHasSendReminderButton, credentialTypeHasSignCredentialButton, statusHasSendReminderlButton, statusHasSignCredentialButton } from './helpers/actions-helpers';
+import { credentialTypeHasRevokeCredentialButton, credentialTypeHasSendReminderButton, credentialTypeHasSignCredentialButton, statusHasRevokeCredentialButton, statusHasSendReminderlButton, statusHasSignCredentialButton } from './helpers/actions-helpers';
 import { MappedExtendedDetailsField } from 'src/app/core/models/entity/lear-credential-details';
+import { StatusClass } from 'src/app/core/models/entity/lear-credential-management';
+import { CustomTooltipDirective } from 'src/app/shared/directives/custom-tooltip.directive';
+import { KNOWLEDGEBASE_PATH } from 'src/app/core/constants/knowledge.constants';
+import { environment } from 'src/environments/environment';
 
 
 @Component({
   standalone: true,
-  imports: [AddPrefixPipe, CapitalizePipe, CommonModule, FormsModule, MatButton, MatCard, MatCardContent, MatFormField, MatIcon, MatInput, MatLabel, MatSlideToggle, PortalModule, ReactiveFormsModule, RouterLink, TranslatePipe ],
+  imports: [AddPrefixPipe, CapitalizePipe, CommonModule, CustomTooltipDirective, FormsModule, MatButton, MatCard, MatCardContent, MatFormField, MatIcon, MatInput, MatLabel, MatSlideToggle, PortalModule, ReactiveFormsModule, RouterLink, TranslatePipe ],
   providers:[CredentialDetailsService],
   selector: 'app-credential-details',
   templateUrl: './credential-details.component.html',
@@ -35,16 +39,21 @@ export class CredentialDetailsComponent implements OnInit {
   public credentialValidFrom$: WritableSignal<string>;
   public credentialValidUntil$: WritableSignal<string>
   public credentialType$: WritableSignal<CredentialType | undefined>;
-  public credentialStatus$: WritableSignal<CredentialStatus | undefined>
+  public lifeCycleStatus$: WritableSignal<LifeCycleStatus | undefined>;
+  public lifeCycleStatusClass$: Signal<StatusClass | undefined>;
+  public credentialStatus$: WritableSignal<CredentialStatus | undefined>;
   public mainTemplateModel$: WritableSignal<MappedExtendedDetailsField[] | undefined>; // credentialSubject data
   public sideTemplateModel$: WritableSignal<MappedExtendedDetailsField[] | undefined>;
   public showSideTemplateCard$ = computed<boolean>(() =>
     Boolean(this.sideTemplateModel$()?.length)
   );
+  public tooltipText: string = "credentialDetails.revokeTooltip";
+  public knowledgeBaseUrl = environment.knowledge_base_url + KNOWLEDGEBASE_PATH.ISSUER + KNOWLEDGEBASE_PATH.ISSUER_REVOKATION;
+
  
   public showReminderButton$ = computed<boolean>(() => {
     const type = this.credentialType$();
-    const status = this.credentialStatus$();
+    const status = this.lifeCycleStatus$();
 
     return !!(
       status 
@@ -56,7 +65,7 @@ export class CredentialDetailsComponent implements OnInit {
   
   public showSignCredentialButton$ = computed<boolean>(()=>{
     const type = this.credentialType$();
-    const status = this.credentialStatus$();
+    const status = this.lifeCycleStatus$();
 
     return !!(
       status
@@ -64,6 +73,26 @@ export class CredentialDetailsComponent implements OnInit {
       && type 
       && credentialTypeHasSignCredentialButton(type)
     );
+  });
+
+  public showRevokeCredentialButton$ = computed<boolean>(()=>{
+    const type = this.credentialType$();
+    const status = this.lifeCycleStatus$();
+
+    return !!(
+      status
+      && statusHasRevokeCredentialButton(status)
+      && type 
+      && credentialTypeHasRevokeCredentialButton(type)
+    );
+  });
+
+  public enableRevokeCredentialButton$ = computed(() => {
+    return !!this.credentialStatus$();
+  });
+
+  public showActionsButtonsContainer$ = computed<boolean>(() => {
+    return this.showSignCredentialButton$() || this.showReminderButton$() || this.showRevokeCredentialButton$()
   });
   
   //observables
@@ -79,6 +108,8 @@ export class CredentialDetailsComponent implements OnInit {
     this.credentialValidFrom$ = this.detailsService.credentialValidFrom$;
     this.credentialValidUntil$ = this.detailsService.credentialValidUntil$;
     this.credentialType$ = this.detailsService.credentialType$;
+    this.lifeCycleStatus$ = this.detailsService.lifeCycleStatus$;
+    this.lifeCycleStatusClass$ = this.detailsService.lifeCycleStatusClass$;
     this.credentialStatus$ = this.detailsService.credentialStatus$;
     this.mainTemplateModel$ = this.detailsService.mainTemplateModel$;
     this.sideTemplateModel$= this.detailsService.sideTemplateModel$;
@@ -97,6 +128,11 @@ export class CredentialDetailsComponent implements OnInit {
   // SIGN
   public openSignCredentialDialog(){
     this.detailsService.openSignCredentialDialog();
+  }
+
+  // REVOKE
+  public openRevokeCredentialDialog(){
+    this.detailsService.openRevokeCredentialDialog();
   }
   
   private getProcedureId(): void {

@@ -15,8 +15,10 @@ import { debounceTime, Subject, take } from 'rxjs';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { animate, state, style, transition, trigger } from '@angular/animations';
 import { MatIcon } from '@angular/material/icon';
+import { CredentialProcedureWithClass } from 'src/app/core/models/entity/lear-credential-management';
+import { LifeCycleStatusService } from 'src/app/shared/services/life-cycle-status.service';
+
 import { SubjectComponent } from './components/subject-component/subject-component.component';
-import { credentialProcedureListMock } from 'src/app/core/mocks/credential-procedure-list.mock';
 
 @Component({
     selector: 'app-credential-management',
@@ -72,9 +74,9 @@ import { credentialProcedureListMock } from 'src/app/core/mocks/credential-proce
 export class CredentialManagementComponent implements OnInit, AfterViewInit {
   @ViewChild(MatPaginator) public paginator!: MatPaginator;
   @ViewChild(MatSort) public sort!: MatSort;
-  @ViewChild('searchInput') searchInput!: ElementRef<HTMLInputElement>;
+  @ViewChild('searchInput') public searchInput!: ElementRef<HTMLInputElement>;
   public displayedColumns: string[] = ['subject', 'credential_type', 'updated','status'];
-  public dataSource = new MatTableDataSource<CredentialProcedure>();
+  public dataSource = new MatTableDataSource<CredentialProcedureWithClass>();
   public isValidOrganizationIdentifier = false;
 
   public hideSearchBar: boolean = true;
@@ -84,6 +86,7 @@ export class CredentialManagementComponent implements OnInit, AfterViewInit {
   private readonly credentialProcedureService = inject(CredentialProcedureService);
   private readonly destroyRef = inject(DestroyRef);
   private readonly router = inject(Router);
+  private readonly statusService = inject(LifeCycleStatusService);
 
   private readonly searchSubject = new Subject<string>();
 
@@ -107,6 +110,7 @@ export class CredentialManagementComponent implements OnInit, AfterViewInit {
     this.dataSource.sort = this.sort;
 
     this.dataSource.sortingDataAccessor = (item: CredentialProcedure, property: string) => {
+     //todo avoid lowcase?
       switch (property) {
         case 'status': {
           const status = item.credential_procedure.status.toLowerCase();
@@ -143,10 +147,10 @@ export class CredentialManagementComponent implements OnInit, AfterViewInit {
     .pipe(take(1))
     .subscribe({
       next: (data: ProcedureResponse) => {
-        this.dataSource.data = data.credential_procedures;
+        this.dataSource.data = this.statusService.addStatusClass(data.credential_procedures);
       },
       error: (error) => {
-        console.error('Error fetching credentials', error);
+        console.error('Error fetching credentials for table', error);
       }
     });
   }

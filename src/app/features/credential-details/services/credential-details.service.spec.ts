@@ -5,6 +5,7 @@ import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { Router } from '@angular/router';
 import { CredentialProcedureService } from 'src/app/core/services/credential-procedure.service';
 import { DialogWrapperService } from 'src/app/shared/components/dialog/dialog-wrapper/dialog-wrapper.service';
+import { CredentialActionsService } from './credential-actions.service';
 import { of } from 'rxjs';
 import { DialogData } from 'src/app/shared/components/dialog/dialog.component';
 import { Injector } from '@angular/core';
@@ -20,37 +21,29 @@ describe('CredentialDetailsService', () => {
 
   const mockCredentialProcedureService = {
     getCredentialProcedureById: jest.fn(),
-    sendReminder: jest.fn(),
-    signCredential: jest.fn(),
+  };
+
+  const mockCredentialActionsService = {
+    openSendReminderDialog: jest.fn(),
+    openSignCredentialDialog: jest.fn(),
+    openRevokeCredentialDialog: jest.fn(),
   };
 
   const mockDialogWrapperService = {
-    openDialogWithCallback: jest.fn(),
-    openDialog: jest.fn().mockReturnValue({ afterClosed: () => of(true) }),
-  };
-
-  const mockRouter = {
-    navigate: jest.fn().mockReturnValue(Promise.resolve(true)),
-  };
+    openErrorInfoDialog: jest.fn()
+  } as any;
+  const mockRouter = {} as any;
 
   beforeEach(() => {
     jest.clearAllMocks();
-
-    Object.defineProperty(window, 'location', {
-      value: {
-        ...window.location,
-        reload: jest.fn(),
-      },
-      writable: true,
-    });
 
     TestBed.configureTestingModule({
       imports: [TranslateModule.forRoot()],
       providers: [
         CredentialDetailsService,
         FormBuilder,
-        TranslateService,
         { provide: CredentialProcedureService, useValue: mockCredentialProcedureService },
+        { provide: CredentialActionsService, useValue: mockCredentialActionsService },
         { provide: DialogWrapperService, useValue: mockDialogWrapperService },
         { provide: Router, useValue: mockRouter },
       ],
@@ -67,123 +60,32 @@ describe('CredentialDetailsService', () => {
     service.setProcedureId('abc123');
     expect(service.procedureId$()).toBe('abc123');
   });
-  
 
-  it('should open a dialog with correct data and callback when openSendReminderDialog is called', () => {
-    jest.spyOn(TestBed.inject(TranslateService), 'instant').mockImplementation((key: string | string[]) => {
-      if (key === 'credentialDetails.sendReminderConfirm.title') return 'Mock Title';
-      if (key === 'credentialDetails.sendReminderConfirm.message') return 'Mock Message';
-      return typeof key === 'string' ? key : key.join(', ');
-    });
-
-    const sendReminderSpy = jest.spyOn(service, 'sendReminder').mockReturnValue(of(true));
-
+  it('should call actionsService.openSendReminderDialog with procedureId', () => {
+    service.procedureId$.set('pid123');
     service.openSendReminderDialog();
-
-    const expectedDialogData: DialogData = {
-      title: 'Mock Title',
-      message: 'Mock Message',
-      confirmationType: 'async',
-      status: 'default',
-    };
-
-    expect(mockDialogWrapperService.openDialogWithCallback).toHaveBeenCalledWith(
-      expectedDialogData,
-      expect.any(Function)
-    );
-
-    const callback = mockDialogWrapperService.openDialogWithCallback.mock.calls[0][1];
-    callback().subscribe();
-
-    expect(sendReminderSpy).toHaveBeenCalled();
+    expect(mockCredentialActionsService.openSendReminderDialog).toHaveBeenCalledWith('pid123');
   });
 
-  it('should open a dialog with correct data and callback when openSignCredentialDialog is called', () => {
-    jest.spyOn(TestBed.inject(TranslateService), 'instant').mockImplementation((key: string | string[]) => {
-      if (key === 'credentialDetails.signCredentialConfirm.title') return 'Mock Title';
-      if (key === 'credentialDetails.signCredentialConfirm.message') return 'Mock Message';
-      return typeof key === 'string' ? key : key.join(', ');
-    });
-
-    const signCredentialSpy = jest.spyOn(service, 'signCredential').mockReturnValue(of(true));
-
+  it('should call actionsService.openSignCredentialDialog with procedureId', () => {
+    service.procedureId$.set('pid456');
     service.openSignCredentialDialog();
-
-    const expectedDialogData: DialogData = {
-      title: 'Mock Title',
-      message: 'Mock Message',
-      confirmationType: 'async',
-      status: 'default',
-    };
-
-    expect(mockDialogWrapperService.openDialogWithCallback).toHaveBeenCalledWith(
-      expectedDialogData,
-      expect.any(Function)
-    );
-
-    const callback = mockDialogWrapperService.openDialogWithCallback.mock.calls[0][1];
-    callback().subscribe();
-
-    expect(signCredentialSpy).toHaveBeenCalled();
+    expect(mockCredentialActionsService.openSignCredentialDialog).toHaveBeenCalledWith('pid456');
   });
 
-  it('should send reminder, open success dialog, navigate, and reload page', fakeAsync(() => {
-    service.procedureId$.set('123');
-  
-    const sendReminderMock = jest
-      .spyOn(mockCredentialProcedureService, 'sendReminder')
-      .mockReturnValue(of(undefined));
-  
-    const dialogRefMock = {
-      afterClosed: jest.fn().mockReturnValue(of(true)),
-    };
-    jest.spyOn(mockDialogWrapperService, 'openDialog').mockReturnValue(dialogRefMock as any);
-  
-    const routerNavigateSpy = jest.spyOn(mockRouter, 'navigate').mockResolvedValue(true);
-    const locationReloadSpy = jest.spyOn(globalThis.location, 'reload').mockImplementation(() => {});
-  
-    service.sendReminder().subscribe();
-  
-    tick();
-  
-    expect(sendReminderMock).toHaveBeenCalledWith('123');
-  
-    const expectedDialogData: DialogData = {
-      title: TestBed.inject(TranslateService).instant("credentialDetails.sendReminderSuccess.title"),
-      message: TestBed.inject(TranslateService).instant("credentialDetails.sendReminderSuccess.message"),
-      confirmationType: 'none',
-      status: 'default',
-    };
-  
-    expect(mockDialogWrapperService.openDialog).toHaveBeenCalledWith(expectedDialogData);
-    expect(routerNavigateSpy).toHaveBeenCalledWith(['/organization/credentials']);
-    expect(locationReloadSpy).toHaveBeenCalled();
-  }));
+  it('should call actionsService.openRevokeCredentialDialog with credentialId and listId', () => {
+    const mockCredential = {
+      id: 'cred789',
+      credentialStatus: { statusListCredential: ['list1', 'list2'] }
+    } as any;
+    const mockData = { lifeCycleStatus: 'VALID', credential: { vc: mockCredential } } as any;
+    service.credentialDetailsData$.set(mockData);
+    service.lifeCycleStatus$.set('VALID');
+    service.credentialStatus$.set({prop:'value'}  as any);
 
-  it('should return EMPTY and log error if procedureId is missing in executeCredentialAction', () => {
-    service.procedureId$.set('');
-  
-    const consoleErrorSpy = jest.spyOn(console, 'error').mockImplementation(() => {});
-    const actionMock = jest.fn();
-  
-    const result = (service as any).executeCredentialAction(
-      actionMock,
-      'some.title.key',
-      'some.message.key'
-    );
-  
-    let called = false;
-    result.subscribe({
-      next: () => { called = true; },
-      complete: () => {
-        expect(called).toBe(false);
-        expect(consoleErrorSpy).toHaveBeenCalledWith('No procedure id.');
-        expect(actionMock).not.toHaveBeenCalled();
-        expect(mockDialogWrapperService.openDialog).not.toHaveBeenCalled();
-        expect(mockRouter.navigate).not.toHaveBeenCalled();
-        expect(window.location.reload).not.toHaveBeenCalled();
-      },
-    });
+    service.openRevokeCredentialDialog();
+    expect(mockCredentialActionsService.openRevokeCredentialDialog)
+      .toHaveBeenCalledWith('cred789', 'list2');
   });
   
   
@@ -235,38 +137,38 @@ describe('CredentialDetailsService', () => {
   
   
   
-  it('should sign credential, open success dialog, navigate, and reload page', fakeAsync(() => {
-    service.procedureId$.set('456');
+  // it('should sign credential, open success dialog, navigate, and reload page', fakeAsync(() => {
+  //   service.procedureId$.set('456');
   
-    const signCredentialMock = jest
-      .spyOn(mockCredentialProcedureService, 'signCredential')
-      .mockReturnValue(of(undefined));
+  //   const signCredentialMock = jest
+  //     .spyOn(mockCredentialProcedureService, 'signCredential')
+  //     .mockReturnValue(of(undefined));
   
-    const dialogRefMock = {
-      afterClosed: jest.fn().mockReturnValue(of(true)),
-    };
-    jest.spyOn(mockDialogWrapperService, 'openDialog').mockReturnValue(dialogRefMock as any);
+  //   const dialogRefMock = {
+  //     afterClosed: jest.fn().mockReturnValue(of(true)),
+  //   };
+  //   jest.spyOn(mockDialogWrapperService, 'openDialog').mockReturnValue(dialogRefMock as any);
   
-    const routerNavigateSpy = jest.spyOn(mockRouter, 'navigate').mockResolvedValue(true);
-    const locationReloadSpy = jest.spyOn(globalThis.location, 'reload').mockImplementation(() => {});
+  //   const routerNavigateSpy = jest.spyOn(mockRouter, 'navigate').mockResolvedValue(true);
+  //   const locationReloadSpy = jest.spyOn(globalThis.location, 'reload').mockImplementation(() => {});
   
-    service.signCredential().subscribe();
+  //   service.signCredential().subscribe();
   
-    tick();
+  //   tick();
   
-    expect(signCredentialMock).toHaveBeenCalledWith('456');
+  //   expect(signCredentialMock).toHaveBeenCalledWith('456');
   
-    const expectedDialogData: DialogData = {
-      title: TestBed.inject(TranslateService).instant("credentialDetails.signCredentialSuccess.title"),
-      message: TestBed.inject(TranslateService).instant("credentialDetails.signCredentialSuccess.message"),
-      confirmationType: 'none',
-      status: 'default',
-    };
+  //   const expectedDialogData: DialogData = {
+  //     title: TestBed.inject(TranslateService).instant("credentialDetails.signCredentialSuccess.title"),
+  //     message: TestBed.inject(TranslateService).instant("credentialDetails.signCredentialSuccess.message"),
+  //     confirmationType: 'none',
+  //     status: 'default',
+  //   };
   
-    expect(mockDialogWrapperService.openDialog).toHaveBeenCalledWith(expectedDialogData);
-    expect(routerNavigateSpy).toHaveBeenCalledWith(['/organization/credentials']);
-    expect(locationReloadSpy).toHaveBeenCalled();
-  }));
+  //   expect(mockDialogWrapperService.openDialog).toHaveBeenCalledWith(expectedDialogData);
+  //   expect(routerNavigateSpy).toHaveBeenCalledWith(['/organization/credentials']);
+  //   expect(locationReloadSpy).toHaveBeenCalled();
+  // }));
 
   describe('mapFieldMain', () => {
  it('should map “key-value” and “group” correctly', () => {
