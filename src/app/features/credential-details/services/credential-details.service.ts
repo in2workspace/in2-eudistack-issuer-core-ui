@@ -1,5 +1,5 @@
 import { computed, inject, Injectable, Injector, Signal, signal, WritableSignal } from '@angular/core';
-import { Observable, of } from 'rxjs';
+import { Observable } from 'rxjs';
 import { CredentialProcedureService } from 'src/app/core/services/credential-procedure.service';
 import { DialogWrapperService } from 'src/app/shared/components/dialog/dialog-wrapper/dialog-wrapper.service';
 import { CredentialStatus, CredentialType, LEARCredential, CredentialProcedureDataDetails, LifeCycleStatus, CREDENTIAL_TYPES_ARRAY } from 'src/app/core/models/entity/lear-credential';
@@ -13,7 +13,6 @@ import { LifeCycleStatusService } from 'src/app/shared/services/life-cycle-statu
 import { CredentialActionsService } from './credential-actions.service';
 import { StatusClass } from 'src/app/core/models/entity/lear-credential-management';
 import { statusHasSendReminderlButton, credentialTypeHasSendReminderButton, statusHasSignCredentialButton, credentialTypeHasSignCredentialButton, statusHasRevokeCredentialButton, credentialTypeHasRevokeCredentialButton } from '../helpers/actions-helpers';
-import { mockCredentialEmployee } from 'src/app/core/mocks/details.mock';
 
 @Injectable() //provided in component
 export class CredentialDetailsService {
@@ -25,7 +24,7 @@ export class CredentialDetailsService {
   });
   public credential$ = computed<LEARCredential | undefined>(() => {
     const credentialProcedureData = this.credentialDetailsData$();
-    return credentialProcedureData?.credential.vc;
+    return credentialProcedureData?.credential?.vc;
   });
   public credentialValidFrom$ = computed<string>(() => {
     return this.credential$()?.validFrom ?? '';
@@ -171,7 +170,7 @@ export class CredentialDetailsService {
     return this.actionsService.openRevokeCredentialDialog(credentialId, listId);
   }
 
-    private getProcedureId(): string{
+  private getProcedureId(): string{
     return this.procedureId$();
   }
 
