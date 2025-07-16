@@ -1,4 +1,4 @@
-import { CredentialProcedure } from "../dto/credential-procedure-response.dto";
+import { CredentialProcedure } from "../dto/credential-procedures-response.dto";
 
 
 export interface CredentialProcedureWithClass extends CredentialProcedure {

@@ -5,7 +5,7 @@ import { Router } from '@angular/router';
 import { CredentialProcedureService } from 'src/app/core/services/credential-procedure.service';
 import { AuthService } from 'src/app/core/services/auth.service';
 import { MatSort, MatSortHeader } from '@angular/material/sort';
-import { CredentialProcedure, ProcedureResponse } from "../../core/models/dto/credential-procedure-response.dto";
+import { CredentialProcedure, CredentialProceduresResponse } from "../../core/models/dto/credential-procedures-response.dto";
 import { TranslatePipe } from '@ngx-translate/core';
 import { NgClass, DatePipe } from '@angular/common';
 import { MatButton, MatButtonModule } from '@angular/material/button';
@@ -110,7 +110,6 @@ export class CredentialManagementComponent implements OnInit, AfterViewInit {
     this.dataSource.sort = this.sort;
 
     this.dataSource.sortingDataAccessor = (item: CredentialProcedure, property: string) => {
-     //todo avoid lowcase?
       switch (property) {
         case 'status': {
           const status = item.credential_procedure.status.toLowerCase();
@@ -146,7 +145,7 @@ export class CredentialManagementComponent implements OnInit, AfterViewInit {
     this.credentialProcedureService.getCredentialProcedures()
     .pipe(take(1))
     .subscribe({
-      next: (data: ProcedureResponse) => {
+      next: (data: CredentialProceduresResponse) => {
         this.dataSource.data = this.statusService.addStatusClass(data.credential_procedures);
       },
       error: (error) => {

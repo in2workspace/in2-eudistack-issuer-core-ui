@@ -16,7 +16,7 @@ export class CredentialActionsService {
   private readonly router = inject(Router);
   private readonly translate = inject(TranslateService);
 
-  //SEND REMINDER AND SIGN
+  // SEND REMINDER (NOTIFICATION)
   public openSendReminderDialog(procedureId: string): void {
   
     const dialogData: DialogData = {
@@ -34,6 +34,7 @@ export class CredentialActionsService {
 
   }
 
+  // SIGN CREDENTIAL
   public openSignCredentialDialog(procedureId: string): void {
 
     const dialogData: DialogData = {
@@ -49,6 +50,8 @@ export class CredentialActionsService {
     
     this.dialog.openDialogWithCallback(dialogData, signCredentialAfterConfirm);
   }
+
+  // REVOKE CREDENTIAL
 
   public openRevokeCredentialDialog(credentialId: string, credentialList: string): void {
 
@@ -66,6 +69,7 @@ export class CredentialActionsService {
     this.dialog.openDialogWithCallback(dialogData, revokeCredentialAfterConfirm);
   }
 
+  //executes backend callback by CREDENTIAL ID
   private executeCredentialBackendAction(
     id: string,
     action: (id: string) => Observable<void>,
@@ -92,8 +96,7 @@ export class CredentialActionsService {
     );
   }
 
-  //executes backend callback with credential PROCEDURE ID
-  private executeCredentialProcedureAction(
+  private executeActionByProcedureId(
     procedureId: string, 
     action: (id: string) => Observable<void>,
     titleKey: string,
@@ -107,8 +110,7 @@ export class CredentialActionsService {
     return this.executeCredentialBackendAction(procedureId, action, titleKey, messageKey);
   }
 
-  //executes backend callback with credential ID
-  private executeCredentialAction(
+  private executeActionByCredentialId(
     credentialId: string,
     action: (credentialId: string) => Observable<void>,
     titleKey: string,
@@ -123,7 +125,7 @@ export class CredentialActionsService {
   }
 
   private sendReminder(procedureId: string): Observable<boolean> {
-    return this.executeCredentialProcedureAction(
+    return this.executeActionByProcedureId(
       procedureId,
       (procedureId) => this.credentialProcedureService.sendReminder(procedureId),
       "credentialDetails.sendReminderSuccess.title",
@@ -132,7 +134,7 @@ export class CredentialActionsService {
   }
   
   private signCredential(procedureId: string): Observable<boolean> {
-    return this.executeCredentialProcedureAction(
+    return this.executeActionByProcedureId(
       procedureId,
       (procedureId) => this.credentialProcedureService.signCredential(procedureId),
       "credentialDetails.signCredentialSuccess.title",
@@ -142,7 +144,7 @@ export class CredentialActionsService {
 
   private revokeCredential(credentialId: string, credentialList: string): Observable<boolean> {
    
-    return this.executeCredentialAction(
+    return this.executeActionByCredentialId(
       credentialId,
       (credentialId) => this.credentialProcedureService.revokeCredential(credentialId, credentialList),
       "credentialDetails.revokeCredentialSuccess.title",

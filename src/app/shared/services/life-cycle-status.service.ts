@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { CredentialProcedure } from 'src/app/core/models/dto/credential-procedure-response.dto';
+import { CredentialProcedure } from 'src/app/core/models/dto/credential-procedures-response.dto';
 import { LifeCycleStatus } from 'src/app/core/models/entity/lear-credential';
 import { CredentialProcedureWithClass, StatusClass, DefinedStatusClass, StatusClassFromDefined, STATUSES_WITH_DEFINED_CLASS } from 'src/app/core/models/entity/lear-credential-management';
 

@@ -1,6 +1,6 @@
 import { TestBed } from '@angular/core/testing';
 import { EnvironmentInjector, runInInjectionContext } from '@angular/core';
-import { CredentialProcedureType } from 'src/app/core/models/dto/credential-procedure-response.dto';
+import { CredentialProcedureType } from 'src/app/core/models/dto/credential-procedures-response.dto';
 import { SubjectComponent } from './subject-component.component';
 
 describe('SubjectUuidComponent Logic', () => {

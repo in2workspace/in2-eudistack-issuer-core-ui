@@ -1,6 +1,6 @@
 import { LifeCycleStatus } from "../entity/lear-credential";
 
-export interface ProcedureResponse {
+export interface CredentialProceduresResponse {
   credential_procedures: CredentialProcedure[];
 }
 

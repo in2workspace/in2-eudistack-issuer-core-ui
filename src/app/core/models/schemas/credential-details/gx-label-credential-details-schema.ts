@@ -48,7 +48,7 @@ export const GxLabelCredentialDetailsTemplateSchema: TemplateSchema = {
       }
     },
     {
-      // Now it shows the base URL of the received URLs, since they are not valid at the moment
+      // Currently it shows the base URL of the received URLs, since they are not valid at the moment
       // todo: consider hiding or showing differently
 
       key: 'gx:validatedCriteriaReference',

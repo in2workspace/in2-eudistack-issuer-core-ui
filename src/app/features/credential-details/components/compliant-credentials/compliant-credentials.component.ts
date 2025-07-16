@@ -32,7 +32,6 @@ export class CompliantCredentialsComponent implements AfterViewInit {
     if (this.sort) {
       this.dataSource.sort = this.sort;
     }
-    console.log(this.dataSource.data)
   }
 
 }

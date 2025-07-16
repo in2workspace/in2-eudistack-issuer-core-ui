@@ -1,4 +1,4 @@
-import { CredentialProcedure } from 'src/app/core/models/dto/credential-procedure-response.dto';
+import { CredentialProcedure } from 'src/app/core/models/dto/credential-procedures-response.dto';
 import { LifeCycleStatusService } from './life-cycle-status.service';
 import { LifeCycleStatus } from 'src/app/core/models/entity/lear-credential';
 import { STATUSES_WITH_DEFINED_CLASS } from 'src/app/core/models/entity/lear-credential-management';

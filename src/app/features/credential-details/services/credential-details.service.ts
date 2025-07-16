@@ -126,7 +126,11 @@ export class CredentialDetailsService {
       if(!vc) throw Error('No credential found.');
 
       const type = this.credentialType$();
-      if(!type) throw Error('No credential type found in credential.');
+      if(!type){
+       console.error('Credential: ');
+       console.error(vc);
+       throw Error('No credential type found in credential: ');
+      }
 
       const schema = this.getSchemaByType(type);
       const mappedSchema = this.mapSchemaValues(schema, vc);
@@ -205,8 +209,6 @@ export class CredentialDetailsService {
   }
       
   private getCredentialType(cred: LEARCredential): CredentialType{
-    console.log(cred.type);
-    console.log(CREDENTIAL_TYPES_ARRAY)
     const type = cred.type.find((t): t is CredentialType => CREDENTIAL_TYPES_ARRAY.includes(t as CredentialType));
     if(!type) throw Error('No credential type found in credential');
     return type;

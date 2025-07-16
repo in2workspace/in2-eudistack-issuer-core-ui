@@ -5,7 +5,7 @@ import { Observable, BehaviorSubject } from 'rxjs';
 import { TempPower } from 'src/app/core/models/temp/temp-power.interface';
 import { CredentialProcedureService } from 'src/app/core/services/credential-procedure.service';
 import { Country } from './country.service';
-import { EmployeeProcedureRequest } from 'src/app/core/models/dto/credential-procedure-request.dto';
+import { CreateEmployeeProcedureRequest } from 'src/app/core/models/dto/create-credential-procedure-request.dto';
 
 @Injectable({
   providedIn: 'root'
@@ -101,7 +101,7 @@ export class FormCredentialService {
       return this.checkFunction(option);
     });
 
-    const credentialProcedure: EmployeeProcedureRequest = {
+    const credentialProcedure: CreateEmployeeProcedureRequest = {
       schema: "LEARCredentialEmployee",
       format: "jwt_vc_json",
       payload: {

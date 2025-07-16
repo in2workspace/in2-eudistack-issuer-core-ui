@@ -12,8 +12,8 @@ import { LEARCredentialDataNormalizer } from '../models/entity/lear-credential-e
 import { CredentialProcedureDataDetailsResponse } from '../models/dto/lear-credential-data-details-response.dto';
 import { CredentialRevokeRequestDto } from '../models/dto/credential-revoke-request.dto';
 import { API_PATH } from '../constants/api-paths.constants';
-import { ProcedureResponse } from '../models/dto/credential-procedure-response.dto';
-import { EmployeeProcedureRequest } from '../models/dto/credential-procedure-request.dto';
+import { CredentialProceduresResponse } from '../models/dto/credential-procedures-response.dto';
+import { CreateEmployeeProcedureRequest } from '../models/dto/create-credential-procedure-request.dto';
 
 @Injectable({
   providedIn: 'root'
@@ -40,8 +40,8 @@ export class CredentialProcedureService {
     );
   }
 
-  public getCredentialProcedures(): Observable<ProcedureResponse> {
-    return this.http.get<ProcedureResponse>(this.organizationProcedures).pipe(
+  public getCredentialProcedures(): Observable<CredentialProceduresResponse> {
+    return this.http.get<CredentialProceduresResponse>(this.organizationProcedures).pipe(
       catchError(this.handleError)
     );
   }
@@ -73,7 +73,7 @@ export class CredentialProcedureService {
     );
   }
 
-  public createProcedure(procedureRequest: EmployeeProcedureRequest): Observable<void> {
+  public createProcedure(procedureRequest: CreateEmployeeProcedureRequest): Observable<void> {
     return this.http.post<void>(this.saveCredential, procedureRequest).pipe(
       catchError(this.handleError)
     );
