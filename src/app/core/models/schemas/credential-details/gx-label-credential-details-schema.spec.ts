@@ -16,7 +16,11 @@ describe('GxLabelCredentialDetailsTemplateSchema', () => {
         { id: '1', type: 't1', 'gx:digestSRI': 's1' },
         { id: '2', type: 't2', 'gx:digestSRI': 's2' },
       ] as CompliantCredential[],
-      'gx:validatedCriteria': ['crit1', 'crit2'],
+      'gx:validatedCriteria': [
+        'https://w3id.org/gaia-x/specs/cd25.04/criterion/P1.2.5',
+        'https://w3id.org/gaia-x/specs/cd25.03/criterion/P1.2.4',
+        'https://w3id.org/gaia-x/specs/cd25.01/criterion/P1.2.3'
+      ],
     },
     issuer: 'ISSUER1',
     id: '',
@@ -75,36 +79,29 @@ describe('GxLabelCredentialDetailsTemplateSchema', () => {
       expect(valueFn(sampleNonLabel)).toEqual([]);
     });
 
-  it('defines gx:validatedCriteria group', () => {
-    const valGroup = main.find((g: any) => g.key === 'gx:validatedCriteriaReference')!;
-    expect(valGroup.key).toBe('gx:validatedCriteriaReference');
+    it('defines gx:validatedCriteria group', () => {
+      const valGroup = main.find((g: any) => g.key === 'gx:validatedCriteriaReference')!;
+      const valueFn = valGroup.value as any;
 
-    const valueFn = valGroup.value as any;
+      expect(valueFn(sampleLabel)).toEqual([
+        { type: 'key-value', value: 'https://w3id.org/gaia-x/specs/cd25.04' },
+        { type: 'key-value', value: 'https://w3id.org/gaia-x/specs/cd25.03' },
+        { type: 'key-value', value: 'https://w3id.org/gaia-x/specs/cd25.01' },
+      ]);
 
-    expect(
-      valueFn(sampleLabel)
-    ).toEqual([
-      { type: 'key-value', value: 'crit1' }
-    ]);
+      expect(valueFn(sampleNonLabel)).toEqual([]);
 
-    expect(
-      valueFn(sampleNonLabel)
-    ).toEqual([]);
-
-    const noCritLabel = {
-      ...sampleLabel,
-      credentialSubject: {
-        ...sampleLabel.credentialSubject,
-        'gx:validatedCriteria': [] 
-      }
-    } as any;
-    expect(
-      valueFn(noCritLabel)
-    ).toEqual([
-      { type: 'key-value', value: null }
-    ]);
-  });
-
+      const noCritLabel = {
+        ...sampleLabel,
+        credentialSubject: {
+          ...sampleLabel.credentialSubject,
+          'gx:validatedCriteria': []
+        }
+      } as any;
+      expect(valueFn(noCritLabel)).toEqual([
+        { type: 'key-value', value: null }
+      ]);
+    });
   });
 
   describe('side section', () => {

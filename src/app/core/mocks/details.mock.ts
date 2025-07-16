@@ -281,9 +281,9 @@ export const mockGxLabel: CredentialProcedureDataDetails = {
           },
         ],
         "gx:validatedCriteria": [
-          'https://w3id.org/gaia-x/specs/cd25.03/criterion/P1.2.5',
+          'https://w3id.org/gaia-x/specs/cd25.04/criterion/P1.2.5',
           'https://w3id.org/gaia-x/specs/cd25.03/criterion/P1.2.4',
-          'https://w3id.org/gaia-x/specs/cd25.03/criterion/P1.2.3'
+          'https://w3id.org/gaia-x/specs/cd25.01/criterion/P1.2.3'
         ]
       },
       validFrom: '2024-01-01',
