@@ -1,12 +1,11 @@
+import { CustomTooltipDirective } from './../../shared/directives/custom-tooltip.directive';
 import { MatCard, MatCardContent } from '@angular/material/card';
 import { Component, inject, Injector, OnInit, Signal, WritableSignal } from '@angular/core';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-
 import { CommonModule } from '@angular/common';
 import { MatFormField, MatLabel } from '@angular/material/form-field';
 import { MatInput } from '@angular/material/input';
-import { MatSlideToggle } from '@angular/material/slide-toggle';
 import { TranslatePipe } from '@ngx-translate/core';
 import { MatIcon } from '@angular/material/icon';
 import { MatButton } from '@angular/material/button';
@@ -19,14 +18,13 @@ import { CredentialStatus, CredentialType, LifeCycleStatus } from 'src/app/core/
 import { Observable } from 'rxjs';
 import { MappedExtendedDetailsField } from 'src/app/core/models/entity/lear-credential-details';
 import { StatusClass } from 'src/app/core/models/entity/lear-credential-management';
-import { CustomTooltipDirective } from 'src/app/shared/directives/custom-tooltip.directive';
 import { KNOWLEDGEBASE_PATH } from 'src/app/core/constants/knowledge.constants';
 import { environment } from 'src/environments/environment';
 
 
 @Component({
   standalone: true,
-  imports: [AddPrefixPipe, CapitalizePipe, CommonModule, CustomTooltipDirective, FormsModule, MatButton, MatCard, MatCardContent, MatFormField, MatIcon, MatInput, MatLabel, MatSlideToggle, PortalModule, ReactiveFormsModule, RouterLink, TranslatePipe ],
+  imports: [AddPrefixPipe, CapitalizePipe, CommonModule, CustomTooltipDirective, FormsModule, MatButton, MatCard, MatCardContent, MatFormField, MatIcon, MatInput, MatLabel, PortalModule, ReactiveFormsModule, RouterLink, TranslatePipe ],
   providers:[CredentialDetailsService],
   selector: 'app-credential-details',
   templateUrl: './credential-details.component.html',
@@ -56,6 +54,7 @@ export class CredentialDetailsComponent implements OnInit {
   //OBSERVABLES
   public isLoading$: Observable<boolean>;
 
+  //RAW VARIABLES
   public tooltipText: string = "credentialDetails.revokeTooltip";
   public knowledgeBaseUrl = environment.knowledge_base_url + KNOWLEDGEBASE_PATH.ISSUER + KNOWLEDGEBASE_PATH.ISSUER_REVOKATION;
 
