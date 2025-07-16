@@ -109,7 +109,7 @@ export class CredentialDetailsService {
   public constructor(){
     this.lifeCycleStatusClass$ = computed(() => {
       const status = this.lifeCycleStatus$();
-      if(!status) return status;
+      if(!status) return 'status-default';
       return this.statusService.mapStatusToClass(status)
     });
   }
