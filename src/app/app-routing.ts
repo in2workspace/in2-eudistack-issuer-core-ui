@@ -1,6 +1,6 @@
 import { Routes } from '@angular/router';
 import { AutoLoginPartialRoutesGuard } from 'angular-auth-oidc-client';
-import {basicGuard, settingsGuard} from './core/guards/accessLevel.guard';
+import { basicGuard, settingsGuard } from './core/guards/accessLevel.guard';
 
 export const routes: Routes = [
   { path: '', pathMatch: 'full', redirectTo: 'home' },
@@ -19,19 +19,19 @@ export const routes: Routes = [
     children: [
       {
         path: '',
-        loadChildren: () => import('./features/credential-management/credential-management.routes').then(m => m.default),
+        loadChildren: () => import('./features/credential-management/credential-management.routes').then(m => m.default)
       },
       {
         path: 'details',
-        loadChildren: () => import('./features/credential-details/credential-details.routes').then(m => m.default),
+        loadChildren: () => import('./features/credential-details/credential-details.routes').then(m => m.default)
       },
       {
         path: 'create',
-        loadChildren: () => import('./features/credential-issuance/credential-issuance.routes').then(m => m.default),
+        loadChildren: () => import('./features/credential-issuance/credential-issuance.routes').then(m => m.default)
       },
       {
         path: 'create-as-signer',
-        loadChildren: () => import('./features/credential-issuance/credential-issuance.routes').then(m => m.default),
+        loadChildren: () => import('./features/credential-issuance/credential-issuance.routes').then(m => m.default)
       },
     ],
   },

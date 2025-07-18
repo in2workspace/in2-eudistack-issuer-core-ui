@@ -10,8 +10,8 @@ import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { provideHttpClient } from '@angular/common/http';
 import { of, throwError } from 'rxjs';
 import { LifeCycleStatusService } from 'src/app/shared/services/life-cycle-status.service';
-import { CredentialProcedure, ProcedureResponse } from 'src/app/core/models/dto/procedure-response.dto';
 import { CredentialProcedureWithClass } from 'src/app/core/models/entity/lear-credential-management';
+import { CredentialProceduresResponse, CredentialProcedure } from 'src/app/core/models/dto/credential-procedures-response.dto';
 
 describe('CredentialManagementComponent', () => {
   let component: CredentialManagementComponent;
@@ -67,7 +67,7 @@ describe('CredentialManagementComponent', () => {
     fixture = TestBed.createComponent(CredentialManagementComponent);
     component = fixture.componentInstance;
     // perquè no dongui error en ngOnInit
-    credentialProcedureSpy.mockReturnValue(of({ credential_procedures: [] } as ProcedureResponse));
+    credentialProcedureSpy.mockReturnValue(of({ credential_procedures: [] } as CredentialProceduresResponse));
     fixture.detectChanges();
   });
 
@@ -172,7 +172,7 @@ describe('CredentialManagementComponent', () => {
         credential_type: 'T1',
       }
     };
-    const mockResponse = { credential_procedures: [ mockProc ] } as ProcedureResponse;
+    const mockResponse = { credential_procedures: [ mockProc ] } as CredentialProceduresResponse;
     credentialProcedureSpy.mockReturnValue(of(mockResponse));
     const withClass: CredentialProcedureWithClass[] = [
       { ...mockProc, statusClass: 'status-active' }

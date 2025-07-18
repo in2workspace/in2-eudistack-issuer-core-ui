@@ -1,4 +1,4 @@
-import { CredentialStatus, LEARCredentialDataDetails } from "../models/entity/lear-credential";
+import { CredentialProcedureDataDetails, CredentialStatus } from "../models/entity/lear-credential";
 
 export const mockCredentialStatus: CredentialStatus = {   
   id: "https://issuer.dome-marketplace.eu/credentials/status/1#<nonce>",
@@ -8,7 +8,8 @@ export const mockCredentialStatus: CredentialStatus = {
   statusListCredential: "https://issuer.dome-marketplace.eu/credentials/status/1" 
 } 
 
-export const mockCredentialEmployee: LEARCredentialDataDetails = {
+// todo restore type
+export const mockCredentialEmployee: CredentialProcedureDataDetails = {
   procedure_id: 'mock-procedure-employee',
   lifeCycleStatus: 'DRAFT',
   credential: {
@@ -19,7 +20,7 @@ export const mockCredentialEmployee: LEARCredentialDataDetails = {
     iat: '1714675200',
     jti: 'jti-emp-123',
     vc: {
-      id: 'cred-employee-id',
+      id: 'cred-emp-id',
       type: ['LEARCredentialEmployee'],
       description: 'Mock employee credential',
       credentialStatus: {
@@ -76,7 +77,7 @@ export const mockCredentialEmployee: LEARCredentialDataDetails = {
   }
 };
 
-export const mockCredentialMachine: LEARCredentialDataDetails = {
+export const mockCredentialMachine: CredentialProcedureDataDetails = {
   procedure_id: 'mock-procedure-machine',
   lifeCycleStatus: 'PEND_SIGNATURE',
   credential: {
@@ -146,7 +147,7 @@ export const mockCredentialMachine: LEARCredentialDataDetails = {
   }
 };
 
-export const mockCredentialCertification: LEARCredentialDataDetails = {
+export const mockCredentialCertification: CredentialProcedureDataDetails = {
   procedure_id: 'mock-procedure-cert',
   lifeCycleStatus: 'PEND_DOWNLOAD',
   credential: {
@@ -219,3 +220,82 @@ export const mockCredentialCertification: LEARCredentialDataDetails = {
   }
 };
 
+
+export const mockGxLabel: CredentialProcedureDataDetails = {
+  procedure_id: 'mock-procedure-gx-label',
+  lifeCycleStatus: 'DRAFT',
+  credential: {
+    sub: null,
+    nbf: '1714675200',
+    iss: 'issuer-cert',
+    exp: '1735689600',
+    iat: '1714675200',
+    jti: 'jti-cert-123',
+    vc: {
+      id: 'cred-cert',
+      type: ['VerifiableCredential', 'gx:LabelCredential'],
+            credentialStatus: {
+        ...mockCredentialStatus
+      },
+      issuer: "issueeeeeeer",
+ credentialSubject: {
+        id: 'urn:uuid:123e4567-e89b-12d3-a456-426614174000',
+        "gx:labelLevel": "",
+        "gx:engineVersion": "2.1.0",
+        "gx:rulesVersion": "2025-06-01",
+        "gx:compliantCredentials": [
+          {
+            id: 'urn:uuid:223e4567-e89b-12d3-a456-426614174001',
+            type: 'Employee Credential A',
+            "gx:digestSRI": 'did:elsi:EMP-ORG1',
+          },
+          {
+            id: 'urn:uuid:aaae4567-e89b-12d3-a456-426614174001',
+            type: 'Employee Credential B',
+            "gx:digestSRI": 'did:elsi:EMP-ORG2',
+          },
+          {
+            id: 'urn:uuid:bbbe4567-e89b-12d3-a456-426614174001',
+            type: 'Employee Credential C',
+            "gx:digestSRI": 'did:elsi:EMP-ORG3',
+          },
+          {
+            id: 'urn:uuid:bbbe4567-e89b-12d3-a456-426614174001',
+            type: 'Employee Credential C',
+            "gx:digestSRI": 'did:elsi:EMP-ORG3',
+          },
+          {
+            id: 'urn:uuid:bbbe4567-e89b-12d3-a456-426614174001',
+            type: 'Employee Credential C',
+            "gx:digestSRI": 'did:elsi:EMP-ORG3',
+          },
+          {
+            id: 'urn:uuid:bbbe4567-e89b-12d3-a456-426614174001',
+            type: 'Employee Credential C',
+            "gx:digestSRI": 'did:elsi:EMP-ORG3',
+          },
+          {
+            id: 'urn:uuid:bbbe4567-e89b-12d3-a456-426614174001',
+            type: 'Employee Credential C',
+            "gx:digestSRI": 'did:elsi:EMP-ORG3',
+          },
+        ],
+        "gx:validatedCriteria": [
+          'https://w3id.org/gaia-x/specs/cd25.04/criterion/P1.2.5',
+          'https://w3id.org/gaia-x/specs/cd25.03/criterion/P1.2.4',
+          'https://w3id.org/gaia-x/specs/cd25.01/criterion/P1.2.3'
+        ]
+      },
+      validFrom: '2024-01-01',
+      validUntil: '2025-01-01',
+      signer: {
+        commonName: 'Signer CERT',
+        country: 'FR',
+        emailAddress: 'signer@cert.com',
+        organization: 'SignerCertOrg',
+        organizationIdentifier: 'SIGN-CERT',
+        serialNumber: 'SN-CERT-123'
+      }
+    }
+  }
+};

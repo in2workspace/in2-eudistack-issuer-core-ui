@@ -1,6 +1,6 @@
 import { EmployeeMandatee, EmployeeMandator, StrictPower } from "../entity/lear-credential";
 
-export interface EmployeeProcedureRequest {
+export interface CreateEmployeeProcedureRequest {
     schema: string,
     format: string,
     payload: LearCredentialEmployeePayload,

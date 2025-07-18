@@ -1,11 +1,10 @@
 import { TestBed } from '@angular/core/testing';
 import { Router } from '@angular/router';
-import { of, EMPTY } from 'rxjs';
+import { of } from 'rxjs';
 import { TranslateService } from '@ngx-translate/core';
 import { CredentialActionsService } from './credential-actions.service';
 import { CredentialProcedureService } from 'src/app/core/services/credential-procedure.service';
 import { DialogWrapperService } from 'src/app/shared/components/dialog/dialog-wrapper/dialog-wrapper.service';
-import { DialogData } from 'src/app/shared/components/dialog/dialog.component';
 
 describe('CredentialActionsService', () => {
   let service: CredentialActionsService;
@@ -105,9 +104,9 @@ describe('CredentialActionsService', () => {
     });
   });
 
-  describe('executeCredentialProcedureAction', () => {
+  describe('executeActionByProcedureId', () => {
     it('should error and return EMPTY if no procedureId', done => {
-      const result$ = service['executeCredentialProcedureAction']('', jest.fn(), 'tKey', 'mKey');
+      const result$ = service['executeActionByProcedureId']('', jest.fn(), 'tKey', 'mKey');
       result$.subscribe({
         complete: () => {
           expect(consoleErrorSpy).toHaveBeenCalledWith('No procedure id.');
@@ -122,7 +121,7 @@ describe('CredentialActionsService', () => {
       const titleKey = 'titleKey';
       const messageKey = 'messageKey';
 
-      service['executeCredentialProcedureAction'](procId, actionSpy, titleKey, messageKey)
+      service['executeActionByProcedureId'](procId, actionSpy, titleKey, messageKey)
         .subscribe((res) => {
           expect(actionSpy).toHaveBeenCalledWith(procId);
           expect(mockDialog.openDialog).toHaveBeenCalledWith(expect.objectContaining({ title: titleKey, message: messageKey }));
@@ -134,9 +133,9 @@ describe('CredentialActionsService', () => {
     });
   });
 
-  describe('executeCredentialAction', () => {
+  describe('executeActionByCredentialId', () => {
     it('should error and return EMPTY if no credentialId', done => {
-      const result$ = service['executeCredentialAction']('', jest.fn(), 'tKey', 'mKey');
+      const result$ = service['executeActionByCredentialId']('', jest.fn(), 'tKey', 'mKey');
       result$.subscribe({
         complete: () => {
           expect(consoleErrorSpy).toHaveBeenCalledWith("Couldn't get credential list from credential.");
@@ -151,7 +150,7 @@ describe('CredentialActionsService', () => {
       const titleKey = 'tKey2';
       const messageKey = 'mKey2';
 
-      service['executeCredentialAction'](credId, actionSpy, titleKey, messageKey)
+      service['executeActionByCredentialId'](credId, actionSpy, titleKey, messageKey)
         .subscribe((res) => {
           expect(actionSpy).toHaveBeenCalledWith(credId);
           expect(mockDialog.openDialog).toHaveBeenCalledWith(expect.objectContaining({ title: titleKey, message: messageKey }));

@@ -6,7 +6,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { MatButtonModule } from '@angular/material/button';
 import {SECRET_INITIAL_VALUE, SECRETS_FIELDS} from '../../models/signature.constants'
-import {providersMock} from 'src/app/core/mocks/signatureConfiguration'
+import {providersMock} from 'src/app/core/mocks/signature-configuration.mock'
 import { CloudProvider } from '../../models/provider.models';
 import { SignatureConfigurationResponse , FormMode} from '../../models/signature.models';
 import { TranslatePipe } from '@ngx-translate/core';

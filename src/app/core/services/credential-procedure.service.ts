@@ -3,17 +3,17 @@ import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { Observable, throwError } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
 import { environment } from 'src/environments/environment';
-import { ProcedureResponse } from '../models/dto/procedure-response.dto';
 import { CredentialOfferResponse } from '../models/dto/credential-offer-response.dto';
-import { LEARCredentialDataDetails } from '../models/entity/lear-credential';
+import { CredentialProcedureDataDetails } from '../models/entity/lear-credential';
 import { DialogWrapperService } from "../../shared/components/dialog/dialog-wrapper/dialog-wrapper.service";
 import { TranslateService } from "@ngx-translate/core";
 import { Router } from "@angular/router";
 import { LEARCredentialDataNormalizer } from '../models/entity/lear-credential-employee-data-normalizer';
-import { EmployeeProcedureRequest } from '../models/dto/procedure-request.dto';
-import { LEARCredentialDataDetailsResponse } from '../models/dto/lear-credential-data-details-response.dto';
+import { CredentialProcedureDataDetailsResponse } from '../models/dto/lear-credential-data-details-response.dto';
 import { CredentialRevokeRequestDto } from '../models/dto/credential-revoke-request.dto';
 import { API_PATH } from '../constants/api-paths.constants';
+import { CredentialProceduresResponse } from '../models/dto/credential-procedures-response.dto';
+import { CreateEmployeeProcedureRequest } from '../models/dto/create-credential-procedure-request.dto';
 
 @Injectable({
   providedIn: 'root'
@@ -40,14 +40,14 @@ export class CredentialProcedureService {
     );
   }
 
-  public getCredentialProcedures(): Observable<ProcedureResponse> {
-    return this.http.get<ProcedureResponse>(this.organizationProcedures).pipe(
+  public getCredentialProcedures(): Observable<CredentialProceduresResponse> {
+    return this.http.get<CredentialProceduresResponse>(this.organizationProcedures).pipe(
       catchError(this.handleError)
     );
   }
 
-  public getCredentialProcedureById(procedureId: string): Observable<LEARCredentialDataDetails> {
-    return this.http.get<LEARCredentialDataDetailsResponse>(
+  public getCredentialProcedureById(procedureId: string): Observable<CredentialProcedureDataDetails> {
+    return this.http.get<CredentialProcedureDataDetailsResponse>(
       `${this.organizationProcedures}/${procedureId}/credential-decoded`
     )
     .pipe(
@@ -67,13 +67,13 @@ export class CredentialProcedureService {
             ...credential,
             vc: normalizedCredential
           }
-        } as LEARCredentialDataDetails;
+        } as CredentialProcedureDataDetails;
       }),
       catchError(this.handleError)
     );
   }
 
-  public createProcedure(procedureRequest: EmployeeProcedureRequest): Observable<void> {
+  public createProcedure(procedureRequest: CreateEmployeeProcedureRequest): Observable<void> {
     return this.http.post<void>(this.saveCredential, procedureRequest).pipe(
       catchError(this.handleError)
     );

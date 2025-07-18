@@ -5,7 +5,7 @@ import { Router } from '@angular/router';
 import { CredentialProcedureService } from 'src/app/core/services/credential-procedure.service';
 import { AuthService } from 'src/app/core/services/auth.service';
 import { MatSort, MatSortHeader } from '@angular/material/sort';
-import { CredentialProcedure, ProcedureResponse } from "../../core/models/dto/procedure-response.dto";
+import { CredentialProcedure, CredentialProceduresResponse } from "../../core/models/dto/credential-procedures-response.dto";
 import { TranslatePipe } from '@ngx-translate/core';
 import { NgClass, DatePipe } from '@angular/common';
 import { MatButton, MatButtonModule } from '@angular/material/button';
@@ -18,6 +18,7 @@ import { MatIcon } from '@angular/material/icon';
 import { CredentialProcedureWithClass } from 'src/app/core/models/entity/lear-credential-management';
 import { LifeCycleStatusService } from 'src/app/shared/services/life-cycle-status.service';
 
+import { SubjectComponent } from './components/subject-component/subject-component.component';
 
 @Component({
     selector: 'app-credential-management',
@@ -46,6 +47,7 @@ import { LifeCycleStatusService } from 'src/app/shared/services/life-cycle-statu
         NgClass,
         MatPaginator,
         DatePipe,
+        SubjectComponent,
         TranslatePipe,
     ],
     animations: [
@@ -143,7 +145,7 @@ export class CredentialManagementComponent implements OnInit, AfterViewInit {
     this.credentialProcedureService.getCredentialProcedures()
     .pipe(take(1))
     .subscribe({
-      next: (data: ProcedureResponse) => {
+      next: (data: CredentialProceduresResponse) => {
         this.dataSource.data = this.statusService.addStatusClass(data.credential_procedures);
       },
       error: (error) => {
