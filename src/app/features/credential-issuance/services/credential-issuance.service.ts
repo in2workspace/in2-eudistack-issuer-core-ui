@@ -21,16 +21,6 @@ export class CredentialIssuanceService {
   private readonly credentialFactory = inject(IssuanceRequestFactoryService);
   private readonly credentialService = inject(CredentialProcedureService);
   private readonly schemaBuilder = inject(IssuanceSchemaBuilder);
-// const mandator = {
-          //   mandator:{
-          //     organizationIdentifier: 'ORG123',
-          //     organization: 'Test Org',
-          //     commonName: 'Some Name', 
-          //     emailAddress: 'some@example.com',
-          //     serialNumber: '123',
-          //     country: 'SomeCountry'
-          //   }
-          // }
 
   public schemasBuilder(credType: "LEARCredentialEmployee" | "LEARCredentialMachine", asSigner: boolean){
     return this.schemaBuilder.schemasBuilder(credType, asSigner);

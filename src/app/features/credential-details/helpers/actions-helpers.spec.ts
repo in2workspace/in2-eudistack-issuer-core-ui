@@ -1,4 +1,4 @@
-import { CredentialStatus, CredentialType } from 'src/app/core/models/entity/lear-credential';
+import { CredentialStatus, CredentialType, LifeCycleStatus } from 'src/app/core/models/entity/lear-credential';
 import { credentialTypeHasSendReminderButton, credentialTypeHasSignCredentialButton, statusHasSendReminderlButton, statusHasSignCredentialButton } from './actions-helpers';
 
 describe('Credential Helpers', () => {
@@ -29,7 +29,7 @@ describe('Credential Helpers', () => {
   });
 
   describe('statusHasSendReminderlButton', () => {
-    const allowed: CredentialStatus[] = ['WITHDRAWN', 'DRAFT', 'PEND_DOWNLOAD'];
+    const allowed: LifeCycleStatus[] = ['WITHDRAWN', 'DRAFT', 'PEND_DOWNLOAD'];
     const disallowed: any = 'PUBLISHED';
 
     it.each(allowed)('returns true for allowed status %s', (status) => {
@@ -42,7 +42,7 @@ describe('Credential Helpers', () => {
   });
 
   describe('statusHasSignCredentialButton', () => {
-    const allowed: CredentialStatus[] = ['PEND_SIGNATURE'];
+    const allowed: LifeCycleStatus[] = ['PEND_SIGNATURE'];
     const disallowed: any = 'DRAFT';
 
     it.each(allowed)('returns true for allowed status %s', (status) => {

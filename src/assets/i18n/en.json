@@ -76,7 +76,6 @@
     "EXPIRED": "EXPIRED",
     "PEND_DOWNLOAD": "PEND_DOWNLOAD",
     "ISSUED": "ISSUED",
-    "basic_info": "Basic info",
     "type" : "type",
     "status": "status",
     "valid_from": "valid from",
@@ -118,13 +117,6 @@
     "hash": "hash",
     "scope": "scope",
     "standard": "standard",
-    "basic": "basic",
-    "gx:labelLevel": "Label Level",
-    "gx:rulesVersion": "Rules Version",
-    "gx:engineRules": "Engine Rules",
-    "gx:compliantCredentials": "Compliant Credentials",
-    "gx:validatedCriteria": "Validated Criteria",
-    "gx:validatedCriteriaReference": "Validated Criteria Reference",
     "sendReminderConfirm": {
       "title": "Send Reminder",
       "message": "Are you sure you want to send a reminder for this credential offer?"
@@ -140,6 +132,14 @@
     "signCredentialSuccess": {
       "title": "Credential signed",
       "message": "The credential was signed successfully."
+    },
+    "revokeCredentialConfirm": {
+      "title": "Revoke Credential",
+      "message": "Are you sure you want to revoke this credential?"
+    },
+    "revokeCredentialSuccess": {
+      "title": "Credential revoked",
+      "message": "The credential was revoked successfully."
     }
   },
   "credentialOffer": {

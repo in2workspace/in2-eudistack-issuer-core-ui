@@ -1,9 +1,28 @@
-import { LEARCredentialDataDetails } from "../models/entity/lear-credential";
+import { CredentialStatus } from "../models/entity/lear-credential";
+import { CredentialProcedureDetails } from "../models/entity/lear-credential-details";
 
-// todo restore type
-export const mockCredentialEmployee: any = {
+//todo move
+export const mandatorMock = {
+  commonName: "name",
+  country: "ES",
+  emailAddress: "email@email.com",
+  organization: "my org",
+  organizationIdentifier: "1234-AA",
+  serialNumber: "AA-9999"
+}
+
+export const mockCredentialStatus: CredentialStatus = {   
+  id: "https://issuer.dome-marketplace.eu/credentials/status/1#<nonce>",
+  type: "PlainListEntity",   
+  statusPurpose: "revocation",   
+  statusListIndex: "<nonce>",
+  statusListCredential: "https://issuer.dome-marketplace.eu/credentials/status/1" 
+} 
+
+
+export const mockCredentialEmployee: CredentialProcedureDetails = {
   procedure_id: 'mock-procedure-employee',
-  credential_status: 'DRAFT',
+  lifeCycleStatus: 'DRAFT',
   credential: {
     sub: null,
     nbf: '1714675200',
@@ -15,10 +34,13 @@ export const mockCredentialEmployee: any = {
       id: 'cred-emp',
       type: ['VerifiableCredential', 'LEARCredentialEmployee'],
       description: 'Mock employee credential',
+      credentialStatus: {
+        ...mockCredentialStatus
+      },
       issuer: {
         id: 'issuer-emp',
         commonName: 'Employee Issuer',
-        // country: 'ES',
+        country: 'ES',
         organization: 'Org EMP',
         organizationIdentifier: 'IDentifier Org',
         emailAddress: 'email',
@@ -37,7 +59,7 @@ export const mockCredentialEmployee: any = {
             nationality: 'ES'
           },
           mandator: {
-            // commonName: 'Mandator EMP',
+            commonName: 'Mandator EMP',
             country: 'ES',
             emailAddress: 'mandator@emp.com',
             organization: 'Org Mandator',
@@ -66,9 +88,9 @@ export const mockCredentialEmployee: any = {
   }
 };
 
-export const mockCredentialMachine: LEARCredentialDataDetails = {
+export const mockCredentialMachine: CredentialProcedureDetails = {
   procedure_id: 'mock-procedure-machine',
-  credential_status: 'PEND_SIGNATURE',
+  lifeCycleStatus: 'PEND_SIGNATURE',
   credential: {
     sub: null,
     nbf: '1714675200',
@@ -77,9 +99,12 @@ export const mockCredentialMachine: LEARCredentialDataDetails = {
     iat: '1714675200',
     jti: 'jti-mac-123',
     vc: {
-      id: 'cred-mac',
+      id: 'cred-machine-id',
       type: ['LEARCredentialMachine'],
       description: 'Mock machine credential',
+      credentialStatus: {
+        ...mockCredentialStatus
+      },
       issuer: {
         id: 'issuer-mac',
         commonName: 'Machine Issuer',
@@ -133,9 +158,9 @@ export const mockCredentialMachine: LEARCredentialDataDetails = {
   }
 };
 
-export const mockCredentialCertification: LEARCredentialDataDetails = {
+export const mockCredentialCertification: CredentialProcedureDetails = {
   procedure_id: 'mock-procedure-cert',
-  credential_status: 'PEND_DOWNLOAD',
+  lifeCycleStatus: 'PEND_DOWNLOAD',
   credential: {
     sub: null,
     nbf: '1714675200',
@@ -144,8 +169,11 @@ export const mockCredentialCertification: LEARCredentialDataDetails = {
     iat: '1714675200',
     jti: 'jti-cert-123',
     vc: {
-      id: 'cred-cert',
+      id: 'cred-certification-id',
       type: ['VerifiableCertification'],
+      credentialStatus: {
+        ...mockCredentialStatus
+      },
       issuer: {
         id: 'issuer-cert',
         commonName: 'Cert Issuer',
@@ -203,9 +231,13 @@ export const mockCredentialCertification: LEARCredentialDataDetails = {
   }
 };
 
-export const mockGxLabel: LEARCredentialDataDetails = {
+
+
+
+//todo type
+export const mockGxLabel: any = {
   procedure_id: 'mock-procedure-gx-label',
-  credential_status: 'DRAFT',
+  lifeCycleStatus: 'DRAFT',
   credential: {
     sub: null,
     nbf: '1714675200',
@@ -217,53 +249,53 @@ export const mockGxLabel: LEARCredentialDataDetails = {
       id: 'cred-cert',
       type: ['VerifiableCredential', 'gx:LabelCredential'],
       issuer: "issueeeeeeer",
- credentialSubject: {
-        id: 'urn:uuid:123e4567-e89b-12d3-a456-426614174000',
-        "gx:labelLevel": "",
-        "gx:engineVersion": "2.1.0",
-        "gx:rulesVersion": "2025-06-01",
-        "gx:compliantCredentials": [
-          {
-            id: 'urn:uuid:223e4567-e89b-12d3-a456-426614174001',
-            type: 'Employee Credential A',
-            "gx:digestSRI": 'did:elsi:EMP-ORG1',
-          },
-          {
-            id: 'urn:uuid:aaae4567-e89b-12d3-a456-426614174001',
-            type: 'Employee Credential B',
-            "gx:digestSRI": 'did:elsi:EMP-ORG2',
-          },
-          {
-            id: 'urn:uuid:bbbe4567-e89b-12d3-a456-426614174001',
-            type: 'Employee Credential C',
-            "gx:digestSRI": 'did:elsi:EMP-ORG3',
-          },
-          {
-            id: 'urn:uuid:bbbe4567-e89b-12d3-a456-426614174001',
-            type: 'Employee Credential C',
-            "gx:digestSRI": 'did:elsi:EMP-ORG3',
-          },
-          {
-            id: 'urn:uuid:bbbe4567-e89b-12d3-a456-426614174001',
-            type: 'Employee Credential C',
-            "gx:digestSRI": 'did:elsi:EMP-ORG3',
-          },
-          {
-            id: 'urn:uuid:bbbe4567-e89b-12d3-a456-426614174001',
-            type: 'Employee Credential C',
-            "gx:digestSRI": 'did:elsi:EMP-ORG3',
-          },
-          {
-            id: 'urn:uuid:bbbe4567-e89b-12d3-a456-426614174001',
-            type: 'Employee Credential C',
-            "gx:digestSRI": 'did:elsi:EMP-ORG3',
-          },
-        ],
-        "gx:validatedCriteria": [
-          'https://w3id.org/gaia-x/specs/cd25.03/criterion/P1.2.5',
-          'https://w3id.org/gaia-x/specs/cd25.03/criterion/P1.2.4',
-          'https://w3id.org/gaia-x/specs/cd25.03/criterion/P1.2.3'
-        ]
+      credentialSubject: {
+              id: 'urn:uuid:123e4567-e89b-12d3-a456-426614174000',
+              "gx:labelLevel": "",
+              "gx:engineVersion": "2.1.0",
+              "gx:rulesVersion": "2025-06-01",
+              "gx:compliantCredentials": [
+                {
+                  id: 'urn:uuid:223e4567-e89b-12d3-a456-426614174001',
+                  type: 'Employee Credential A',
+                  "gx:digestSRI": 'did:elsi:EMP-ORG1',
+                },
+                {
+                  id: 'urn:uuid:aaae4567-e89b-12d3-a456-426614174001',
+                  type: 'Employee Credential B',
+                  "gx:digestSRI": 'did:elsi:EMP-ORG2',
+                },
+                {
+                  id: 'urn:uuid:bbbe4567-e89b-12d3-a456-426614174001',
+                  type: 'Employee Credential C',
+                  "gx:digestSRI": 'did:elsi:EMP-ORG3',
+                },
+                {
+                  id: 'urn:uuid:bbbe4567-e89b-12d3-a456-426614174001',
+                  type: 'Employee Credential C',
+                  "gx:digestSRI": 'did:elsi:EMP-ORG3',
+                },
+                {
+                  id: 'urn:uuid:bbbe4567-e89b-12d3-a456-426614174001',
+                  type: 'Employee Credential C',
+                  "gx:digestSRI": 'did:elsi:EMP-ORG3',
+                },
+                {
+                  id: 'urn:uuid:bbbe4567-e89b-12d3-a456-426614174001',
+                  type: 'Employee Credential C',
+                  "gx:digestSRI": 'did:elsi:EMP-ORG3',
+                },
+                {
+                  id: 'urn:uuid:bbbe4567-e89b-12d3-a456-426614174001',
+                  type: 'Employee Credential C',
+                  "gx:digestSRI": 'did:elsi:EMP-ORG3',
+                },
+              ],
+              "gx:validatedCriteria": [
+                'https://w3id.org/gaia-x/specs/cd25.04/criterion/P1.2.5',
+                'https://w3id.org/gaia-x/specs/cd25.03/criterion/P1.2.4',
+                'https://w3id.org/gaia-x/specs/cd25.01/criterion/P1.2.3'
+              ]
       },
       validFrom: '2024-01-01',
       validUntil: '2025-01-01',

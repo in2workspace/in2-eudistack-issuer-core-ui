@@ -55,7 +55,7 @@ describe('LearCredentialEmployeeSchemaBuilder', () => {
 
       // 3) 'mandator' group staticValueGetter returns object when getRawMandator is truthy
       const mandatorGroup = form.find((f: any) => f.key === 'mandator')!;
-      const staticVal = (mandatorGroup as any).staticValueGetter();
+      const staticVal = (mandatorGroup as any).value();
       expect(staticVal).toEqual({ mandator: convertToOrderedArray(mandatorMock, mandatorFieldsOrder) });
 
       // --- power schema checks ---
@@ -86,7 +86,7 @@ describe('LearCredentialEmployeeSchemaBuilder', () => {
 
       const [form] = service.getSchema();
       const mandatorGroup = form.find((f: any) => f.key === 'mandator')!;
-      expect((mandatorGroup as any).staticValueGetter()).toBeNull();
+      expect((mandatorGroup as any).value()).toBeNull();
     });
   });
 });

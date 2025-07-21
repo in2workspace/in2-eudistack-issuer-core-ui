@@ -69,7 +69,7 @@ describe('LearCredentialMachineIssuanceSchemaBuilder', () => {
       const mandator = form.find(f => f.key === 'mandator')!;
       expect(mandator.type).toBe('group');
       // staticValueGetter returns object
-      expect((mandator as any).staticValueGetter()).toEqual({ mandator: convertToOrderedArray(mandatorMock, mandatorFieldsOrder) });
+      expect((mandator as any).value()).toEqual({ mandator: convertToOrderedArray(mandatorMock, mandatorFieldsOrder) });
 
       const ag = (mandator as any).groupFields;
       expect(ag.map((g: any) => g.key)).toEqual([
@@ -101,7 +101,7 @@ describe('LearCredentialMachineIssuanceSchemaBuilder', () => {
 
       const [form] = service.getSchema();
       const mandator = form.find(f => f.key === 'mandator')!;
-      expect((mandator as any).staticValueGetter()).toBeNull();
+      expect((mandator as any).value()).toBeNull();
     });
   });
 });

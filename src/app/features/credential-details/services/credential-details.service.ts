@@ -1,34 +1,105 @@
-import { inject, Injectable, Injector, signal, WritableSignal } from '@angular/core';
-import { EMPTY, from, Observable, switchMap, tap } from 'rxjs';
+import { computed, inject, Injectable, Injector, Signal, signal, WritableSignal } from '@angular/core';
+import { Observable } from 'rxjs';
 import { CredentialProcedureService } from 'src/app/core/services/credential-procedure.service';
 import { DialogWrapperService } from 'src/app/shared/components/dialog/dialog-wrapper/dialog-wrapper.service';
-import { TranslateService } from '@ngx-translate/core';
-import { Router } from '@angular/router';
-import { CredentialStatus, CredentialType, LEARCredential, LEARCredentialDataDetails } from 'src/app/core/models/entity/lear-credential';
+import { CredentialStatus, CredentialType, LEARCredential, LifeCycleStatus, CREDENTIAL_TYPES_ARRAY } from 'src/app/core/models/entity/lear-credential';
 import { ComponentPortal } from '@angular/cdk/portal';
 import { LearCredentialEmployeeDetailsTemplateSchema } from 'src/app/core/models/schemas/credential-details/lear-credential-employee-details-schema';
 import { LearCredentialMachineDetailsTemplateSchema } from 'src/app/core/models/schemas/credential-details/lear-credential-machine-details-schema';
 import { GxLabelCredentialDetailsTemplateSchema } from 'src/app/core/models/schemas/credential-details/gx-label-credential-details-schema';
 import { VerifiableCertificationDetailsTemplateSchema } from 'src/app/core/models/schemas/credential-details/verifiable-certification-details-schema';
-import { MappedExtendedDetailsField, TemplateSchema, MappedTemplateSchema, DetailsField, MappedDetailsField, CustomDetailsField, MappedExtendedDetailsGroupField } from 'src/app/core/models/entity/lear-credential-details';
+import { MappedExtendedDetailsField, TemplateSchema, MappedTemplateSchema, DetailsField, MappedDetailsField, CustomDetailsField, MappedExtendedDetailsGroupField, CredentialProcedureDetails } from 'src/app/core/models/entity/lear-credential-details';
+import { LifeCycleStatusService } from 'src/app/shared/services/life-cycle-status.service';
+import { CredentialActionsService } from './credential-actions.service';
+import { StatusClass } from 'src/app/core/models/entity/lear-credential-management';
+import { statusHasSendReminderlButton, credentialTypeHasSendReminderButton, statusHasSignCredentialButton, credentialTypeHasSignCredentialButton, statusHasRevokeCredentialButton, credentialTypeHasRevokeCredentialButton } from '../helpers/actions-helpers';
 import { DialogComponent } from 'src/app/shared/components/dialog/dialog-component/dialog.component';
-import { DialogData } from 'src/app/shared/components/dialog/dialog-data';
 
 @Injectable() //provided in component
 export class CredentialDetailsService {
-  public credentialValidFrom$ = signal('');
-  public credentialValidUntil$ = signal('');
-  public credentialType$ = signal<CredentialType | undefined>(undefined);
+  // CREDENTIAL DATA
   public procedureId$ = signal<string>('');
-  public credentialStatus$ = signal<CredentialStatus | undefined>(undefined);
+  public credentialDetailsData$ = signal<CredentialProcedureDetails | undefined>(undefined);
+  public lifeCycleStatus$ = computed<LifeCycleStatus | undefined>(() => {
+    return this.credentialDetailsData$()?.lifeCycleStatus;
+  });
+  public credential$ = computed<LEARCredential | undefined>(() => {
+    const credentialProcedureData = this.credentialDetailsData$();
+    return credentialProcedureData?.credential?.vc;
+  });
+  public credentialValidFrom$ = computed<string>(() => {
+    return this.credential$()?.validFrom ?? '';
+  });
+  public credentialValidUntil$ = computed<string>(() => {
+    return this.credential$()?.validUntil ?? '';
+  });
+  public credentialType$ = computed<CredentialType | undefined>(() => {
+    const vc = this.credential$();
+    return vc ? this.getCredentialType(vc) : undefined;
+  });
+  public lifeCycleStatusClass$: Signal<StatusClass | undefined>;
+  public credentialStatus$ = computed<CredentialStatus | undefined>(() => {
+    return this.credential$()?.credentialStatus;
+  })
 
+  //MODELS
   public sideTemplateModel$: WritableSignal<MappedExtendedDetailsField[] | undefined> = signal(undefined);
   public mainTemplateModel$: WritableSignal<MappedExtendedDetailsField[] | undefined> = signal(undefined);
+  public showSideTemplateCard$ = computed<boolean>(() =>
+    Boolean(this.sideTemplateModel$()?.length)
+  );
 
+  //BUTTONS
+  public showReminderButton$ = computed<boolean>(() => {
+    const type = this.credentialType$();
+    const status = this.lifeCycleStatus$();
+
+    return !!(
+      status 
+      && statusHasSendReminderlButton(status)
+      && type 
+      && credentialTypeHasSendReminderButton(type)
+    );
+  });
+  
+  public showSignCredentialButton$ = computed<boolean>(()=>{
+    const type = this.credentialType$();
+    const status = this.lifeCycleStatus$();
+
+    return !!(
+      status
+      && statusHasSignCredentialButton(status)
+      && type 
+      && credentialTypeHasSignCredentialButton(type)
+    );
+  });
+
+  public showRevokeCredentialButton$ = computed<boolean>(()=>{
+    const type = this.credentialType$();
+    const status = this.lifeCycleStatus$();
+
+    return !!(
+      status
+      && statusHasRevokeCredentialButton(status)
+      && type 
+      && credentialTypeHasRevokeCredentialButton(type)
+    );
+  });
+
+  public enableRevokeCredentialButton$ = computed(() => {
+    return !!this.credentialStatus$();
+  });
+
+  public showActionsButtonsContainer$ = computed<boolean>(() => {
+    return this.showSignCredentialButton$() || this.showReminderButton$() || this.showRevokeCredentialButton$()
+  });
+
+  private readonly actionsService = inject(CredentialActionsService);
   private readonly credentialProcedureService = inject(CredentialProcedureService);
   private readonly dialog = inject(DialogWrapperService);
-  private readonly router = inject(Router);
-  private readonly translate = inject(TranslateService);
+  private readonly statusService = inject(LifeCycleStatusService);
+
+  
   private readonly schemasByTypeMap: Record<CredentialType, TemplateSchema> = {
     'LEARCredentialEmployee': LearCredentialEmployeeDetailsTemplateSchema,
     'LEARCredentialMachine': LearCredentialMachineDetailsTemplateSchema,
@@ -36,17 +107,31 @@ export class CredentialDetailsService {
     'gx:LabelCredential': GxLabelCredentialDetailsTemplateSchema,
   } as const;
 
+  public constructor(){
+    this.lifeCycleStatusClass$ = computed(() => {
+      const status = this.lifeCycleStatus$();
+      if(!status) return 'status-default';
+      return this.statusService.mapStatusToClass(status)
+    });
+  }
+
   public setProcedureId(id: string) {
     this.procedureId$.set(id);
   }
 
   public loadCredentialModels(injector: Injector): void {  
-    this.loadCredentialDetails().subscribe(data => {
-      this.setCredentialBasicInfo(data);
-      const vc = data.credential.vc;
+    this.loadCredentialDetails()
+    .subscribe(data => {
+      this.credentialDetailsData$.set(data);
+      const vc = this.credential$();
+      if(!vc) throw Error('No credential found.');
 
       const type = this.credentialType$();
-      if(!type) throw Error('No credential type found in credential.');
+      if(!type){
+       console.error('Credential: ');
+       console.error(vc);
+       throw Error('No credential type found in credential: ');
+      }
 
       const schema = this.getSchemaByType(type);
       const mappedSchema = this.mapSchemaValues(schema, vc);
@@ -55,53 +140,68 @@ export class CredentialDetailsService {
   }
 
   public openSendReminderDialog(): void {
-    const dialogData: DialogData = {
-      title: this.translate.instant("credentialDetails.sendReminderConfirm.title"),
-      message: this.translate.instant("credentialDetails.sendReminderConfirm.message"),
-      confirmationType: 'async',
-      status: 'default'
-    };
-
-    const sendReminderAfterConfirm = (): Observable<boolean> => {
-      return this.sendReminder();
-    }
-
-    this.dialog.openDialogWithCallback(DialogComponent, dialogData, sendReminderAfterConfirm);
+    const procedureId = this.getProcedureId();
+    return this.actionsService.openSendReminderDialog(procedureId);
   }
 
   public openSignCredentialDialog(): void {
-    const dialogData: DialogData = {
-      title: this.translate.instant("credentialDetails.signCredentialConfirm.title"),
-      message: this.translate.instant("credentialDetails.signCredentialConfirm.message"),
-      confirmationType: 'async',
-      status: 'default'
-    };
+    const procedureId = this.getProcedureId();
+    return this.actionsService.openSignCredentialDialog(procedureId);
+  }
 
-    const signCredentialAfterConfirm = (): Observable<boolean> => {
-      return this.signCredential();
+  public openRevokeCredentialDialog(): void{
+    if(this.lifeCycleStatus$() !== 'VALID'){
+      console.error("Only credentials with status VALID can be revoked.");
+      this.dialog.openErrorInfoDialog(DialogComponent, 'error.unknown_error');
+      return;
+    }
+    if(!this.credentialStatus$()){
+      console.error("Only credentials with statusCredential field can be revoked.");
+      this.dialog.openErrorInfoDialog(DialogComponent, 'error.unknown_error');
+      return;
+    }
+    const credentialId = this.getCredentialId();
+    if(!credentialId){
+      console.error("Couldn't get credential id from vc.");
+      this.dialog.openErrorInfoDialog(DialogComponent, 'error.unknown_error');
+      return;
+    }
+    const listId = this.getCredentialListId();
+    if(!listId){
+      console.error("Couldn't get credential list from vc.");
+      this.dialog.openErrorInfoDialog(DialogComponent, 'error.unknown_error');
+      return;
+    }
+    return this.actionsService.openRevokeCredentialDialog(credentialId, listId);
+  }
+
+  private getProcedureId(): string{
+    return this.procedureId$();
+  }
+
+  private getCredential(): LEARCredential | undefined{
+    return this.credentialDetailsData$()?.credential?.vc;
+  }
+
+  private getCredentialId(): string | undefined {
+    return this.getCredential()?.id;
+  }
+
+  private getCredentialListId(): string {
+    const statusListCredential = this.getCredential()?.credentialStatus?.statusListCredential;
+    
+    if(!statusListCredential){
+      console.error('No Status List Credential found in vc: ');
+      console.error(this.getCredential());
+      return "";
     }
     
-    this.dialog.openDialogWithCallback(DialogComponent, dialogData, signCredentialAfterConfirm);
+    const id = statusListCredential[statusListCredential.length - 1];
+    return id;
   }
 
   
-  public sendReminder(): Observable<boolean> {
-    return this.executeCredentialAction(
-      (procedureId) => this.credentialProcedureService.sendReminder(procedureId),
-      "credentialDetails.sendReminderSuccess.title",
-      "credentialDetails.sendReminderSuccess.message"
-    );
-  }
-  
-  public signCredential(): Observable<boolean> {
-    return this.executeCredentialAction(
-      (procedureId) => this.credentialProcedureService.signCredential(procedureId),
-      "credentialDetails.signCredentialSuccess.title",
-      "credentialDetails.signCredentialSuccess.message"
-    );
-  }
-
-  private loadCredentialDetails(): Observable<LEARCredentialDataDetails> {
+  private loadCredentialDetails(): Observable<CredentialProcedureDetails> {
     return this.credentialProcedureService.getCredentialProcedureById(this.procedureId$());
   }
 
@@ -110,8 +210,8 @@ export class CredentialDetailsService {
   }
       
   private getCredentialType(cred: LEARCredential): CredentialType{
-    const type = cred.type.find((t): t is CredentialType => t in this.schemasByTypeMap);
-    if(!type) throw Error('No credential tyep found in credential');
+    const type = cred.type.find((t): t is CredentialType => CREDENTIAL_TYPES_ARRAY.includes(t as CredentialType));
+    if(!type) throw Error('No credential type found in credential');
     return type;
   }
 
@@ -212,24 +312,6 @@ private mapSchemaValues(
   return !allChildrenNull;
 }
 
-
-  private setCredentialBasicInfo(details: LEARCredentialDataDetails): void{
-    const credential = details.credential.vc;
-
-    const credentialValidFrom = credential.validFrom;
-    this.credentialValidFrom$.set(credentialValidFrom);
-
-    const credentialValidUntil = credential.validUntil;
-    this.credentialValidUntil$.set(credentialValidUntil);
-
-    const type = this.getCredentialType(credential);
-    this.credentialType$.set(type);
-
-    const status = details.credential_status;
-    this.credentialStatus$.set(status);
-
-  }
-
   // add "portal" prop to fields
   private extendFields(fields: MappedDetailsField[], injector: Injector): MappedExtendedDetailsField[] {
       return fields.map((field) => {
@@ -266,36 +348,6 @@ private mapSchemaValues(
     
     this.mainTemplateModel$.set(extendedMainSchema);
     this.sideTemplateModel$.set(extendedSideSchema);     
-  }
-
-  private executeCredentialAction(
-    action: (procedureId: string) => Observable<void>,
-    titleKey: string,
-    messageKey: string
-  ): Observable<boolean> {
-    const procedureId = this.procedureId$();
-    if (!procedureId) {
-      console.error('No procedure id.');
-      return EMPTY;
-    }
-  
-    return action(procedureId).pipe(
-      switchMap(() => {
-        const dialogData: DialogData = {
-          title: this.translate.instant(titleKey),
-          message: this.translate.instant(messageKey),
-          confirmationType: 'none',
-          status: 'default'
-        };
-  
-        const dialogRef = this.dialog.openDialog(DialogComponent, dialogData);
-        return dialogRef.afterClosed();
-      }),
-      switchMap(()  =>
-        from(this.router.navigate(['/organization/credentials']))
-      ),
-      tap(() => location.reload())
-    );
   }
 
 }

@@ -43,7 +43,7 @@ export class LearCredentialEmployeeSchemaBuilder implements CredentialIssuanceSc
           type: 'group',
           display: 'pref_side',
           value: () => {
-            const mandator = this.authService.getMandator();
+            const mandator = this.authService.getRawMandator();
             return mandator ? { mandator } : null;
           },
           groupFields: [

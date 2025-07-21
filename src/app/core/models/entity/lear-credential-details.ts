@@ -1,6 +1,11 @@
+import { CredentialProcedureDetailsResponse } from './../dto/credential-procedure-details-response.dto';
 import { ComponentPortal } from "@angular/cdk/portal";
 import { InjectionToken } from "@angular/core";
-import { LEARCredential } from "./lear-credential";
+import { LEARCredential, LEARCredentialJwtPayload } from "./lear-credential";
+
+export interface CredentialProcedureDetails extends CredentialProcedureDetailsResponse{
+  credential: LEARCredentialJwtPayload;
+}
 
 export type DetailsField = DetailsKeyValueField | DetailsGroupField;
 

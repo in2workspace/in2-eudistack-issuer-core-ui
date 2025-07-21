@@ -40,7 +40,7 @@ export class IssuanceSchemaBuilder {
         }
       }
       if (display === 'pref_side') {
-        if (asSigner && typeof field.value === 'function') {
+        if (!asSigner && typeof field.value === 'function') {
           const val = field.value();
           if (val && typeof val === 'object') {
             Object.assign(staticSchema, val);

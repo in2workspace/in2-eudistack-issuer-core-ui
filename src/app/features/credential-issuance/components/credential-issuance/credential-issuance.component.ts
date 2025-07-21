@@ -312,7 +312,7 @@ export class CredentialIssuanceComponent implements CanDeactivate<CanComponentDe
     const dataForCredentialPayload: IssuanceRawCredentialPayload = { 
       partialCredentialSubject: credential.form, 
       power: credential.power, 
-      optional: { keys: credential.keys, staticData:this.staticData$() },
+      optional: { keys: credential.keys, staticData: this.staticData$() },
       asSigner: this.asSigner
     }
     return this.issuanceService.submitCredential(dataForCredentialPayload, credentialType).pipe(

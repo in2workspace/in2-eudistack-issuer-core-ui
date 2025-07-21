@@ -1,10 +1,16 @@
-export interface LEARCredentialDataDetails {
-  procedure_id: string;
-  credential_status: CredentialStatus;
-  credential: LEARCredentialJwtPayload;
-}
+export type LifeCycleStatus = 'WITHDRAWN' | 'VALID' | 'EXPIRED' | 'PEND_DOWNLOAD' | 'PEND_SIGNATURE' | 'DRAFT' | 'ISSUED' | 'REVOKED';
 
-export type CredentialStatus = 'WITHDRAWN' | 'VALID' | 'EXPIRED' | 'PEND_DOWNLOAD' | 'PEND_SIGNATURE' | 'DRAFT' | 'ISSUED';
+export interface CredentialStatus {   
+  "id": string,
+  "type": CredentialStatusType,   
+  "statusPurpose": CredentialStatusPurpose,   
+  "statusListIndex": CredentialStatusListIndex,
+  "statusListCredential": string;
+} 
+export type CredentialStatusType = 'PlainListEntity';
+export type CredentialStatusPurpose = 'revocation';
+export type CredentialStatusListIndex = '<nonce>';
+
 
 export interface LEARCredentialJwtPayload {
   sub: string | null;
@@ -26,7 +32,8 @@ export type LEARCredential =
   | LEARCredentialEmployee
   | LEARCredentialMachine
   | VerifiableCertification
-  | GxLabelCredential;
+  | GxLabelCredential
+  | VerifiableCertification;
 
 // --- Common Types ---
 export interface LifeSpan {
@@ -104,6 +111,7 @@ export interface LEARCredentialEmployee {
   validUntil: string;
   issuanceDate?: string;
   expirationDate?: string;
+  credentialStatus: CredentialStatus;
 }
 
 export interface EmployeeMandatee {
@@ -136,6 +144,7 @@ export interface LEARCredentialMachine {
   issuer?: MachineIssuer;
   validFrom: string;
   validUntil: string;
+  credentialStatus: CredentialStatus;
 }
 
 export interface MachineMandatee {
@@ -181,6 +190,7 @@ export interface VerifiableCertification {
   attester: Attester;
   validUntil: string;
   signer: CertificationSigner;
+  credentialStatus: CredentialStatus;
 }
 
 export interface CertificationIssuer {
@@ -221,6 +231,7 @@ export interface GxLabelCredential {
   issuer?: string; //did:elsi:VAT...
   validFrom: string;
   validUntil: string;
+  credentialStatus: CredentialStatus;
   credentialSubject: {
     id: string, //urn...
     "gx:labelLevel": string,

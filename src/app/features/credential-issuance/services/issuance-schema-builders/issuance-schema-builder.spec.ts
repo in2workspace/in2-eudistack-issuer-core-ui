@@ -3,7 +3,8 @@ import {
   CREDENTIAL_SCHEMA_BUILDERS,
   IssuanceSchemaBuilder,
 } from './issuance-schema-builder';
-import { IssuanceCredentialType } from 'src/app/core/models/entity/lear-credential-issuance';
+import {  } from 'src/app/core/models/entity/lear-credential-issuance';
+import { IssuanceCredentialType } from 'src/app/core/models/entity/lear-credential';
 
 describe('IssuanceSchemaBuilder', () => {
   let service: IssuanceSchemaBuilder;
