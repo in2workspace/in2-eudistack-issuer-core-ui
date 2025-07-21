@@ -35,6 +35,7 @@
   },
   "mandator": {
     "organizationid": "Número VAT de empresa",
+    "organizationidHint": "Introduzca solo los caracteres de después de 'VAT-'.Por ejemplo, si el número completo es 'VAT-123ABC', introduzca '123ABC'",
     "organization": "Nombre de empresa",
     "name": "Nombre",
     "first-name": "Nombre",
@@ -187,44 +188,17 @@
         "message": "Seguro que quieres eliminar este power? "
       }
     },
-    "credentialIssuance": {
-      "title": "Emisión de LEARCredential",
+    "credentialIssuance":{
       "learCredentialEmployee": "LEARCredentialEmployee",
       "create-confirm-dialog": {
         "title": "Crear credencial",
-        "message": "¿Estás seguro de que quieres crear esta credencial?",
-        "checkboxLabel": "Confirmo que he copiado y guardado de forma segura la clave privada.",
-        "belowText": "Sin la clave privada, no podrás usar esta credencial más adelante."
+        "message": "Seguro que quiere crear esta credencial?"
       },
       "create-success-dialog": {
         "title": "Credencial creada",
-        "message": "LEARCredentialEmployee se ha creado correctamente."
+        "message": "La LEARCredentialEmployee ha sido creada con éxito."
       },
-      "creating-credential": "Creando credencial",
-      "create-credential": "Crear credencial",
-      "credentialType": "Tipo de credencial",
-      "cancel": "Cancelar",
-      "mandatee": "mandatario",
-      "mandator": "mandante",
-      "select-type": "Selecciona el tipo de credencial",
-      "firstName": "Nombre",
-      "lastName": "Apellido",
-      "commonName": "Nombre común",
-      "email": "Correo electrónico",
-      "emailAddress": "Correo electrónico",
-      "nationality": "Nacionalidad",
-      "serialNumber": "Número de documento de identidad",
-      "organization": "Nombre de la empresa",
-      "organizationIdentifier": "NIF de la empresa",
-      "country": "País",
-      "domain": "Dominio",
-      "ipAddress": "Dirección IP",
-      "selectA": "Selecciona un ",
-      "hint": {
-        "organizationIdentifier": "Introduce solo los caracteres que van después de 'VAT...-'. Por ejemplo, si es 'VATEU-123ABC', introduce '123ABC'."
-      },
-      "changeCredentialAlert": "¿Estás seguro de que quieres cambiar el tipo de credencial? Se perderá el progreso.",
-      "unloadAlert": "¿Estás seguro de que deseas salir? Se perderá el progreso."
+      "creating-credential": "Creando credencial"
     },
     "error": {
       "not_found": "El recurso solicitado no fue encontrado.",

@@ -1,5 +1,7 @@
 import { inject, Injectable, InjectionToken } from "@angular/core";
-import { CredentialIssuanceFormSchema, CredentialIssuancePowerFormSchema, CredentialIssuanceSchemaBuilder, IssuanceCredentialType, IssuanceStaticDataSchema } from "src/app/core/models/entity/lear-credential-issuance";
+import { IssuanceCredentialType } from "src/app/core/models/entity/lear-credential";
+import { CredentialIssuanceFormSchema, CredentialIssuancePowerFormSchema, CredentialIssuanceSchemaBuilder } from "src/app/core/models/entity/lear-credential-issuance";
+import { IssuanceStaticDataSchema } from "../../components/credential-issuance/credential-issuance.component";
 
 export const CREDENTIAL_SCHEMA_BUILDERS = new InjectionToken<CredentialIssuanceSchemaBuilder[]>('CREDENTIAL_SCHEMA_BUILDERS');
 
@@ -17,42 +19,43 @@ export class IssuanceSchemaBuilder {
   }
 
   public schemasBuilder(
-  credType: IssuanceCredentialType,
-  asSigner: boolean
+    credType: IssuanceCredentialType,
+    asSigner: boolean
   ): [CredentialIssuanceFormSchema, IssuanceStaticDataSchema] {
     const rawSchema = this.getIssuanceFormSchema(credType);
+  
     const formSchema: CredentialIssuanceFormSchema = [];
     const staticSchema: IssuanceStaticDataSchema = {};
-
+  
     for (const field of rawSchema) {
-      if (this.shouldExtractStatic(field, asSigner)) {
-        this.extractStatic(field, staticSchema);
+      const display = field.display;
+      if(display === 'side'){
+        if (typeof field.value === 'function') {
+          const val = field.value();
+          if (val && typeof val === 'object') {
+            Object.assign(staticSchema, val);
+          }else{
+            console.warn('Could not get value from field ' + field);
+          }
+        }
+      }
+      if (display === 'pref_side') {
+        if (asSigner && typeof field.value === 'function') {
+          const val = field.value();
+          if (val && typeof val === 'object') {
+            Object.assign(staticSchema, val);
+          }else{
+            console.warn('Could not get value from field ' + field);
+          }
+        }
         continue;
       }
-
+  
       formSchema.push(field);
     }
-
+  
     return [formSchema, staticSchema];
   }
-
-  private shouldExtractStatic(field: any, asSigner: boolean): boolean {
-    if (field.display === 'side') return true;
-    if (field.display === 'pref_side' && !asSigner) return true;
-    return false;
-  }
-
-  private extractStatic(field: any, staticSchema: IssuanceStaticDataSchema): void {
-    const getter = field.staticValueGetter;
-    if (typeof getter === 'function') {
-      const val = getter();
-      if (val && typeof val === 'object') {
-        Object.assign(staticSchema, val);
-      } else {
-        console.warn(`Could not get static value from field ${field.name ?? field}`);
-      }
-    }
-}
 
   private getBuilder(type: IssuanceCredentialType): CredentialIssuanceSchemaBuilder {
     const b = this.builders.find(x => (x as any).credType === type);

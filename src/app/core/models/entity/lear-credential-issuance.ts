@@ -1,13 +1,10 @@
-import { ValidatorEntryUnion } from "src/app/shared/validators/credential-issuance/all-validators";
-import { TmfAction, TmfFunction } from "./lear-credential";
-export const ISSUANCE_CREDENTIAL_TYPES_ARRAY = ['LEARCredentialEmployee', 'LEARCredentialMachine'] as const;
-export type IssuanceCredentialType = typeof ISSUANCE_CREDENTIAL_TYPES_ARRAY[number];
-
 // todo consider renaming
 // todo enhance typing
+// todo add staticGetter
 // todo add error/s message field to decouple validation from displayed message responsibilities
-// todo remove display: make a prop/array in CredentialIssuanceFormSchema for each type
-// todo add custom field to allow using a custom component (similar to details)
+
+import { ValidatorEntry } from "src/app/shared/validators/credential-issuance/all-validators";
+
 export type CredentialIssuanceFormFieldSchema = {
     key: string, //this is used for models fields names and also as label for transations; i.e. "credentialIssuance.mandatee"
     type: 'control' | 'group';
@@ -15,14 +12,13 @@ export type CredentialIssuanceFormFieldSchema = {
     controlType?: 'text' | 'number' | 'selector', // for type 'control' only
     multiOptions?: SelectorOption[], //only for 'selector' (and similars if added: 'radio' and 'checkbox')
     groupFields?: CredentialIssuanceFormSchema; //for 'group' only
-    validators?: ValidatorEntryUnion[];
+    validators?: ValidatorEntry[];
     hint?: string; //hint that is shown above the input
     classes?: string; //admits a string of separated clases; i.e.: "classOne classTwo"
-    staticValueGetter?: () => IssuanceStaticDataSchema | null; //in case it is side (or pref_side + asSigner)
+    value?: () => any; //in case it is pref_side
 };
 
 export interface CredentialIssuanceSchemaBuilder {
-  readonly credType: IssuanceCredentialType;
   getSchema(): CredentialIssuanceSchemaTuple;
 }
 
@@ -39,20 +35,3 @@ export interface IssuanceFormPowerSchema{
 export type CredentialIssuancePowerFormSchema = { power: IssuanceFormPowerSchema[]}
 
 export type CredentialIssuanceSchemaTuple = [CredentialIssuanceFormSchema, CredentialIssuancePowerFormSchema];
-
-export type IssuanceStaticDataSchema = {
-    mandator?: {key:string, value:string}[];
-}
-
-export type CredentialIssuanceGlobalFormState = {
-    keys: KeyState | undefined;
-    form: Record<string, any>;
-    power: IssuanceRawPowerForm;
-}
-
-export type IssuanceRawPowerForm = Partial<Record<TmfFunction, Record<TmfAction, boolean>>>;
-
-export interface KeyState {
-  desmosPrivateKeyValue: string,
-  desmosDidKeyValue: string
-}

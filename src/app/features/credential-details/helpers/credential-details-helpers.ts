@@ -30,15 +30,17 @@ export function groupActionsByFunction(powers: Power[]): FunctionActions[] {
   return compliances.map(comp => ({
     key: comp.id,
     type: 'group',
+    // Ara .value és l'array de subfields
     value: [
-      mapKeyValue('hash', comp.hash),
-      mapKeyValue('scope', comp.scope),
-      mapKeyValue('standard', comp.standard),
+      mapKV('hash', comp.hash),
+      mapKV('scope', comp.scope),
+      mapKV('standard', comp.standard),
     ]
   }));
 }
 
-function mapKeyValue(key: string, value: any): DetailsKeyValueField {
+/** Petit helper per crear un DetailsKeyValueField */
+function mapKV(key: string, value: any): DetailsKeyValueField {
   return { key, type: 'key-value', value };
 }
 

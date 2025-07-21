@@ -1,14 +1,14 @@
-import { CUSTOM_ELEMENTS_SCHEMA } from "@angular/core";
+import { DebugElement, CUSTOM_ELEMENTS_SCHEMA } from "@angular/core";
 import { ComponentFixture, TestBed } from "@angular/core/testing";
-import { FormsModule, ReactiveFormsModule, FormGroup } from "@angular/forms";
+import { FormsModule, ReactiveFormsModule, FormGroup, FormControl } from "@angular/forms";
 import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
 import { RouterModule } from "@angular/router";
 import { TranslateService, TranslateModule } from "@ngx-translate/core";
-import { of } from "rxjs";
+import { of, EMPTY } from "rxjs";
 import { AuthService } from "src/app/core/services/auth.service";
 import { DialogWrapperService } from "src/app/shared/components/dialog/dialog-wrapper/dialog-wrapper.service";
-import { IssuancePowerComponent } from "./issuance-power.component";
-import { IssuanceFormPowerSchema } from "src/app/core/models/entity/lear-credential-issuance";
+import { IssuancePowerComponent, TempIssuanceFormPowerSchema } from "./issuance-power.component";
+import { IssuanceFormPowerSchema } from "src/app/core/models/schemas/lear-credential-issuance-schemas";
 
 describe('IssuancePowerComponent', () => {
   let component: IssuancePowerComponent;
@@ -65,7 +65,7 @@ describe('IssuancePowerComponent', () => {
       { function: 'f1', action: ['a'], isIn2Required: false },
       { function: 'f2', action: ['a'], isIn2Required: true }
     ];
-    const result = (component as any).mapToTempPowerSchema(powers);
+    const result = component.mapToTempPowerSchema(powers);
     expect(result).toEqual([
       { function: 'f1', action: ['a'], isIn2Required: false, isDisabled: false }
     ]);

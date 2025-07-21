@@ -1,15 +1,7 @@
-import { CommonMandator, CredentialProcedureDataDetails } from "../models/entity/lear-credential";
+import { LEARCredentialDataDetails } from "../models/entity/lear-credential";
 
-export const mandatorMock: CommonMandator = {
-  country: "ES",
-  emailAddress: "mand@manda.com",
-  commonName: "mandator name",
-  organization: "ORG",
-  serialNumber: "",
-  organizationIdentifier: "VAT-21345",
-}
-
-export const mockCredentialEmployee: CredentialProcedureDataDetails = {
+// todo restore type
+export const mockCredentialEmployee: any = {
   procedure_id: 'mock-procedure-employee',
   credential_status: 'DRAFT',
   credential: {
@@ -26,7 +18,7 @@ export const mockCredentialEmployee: CredentialProcedureDataDetails = {
       issuer: {
         id: 'issuer-emp',
         commonName: 'Employee Issuer',
-        country: 'ES',
+        // country: 'ES',
         organization: 'Org EMP',
         organizationIdentifier: 'IDentifier Org',
         emailAddress: 'email',
@@ -45,7 +37,7 @@ export const mockCredentialEmployee: CredentialProcedureDataDetails = {
             nationality: 'ES'
           },
           mandator: {
-            commonName: 'Mandator EMP',
+            // commonName: 'Mandator EMP',
             country: 'ES',
             emailAddress: 'mandator@emp.com',
             organization: 'Org Mandator',
@@ -74,7 +66,7 @@ export const mockCredentialEmployee: CredentialProcedureDataDetails = {
   }
 };
 
-export const mockCredentialMachine: CredentialProcedureDataDetails = {
+export const mockCredentialMachine: LEARCredentialDataDetails = {
   procedure_id: 'mock-procedure-machine',
   credential_status: 'PEND_SIGNATURE',
   credential: {
@@ -141,7 +133,7 @@ export const mockCredentialMachine: CredentialProcedureDataDetails = {
   }
 };
 
-export const mockCredentialCertification: CredentialProcedureDataDetails = {
+export const mockCredentialCertification: LEARCredentialDataDetails = {
   procedure_id: 'mock-procedure-cert',
   credential_status: 'PEND_DOWNLOAD',
   credential: {
@@ -211,7 +203,7 @@ export const mockCredentialCertification: CredentialProcedureDataDetails = {
   }
 };
 
-export const mockGxLabel: CredentialProcedureDataDetails = {
+export const mockGxLabel: LEARCredentialDataDetails = {
   procedure_id: 'mock-procedure-gx-label',
   credential_status: 'DRAFT',
   credential: {

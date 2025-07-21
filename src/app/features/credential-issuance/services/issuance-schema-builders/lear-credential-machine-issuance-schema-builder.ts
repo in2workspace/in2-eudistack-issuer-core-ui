@@ -1,18 +1,19 @@
 import { inject, Injectable } from "@angular/core";
-import { CredentialIssuanceFormSchema, CredentialIssuancePowerFormSchema, CredentialIssuanceSchemaBuilder, CredentialIssuanceSchemaTuple, IssuanceCredentialType } from "src/app/core/models/entity/lear-credential-issuance";
+import { IssuanceCredentialType } from "src/app/core/models/entity/lear-credential";
+import { CredentialIssuanceFormSchema, CredentialIssuancePowerFormSchema, CredentialIssuanceSchemaBuilder, CredentialIssuanceSchemaTuple } from "src/app/core/models/entity/lear-credential-issuance";
+
+
 import { AuthService } from "src/app/core/services/auth.service";
 import { CountryService } from "src/app/core/services/country.service";
-import { convertToOrderedArray, mandatorFieldsOrder } from "../../helpers/fields-order-helpers";
-import { firstNameField, lastNameField, organizationField, organizationIdentifierField, serialNumberField } from "./common-fields";
 
 @Injectable({ providedIn: 'root' })
 export class LearCredentialMachineIssuanceSchemaBuilder implements CredentialIssuanceSchemaBuilder {
-  public readonly credType: IssuanceCredentialType = 'LEARCredentialMachine';
+  readonly credType: IssuanceCredentialType = 'LEARCredentialMachine';
 
   private readonly authService = inject(AuthService);
   private readonly countryService = inject(CountryService);
 
-  public getSchema(): CredentialIssuanceSchemaTuple {
+  getSchema(): CredentialIssuanceSchemaTuple {
     const countriesSelectorOptions = this.countryService.getCountriesAsSelectorOptions();
 
     const form: CredentialIssuanceFormSchema = [
@@ -46,25 +47,65 @@ export class LearCredentialMachineIssuanceSchemaBuilder implements CredentialIss
         key: 'mandator',
         type: 'group',
         display: 'pref_side',
-        staticValueGetter: () => {
-            const mandator = this.authService.getRawMandator();
-            return mandator ? { mandator: convertToOrderedArray(mandator, mandatorFieldsOrder) } : null;
-          },
+        value: () => {
+          const mandator = this.authService.getMandator();
+          return mandator ? { mandator } : null;
+        },
         groupFields: [
           {
-            ...firstNameField
+            key: 'firstName',
+            type: 'control',
+            controlType: 'text',
+            validators: [
+              { name: 'required' },
+              { name: 'minLength', args: [2] },
+              { name: 'maxLength', args: [50] },
+              { name: 'unicode' }
+            ]
           },
           {
-            ...lastNameField
+            key: 'lastName',
+            type: 'control',
+            controlType: 'text',
+            validators: [
+              { name: 'required' },
+              { name: 'minLength', args: [2] },
+              { name: 'maxLength', args: [50] },
+              { name: 'unicode' }
+            ]
           },
           {
-            ...serialNumberField
+            key: 'serialNumber',
+            hint: 'serialNumber',
+            type: 'control',
+            controlType: 'text',
+            validators: [
+              { name: 'minLength', args: [7] },
+              { name: 'maxLength', args: [15] },
+              { name: 'pattern', args: ["^[a-zA-Z0-9-]+$"] }
+            ]
           },
           {
-            ...organizationField
+            key: 'organization',
+            type: 'control',
+            controlType: 'text',
+            validators: [
+              { name: 'required' },
+              { name: 'minLength', args: [2] },
+              { name: 'maxLength', args: [50] },
+              { name: 'orgName' }
+            ]
           },
           {
-            ...organizationIdentifierField
+            key: 'organizationIdentifier',
+            type: 'control',
+            controlType: 'text',
+            validators: [
+              { name: 'required' },
+              { name: 'minLength', args: [7] },
+              { name: 'maxLength', args: [15] },
+              { name: 'orgIdentifier' }
+            ]
           },
           {
             key: 'country',

@@ -24,12 +24,12 @@ bootstrapApplication(AppComponent, {
             provide: CREDENTIAL_SCHEMA_BUILDERS,
             useClass: LearCredentialEmployeeSchemaBuilder,
             multi: true
-        },
-        {
+            },
+            {
             provide: CREDENTIAL_SCHEMA_BUILDERS,
             useClass: LearCredentialMachineIssuanceSchemaBuilder,
             multi: true
-        },
+            },
         importProvidersFrom(BrowserModule, RouterModule.forRoot(routes), TranslateModule.forRoot({
             loader: {
                 provide: TranslateLoader,

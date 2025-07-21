@@ -2,9 +2,11 @@ import { MatButton } from '@angular/material/button';
 import { MatLabel } from '@angular/material/form-field';
 import { Component, computed, inject, Signal, signal, WritableSignal, effect, HostListener, OnDestroy } from '@angular/core';
 import { MatFormField, MatOption, MatSelect } from '@angular/material/select';
+import { EmployeeMandator, ISSUANCE_CREDENTIAL_TYPES_ARRAY, IssuanceCredentialType, TmfAction, TmfFunction } from 'src/app/core/models/entity/lear-credential';
 import { DynamicFieldComponent } from '../dynamic-field/dynamic-field.component';
 import { FormGroup, ReactiveFormsModule } from '@angular/forms';
-import { NgFor, TitleCasePipe, KeyValuePipe } from '@angular/common';
+import { NgFor, TitleCasePipe } from '@angular/common';
+import { KeyValuePipe } from '@angular/common';
 import { IssuancePowerValueAndValidity, IssuancePowerComponent } from '../power/issuance-power.component';
 import { EMPTY, from, map, Observable, of, startWith, Subject, switchMap, takeUntil, tap } from 'rxjs';
 import { DialogWrapperService } from 'src/app/shared/components/dialog/dialog-wrapper/dialog-wrapper.service';
@@ -16,9 +18,22 @@ import { ActivatedRoute, CanDeactivate, Router } from '@angular/router';
 import { MatCard, MatCardContent } from '@angular/material/card';
 import { CanComponentDeactivate, CanDeactivateType } from 'src/app/core/guards/can-component-deactivate.guard';
 import { CredentialIssuanceService } from '../../services/credential-issuance.service';
+import { KeyState } from '../../services/key-generator.service';
 import { KeyGeneratorComponent } from '../key-generator/key-generator.component';
 import { IssuanceRawCredentialPayload } from 'src/app/core/models/dto/lear-credential-issuance-request.dto';
-import { CredentialIssuanceFormSchema, CredentialIssuanceGlobalFormState, CredentialIssuancePowerFormSchema, ISSUANCE_CREDENTIAL_TYPES_ARRAY, IssuanceCredentialType, IssuanceRawPowerForm, IssuanceStaticDataSchema, KeyState } from 'src/app/core/models/entity/lear-credential-issuance';
+import { CredentialIssuanceFormSchema, CredentialIssuancePowerFormSchema } from 'src/app/core/models/entity/lear-credential-issuance';
+
+export type CredentialIssuanceGlobalFormState = {
+    keys: KeyState | undefined;
+    form: Record<string, any>;
+    power: IssuanceRawPowerForm;
+}
+
+export type IssuanceStaticDataSchema = {
+    mandator?: EmployeeMandator;
+}
+
+export type IssuanceRawPowerForm = Partial<Record<TmfFunction, Record<TmfAction, boolean>>>;
 
 @Component({
   selector: 'app-credential-issuance',
@@ -61,6 +76,7 @@ export class CredentialIssuanceComponent implements CanDeactivate<CanComponentDe
   //Keys
   public keys$ = signal<KeyState|undefined>(undefined);
   //Power form
+  //todo type
   public powersValue$ = signal<IssuanceRawPowerForm>({} as IssuanceRawPowerForm);
   public powersHasOneFunction$ = signal<boolean>(false);
   public powersHaveOneAction$ = signal<boolean>(false);
@@ -107,15 +123,14 @@ export class CredentialIssuanceComponent implements CanDeactivate<CanComponentDe
   private readonly router = inject(Router);
   private readonly translate = inject(TranslateService);
 
-  private readonly destroy$ = new Subject<void>();
+  private readonly destroy$ = new Subject();
 
   // every time a new credential type > credential schema is selected, reset global state
-  private readonly updateFormEffect = effect(() => {
+  private updateFormEffect = effect(() => {
     // reset keys
     this.updateKeys(undefined);
 
-    //todo use recursive function to remove controls and add controls to avoid multiple subscriptions? (similarly to power component)
-    this.destroy$.next();
+    //todo fer-ho amb funció recursiva d'eliminar (semblant a power component) i afegir controls per evitar repetir subscribe?
     //reset form
     this.form = this.credentialFormSchema$() 
       ? this.getCredentialFormFromSchema()
@@ -123,6 +138,7 @@ export class CredentialIssuanceComponent implements CanDeactivate<CanComponentDe
     console.log('Now form is ');
     console.log(this.form);
 
+    //todo untilDestroyed / formReset
     this.form.valueChanges.pipe(
       map(val => [val, this.form.valid] ),
       startWith([this.form.value, false]),
@@ -137,7 +153,7 @@ export class CredentialIssuanceComponent implements CanDeactivate<CanComponentDe
   }, { allowSignalWrites: true});
 
   public constructor(){
-  this.asSigner = this.route.snapshot.pathFromRoot
+    this.asSigner = this.route.snapshot.pathFromRoot
       .flatMap(r => r.url)
       .map(seg => seg.path)
       .includes('create-as-signer');
@@ -150,6 +166,9 @@ export class CredentialIssuanceComponent implements CanDeactivate<CanComponentDe
       const confirm = this.openLeaveConfirm();
       //todo maybe use event.returnValue
       if(!confirm) $event.preventDefault();
+      return;
+    }else{
+      return;
     }
   }
 
@@ -161,6 +180,7 @@ export class CredentialIssuanceComponent implements CanDeactivate<CanComponentDe
       const shouldChange = window.confirm(alertMsg);
 
       if (!shouldChange) {
+        // this.selectedCredentialType$.set(currentType);
         select.value = currentType;
         return;
       }
@@ -188,16 +208,18 @@ export class CredentialIssuanceComponent implements CanDeactivate<CanComponentDe
   }
 
   
-  public onSubmit(): void {
+  public onSubmit() {
     const isGlobalValid = this.isGlobalValid$();
     const globalValue = this.globalValue$();
-    if (!isGlobalValid) {
+    if (isGlobalValid) {
+      console.log('✅ Form valid', globalValue);
+    } 
+    else {
       console.error('Invalid form: ');
       console.log(globalValue);
-      return;
-    } 
-
-    console.log('✅ Form valid', globalValue);
+      // todo restore
+      // return;
+    }
 
     //open confirm
     if(this.selectedCredentialType$() === 'LEARCredentialMachine'){
@@ -212,7 +234,7 @@ export class CredentialIssuanceComponent implements CanDeactivate<CanComponentDe
   }
 
   public ngOnDestroy(): void {
-    this.destroy$.next();
+    this.destroy$.next('');
     this.destroy$.complete();
   }
 
@@ -278,6 +300,7 @@ export class CredentialIssuanceComponent implements CanDeactivate<CanComponentDe
     console.log(credential);
     const credentialType = this.selectedCredentialType$();
     const credentialSchema = this.credentialFormSchema$();
+    // todo restore
     if(!this.isGlobalValid$()){
       console.error('Invalid global values! Cannot submit.');
       return of(EMPTY);
@@ -289,7 +312,7 @@ export class CredentialIssuanceComponent implements CanDeactivate<CanComponentDe
     const dataForCredentialPayload: IssuanceRawCredentialPayload = { 
       partialCredentialSubject: credential.form, 
       power: credential.power, 
-      optional: { keys: credential.keys, staticData: this.staticData$() },
+      optional: { keys: credential.keys, staticData:this.staticData$() },
       asSigner: this.asSigner
     }
     return this.issuanceService.submitCredential(dataForCredentialPayload, credentialType).pipe(

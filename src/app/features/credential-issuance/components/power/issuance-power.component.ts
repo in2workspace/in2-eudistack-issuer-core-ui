@@ -1,5 +1,5 @@
 import { DialogComponent } from 'src/app/shared/components/dialog/dialog-component/dialog.component';
-import { Component, EventEmitter, Input, OnDestroy, OnInit, Output, inject } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output, inject } from '@angular/core';
 import { MatSelect, MatSelectTrigger } from '@angular/material/select';
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { MatIcon } from '@angular/material/icon';
@@ -8,12 +8,14 @@ import { MatSlideToggle } from '@angular/material/slide-toggle';
 import { MatButton, MatMiniFabButton } from '@angular/material/button';
 import { MatOption } from '@angular/material/core';
 import { MatFormField, MatLabel } from '@angular/material/form-field';
-import { KeyValuePipe } from '@angular/common';
+import { NgIf, NgFor, NgTemplateOutlet, AsyncPipe, KeyValuePipe } from '@angular/common';
 import { DialogWrapperService } from 'src/app/shared/components/dialog/dialog-wrapper/dialog-wrapper.service';
-import { EMPTY, Observable, Subject, takeUntil, tap } from 'rxjs';
+import { EMPTY, Observable, tap } from 'rxjs';
 import { DialogData } from 'src/app/shared/components/dialog/dialog-data';
 import { AuthService } from 'src/app/core/services/auth.service';
-import { IssuanceFormPowerSchema, IssuanceRawPowerForm } from 'src/app/core/models/entity/lear-credential-issuance';
+import { NormalizedAction } from '../../services/power.service';
+import { IssuanceRawPowerForm } from '../credential-issuance/credential-issuance.component';
+import { IssuanceFormPowerSchema } from 'src/app/core/models/entity/lear-credential-issuance';
 
 export interface TempIssuanceFormPowerSchema extends IssuanceFormPowerSchema{
   isDisabled: boolean;
@@ -22,8 +24,6 @@ export interface TempIssuanceFormPowerSchema extends IssuanceFormPowerSchema{
 export interface NormalizedTempIssuanceFormSchemaPower extends TempIssuanceFormPowerSchema{
   normalizedActions: NormalizedAction[];
 }
-
-export type NormalizedAction = { action: string; value: boolean };
 
 export interface IssuancePowerValueAndValidity {
   value: IssuanceRawPowerForm, 
@@ -36,37 +36,36 @@ export interface IssuancePowerValueAndValidity {
     templateUrl: './issuance-power.component.html',
     styleUrls: ['./issuance-power.component.scss'],
     standalone: true,
-    imports: [KeyValuePipe, ReactiveFormsModule, MatFormField, MatSelect, MatSelectTrigger, MatOption, MatButton, MatSlideToggle, FormsModule, MatMiniFabButton, MatIcon, MatLabel, MatSelect, TranslatePipe]
+    imports: [KeyValuePipe, ReactiveFormsModule, NgIf, MatFormField, MatSelect, MatSelectTrigger, MatOption, MatButton, NgFor, NgTemplateOutlet, MatSlideToggle, FormsModule, MatMiniFabButton, MatIcon, MatLabel, MatSelect, AsyncPipe, TranslatePipe]
 })
-export class IssuancePowerComponent implements OnInit, OnDestroy{
-  @Output() public formChanges = new EventEmitter<IssuancePowerValueAndValidity>();
-
-  public organizationIdentifierIsIn2: boolean;
-  public _powersInput: IssuanceFormPowerSchema[] = [];
-  public selectorPowers: TempIssuanceFormPowerSchema[] = [];
-  public selectedPower: TempIssuanceFormPowerSchema | undefined;
-  public form: FormGroup = new FormGroup({});
-
-  private readonly destroy$ = new Subject<void>();
+export class IssuancePowerComponent implements OnInit{
   private readonly authService = inject(AuthService);
   private readonly dialog = inject(DialogWrapperService);
   private readonly translate = inject(TranslateService);
 
-  public constructor(){
-    this.organizationIdentifierIsIn2 = this.authService.hasIn2OrganizationIdentifier();
-  }
-  
-  
-  @Input()
-  public set powersInput(value: IssuanceFormPowerSchema[]) {
+  public organizationIdentifierIsIn2: boolean = this.authService.hasIn2OrganizationIdentifier();
+  public _powersInput: IssuanceFormPowerSchema[] = [];
+  public selectorPowers: TempIssuanceFormPowerSchema[] = [];
+  public selectedPower: TempIssuanceFormPowerSchema | undefined;
+  public form: FormGroup = new FormGroup({});
+  //this makes keyvaluePipe respect the order
+  public keepOrder = (_: any, _2: any) => 0;
+
+
+ @Output() formChanges = new EventEmitter<IssuancePowerValueAndValidity>();
+ @Input()
+  set powersInput(value: IssuanceFormPowerSchema[]) {
     console.warn('Power component received empty list.');
     this._powersInput = value || [];
     this.selectorPowers = this.mapToTempPowerSchema(value) || [];
     this.resetForm();
   }
 
-  //this makes keyvaluePipe respect the order
-  public keepOrder = (_: any, _2: any) => 0;
+  public mapToTempPowerSchema(powers: IssuanceFormPowerSchema[]): TempIssuanceFormPowerSchema[]{
+    return powers
+      .map(p => ({...p, isDisabled: false}))
+      .filter(p => this.organizationIdentifierIsIn2 || !p.isIn2Required);
+  }
 
   public addPower(funcName: string) {
     // update form
@@ -129,12 +128,22 @@ export class IssuancePowerComponent implements OnInit, OnDestroy{
           );
           this.formChanges.emit({ value, hasOnePower, hasOneActionPerPower });
         }
-      ),
-      takeUntil(this.destroy$)
-    ).subscribe();
+      )
+    ).subscribe(val=>{
+      console.log('powers value changed: ');
+      console.log(val)
+    });
   }
 
-  public submit(){
+  private resetForm() {
+    this.form.reset();            
+    for (const key of Object.keys(this.form.controls)) {
+      this.form.removeControl(key);
+    }
+  }
+
+
+public submit(){
   console.log('submit: ');
   
 }
@@ -148,24 +157,6 @@ public getPowerByFunction(functionName: string): TempIssuanceFormPowerSchema | u
 public getFormGroup(control: any): FormGroup {
   return control as FormGroup;
 }
-
-public ngOnDestroy(): void {
-  this.destroy$.next();
-  this.destroy$.complete();
-}
-
-  private mapToTempPowerSchema(powers: IssuanceFormPowerSchema[]): TempIssuanceFormPowerSchema[]{
-    return powers
-      .map(p => ({...p, isDisabled: false}))
-      .filter(p => this.organizationIdentifierIsIn2 || !p.isIn2Required);
-  }
-
-  private resetForm() {
-    this.form.reset();            
-    for (const key of Object.keys(this.form.controls)) {
-      this.form.removeControl(key);
-    }
-  }
   
 
 }

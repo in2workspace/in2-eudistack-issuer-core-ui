@@ -5,7 +5,7 @@ import { EventTypes, OidcSecurityService, PublicEventsService } from 'angular-au
 import { UserDataAuthenticationResponse } from '../models/dto/user-data-authentication-response.dto';
 import { LEARCredentialEmployee } from '../models/entity/lear-credential';
 import { RoleType } from '../models/enums/auth-rol-type.enum';
-import { LEARCredentialDataNormalizer } from 'src/app/features/credential-details/utils/lear-credential-data-normalizer';
+import { LEARCredentialDataNormalizer } from 'src/app/features/credential-details/utils/lear-credential-employee-data-normalizer';
 
 /**
  * A few mock objects to reduce repetition.

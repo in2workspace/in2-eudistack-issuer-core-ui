@@ -1,8 +1,8 @@
 import { IssuanceRawCredentialPayload, IssuanceRawCredentialPayloadWithParsedPower } from './../../../core/models/dto/lear-credential-issuance-request.dto';
 import { Injectable } from '@angular/core';
 import { IssuancePayloadPower, IssuanceLEARCredentialEmployeePayload, IssuanceLEARCredentialPayload, IssuanceLEARCredentialMachinePayload } from 'src/app/core/models/dto/lear-credential-issuance-request.dto';
-import { TmfAction, TmfFunction } from 'src/app/core/models/entity/lear-credential';
-import { IssuanceCredentialType, IssuanceRawPowerForm } from 'src/app/core/models/entity/lear-credential-issuance';
+import { IssuanceCredentialType, TmfAction, TmfFunction } from 'src/app/core/models/entity/lear-credential';
+import { IssuanceRawPowerForm } from '../components/credential-issuance/credential-issuance.component';
 
 @Injectable({
   providedIn: 'root'
@@ -82,7 +82,7 @@ export class IssuanceRequestFactoryService {
       }
       const country = mandator['country'];
       const orgId = mandator['organizationIdentifier'];
-      const mandatorId = this.buildDidElsi(orgId, country); //did-elsi
+      const mandatorId = this.buildDidElsi(country, orgId); //did-elsi
       const mandatorCommonName = mandator['commonName'] ?? this.buildCommonName(mandator['firstName'], mandator['lastName']);
       
       const didKey = credentialData.optional['keys']['desmosDidKeyValue'];
@@ -107,7 +107,7 @@ export class IssuanceRequestFactoryService {
     }
 
     private buildDidElsi(orgId: string, country: string): string{
-      const vatNumber = this.buildOrganizationId(country, orgId);
+      const vatNumber = this.buildOrganizationId(orgId, country);
       return "did:elsi:" + vatNumber;
     }
 
@@ -158,14 +158,7 @@ export class IssuanceRequestFactoryService {
     }
 
 private getMandatorFromCredentialData(credentialData: IssuanceRawCredentialPayloadWithParsedPower){
-  console.log('credData')
-  console.log(credentialData);
-  if(!credentialData.asSigner){
-    const unparsedMandator = credentialData.optional.staticData?.mandator;
-    if(!unparsedMandator) throw Error('Could not get valid mandator as signer');
-    return Object.fromEntries(unparsedMandator.map(item => [item.key, item.value]));
-  }
-  return credentialData.partialCredentialSubject['mandator'];
+  return credentialData.asSigner ? credentialData.partialCredentialSubject['mandator'] : credentialData.optional.staticData?.mandator;
 }
     
 private getMandateeFromCredentialData(credentialData: IssuanceRawCredentialPayloadWithParsedPower){

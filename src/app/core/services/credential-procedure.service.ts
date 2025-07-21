@@ -4,17 +4,18 @@ import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { Observable, throwError } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
 import { environment} from 'src/environments/environment';
-import { CredentialProceduresResponse } from '../models/dto/credential-procedures-response.dto';
+import { ProcedureResponse } from '../models/dto/procedure-response.dto';
 import { CredentialOfferResponse } from '../models/dto/credential-offer-response.dto';
-import { CredentialProcedureDataDetails } from '../models/entity/lear-credential';
+import { LEARCredentialDataDetails } from '../models/entity/lear-credential';
 import { DialogWrapperService } from "../../shared/components/dialog/dialog-wrapper/dialog-wrapper.service";
 import { TranslateService } from "@ngx-translate/core";
 import { Router } from "@angular/router";
 import { API } from "../constants/api.constants";
-import { CreateCredentialProcedureResponse } from '../models/dto/create-credential-procedure-response';
+import { LEARCredentialDataDetailsResponse } from '../models/dto/lear-credential-data-details-response.dto';
+import { LEARCredentialDataNormalizer } from 'src/app/features/credential-details/utils/lear-credential-employee-data-normalizer';
 import { IssuanceLEARCredentialRequestDto } from '../models/dto/lear-credential-issuance-request.dto';
-import { LEARCredentialDataNormalizer } from 'src/app/features/credential-details/utils/lear-credential-data-normalizer';
 
+//todo rename (backend, api... service)
 @Injectable({
   providedIn: 'root'
 })
@@ -32,15 +33,14 @@ export class CredentialProcedureService {
   private readonly translate = inject(TranslateService);
   private readonly router = inject(Router);
 
-  public getCredentialProcedures(): Observable<CredentialProceduresResponse> {
-    return this.http.get<CredentialProceduresResponse>(this.organizationProcedures).pipe(
+  public getCredentialProcedures(): Observable<ProcedureResponse> {
+    return this.http.get<ProcedureResponse>(this.organizationProcedures).pipe(
       catchError(this.handleError)
     );
   }
 
-  // get credential and normalize it
-  public getCredentialProcedureById(procedureId: string): Observable<CredentialProcedureDataDetails> {
-    return this.http.get<CreateCredentialProcedureResponse>(
+  public getCredentialProcedureById(procedureId: string): Observable<LEARCredentialDataDetails> {
+    return this.http.get<LEARCredentialDataDetailsResponse>(
       `${this.organizationProcedures}/${procedureId}/credential-decoded`
     )
     .pipe(
@@ -51,6 +51,7 @@ export class CredentialProcedureService {
           ? credential.vc
           : credential;
 
+        // Normalize the part which is of type LEARCredentialEmployee
         const normalizedCredential = this.normalizer.normalizeLearCredential(credentialData);
 
         return {
@@ -59,7 +60,7 @@ export class CredentialProcedureService {
             ...credential,
             vc: normalizedCredential
           }
-        } as CredentialProcedureDataDetails;
+        } as LEARCredentialDataDetails;
       }),
       catchError(this.handleError)
     );

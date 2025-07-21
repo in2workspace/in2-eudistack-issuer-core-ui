@@ -1,10 +1,10 @@
-import { inject, Injectable, Injector, OnDestroy, signal, WritableSignal } from '@angular/core';
-import { EMPTY, from, Observable, Subject, switchMap, takeUntil, tap } from 'rxjs';
+import { inject, Injectable, Injector, signal, WritableSignal } from '@angular/core';
+import { EMPTY, from, Observable, switchMap, tap } from 'rxjs';
 import { CredentialProcedureService } from 'src/app/core/services/credential-procedure.service';
 import { DialogWrapperService } from 'src/app/shared/components/dialog/dialog-wrapper/dialog-wrapper.service';
 import { TranslateService } from '@ngx-translate/core';
 import { Router } from '@angular/router';
-import { CredentialStatus, CredentialType, LEARCredential, CredentialProcedureDataDetails } from 'src/app/core/models/entity/lear-credential';
+import { CredentialStatus, CredentialType, LEARCredential, LEARCredentialDataDetails } from 'src/app/core/models/entity/lear-credential';
 import { ComponentPortal } from '@angular/cdk/portal';
 import { LearCredentialEmployeeDetailsTemplateSchema } from 'src/app/core/models/schemas/credential-details/lear-credential-employee-details-schema';
 import { LearCredentialMachineDetailsTemplateSchema } from 'src/app/core/models/schemas/credential-details/lear-credential-machine-details-schema';
@@ -15,7 +15,7 @@ import { DialogComponent } from 'src/app/shared/components/dialog/dialog-compone
 import { DialogData } from 'src/app/shared/components/dialog/dialog-data';
 
 @Injectable() //provided in component
-export class CredentialDetailsService implements OnDestroy {
+export class CredentialDetailsService {
   public credentialValidFrom$ = signal('');
   public credentialValidUntil$ = signal('');
   public credentialType$ = signal<CredentialType | undefined>(undefined);
@@ -24,7 +24,6 @@ export class CredentialDetailsService implements OnDestroy {
 
   public sideTemplateModel$: WritableSignal<MappedExtendedDetailsField[] | undefined> = signal(undefined);
   public mainTemplateModel$: WritableSignal<MappedExtendedDetailsField[] | undefined> = signal(undefined);
-  private readonly destroy$ = new Subject<void>();
 
   private readonly credentialProcedureService = inject(CredentialProcedureService);
   private readonly dialog = inject(DialogWrapperService);
@@ -42,9 +41,7 @@ export class CredentialDetailsService implements OnDestroy {
   }
 
   public loadCredentialModels(injector: Injector): void {  
-    this.loadCredentialDetails()
-    .pipe(takeUntil(this.destroy$))
-    .subscribe(data => {
+    this.loadCredentialDetails().subscribe(data => {
       this.setCredentialBasicInfo(data);
       const vc = data.credential.vc;
 
@@ -104,12 +101,7 @@ export class CredentialDetailsService implements OnDestroy {
     );
   }
 
-  public ngOnDestroy(): void {
-    this.destroy$.next();
-    this.destroy$.complete();
-  }
-
-  private loadCredentialDetails(): Observable<CredentialProcedureDataDetails> {
+  private loadCredentialDetails(): Observable<LEARCredentialDataDetails> {
     return this.credentialProcedureService.getCredentialProcedureById(this.procedureId$());
   }
 
@@ -221,7 +213,7 @@ private mapSchemaValues(
 }
 
 
-  private setCredentialBasicInfo(details: CredentialProcedureDataDetails): void{
+  private setCredentialBasicInfo(details: LEARCredentialDataDetails): void{
     const credential = details.credential.vc;
 
     const credentialValidFrom = credential.validFrom;

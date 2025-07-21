@@ -35,6 +35,7 @@
   },
   "mandator": {
     "organizationid": "Número VAT de l'empresa",
+    "organizationidHint": "Introdueix només els caràcters de després de 'VAT-'. Per exemple, si el número complet és  'VAT-123ABC', introdueix '123ABC'",
     "organization": "Nom de l'empresa",
     "name": "Nom",
     "first-name": "Nom",
@@ -186,98 +187,71 @@
         "message": "Segur que vols eliminar aquest power? "
       }
     },
-   "credentialIssuance": {
-    "title": "Emissió de LEARCredential",
-    "learCredentialEmployee": "LEARCredentialEmployee",
-    "create-confirm-dialog": {
-      "title": "Crear credencial",
-      "message": "Segur que vols crear aquesta credencial?",
-      "checkboxLabel": "Confirmo que he copiat i desat de manera segura la clau privada.",
-      "belowText": "Sense la clau privada no podràs utilitzar aquesta credencial més endavant."
-    },
-    "create-success-dialog": {
-      "title": "Credencial creada",
-      "message": "La LEARCredentialEmployee s'ha creat correctament."
-    },
-    "creating-credential": "Creant credencial",
-    "create-credential": "Crear credencial",
-    "credentialType": "Tipus de credencial",
-    "cancel": "Cancel·lar",
-    "mandatee": "mandatari",
-    "mandator": "mandant",
-    "select-type": "Selecciona el tipus de credencial",
-    "firstName": "Nom",
-    "lastName": "Cognom",
-    "commonName": "Nom comú",
-    "email": "Correu electrònic",
-    "emailAddress": "Correu electrònic",
-    "nationality": "Nacionalitat",
-    "serialNumber": "Número del document d’identitat",
-    "organization": "Nom de l’empresa",
-    "organizationIdentifier": "NIF de l’empresa",
-    "country": "País",
-    "domain": "Domini",
-    "ipAddress": "Adreça IP",
-    "selectA": "Selecciona un/una ",
-    "hint": {
-      "organizationIdentifier": "Introdueix només els caràcters que van després de 'VAT...-'. Per exemple, si és 'VATEU-123ABC', introdueix '123ABC'."
-    },
-    "changeCredentialAlert": "Segur que vols canviar el tipus de credencial? Perdràs el progrés fet.",
-    "unloadAlert": "Segur que vols sortir? Perdràs el progrés fet."
-  },
-  "error": {
-    "not_found": "El recurs sol·licitat no s'ha trobat.",
-    "unauthorized": "No estàs autoritzat per realitzar aquesta acció.",
-    "forbidden": "No tens permís per accedir a aquest recurs.",
-    "internal_server": "S'ha produït un error al servidor. Si us plau, torna-ho a intentar més tard.",
-    "unknown_error": "S'ha produït un error desconegut. Si us plau, torna-ho a intentar.",
-    "credential_submission": "S'ha produït un error en crear la credencial.",
-    "one_power_min":"Hi ha d'haver almenys un poder seleccionat, i cada poder requereix almenys una acció.",
-    "policy": {
-        "title": "Accés Denegat",
-        "message": "No tens els poders necessaris per accedir-hi."
-    },
-    "credentialOffer": {
-      "invalid-url": "URL no vàlida. No es pot obtenir l'oferta de credencial.",
-      "unexpected": "S'ha produït un error inesperat. Torna-ho a intentar més tard o posa't en contacte amb el Representant Legal de la teva empresa per obtenir una nova credencial.",
-      "not-found": "Aquesta oferta de credencial no és vàlida. Pot ser que ja s'hagi descarregat, hagi caducat o hagi estat reemplaçada per una de nova. Si has rebut una nova oferta, consulta el teu correu electrònic. Si ha caducat o no pots trobar-ne cap de vàlida, contacta amb el Representant Legal de la teva empresa per sol·licitar-ne una de nova.",
-      "conflict": "L'oferta de credencial no és vàlida. Pot ser que ja s'hagi descarregat o hagi estat reemplaçada per una de nova. Si has rebut una nova oferta, consulta el teu correu electrònic."
-    },
-    "serverMailError": {
-      "title": "Error del servidor de correu",
-      "message": "S'ha produït un error amb el servidor de correu. Si us plau, torneu-ho a intentar més tard per enviar un recordatori; si el problema persisteix, poseu-vos en contacte amb el nostre equip de suport."
-    },
-    "form":{
-      "required": "Camp obligatori.",
-      "invalid_character": "Caràcter/s invàlid/s",
-      "only_letters_and_numbers": "Només lletres i xifres",
-      "only_letters_numbers_hyphens": "Només lletres, xifres i guions",
-      "only_numbers": "Només es permeten xifres",
-      "max_50": "50 caràcters com a màxim",
-      "max_15": "15 caràcters com a màxim",
-      "max_9": "9 caràcters com a màxim",
-      "min_7": "27 caràcters com a mínim",
-      "min_2": "2 caràcters com a mínim",
-      "email":{
-        "invalid": "Adreça electrònica invàlida. Pot ser que contingui un caràcter invàlid o en una posició invàlida.",
-        "local_part_max": "La part local de l'adreça el. no pot superar els 64 caràcters.",
-        "domain_part_max": "El domini de l'adreça el. no pot superar els 189 caràcters.",
-        "main_domain_part_min": "La part entre '@' i '.' ha de tenir almenys 2 caràcters.",
-        "top_level_domain_part_min": "La part entre l'últim punt i el final ha de tenir almenys 2 caràcters."
+    "credentialIssuance":{
+      "learCredentialEmployee": "LEARCredentialEmployee",
+      "create-confirm-dialog": {
+        "title": "Crear credencial",
+        "message": "Segur que vols crear aquesta credencial?"
       },
-      "no_power": "Afegeix almenys un poder",
-      "no_function": "Cada poder ha de tenir almenys una funció"
-    }
-  },
-  "dialog": {
-    "ok": "D'acord",
-    "close": "Tancar",
-    "cancel": "Cancel·lar",
-    "accept": "Acceptar",
-      "delete" : "Eliminar",
-      "save" : "Desar"
-  },
-  "signature": {
+      "create-success-dialog": {
+        "title": "Credencial creada",
+        "message": "La LEARCredentialEmployee ha estat creada amb èxit."
+      },
+      "creating-credential": "Creant credencial"
+    },
+    "error": {
+      "not_found": "El recurs sol·licitat no s'ha trobat.",
+      "unauthorized": "No estàs autoritzat per realitzar aquesta acció.",
+      "forbidden": "No tens permís per accedir a aquest recurs.",
+      "internal_server": "S'ha produït un error al servidor. Si us plau, torna-ho a intentar més tard.",
+      "unknown_error": "S'ha produït un error desconegut. Si us plau, torna-ho a intentar.",
+      "credential_submission": "S'ha produït un error en crear la credencial.",
+      "one_power_min":"Hi ha d'haver almenys un poder seleccionat, i cada poder requereix almenys una acció.",
+      "policy": {
+          "title": "Accés Denegat",
+          "message": "No tens els poders necessaris per accedir-hi."
+      },
+      "credentialOffer": {
+        "invalid-url": "URL no vàlida. No es pot obtenir l'oferta de credencial.",
+        "unexpected": "S'ha produït un error inesperat. Torna-ho a intentar més tard o posa't en contacte amb el Representant Legal de la teva empresa per obtenir una nova credencial.",
+        "not-found": "Aquesta oferta de credencial no és vàlida. Pot ser que ja s'hagi descarregat, hagi caducat o hagi estat reemplaçada per una de nova. Si has rebut una nova oferta, consulta el teu correu electrònic. Si ha caducat o no pots trobar-ne cap de vàlida, contacta amb el Representant Legal de la teva empresa per sol·licitar-ne una de nova.",
+        "conflict": "L'oferta de credencial no és vàlida. Pot ser que ja s'hagi descarregat o hagi estat reemplaçada per una de nova. Si has rebut una nova oferta, consulta el teu correu electrònic."
+      },
+      "serverMailError": {
+        "title": "Error del servidor de correu",
+        "message": "S'ha produït un error amb el servidor de correu. Si us plau, torneu-ho a intentar més tard per enviar un recordatori; si el problema persisteix, poseu-vos en contacte amb el nostre equip de suport."
+      },
+      "form":{
+        "required": "Camp obligatori.",
+        "invalid_character": "Caràcter/s invàlid/s",
+        "only_letters_and_numbers": "Només lletres i xifres",
+        "only_letters_numbers_hyphens": "Només lletres, xifres i guions",
+        "only_numbers": "Només es permeten xifres",
+        "max_50": "50 caràcters com a màxim",
+        "max_15": "15 caràcters com a màxim",
+        "max_9": "9 caràcters com a màxim",
+        "min_7": "27 caràcters com a mínim",
+        "min_2": "2 caràcters com a mínim",
+        "email":{
+          "invalid": "Adreça electrònica invàlida. Pot ser que contingui un caràcter invàlid o en una posició invàlida.",
+          "local_part_max": "La part local de l'adreça el. no pot superar els 64 caràcters.",
+          "domain_part_max": "El domini de l'adreça el. no pot superar els 189 caràcters.",
+          "main_domain_part_min": "La part entre '@' i '.' ha de tenir almenys 2 caràcters.",
+          "top_level_domain_part_min": "La part entre l'últim punt i el final ha de tenir almenys 2 caràcters."
+        },
+        "no_power": "Afegeix almenys un poder",
+        "no_function": "Cada poder ha de tenir almenys una funció"
+      }
+    },
+    "dialog": {
+      "ok": "D'acord",
+      "close": "Tancar",
+      "cancel": "Cancel·lar",
+      "accept": "Acceptar",
+       "delete" : "Eliminar",
+       "save" : "Desar"
+    },
+    "signature": {
       "settings": {
         "title": "Configuració de signatura",
         "enableRemote": "Habilitar signatura remota",

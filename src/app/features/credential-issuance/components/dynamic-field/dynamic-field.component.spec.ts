@@ -1,14 +1,15 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { ReactiveFormsModule, FormControl, FormGroup } from '@angular/forms';
-import { ComponentRef } from '@angular/core';
+import { ReactiveFormsModule, FormControl, FormGroup, AbstractControl } from '@angular/forms';
+import { ComponentRef, signal, Signal } from '@angular/core';
 import { DynamicFieldComponent } from './dynamic-field.component';
+import { CredentialIssuanceFormFieldSchema } from 'src/app/core/models/schemas/lear-credential-issuance-schemas';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { TranslateModule } from '@ngx-translate/core';
 
 const mockControl = new FormControl('field-name');
-const mockGroup = new FormGroup({ prop: mockControl });
+const mockGroup = new FormGroup({prop: mockControl});
 const mockControlSchema = { type: 'control' };
-const mockGroupSchema = { type: 'group', fields: [{ key: 'fieldOne' }] };
+const mockGroupSchema = { type: 'group', fields: [{key:'fieldOne'}] };
 
 describe('DynamicFieldComponent', () => {
   let component: DynamicFieldComponent;
@@ -20,8 +21,7 @@ describe('DynamicFieldComponent', () => {
       imports: [
         DynamicFieldComponent,
         ReactiveFormsModule,
-        TranslateModule.forRoot(),
-        NoopAnimationsModule
+        TranslateModule.forRoot(), NoopAnimationsModule
       ],
     }).compileComponents();
 
@@ -39,41 +39,42 @@ describe('DynamicFieldComponent', () => {
   });
 
   describe('computed properties', () => {
-    it('parentFormGroup$() should return the FormGroup passed via abstractControl$', () => {
+    it('parentFormGroup$() hauria de retornar el FormGroup passat per abstractControl$', () => {
       expect(component.parentFormGroup$()).toBe(mockGroup);
     });
 
-    it('control$() should return null if the type is group', () => {
+    it('control$() hauria de retornar null si el tipus és group', () => {
       componentRef.setInput('fieldSchema$', mockGroupSchema);
       expect(component.control$()).toBe(null);
     });
 
-    it('control$() should return the form group\'s control', () => {
+    it('control$() hauria de retornar el control de formgroup', () => {
       expect(component.control$()).toBe(mockControl);
     });
 
-    it('control$() should return null if the form group is null', () => {
+    it('control$() hauria de retornar null si formgroup és nul', () => {
       componentRef.setInput('abstractControl$', null);
       expect(component.control$()).toBe(null);
     });
 
-    it('group$() should return null if the type is control', () => {
+    it("group$() hauria de retornar null si el type és control", () => {
       expect(component.group$()).toBe(null);
     });
 
-    it('group$() should return null if the parent group is null', () => {
+    it("group$() hauria de retornar null if parent group is null", () => {
       componentRef.setInput('fieldSchema$', mockGroupSchema);
       componentRef.setInput('abstractControl$', null);
       expect(component.group$()).toBe(null);
     });
 
-    it('group$() should return the child control when the type is group', () => {
+    it("group$() hauria d'actualitzar-se", () => {
       componentRef.setInput('fieldSchema$', mockGroupSchema);
       expect(component.group$()).toBe(mockControl);
     });
   });
 
-  describe('getErrorMessage', () => {
+  //todo getters
+    describe('getErrorMessage', () => {
     it('should return empty string if control is null', () => {
       expect(component.getErrorMessage(null)).toBe('');
     });
@@ -112,4 +113,5 @@ describe('DynamicFieldComponent', () => {
       expect(component.getErrorsArgs(ctrl)).toEqual({ '0': 'first', '1': 'second' });
     });
   });
+
 });

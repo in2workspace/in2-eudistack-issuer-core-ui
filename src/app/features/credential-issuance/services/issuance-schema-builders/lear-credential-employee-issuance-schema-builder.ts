@@ -1,20 +1,19 @@
 import { inject, Injectable } from "@angular/core";
 import { AuthService } from "src/app/core/services/auth.service";
 import { CountryService } from "src/app/core/services/country.service";
-import { CredentialIssuanceFormSchema, CredentialIssuancePowerFormSchema, CredentialIssuanceSchemaBuilder, CredentialIssuanceSchemaTuple, IssuanceCredentialType } from "src/app/core/models/entity/lear-credential-issuance";
-import { emailValidatorEntries } from "src/app/shared/validators/credential-issuance/validators-entries";
-import { convertToOrderedArray, mandatorFieldsOrder } from "../../helpers/fields-order-helpers";
-import { firstNameField, lastNameField, organizationField, organizationIdentifierField, serialNumberField } from "./common-fields";
+import { IssuanceCredentialType } from "src/app/core/models/entity/lear-credential";
+import { CredentialIssuanceFormSchema, CredentialIssuancePowerFormSchema, CredentialIssuanceSchemaBuilder, CredentialIssuanceSchemaTuple } from "src/app/core/models/entity/lear-credential-issuance";
 
 @Injectable({ providedIn: 'root' })
 export class LearCredentialEmployeeSchemaBuilder implements CredentialIssuanceSchemaBuilder {
-  public readonly credType: IssuanceCredentialType = 'LEARCredentialEmployee';
+  readonly credType: IssuanceCredentialType = 'LEARCredentialEmployee';
 
   private readonly authService = inject(AuthService);
   private readonly countriesService = inject(CountryService);
 
+  constructor( ) {}
 
-  public getSchema(): CredentialIssuanceSchemaTuple {
+  getSchema(): CredentialIssuanceSchemaTuple {
     
     const countriesSelectorOptions = this.countriesService.getCountriesAsSelectorOptions();
     
@@ -26,9 +25,9 @@ export class LearCredentialEmployeeSchemaBuilder implements CredentialIssuanceSc
           type: 'group',
           display: 'main',
           groupFields: [
-            { ...firstNameField },
-            { ...lastNameField },
-            { key: 'email', type: 'control', controlType: 'text', validators: [...emailValidatorEntries] },
+            { key:'firstName', type: 'control', controlType: 'text', validators: [{name:'required'}, {name:'minLength', args:[2]}, {name:'maxLength', args:[50]}, {name:'unicode'}] },
+            { key:'lastName', type: 'control', controlType: 'text', validators:[{name:'required'}, {name:'minLength', args:[2]}, {name:'maxLength', args:[50]}, {name:'unicode'}] },
+            { key:'email', type: 'control', controlType: 'text', validators: [{name:'required'}, {name:'customEmail'}] },
             {
               key:'nationality', 
               type: 'control',
@@ -43,33 +42,52 @@ export class LearCredentialEmployeeSchemaBuilder implements CredentialIssuanceSc
           key: 'mandator',
           type: 'group',
           display: 'pref_side',
-          staticValueGetter: () => {
-            const mandator = this.authService.getRawMandator();
-            return mandator ? { mandator: convertToOrderedArray(mandator, mandatorFieldsOrder) } : null;
+          value: () => {
+            const mandator = this.authService.getMandator();
+            return mandator ? { mandator } : null;
           },
           groupFields: [
             {
-              ...firstNameField
+              key: 'firstName',
+              type: 'control',
+              controlType: 'text',
+              validators: [
+                { name: 'required' },
+                { name: 'minLength', args: [2] },
+                { name: 'maxLength', args: [50] },
+                { name: 'unicode' }
+              ]
             },
             {
-              ...lastNameField
+              key: 'lastName',
+              type: 'control',
+              controlType: 'text',
+              validators: [{name:'required'}, {name:'minLength', args:[2]}, {name:'maxLength', args:[50]}, {name:'unicode'}]
             },
             { 
               key:'emailAddress', 
               type: 'control', 
               controlType: 'text', 
-              validators: [
-                ...emailValidatorEntries
-              ] 
+              validators: [{name:'required'}, {name:'customEmail'}] 
             },
             {
-              ...serialNumberField
+              key: 'serialNumber',
+              hint: 'serialNumber',
+              type: 'control',
+              controlType: 'text',
+              validators: [{name:'minLength', args:[7]}, {name:'maxLength', args:[15]}, {name:'pattern', args:["^[a-zA-Z0-9-]+$"]}]
             },
             {
-              ...organizationField
+              key: 'organization',
+              type: 'control',
+              controlType: 'text',
+              validators: [{ name: 'required' }, {name:'minLength', args:[2]}, {name:'maxLength', args:[50]}, {name:'orgName'}]
             },
             {
-              ...organizationIdentifierField
+              key: 'organizationIdentifier',
+              type: 'control',
+              controlType: 'text',
+              validators: [{ name: 'required' }, {name:'minLength', args:[7]}, {name:'maxLength', args:[15]}, {name:'orgIdentifier'}]
             },
             {
               key: 'country',

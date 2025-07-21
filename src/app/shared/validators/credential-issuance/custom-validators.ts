@@ -1,59 +1,41 @@
 import { AbstractControl } from "@angular/forms";
-import * as ipaddr from 'ipaddr.js';
-import { ExtendedValidatorFn, ExtendedValidatorErrors } from "src/app/core/models/entity/validator-types";
-
+import { ExtendedValidatorErrors, ExtendedValidatorFn } from "./all-validators";
 
 export type CustomValidatorEntry = { name: CustomValidatorName; args?: any[] };
 
-//todo decouple validation from error message
+//todo retrieve concrete invalid patterns messages from form-credential component
 export class CustomValidators {
 
-  public static isDomain(): ExtendedValidatorFn<"isDomain"> {
+  public static isDomain(): ExtendedValidatorFn {
     const domainRegex =
-      /^(?!:\/\/)([a-zA-Z0-9-_]+\.)*[a-zA-Z0-9][a-zA-Z0-9-_]+\.[a-zA-Z]{2,11}$/;
+      /^(?!:\/\/)([a-zA-Z0-9-_]+\.)*[a-zA-Z0-9][a-zA-Z0-9-_]+\.[a-zA-Z]{2,11}?$/;
     return (control: AbstractControl): ExtendedValidatorErrors | null => {
       const value = control.value;
+      // if (typeof value !== 'string') return { isDomain: 'Value must be a string' };
       return domainRegex.test(value) ? null : { isDomain: { value: 'error.form.domain' }};
     };
   }
 
-public static isIP(): ExtendedValidatorFn<"isIP"> {
+  public static isIP(): ExtendedValidatorFn {
+    const ipv4 =
+      /^(25[0-5]|2[0-4]\d|1\d{2}|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d{2}|[1-9]?\d)){3}$/;
+    const ipv6 =
+      /^(([0-9a-fA-F]{1,4}:){7}([0-9a-fA-F]{1,4}|:)|::1)$/;
     return (control: AbstractControl): ExtendedValidatorErrors | null => {
       const value = control.value;
 
       if (value == null || value === '') {
         return null;
       }
-      if (typeof value !== 'string') {
-        return { isIP: { value: 'Value must be a string' } };
-      }
-
-      const valid =
-        ipaddr.IPv4.isValid(value) ||
-        ipaddr.IPv6.isValid(value);
-
-      return valid
-        ? null
-        : { isIP: { value: 'error.form.ip' } };
+      if (typeof value !== 'string') return { isIP: { value: 'Value must be a string' }};
+      return ipv4.test(value) || ipv6.test(value) ? null : { isIP: {value: 'error.form.ip' }};
     };
   }
 
-  public static customEmail(): ExtendedValidatorFn<"customEmail"> {
-    const localLabel = "(?!.*\\.\\.)" // avoid `..`
-                 + "[A-Za-z0-9]" // start with alfanum
-                 + "(?:[A-Za-z0-9+_-]" // alfanum o + _ -
-                 + "|\\.(?=[A-Za-z0-9+_-]))*"; // or dot + valid character
+  public static customEmail(): ExtendedValidatorFn {
+    const emailPattern = 
+  /^[a-zA-Z0-9](?:[a-zA-Z0-9+_-]|(?:\.[a-zA-Z0-9+_-]))*@[a-zA-Z0-9](?:[a-zA-Z0-9-]*[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]*[a-zA-Z0-9])?)*\.[a-zA-Z]+$/;
 
-    const domainLabel = "[A-Za-z0-9]" // start with alfanum
-                      + "(?:[A-Za-z0-9-]*[A-Za-z0-9])?"; // can have '-' and end with alfanum
-
-    const domainPart = `(?:${domainLabel}\\.)+`; // one or more labels + “.”
-
-    const tld = "[A-Za-z]+"; // TL with >1 characters
-
-    const emailPattern = new RegExp(
-      `^${localLabel}@${domainPart}${tld}$`
-    );
 
     return (control: AbstractControl): ExtendedValidatorErrors | null => {
       const email = control.value;
@@ -92,7 +74,7 @@ public static isIP(): ExtendedValidatorFn<"isIP"> {
     }
   }
 
-  public static unicode(): ExtendedValidatorFn<"unicode">{
+  public static unicode(): ExtendedValidatorFn{
     return (control: AbstractControl): ExtendedValidatorErrors | null => {
       const pattern = /^[A-Za-zÀ-ÿ'’ -]+$/;
       const value = control.value;
@@ -106,7 +88,7 @@ public static isIP(): ExtendedValidatorFn<"isIP"> {
     }
   }
 
-  public static orgIdentifier(): ExtendedValidatorFn<"orgIdentifier">{
+  public static orgIdentifier(): ExtendedValidatorFn{
     return (control: AbstractControl): ExtendedValidatorErrors | null => {
         const pattern = /^[a-zA-Z0-9]+$/;
         const value = control.value;
@@ -125,7 +107,7 @@ public static isIP(): ExtendedValidatorFn<"isIP"> {
       }
   }
 
-  public static orgName(): ExtendedValidatorFn<"orgName">{
+  public static orgName(): ExtendedValidatorFn{
     return (control: AbstractControl): ExtendedValidatorErrors | null => {
       const pattern = /^[\p{Script=Latin}\p{M}0-9'&\-,.()/ ]+$/u;
       const value = control.value;

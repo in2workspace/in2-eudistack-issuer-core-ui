@@ -1,5 +1,4 @@
-//normalized version of CreateCredentialProcedureResponse
-export interface CredentialProcedureDataDetails {
+export interface LEARCredentialDataDetails {
   procedure_id: string;
   credential_status: CredentialStatus;
   credential: LEARCredentialJwtPayload;
@@ -20,6 +19,8 @@ export interface LEARCredentialJwtPayload {
 export const CREDENTIAL_TYPES_ARRAY = ['LEARCredentialEmployee', 'LEARCredentialMachine', 'VerifiableCertification', 'gx:LabelCredential'] as const;
 export type CredentialType = typeof CREDENTIAL_TYPES_ARRAY[number];
 export type ExtendedCredentialType =  'VerifiableCredential' | CredentialType;
+export const ISSUANCE_CREDENTIAL_TYPES_ARRAY = ['LEARCredentialEmployee', 'LEARCredentialMachine'] as const;
+export type IssuanceCredentialType = typeof ISSUANCE_CREDENTIAL_TYPES_ARRAY[number];
 
 export type LEARCredential =
   | LEARCredentialEmployee

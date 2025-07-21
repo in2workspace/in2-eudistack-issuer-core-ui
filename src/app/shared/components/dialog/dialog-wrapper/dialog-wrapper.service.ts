@@ -1,6 +1,6 @@
 import { DestroyRef, inject, Injectable, Type } from '@angular/core';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
-import { filter, Observable, switchMap, take, tap } from 'rxjs';
+import { EMPTY, filter, Observable, switchMap, take, tap } from 'rxjs';
 import { LoaderService } from 'src/app/core/services/loader.service';
 import { BaseDialogData, DialogData } from '../dialog-data';
 import { AbstractDialogComponent } from '../abstract-dialog-component';
@@ -94,8 +94,7 @@ export class DialogWrapperService {
     confirm$
       .pipe(
         take(1),
-        filter(conf => conf),
-        switchMap(() => callback())
+        switchMap(confirmed => this.executeCallbackOnCondition(callback, confirmed))
       )
       .subscribe({
         next: () => dialogRef.close(),
@@ -158,5 +157,12 @@ export class DialogWrapperService {
     });
 
     return dialogRef;
+  }
+
+  private executeCallbackOnCondition(
+    callback: observableCallback,
+    condition: boolean
+  ): Observable<any> {
+    return condition ? callback() : EMPTY;
   }
 }
