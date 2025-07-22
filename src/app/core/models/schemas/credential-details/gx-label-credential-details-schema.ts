@@ -1,7 +1,7 @@
 import { CompliantCredentialsComponent, compliantCredentialsToken } from "src/app/features/credential-details/components/compliant-credentials/compliant-credentials.component";
 import { isGxLabel } from "src/app/features/credential-details/helpers/credential-details-helpers";
 import { GxLabelCredential, LEARCredential } from "../../entity/lear-credential";
-import { TemplateSchema } from "../../entity/lear-credential-details";
+import { DetailsField, TemplateSchema } from "../../entity/lear-credential-details";
 
 export const GxLabelCredentialDetailsTemplateSchema: TemplateSchema = {
   main: [
@@ -17,6 +17,7 @@ export const GxLabelCredentialDetailsTemplateSchema: TemplateSchema = {
         {
           key: 'gx:labelLevel',
           type: 'key-value',
+          // currently we need to map "BL" to "Base Level"
           value: (c: GxLabelCredential) => { return c.credentialSubject['gx:labelLevel'] === 'BL' ? "Base Level" : c.credentialSubject['gx:labelLevel']}
         },
         {
@@ -48,19 +49,35 @@ export const GxLabelCredentialDetailsTemplateSchema: TemplateSchema = {
       }
     },
     {
-      // Now it shows the base URL of the received URLs, since they are not valid at the moment
+      // Currently it shows the base URL of the received URLs, since they are not valid at the moment
       // todo: consider hiding or showing differently
 
       key: 'gx:validatedCriteriaReference',
       type: 'group',
       value: (c: LEARCredential) => { 
-          if(!isGxLabel(c)) return [];
-          const criterionUrl = c.credentialSubject['gx:validatedCriteria']?.[0] ?? null;
-          if (!criterionUrl) return [{type: 'key-value', value: null}];
-          const regex = /\/criterion\/[^/]+$/;
-          const cleanUrl = criterionUrl.replace(regex, '');
-          return [{type: 'key-value', value: cleanUrl}];
+            if (!isGxLabel(c)) return [];
+
+        const criteria: (string | undefined)[] =
+          c.credentialSubject['gx:validatedCriteria'] ?? [];
+
+        if (criteria.length === 0) {
+          return [{ type: 'key-value', value: null }];
         }
+
+        const regex = /\/criterion\/[^/]+$/;
+
+        const cleanUrls = criteria
+          .map((url) => url?.replace(regex, ''))
+          .filter((url): url is string => !!url);
+
+        const uniqueCleanUrls = Array.from(new Set(cleanUrls));
+
+        const fields: DetailsField[] = uniqueCleanUrls.map((cleanUrl) => ({
+          type: 'key-value',
+          value: cleanUrl,
+        }));
+        return fields
+      }
     }
   ],
   side: [

@@ -6,7 +6,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [2.2.0](https://github.com/in2workspace/in2-issuer-ui/releases/tag/v2.2.0)
 ### Added
-- LEARCredentialMachine Issuance
+- LEARCredentialMachine Issuance.
+
+## [2.1.0](https://github.com/in2workspace/in2-issuer-ui/releases/tag/v2.1.0)
+### Added
+- Gx-label credentials view.
+
+## [2.0.0](https://github.com/in2workspace/in2-issuer-ui/releases/tag/v2.0.0)
+### Added
+- Credential revokation.
 
 ## [1.13.1](https://github.com/in2workspace/in2-issuer-ui/releases/tag/v1.13.1)
 ### Fixed

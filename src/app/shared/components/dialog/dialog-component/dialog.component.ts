@@ -17,7 +17,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { DialogData } from '../dialog-data';
 import { AbstractDialogComponent } from '../abstract-dialog-component';
 
-@Component({
+@Component({ 
   selector: 'app-dialog',
   standalone: true,
   imports: [

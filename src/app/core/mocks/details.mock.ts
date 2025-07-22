@@ -1,17 +1,27 @@
-import { CommonMandator, CredentialProcedureDataDetails } from "../models/entity/lear-credential";
+import { CommonMandator } from 'src/app/core/models/entity/lear-credential';
+import { CredentialProcedureDetails, CredentialStatus } from "../models/entity/lear-credential";
 
 export const mandatorMock: CommonMandator = {
-  country: "ES",
-  emailAddress: "mand@manda.com",
-  commonName: "mandator name",
-  organization: "ORG",
-  serialNumber: "",
-  organizationIdentifier: "VAT-21345",
+  commonName: "name surname",
+  country: "FR",
+  emailAddress: "email@domain.com",
+  organization: "Org Name",
+  organizationIdentifier: "ORG_ID",
+  serialNumber: "SERIAL-NUMBER-01",
 }
 
-export const mockCredentialEmployee: CredentialProcedureDataDetails = {
+export const mockCredentialStatus: CredentialStatus = {   
+  id: "https://issuer.dome-marketplace.eu/credentials/status/1#<nonce>",
+  type: "PlainListEntity",   
+  statusPurpose: "revocation",   
+  statusListIndex: "<nonce>",
+  statusListCredential: "https://issuer.dome-marketplace.eu/credentials/status/1" 
+} 
+
+// todo restore type
+export const mockCredentialEmployee: CredentialProcedureDetails = {
   procedure_id: 'mock-procedure-employee',
-  credential_status: 'DRAFT',
+  lifeCycleStatus: 'DRAFT',
   credential: {
     sub: null,
     nbf: '1714675200',
@@ -20,9 +30,12 @@ export const mockCredentialEmployee: CredentialProcedureDataDetails = {
     iat: '1714675200',
     jti: 'jti-emp-123',
     vc: {
-      id: 'cred-emp',
-      type: ['VerifiableCredential', 'LEARCredentialEmployee'],
+      id: 'cred-emp-id',
+      type: ['LEARCredentialEmployee'],
       description: 'Mock employee credential',
+      credentialStatus: {
+        ...mockCredentialStatus
+      },
       issuer: {
         id: 'issuer-emp',
         commonName: 'Employee Issuer',
@@ -74,9 +87,9 @@ export const mockCredentialEmployee: CredentialProcedureDataDetails = {
   }
 };
 
-export const mockCredentialMachine: CredentialProcedureDataDetails = {
+export const mockCredentialMachine: CredentialProcedureDetails = {
   procedure_id: 'mock-procedure-machine',
-  credential_status: 'PEND_SIGNATURE',
+  lifeCycleStatus: 'PEND_SIGNATURE',
   credential: {
     sub: null,
     nbf: '1714675200',
@@ -85,9 +98,12 @@ export const mockCredentialMachine: CredentialProcedureDataDetails = {
     iat: '1714675200',
     jti: 'jti-mac-123',
     vc: {
-      id: 'cred-mac',
+      id: 'cred-machine-id',
       type: ['LEARCredentialMachine'],
       description: 'Mock machine credential',
+      credentialStatus: {
+        ...mockCredentialStatus
+      },
       issuer: {
         id: 'issuer-mac',
         commonName: 'Machine Issuer',
@@ -141,9 +157,9 @@ export const mockCredentialMachine: CredentialProcedureDataDetails = {
   }
 };
 
-export const mockCredentialCertification: CredentialProcedureDataDetails = {
+export const mockCredentialCertification: CredentialProcedureDetails = {
   procedure_id: 'mock-procedure-cert',
-  credential_status: 'PEND_DOWNLOAD',
+  lifeCycleStatus: 'PEND_DOWNLOAD',
   credential: {
     sub: null,
     nbf: '1714675200',
@@ -152,8 +168,11 @@ export const mockCredentialCertification: CredentialProcedureDataDetails = {
     iat: '1714675200',
     jti: 'jti-cert-123',
     vc: {
-      id: 'cred-cert',
+      id: 'cred-certification-id',
       type: ['VerifiableCertification'],
+      credentialStatus: {
+        ...mockCredentialStatus
+      },
       issuer: {
         id: 'issuer-cert',
         commonName: 'Cert Issuer',
@@ -211,9 +230,10 @@ export const mockCredentialCertification: CredentialProcedureDataDetails = {
   }
 };
 
-export const mockGxLabel: CredentialProcedureDataDetails = {
+
+export const mockGxLabel: CredentialProcedureDetails = {
   procedure_id: 'mock-procedure-gx-label',
-  credential_status: 'DRAFT',
+  lifeCycleStatus: 'DRAFT',
   credential: {
     sub: null,
     nbf: '1714675200',
@@ -224,6 +244,9 @@ export const mockGxLabel: CredentialProcedureDataDetails = {
     vc: {
       id: 'cred-cert',
       type: ['VerifiableCredential', 'gx:LabelCredential'],
+            credentialStatus: {
+        ...mockCredentialStatus
+      },
       issuer: "issueeeeeeer",
  credentialSubject: {
         id: 'urn:uuid:123e4567-e89b-12d3-a456-426614174000',
@@ -268,9 +291,9 @@ export const mockGxLabel: CredentialProcedureDataDetails = {
           },
         ],
         "gx:validatedCriteria": [
-          'https://w3id.org/gaia-x/specs/cd25.03/criterion/P1.2.5',
+          'https://w3id.org/gaia-x/specs/cd25.04/criterion/P1.2.5',
           'https://w3id.org/gaia-x/specs/cd25.03/criterion/P1.2.4',
-          'https://w3id.org/gaia-x/specs/cd25.03/criterion/P1.2.3'
+          'https://w3id.org/gaia-x/specs/cd25.01/criterion/P1.2.3'
         ]
       },
       validFrom: '2024-01-01',

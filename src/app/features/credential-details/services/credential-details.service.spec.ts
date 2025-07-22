@@ -1,58 +1,50 @@
-import { fakeAsync, TestBed, tick } from '@angular/core/testing';
+import { TestBed } from '@angular/core/testing';
 import { CredentialDetailsService } from './credential-details.service';
 import { FormBuilder } from '@angular/forms';
-import { TranslateModule, TranslateService } from '@ngx-translate/core';
+import { TranslateModule } from '@ngx-translate/core';
 import { Router } from '@angular/router';
 import { CredentialProcedureService } from 'src/app/core/services/credential-procedure.service';
 import { DialogWrapperService } from 'src/app/shared/components/dialog/dialog-wrapper/dialog-wrapper.service';
+import { CredentialActionsService } from './credential-actions.service';
 import { of } from 'rxjs';
-
 import { Injector } from '@angular/core';
 import { GxLabelCredentialDetailsTemplateSchema } from 'src/app/core/models/schemas/credential-details/gx-label-credential-details-schema';
 import { LearCredentialEmployeeDetailsTemplateSchema } from 'src/app/core/models/schemas/credential-details/lear-credential-employee-details-schema';
 import { LearCredentialMachineDetailsTemplateSchema } from 'src/app/core/models/schemas/credential-details/lear-credential-machine-details-schema';
 import { VerifiableCertificationDetailsTemplateSchema } from 'src/app/core/models/schemas/credential-details/verifiable-certification-details-schema';
-import { DetailsKeyValueField, DetailsGroupField, TemplateSchema, MappedDetailsGroupField, MappedDetailsKeyValueField } from 'src/app/core/models/entity/lear-credential-details';
-import { DialogData } from 'src/app/shared/components/dialog/dialog-data';
-import { DialogComponent } from 'src/app/shared/components/dialog/dialog-component/dialog.component';
+import { DetailsKeyValueField, DetailsGroupField, TemplateSchema } from 'src/app/core/models/entity/lear-credential-details';
 import { ComponentPortal } from '@angular/cdk/portal';
+import * as actionHelpers from 'src/app/features/credential-details/helpers/actions-helpers';
+import { LEARCredentialEmployee, LEARCredential } from 'src/app/core/models/entity/lear-credential';
 
 describe('CredentialDetailsService', () => {
   let service: CredentialDetailsService;
 
   const mockCredentialProcedureService = {
     getCredentialProcedureById: jest.fn(),
-    sendReminder: jest.fn(),
-    signCredential: jest.fn(),
+  };
+
+  const mockCredentialActionsService = {
+    openSendReminderDialog: jest.fn(),
+    openSignCredentialDialog: jest.fn(),
+    openRevokeCredentialDialog: jest.fn(),
   };
 
   const mockDialogWrapperService = {
-    openDialogWithCallback: jest.fn(),
-    openDialog: jest.fn().mockReturnValue({ afterClosed: () => of(true) }),
-  };
-
-  const mockRouter = {
-    navigate: jest.fn().mockReturnValue(Promise.resolve(true)),
-  };
+    openErrorInfoDialog: jest.fn()
+  } as any;
+  const mockRouter = {} as any;
 
   beforeEach(() => {
     jest.clearAllMocks();
-
-    Object.defineProperty(window, 'location', {
-      value: {
-        ...window.location,
-        reload: jest.fn(),
-      },
-      writable: true,
-    });
 
     TestBed.configureTestingModule({
       imports: [TranslateModule.forRoot()],
       providers: [
         CredentialDetailsService,
         FormBuilder,
-        TranslateService,
         { provide: CredentialProcedureService, useValue: mockCredentialProcedureService },
+        { provide: CredentialActionsService, useValue: mockCredentialActionsService },
         { provide: DialogWrapperService, useValue: mockDialogWrapperService },
         { provide: Router, useValue: mockRouter },
       ],
@@ -69,208 +61,91 @@ describe('CredentialDetailsService', () => {
     service.setProcedureId('abc123');
     expect(service.procedureId$()).toBe('abc123');
   });
-  
 
-  it('should open a dialog with correct data and callback when openSendReminderDialog is called', () => {
-    jest.spyOn(TestBed.inject(TranslateService), 'instant').mockImplementation((key: string | string[]) => {
-      if (key === 'credentialDetails.sendReminderConfirm.title') return 'Mock Title';
-      if (key === 'credentialDetails.sendReminderConfirm.message') return 'Mock Message';
-      return typeof key === 'string' ? key : key.join(', ');
-    });
-
-    const sendReminderSpy = jest.spyOn(service, 'sendReminder').mockReturnValue(of(true));
-
+  it('should call actionsService.openSendReminderDialog with procedureId', () => {
+    service.procedureId$.set('pid123');
     service.openSendReminderDialog();
-
-    const expectedDialogData: DialogData = {
-      title: 'Mock Title',
-      message: 'Mock Message',
-      confirmationType: 'async',
-      status: 'default',
-    };
-
-    expect(mockDialogWrapperService.openDialogWithCallback).toHaveBeenCalledWith(
-      DialogComponent,
-      expectedDialogData,
-      expect.any(Function)
-    );
-
-    const callback = mockDialogWrapperService.openDialogWithCallback.mock.calls[0][2];
-    callback().subscribe();
-
-    expect(sendReminderSpy).toHaveBeenCalled();
+    expect(mockCredentialActionsService.openSendReminderDialog).toHaveBeenCalledWith('pid123');
   });
 
-  it('should open a dialog with correct data and callback when openSignCredentialDialog is called', () => {
-    jest.spyOn(TestBed.inject(TranslateService), 'instant').mockImplementation((key: string | string[]) => {
-      if (key === 'credentialDetails.signCredentialConfirm.title') return 'Mock Title';
-      if (key === 'credentialDetails.signCredentialConfirm.message') return 'Mock Message';
-      return typeof key === 'string' ? key : key.join(', ');
-    });
-
-    const signCredentialSpy = jest.spyOn(service, 'signCredential').mockReturnValue(of(true));
-
+  it('should call actionsService.openSignCredentialDialog with procedureId', () => {
+    service.procedureId$.set('pid456');
     service.openSignCredentialDialog();
-
-    const expectedDialogData: DialogData = {
-      title: 'Mock Title',
-      message: 'Mock Message',
-      confirmationType: 'async',
-      status: 'default',
-    };
-
-    expect(mockDialogWrapperService.openDialogWithCallback).toHaveBeenCalledWith(
-      DialogComponent, 
-      expectedDialogData,
-      expect.any(Function)
-    );
-
-    const callback = mockDialogWrapperService.openDialogWithCallback.mock.calls[0][2];
-    callback().subscribe();
-
-    expect(signCredentialSpy).toHaveBeenCalled();
+    expect(mockCredentialActionsService.openSignCredentialDialog).toHaveBeenCalledWith('pid456');
   });
 
-  it('should send reminder, open success dialog, navigate, and reload page', fakeAsync(() => {
-    service.procedureId$.set('123');
-  
-    const sendReminderMock = jest
-      .spyOn(mockCredentialProcedureService, 'sendReminder')
-      .mockReturnValue(of(undefined));
-  
-    const dialogRefMock = {
-      afterClosed: jest.fn().mockReturnValue(of(true)),
-    };
-    jest.spyOn(mockDialogWrapperService, 'openDialog').mockReturnValue(dialogRefMock as any);
-  
-    const routerNavigateSpy = jest.spyOn(mockRouter, 'navigate').mockResolvedValue(true);
-    const locationReloadSpy = jest.spyOn(globalThis.location, 'reload').mockImplementation(() => {});
-  
-    service.sendReminder().subscribe();
-  
-    tick();
-  
-    expect(sendReminderMock).toHaveBeenCalledWith('123');
-  
-    const expectedDialogData: DialogData = {
-      title: TestBed.inject(TranslateService).instant("credentialDetails.sendReminderSuccess.title"),
-      message: TestBed.inject(TranslateService).instant("credentialDetails.sendReminderSuccess.message"),
-      confirmationType: 'none',
-      status: 'default',
-    };
-  
-    expect(mockDialogWrapperService.openDialog).toHaveBeenCalledWith(DialogComponent, expectedDialogData);
-    expect(routerNavigateSpy).toHaveBeenCalledWith(['/organization/credentials']);
-    expect(locationReloadSpy).toHaveBeenCalled();
-  }));
+  it('getProcedureId ha de retornar el valor de procedureId$', () => {
+  (service as any).procedureId$ = () => 'proc-123';
+  expect((service as any).getProcedureId()).toBe('proc-123');
+});
 
-  it('should return EMPTY and log error if procedureId is missing in executeCredentialAction', () => {
-    service.procedureId$.set('');
-  
-    const consoleErrorSpy = jest.spyOn(console, 'error').mockImplementation(() => {});
-    const actionMock = jest.fn();
-  
-    const result = (service as any).executeCredentialAction(
-      actionMock,
-      'some.title.key',
-      'some.message.key'
-    );
-  
-    let called = false;
-    result.subscribe({
-      next: () => { called = true; },
-      complete: () => {
-        expect(called).toBe(false);
-        expect(consoleErrorSpy).toHaveBeenCalledWith('No procedure id.');
-        expect(actionMock).not.toHaveBeenCalled();
-        expect(mockDialogWrapperService.openDialog).not.toHaveBeenCalled();
-        expect(mockRouter.navigate).not.toHaveBeenCalled();
-        expect(window.location.reload).not.toHaveBeenCalled();
+  describe('getters', () => {
+    it('getCredential ha de retornar vc quan existeix', () => {
+    const fakeCred: any = {
+      id: 'cred-1',
+      type: [],
+      description: '',
+      credentialSubject: {
+        mandate: {
+          id: '',
+          life_span: { start: '', end: '' },
+          mandatee: {} as any,
+          mandator: {} as any,
+          power: [],
+          signer: {} as any,
+        }
       },
+      validFrom: '',
+      validUntil: '',
+      credentialStatus: {
+        id: 'st-1',
+        type: 'RevocationList2020Status',
+        statusPurpose: 'revocation',
+        statusListIndex: 0,
+        statusListCredential: ['list-1']
+      }
+    };
+    (service as any).credentialDetailsData$ = () => ({ credential: { vc: fakeCred } });
+    expect((service as any).getCredential()).toBe(fakeCred);
+  });
+
+  it('getCredential ha de retornar undefined quan no hi ha dades', () => {
+    (service as any).credentialDetailsData$ = () => undefined;
+    expect((service as any).getCredential()).toBeUndefined();
+  });
+
+  it('getCredentialId ha de retornar l’id de la credencial', () => {
+    const fake: LEARCredential = { id: 'cred-42' } as any;
+    (service as any).getCredential = () => fake;
+    expect((service as any).getCredentialId()).toBe('cred-42');
+  });
+
+  it('getCredentialId ha de retornar undefined si no hi ha credential', () => {
+    (service as any).getCredential = () => undefined;
+    expect((service as any).getCredentialId()).toBeUndefined();
+  });
+  });
+
+  describe('getCredentialListId', () => {
+    it('sense statusListCredential: retorna empty string i loggea error', () => {
+      const noStatus: any = { credentialStatus: { statusListCredential: undefined } };
+      jest.spyOn(console, 'error').mockImplementation(() => {});
+      (service as any).getCredential = () => noStatus;
+      const result = (service as any).getCredentialListId();
+      expect(result).toBe('');
+      expect(console.error).toHaveBeenCalledWith('No Status List Credential found in vc: ');
+      expect(console.error).toHaveBeenCalledWith(noStatus);
+    });
+
+    it('amb statusListCredential: retorna l’últim element sense error', () => {
+      const list = ['one', 'two', 'three'];
+      const withStatus: any = { credentialStatus: { statusListCredential: list } };
+      jest.spyOn(console, 'error').mockImplementation(() => {});
+      (service as any).getCredential = () => withStatus;
+      expect((service as any).getCredentialListId()).toBe('three');
+      expect(console.error).not.toHaveBeenCalled();
     });
   });
-  
-  
-
-  it('should execute credential action and perform navigation + reload', fakeAsync(() => {
-    service.procedureId$.set('123');
-  
-    const actionMock = jest.fn().mockReturnValue(of(undefined));
-  
-    const dialogRef = {
-      afterClosed: jest.fn().mockReturnValue(of(true)),
-    };
-    jest.spyOn(mockDialogWrapperService, 'openDialog').mockReturnValue(dialogRef as any);
-  
-    const translateSpy = jest.spyOn(TestBed.inject(TranslateService), 'instant')
-  .mockImplementation((key: string | string[]) =>
-    typeof key === 'string' ? `Translated: ${key}` : key.join(', ')
-  );
-
-    const navigateSpy = jest.spyOn(mockRouter, 'navigate').mockResolvedValue(true);
-    const reloadSpy = jest.spyOn(window.location, 'reload');
-  
-    const result = (service as any).executeCredentialAction(
-      actionMock,
-      'some.title.key',
-      'some.message.key'
-    );
-  
-    tick();
-  
-    result.subscribe({
-      complete: () => {
-        expect(actionMock).toHaveBeenCalledWith('123');
-  
-        expect(mockDialogWrapperService.openDialog).toHaveBeenCalledWith(DialogComponent, {
-          title: 'Translated: some.title.key',
-          message: 'Translated: some.message.key',
-          confirmationType: 'none',
-          status: 'default',
-        });
-  
-        expect(navigateSpy).toHaveBeenCalledWith(['/organization/credentials']);
-        expect(reloadSpy).toHaveBeenCalled();
-      },
-    });
-  
-    tick();
-  }));
-  
-  
-  
-  it('should sign credential, open success dialog, navigate, and reload page', fakeAsync(() => {
-    service.procedureId$.set('456');
-  
-    const signCredentialMock = jest
-      .spyOn(mockCredentialProcedureService, 'signCredential')
-      .mockReturnValue(of(undefined));
-  
-    const dialogRefMock = {
-      afterClosed: jest.fn().mockReturnValue(of(true)),
-    };
-    jest.spyOn(mockDialogWrapperService, 'openDialog').mockReturnValue(dialogRefMock as any);
-  
-    const routerNavigateSpy = jest.spyOn(mockRouter, 'navigate').mockResolvedValue(true);
-    const locationReloadSpy = jest.spyOn(globalThis.location, 'reload').mockImplementation(() => {});
-  
-    service.signCredential().subscribe();
-  
-    tick();
-  
-    expect(signCredentialMock).toHaveBeenCalledWith('456');
-  
-    const expectedDialogData: DialogData = {
-      title: TestBed.inject(TranslateService).instant("credentialDetails.signCredentialSuccess.title"),
-      message: TestBed.inject(TranslateService).instant("credentialDetails.signCredentialSuccess.message"),
-      confirmationType: 'none',
-      status: 'default',
-    };
-  
-    expect(mockDialogWrapperService.openDialog).toHaveBeenCalledWith(DialogComponent, expectedDialogData);
-    expect(routerNavigateSpy).toHaveBeenCalledWith(['/organization/credentials']);
-    expect(locationReloadSpy).toHaveBeenCalled();
-  }));
 
   describe('mapFieldMain', () => {
  it('should map “key-value” and “group” correctly', () => {
@@ -337,6 +212,106 @@ describe('CredentialDetailsService', () => {
     });
   });
 
+  describe('computed signals', () => {
+    const mockVc = {
+      validFrom: '2024-01-01',
+      validUntil: '2024-12-31',
+      credentialStatus: 'VALID'
+    } as any;
+
+    beforeEach(() => {
+      // reset signals
+      service.procedureId$.set('');
+      service.credentialDetailsData$.set(undefined);
+      // for the computed‐override tests
+      jest.restoreAllMocks();
+    });
+
+    it('lifeCycleStatus$() should be undefined when no data', () => {
+      expect(service.lifeCycleStatus$()).toBeUndefined();
+    });
+
+    it('lifeCycleStatus$() should return data.lifeCycleStatus', () => {
+      const payload = { lifeCycleStatus: 'PENDING' } as any;
+      service.credentialDetailsData$.set(payload);
+      expect(service.lifeCycleStatus$()).toBe('PENDING');
+    });
+
+    it('credential$() should return vc when present', () => {
+      service.credentialDetailsData$.set({ credential: { vc: mockVc } } as any);
+      expect(service.credential$()).toBe(mockVc);
+    });
+
+    it('credential$() should be undefined when no vc', () => {
+      service.credentialDetailsData$.set({ credential: { vc: undefined } } as any);
+      expect(service.credential$()).toBeUndefined();
+    });
+
+    it('credentialValidFrom$() and credentialValidUntil$() fallback to empty string', () => {
+      // when credential$() is undefined
+      expect(service.credentialValidFrom$()).toBe('');
+      expect(service.credentialValidUntil$()).toBe('');
+    });
+
+    it('credentialValidFrom$() and credentialValidUntil$() map from vc', () => {
+      service.credentialDetailsData$.set({ credential: { vc: mockVc } } as any);
+      expect(service.credentialValidFrom$()).toBe('2024-01-01');
+      expect(service.credentialValidUntil$()).toBe('2024-12-31');
+    });
+
+    it('credentialStatus$() returns vc.credentialStatus', () => {
+      service.credentialDetailsData$.set({ credential: { vc: mockVc } } as any);
+      expect(service.credentialStatus$()).toBe('VALID');
+    });
+
+    it('credentialType$() delegates to getCredentialType()', () => {
+      const spy = jest.spyOn(service as any, 'getCredentialType').mockReturnValue('THE‑TYPE');
+      service.credentialDetailsData$.set({ credential: { vc: mockVc } } as any);
+      expect(service.credentialType$()).toBe('THE‑TYPE');
+      expect(spy).toHaveBeenCalledWith(mockVc);
+    });
+
+    it('showSideTemplateCard$() is false by default, true when sideTemplateModel has items', () => {
+      expect(service.showSideTemplateCard$()).toBe(false);
+      service.sideTemplateModel$.set([ { foo: 'bar' } as any ]);
+      expect(service.showSideTemplateCard$()).toBe(true);
+    });
+
+    it('enableRevokeCredentialButton$() is false when no status, true when credentialStatus set', () => {
+      service.credentialDetailsData$.set({ credential: { vc: { validFrom: '', validUntil: '', credentialStatus: undefined } } } as any);
+      expect(service.enableRevokeCredentialButton$()).toBe(false);
+
+      service.credentialDetailsData$.set({
+        credential: {
+          vc: { validFrom: '', validUntil: '', credentialStatus: {status:'ANY'} }
+        }
+      } as any);
+      expect(service.enableRevokeCredentialButton$()).toBe(true);
+    });
+
+
+    it('showReminderButton$, showSignCredentialButton$, showRevokeCredentialButton$ all false by default', () => {
+      expect(service.showReminderButton$()).toBe(false);
+      expect(service.showSignCredentialButton$()).toBe(false);
+      expect(service.showRevokeCredentialButton$()).toBe(false);
+    });
+
+     it('showActionsButtonsContainer$() és true si almenys un botó està visible', () => {
+      service.credentialDetailsData$.set({
+        lifeCycleStatus: 'ANY',
+        credential: { vc: { type: ['LEARCredentialEmployee'], validFrom: '', validUntil: '', credentialStatus: 'OK' } }
+      } as any);
+
+      jest.spyOn(actionHelpers, 'statusHasSignCredentialButton').mockReturnValue(true);
+      jest.spyOn(actionHelpers, 'credentialTypeHasSignCredentialButton').mockReturnValue(true);
+
+      expect(service.showSignCredentialButton$()).toBe(true);
+
+      expect(service.showActionsButtonsContainer$()).toBe(true);
+    });
+});
+
+
 describe('Load models', () => {
   it('should load and map credential models correctly', () => {
   const svc: any = service;
@@ -347,7 +322,6 @@ describe('Load models', () => {
   const mockData = { credential: { vc, type: 'MyType' } };
   jest.spyOn(svc, 'loadCredentialDetails').mockReturnValue(of(mockData));
 
-  const basicInfoSpy = jest.spyOn(svc, 'setCredentialBasicInfo').mockImplementation(() => {});
   const getSchemaSpy   = jest.spyOn(svc, 'getSchemaByType').mockReturnValue({ schemaKey: 'schemaVal' });
   const mapped         = { mappedKey: 'mappedVal' };
   const mapSpy         = jest.spyOn(svc, 'mapSchemaValues').mockReturnValue(mapped);
@@ -357,36 +331,10 @@ describe('Load models', () => {
   svc.loadCredentialModels(injector);
 
   expect(svc.loadCredentialDetails).toHaveBeenCalled();
-  expect(basicInfoSpy).toHaveBeenCalledWith(mockData);
   expect(getSchemaSpy).toHaveBeenCalledWith('MyType');
   expect(mapSpy).toHaveBeenCalledWith({ schemaKey: 'schemaVal' }, vc);
   expect(templateSpy).toHaveBeenCalledWith(mapped, injector);
 });
-});
-
-describe('getCredentialType', () => {
-  beforeEach(() => {
-    // Override private schema map to include our test type
-    (service as any).schemasByTypeMap = { 'LearCredentialEmployee': {} };
-  });
-
-  it('should return the correct type when present in schemasByTypeMap', () => {
-    // Arrange a credential with a valid type
-    const cred: any = { type: ['LearCredentialEmployee', 'Foo'] };
-    // Act
-    const type = (service as any).getCredentialType(cred);
-    // Assert
-    expect(type).toBe('LearCredentialEmployee');
-  });
-
-  it('should throw an error when no valid type is found', () => {
-    // Arrange schemas map with a different type
-    (service as any).schemasByTypeMap = { 'SomeOtherType': {} };
-    const cred: any = { type: ['UnknownType', 'Foo'] };
-    // Act & Assert
-    expect(() => (service as any).getCredentialType(cred))
-      .toThrowError('No credential tyep found in credential');
-  });
 });
 
 describe('shouldIncludeSideField', () => {
@@ -427,53 +375,6 @@ describe('shouldIncludeSideField', () => {
       ],
     };
     expect((service as any).shouldIncludeSideField(field)).toBe(true);
-  });
-});
-
-describe('setCredentialBasicInfo', () => {
-  let mockValidFrom$: { set: jest.Mock<any, any> };
-  let mockValidUntil$: { set: jest.Mock<any, any> };
-  let mockType$: { set: jest.Mock<any, any> };
-  let mockStatus$: { set: jest.Mock<any, any> };
-
-  beforeEach(() => {
-    // Mock the internal subjects with typed Jest mocks
-    mockValidFrom$ = { set: jest.fn() };
-    mockValidUntil$ = { set: jest.fn() };
-    mockType$ = { set: jest.fn() };
-    mockStatus$ = { set: jest.fn() };
-
-    (service as any).credentialValidFrom$ = mockValidFrom$;
-    (service as any).credentialValidUntil$ = mockValidUntil$;
-    (service as any).credentialType$ = mockType$;
-    (service as any).credentialStatus$ = mockStatus$;
-
-    // Spy on the private getCredentialType to return a fixed type
-    jest.spyOn(service as any, 'getCredentialType').mockReturnValue('TypeA');
-  });
-
-  it('should set validFrom, validUntil, type and status correctly', () => {
-    // Arrange
-    const details: any = {
-      credential: {
-        vc: {
-          validFrom: '2020-01-01',
-          validUntil: '2021-01-01',
-          type: ['foo']
-        }
-      },
-      credential_status: 'active'
-    };
-
-    // Act
-    (service as any).setCredentialBasicInfo(details);
-
-    // Assert
-    expect(mockValidFrom$.set).toHaveBeenCalledWith('2020-01-01');
-    expect(mockValidUntil$.set).toHaveBeenCalledWith('2021-01-01');
-    expect((service as any).getCredentialType).toHaveBeenCalledWith(details.credential.vc);
-    expect(mockType$.set).toHaveBeenCalledWith('TypeA');
-    expect(mockStatus$.set).toHaveBeenCalledWith('active');
   });
 });
 

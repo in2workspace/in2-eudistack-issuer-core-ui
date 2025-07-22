@@ -4,4 +4,4 @@ export interface CreateCredentialProcedureResponse {
   procedure_id: string;
   credential_status: string;
   credential: LEARCredentialJwtPayload | LEARCredential;
-}
+} 

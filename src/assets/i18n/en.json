@@ -75,7 +75,6 @@
     "EXPIRED": "EXPIRED",
     "PEND_DOWNLOAD": "PEND_DOWNLOAD",
     "ISSUED": "ISSUED",
-    "basic_info": "Basic info",
     "type" : "type",
     "status": "status",
     "valid_from": "valid from",
@@ -124,6 +123,8 @@
     "gx:compliantCredentials": "Compliant Credentials",
     "gx:validatedCriteria": "Validated Criteria",
     "gx:validatedCriteriaReference": "Validated Criteria Reference",
+    "revoke": "revoke",
+    "revokeTooltip": "This credential cannot be revoked because it was issued using a legacy type. To learn how to revoke this type of credential, please check our <a href='{{url}}' style='color: white; font-weight:700' target='_blank' rel='noopener noreferrer'>guide</a>.",
     "sendReminderConfirm": {
       "title": "Send Reminder",
       "message": "Are you sure you want to send a reminder for this credential offer?"
@@ -139,6 +140,14 @@
     "signCredentialSuccess": {
       "title": "Credential signed",
       "message": "The credential was signed successfully."
+    },
+    "revokeCredentialConfirm": {
+      "title": "Revoke Credential",
+      "message": "Are you sure you want to revoke this credential?"
+    },
+    "revokeCredentialSuccess": {
+      "title": "Credential revoked",
+      "message": "The credential was revoked successfully."
     }
   },
   "credentialOffer": {

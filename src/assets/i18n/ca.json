@@ -62,7 +62,17 @@
   },
   "credentialDetails": {
     "title": "Detalls de la credencial",
-    "basic_info": "Informació bàsica",
+	  "gx:LabelCredential": "Label Credential",
+    "LEARCredentialEmployee": "LEAR Credential Employee",
+    "LEARCredentialMachine": "LEAR Credential Machine",
+    "VerifiableCertification": "Verifiable Certification",
+    "DRAFT": "DRAFT",
+    "PEND_SIGNATURE": "PEND_SIGNATURE",
+    "WITHDRAWN": "WITHDRAWN",
+    "VALID": "VALID",
+    "EXPIRED": "EXPIRED",
+    "PEND_DOWNLOAD": "PEND_DOWNLOAD",
+    "ISSUED": "ISSUED",
     "type" : "tipus",
     "status": "estatus",
     "valid_from": "vàlid des de",
@@ -79,6 +89,7 @@
     "emailAddress": "correu electrònic",
     "email": "correu electrònic",
     "serialNumber": "número del document d'identitat",
+	  "name": "nom",
     "firstName": "nom",
     "lastName": "cognom",
     "mobile_phone": "telèfon mòbil",
@@ -102,6 +113,15 @@
     "hash": "hash",
     "scope": "abast",
     "standard": "estàndard",
+	  "basic": "bàsic",
+	  "gx:labelLevel": "Label Level",
+    "gx:rulesVersion": "Rules Version",
+    "gx:engineRules": "Engine Rules",
+    "gx:compliantCredentials": "Compliant Credentials",
+    "gx:validatedCriteria": "Validated Criteria",
+    "gx:validatedCriteriaReference": "Validated Criteria Reference",
+    "revoke": "revocar",
+        "revokeTooltip": "Aquesta credencial no pot ser revocada perquè és de tipus legacy. Per consultar com revocar aquest tipus de credencial, consulti la nostra <a href='{{url}}' style='color: white; font-weight:700' target='_blank' rel='noopener noreferrer'>guia</a>.",
     "sendReminderConfirm": {
       "title": "Enviar recordatori",
       "message": "Estàs segur que vols enviar un recordatori per aquesta oferta de credencial?"
@@ -117,6 +137,14 @@
     "signCredentialSuccess": {
       "title": "Credencial signada",
       "message": "La credencial s'ha signat correctament."
+    },
+    "revokeCredentialConfirm": {
+      "title": "Revocar Credencial",
+      "message": "Estàs segur que vols revocar la credencial?"
+    },
+    "revokeCredentialSuccess": {
+      "title": "Credencial revocada",
+      "message": "La credencial ha estat revocada."
     }
   },  
   "credentialOffer": {

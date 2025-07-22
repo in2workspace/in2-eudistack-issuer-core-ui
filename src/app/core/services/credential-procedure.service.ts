@@ -3,28 +3,30 @@ import { inject, Injectable } from '@angular/core';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { Observable, throwError } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
-import { environment} from 'src/environments/environment';
+import { environment } from 'src/environments/environment';
 import { CredentialProceduresResponse } from '../models/dto/credential-procedures-response.dto';
 import { CredentialOfferResponse } from '../models/dto/credential-offer-response.dto';
-import { CredentialProcedureDataDetails } from '../models/entity/lear-credential';
+import { CredentialProcedureDetails } from '../models/entity/lear-credential';
 import { DialogWrapperService } from "../../shared/components/dialog/dialog-wrapper/dialog-wrapper.service";
 import { TranslateService } from "@ngx-translate/core";
 import { Router } from "@angular/router";
-import { API } from "../constants/api.constants";
-import { CreateCredentialProcedureResponse } from '../models/dto/create-credential-procedure-response';
 import { IssuanceLEARCredentialRequestDto } from '../models/dto/lear-credential-issuance-request.dto';
 import { LEARCredentialDataNormalizer } from 'src/app/features/credential-details/utils/lear-credential-data-normalizer';
+import { API_PATH } from '../constants/api-paths.constants';
+import { CredentialRevokeRequestDto } from '../models/dto/credential-revoke-request.dto';
+import { CredentialProcedureDetailsResponse } from '../models/dto/lear-credential-data-details-response.dto';
 
 @Injectable({
   providedIn: 'root'
 })
 export class CredentialProcedureService {
 
-  private readonly saveCredential = `${environment.server_url}${API.SAVE_CREDENTIAL_PATH}`;
-  private readonly organizationProcedures = `${environment.server_url}${API.PROCEDURES_PATH}`;
-  private readonly credentialOfferUrl = `${environment.server_url}${API.CREDENTIAL_OFFER_PATH}`;
-  private readonly notificationProcedure = `${environment.server_url}${API.NOTIFICATION_PATH}`;
-  private readonly signCredentialUrl = `${environment.server_url}${API.SIGN_CREDENTIAL_PATH}`;
+  private readonly organizationProcedures = `${environment.server_url}${API_PATH.PROCEDURES}`;
+  private readonly saveCredential = `${environment.server_url}${API_PATH.SAVE_CREDENTIAL}`;
+  private readonly credentialOfferUrl = `${environment.server_url}${API_PATH.CREDENTIAL_OFFER}`;
+  private readonly notificationProcedure = `${environment.server_url}${API_PATH.NOTIFICATION}`;
+  private readonly signCredentialUrl = `${environment.server_url}${API_PATH.SIGN_CREDENTIAL}`;
+  private readonly revokeCredentialUrl = `${environment.server_url}${API_PATH.REVOKE}`;
 
   private readonly http = inject(HttpClient);
   private readonly normalizer = new LEARCredentialDataNormalizer();
@@ -39,8 +41,8 @@ export class CredentialProcedureService {
   }
 
   // get credential and normalize it
-  public getCredentialProcedureById(procedureId: string): Observable<CredentialProcedureDataDetails> {
-    return this.http.get<CreateCredentialProcedureResponse>(
+  public getCredentialProcedureById(procedureId: string): Observable<CredentialProcedureDetails> {
+    return this.http.get<CredentialProcedureDetailsResponse>(
       `${this.organizationProcedures}/${procedureId}/credential-decoded`
     )
     .pipe(
@@ -59,13 +61,14 @@ export class CredentialProcedureService {
             ...credential,
             vc: normalizedCredential
           }
-        } as CredentialProcedureDataDetails;
+        } as CredentialProcedureDetails;
       }),
       catchError(this.handleError)
     );
   }
 
   public createProcedure(procedureRequest: IssuanceLEARCredentialRequestDto): Observable<void> {
+    // todo remove logs
     console.log('Sending API request to create procedure');
     console.log(procedureRequest);
     return this.http.post<void>(this.saveCredential, procedureRequest).pipe(
@@ -81,6 +84,13 @@ export class CredentialProcedureService {
 
   public signCredential(procedureId: string): Observable<void> {
     return this.http.post<void>(`${this.signCredentialUrl}/${procedureId}`, {} ).pipe(
+      catchError(this.handleError)
+    );
+  }
+
+  public revokeCredential(credentialId: string, listId: string): Observable<void>{
+    const body: CredentialRevokeRequestDto = { credentialId, listId };
+    return this.http.post<void>(this.revokeCredentialUrl, body).pipe(
       catchError(this.handleError)
     );
   }
