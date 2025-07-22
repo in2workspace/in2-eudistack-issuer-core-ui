@@ -1,0 +1,53 @@
+@let fieldSchema = fieldSchema$();
+@let fieldName = fieldName$();
+@let control = control$();
+
+<div class="container">
+  @if(abstractControl$() && fieldSchema) {
+    @if(fieldSchema.hint){
+      <div class="field-hint">
+        {{ "credentialIssuance.hint." + fieldSchema.hint | translate }}
+      </div>
+    }
+    @if(fieldSchema.custom){
+      <!-- <ng-container *ngComponentOutlet="fieldSchema.custom.component; inputs: {form: form.get(fieldSchema.key), updateMessages: updateAlertMessages.bind(this), data: field.custom.data}"></ng-container> -->
+    }@else{
+      @if (fieldSchema.type === 'group' && fieldSchema.groupFields) {
+        <!-- GROUPS -->
+        <mat-card class="mb-4">
+          <mat-card-content [formGroup]="group$()!">
+            @for (field of fieldSchema.groupFields; track $index) {
+              <app-dynamic-field 
+                [fieldName$]="field.key" 
+                [fieldSchema$]="field" 
+                [abstractControl$]="group$()!">
+              </app-dynamic-field>
+            }
+          </mat-card-content>
+        </mat-card>
+      } @else {
+        <!-- INDIVIDUAL CONTROLS -->
+        <mat-form-field [formGroup]="parentFormGroup$()">
+          <mat-label appAddAsterisk [formGroup]="parentFormGroup$()" [controlName]="fieldName">{{ "credentialIssuance." + fieldName | translate }}</mat-label>
+          @let controlType = fieldSchema.controlType;
+          @if (controlType === 'number' || controlType === 'text') {
+            <input matInput [type]="controlType" [formControlName]="fieldName" [id]="fieldName" [class]="fieldSchema.classes"/>
+          }@else if(controlType === 'selector'){
+              <mat-select [formControlName]="fieldName" [id]="fieldName" [class]="fieldSchema.classes">
+                <mat-option [value]="" disabled>{{ "credentialIssuance.selectA" | translate }}{{ fieldName }}</mat-option>
+                @for(option of fieldSchema.multiOptions; track $index){
+                  <mat-option [value]="option.value">
+                    {{ option.label }}
+                  </mat-option>
+                }
+              </mat-select>
+          }
+          @if (control?.invalid && control?.touched) {
+             <mat-error>{{getErrorMessage(control) | translate: getErrorsArgs(control) }}</mat-error>
+          }
+  
+        </mat-form-field>
+      }
+    }
+  }
+</div>

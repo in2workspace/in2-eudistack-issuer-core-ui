@@ -3,16 +3,13 @@ import {HttpTestingController, provideHttpClientTesting} from '@angular/common/h
 import {CredentialProcedureService} from './credential-procedure.service';
 import {environment} from 'src/environments/environment';
 import {HttpErrorResponse, provideHttpClient} from '@angular/common/http';
-
-import {ProcedureResponse} from "../models/dto/procedure-response.dto";
-
-import {throwError} from 'rxjs';
+import {CredentialProceduresResponse} from "../models/dto/credential-procedures-response.dto";
 import {DialogWrapperService} from "../../shared/components/dialog/dialog-wrapper/dialog-wrapper.service";
 import {TranslateService} from "@ngx-translate/core";
 import {Router} from "@angular/router";
 import {API} from "../constants/api.constants";
-import { LEARCredentialDataDetails } from '../models/entity/lear-credential';
-import { EmployeeProcedureRequest } from '../models/dto/procedure-request.dto';
+import { IssuanceLEARCredentialRequestDto } from '../models/dto/lear-credential-issuance-request.dto';
+import { CredentialProcedureDataDetails } from '../models/entity/lear-credential';
 
 const notFoundErrorResp = new HttpErrorResponse({
   error: '404 error',
@@ -66,7 +63,7 @@ describe('CredentialProcedureService', () => {
   });
 
   it('should fetch credential procedures successfully', () => {
-    const mockData: ProcedureResponse = {credential_procedures:[
+    const mockData: CredentialProceduresResponse = {credential_procedures:[
       { credential_procedure:{procedure_id: '1', status: 'completed', subject: 'John Doe', updated: '2023-01-01', credential_type: 'LEARCredentialEmployee'}},
       { credential_procedure:{ procedure_id: '2', status: 'pending', subject: 'Jane Doe', updated: '2023-01-02', credential_type: 'VerifiableCertification'}}
     ]};
@@ -97,7 +94,7 @@ describe('CredentialProcedureService', () => {
 
   it('should fetch credential procedure by id successfully', () => {
     const procedureId = '1';
-    const mockData: LEARCredentialDataDetails =
+    const mockData: CredentialProcedureDataDetails =
       { procedure_id: '1', credential_status: 'VALID', credential: { mandatee: {}, mandator: {}, power: [] } as any }
     ;
 
@@ -125,7 +122,7 @@ describe('CredentialProcedureService', () => {
   });
 
   it('should save credential procedure successfully', () => {
-    const IssuanceRequestMock:EmployeeProcedureRequest = {
+    const IssuanceRequestMock:IssuanceLEARCredentialRequestDto = {
       schema: "LEARCredentialEmployee",
       format: "jwt_vc_json",
       payload: {
@@ -155,7 +152,7 @@ describe('CredentialProcedureService', () => {
   });
 
   it('should handle error when saving credential procedure', () => {
-    const IssuanceRequestMock:EmployeeProcedureRequest = {
+    const IssuanceRequestMock:IssuanceLEARCredentialRequestDto = {
       schema: "LEARCredentialEmployee",
       format: "jwt_vc_json",
       payload: {

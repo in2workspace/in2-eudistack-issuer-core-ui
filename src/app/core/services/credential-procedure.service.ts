@@ -1,18 +1,19 @@
+import { DialogComponent } from 'src/app/shared/components/dialog/dialog-component/dialog.component';
 import { inject, Injectable } from '@angular/core';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { Observable, throwError } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
 import { environment} from 'src/environments/environment';
-import { ProcedureResponse } from '../models/dto/procedure-response.dto';
+import { CredentialProceduresResponse } from '../models/dto/credential-procedures-response.dto';
 import { CredentialOfferResponse } from '../models/dto/credential-offer-response.dto';
-import { LEARCredentialDataDetails } from '../models/entity/lear-credential';
+import { CredentialProcedureDataDetails } from '../models/entity/lear-credential';
 import { DialogWrapperService } from "../../shared/components/dialog/dialog-wrapper/dialog-wrapper.service";
 import { TranslateService } from "@ngx-translate/core";
 import { Router } from "@angular/router";
 import { API } from "../constants/api.constants";
-import { LEARCredentialDataNormalizer } from '../models/entity/lear-credential-employee-data-normalizer';
-import { EmployeeProcedureRequest } from '../models/dto/procedure-request.dto';
-import { LEARCredentialDataDetailsResponse } from '../models/dto/lear-credential-data-details-response.dto';
+import { CreateCredentialProcedureResponse } from '../models/dto/create-credential-procedure-response';
+import { IssuanceLEARCredentialRequestDto } from '../models/dto/lear-credential-issuance-request.dto';
+import { LEARCredentialDataNormalizer } from 'src/app/features/credential-details/utils/lear-credential-data-normalizer';
 
 @Injectable({
   providedIn: 'root'
@@ -31,14 +32,15 @@ export class CredentialProcedureService {
   private readonly translate = inject(TranslateService);
   private readonly router = inject(Router);
 
-  public getCredentialProcedures(): Observable<ProcedureResponse> {
-    return this.http.get<ProcedureResponse>(this.organizationProcedures).pipe(
+  public getCredentialProcedures(): Observable<CredentialProceduresResponse> {
+    return this.http.get<CredentialProceduresResponse>(this.organizationProcedures).pipe(
       catchError(this.handleError)
     );
   }
 
-  public getCredentialProcedureById(procedureId: string): Observable<LEARCredentialDataDetails> {
-    return this.http.get<LEARCredentialDataDetailsResponse>(
+  // get credential and normalize it
+  public getCredentialProcedureById(procedureId: string): Observable<CredentialProcedureDataDetails> {
+    return this.http.get<CreateCredentialProcedureResponse>(
       `${this.organizationProcedures}/${procedureId}/credential-decoded`
     )
     .pipe(
@@ -49,7 +51,6 @@ export class CredentialProcedureService {
           ? credential.vc
           : credential;
 
-        // Normalize the part which is of type LEARCredentialEmployee
         const normalizedCredential = this.normalizer.normalizeLearCredential(credentialData);
 
         return {
@@ -58,13 +59,15 @@ export class CredentialProcedureService {
             ...credential,
             vc: normalizedCredential
           }
-        } as LEARCredentialDataDetails;
+        } as CredentialProcedureDataDetails;
       }),
       catchError(this.handleError)
     );
   }
 
-  public createProcedure(procedureRequest: EmployeeProcedureRequest): Observable<void> {
+  public createProcedure(procedureRequest: IssuanceLEARCredentialRequestDto): Observable<void> {
+    console.log('Sending API request to create procedure');
+    console.log(procedureRequest);
     return this.http.post<void>(this.saveCredential, procedureRequest).pipe(
       catchError(this.handleError)
     );
@@ -143,7 +146,7 @@ export class CredentialProcedureService {
       errorMessage = this.translate.instant("error.credentialOffer.conflict");
     }
   
-    this.dialog.openErrorInfoDialog(errorMessage);
+    this.dialog.openErrorInfoDialog(DialogComponent, errorMessage);
     setTimeout(()=>{
       this.router.navigate(['/home']);
     }, 0);

@@ -1,0 +1,30 @@
+@let displayedKeys = displayedKeys$();
+<div class="title-container">
+    <h2>{{ "keys.title" | translate }}</h2>
+    <span [matTooltip]="'keys.tooltip' | translate" matTooltipPosition="after" matTooltipclass="tooltip" matTooltipeShowDelay="500" 
+     class="tooltip">
+        <mat-icon>help_outline</mat-icon>
+    </span>
+</div>
+<div class="main-container">
+    <button type="button" matButton mat-raised-button color="primary" class="generate-button" (click)="generateKeys()">{{ "keys.buttonText" | translate }}</button>
+    @if(displayedKeys){
+        <div class="keys-container">
+            @for(key of displayedKeys| keyvalue; track $index){
+                @if(key.value){
+                    <div class="key-container">
+                        <div class="key">{{ key.value }}</div>
+                            <button type="button" (click)="copyToClipboard(key.value!)" class="copy-button" [disabled]="copiedKey === key.value">
+                                @if(copiedKey === key.value){
+                                     <mat-icon>check</mat-icon>
+                                    }@else {
+                                    {{ "copy" | translate }}
+                                }
+                            </button>
+                    </div>
+                    <div class="alert">{{ "keys.alert" | translate }}</div>
+                }
+            }
+        </div>
+    }
+</div>

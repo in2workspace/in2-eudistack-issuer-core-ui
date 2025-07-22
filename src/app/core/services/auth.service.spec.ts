@@ -5,7 +5,7 @@ import { EventTypes, OidcSecurityService, PublicEventsService } from 'angular-au
 import { UserDataAuthenticationResponse } from '../models/dto/user-data-authentication-response.dto';
 import { LEARCredentialEmployee } from '../models/entity/lear-credential';
 import { RoleType } from '../models/enums/auth-rol-type.enum';
-import { LEARCredentialDataNormalizer } from '../models/entity/lear-credential-employee-data-normalizer';
+import { LEARCredentialDataNormalizer } from 'src/app/features/credential-details/utils/lear-credential-data-normalizer';
 
 /**
  * A few mock objects to reduce repetition.
@@ -640,27 +640,27 @@ describe('subscribeToAuthEvents', () => {
   });
 
   it('should handle IdTokenExpired', () => {
-    const consoleError = jest.spyOn(console, 'error').mockImplementation();
+    const consoleWarn = jest.spyOn(console, 'warn').mockImplementation();
 
     service.subscribeToAuthEvents();
 
     eventSubject.next({ type: EventTypes.IdTokenExpired });
 
-    expect(consoleError).toHaveBeenCalledWith('Session expired:', expect.anything());
+    expect(consoleWarn).toHaveBeenCalledWith('Session expired:', expect.anything());
 
-    consoleError.mockRestore();
+    consoleWarn.mockRestore();
   });
 
   it('should handle TokenExpired', () => {
-    const consoleError = jest.spyOn(console, 'error').mockImplementation();
+    const consoleWarn= jest.spyOn(console, 'warn').mockImplementation();
 
     service.subscribeToAuthEvents();
 
     eventSubject.next({ type: EventTypes.TokenExpired });
 
-    expect(consoleError).toHaveBeenCalledWith('Session expired:', expect.anything());
+    expect(consoleWarn).toHaveBeenCalledWith('Session expired:', expect.anything());
 
-    consoleError.mockRestore();
+    consoleWarn.mockRestore();
   });
 });
 

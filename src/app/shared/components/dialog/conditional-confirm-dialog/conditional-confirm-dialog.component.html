@@ -1,0 +1,31 @@
+<h2 mat-dialog-title>{{ data.title }}</h2>
+
+<div mat-dialog-content>
+  <p>{{ data.message }}</p>
+
+  <mat-checkbox 
+    [checked]="checkboxChecked()"
+    (change)="toggleCheckbox($event.checked)">
+    {{ data.checkboxLabel }}
+  </mat-checkbox>
+
+  @if(data.belowText){
+    <p  class="below-text">
+      <span style="color: #FFA500; font-size: 1em;">
+        ⚠
+      </span>
+      {{ data.belowText }}
+    </p>
+  }
+</div>
+
+<div mat-dialog-actions >
+  <button mat-button (click)="onCancel()">
+    {{ data.cancelLabel || ("dialog.cancel" | translate) }}
+  </button>
+  <button mat-flat-button color="primary"
+          [disabled]="!checkboxChecked()"
+          (click)="onConfirm()">
+    {{ data.confirmationLabel || ("dialog.accept" | translate) }}
+  </button>
+</div>

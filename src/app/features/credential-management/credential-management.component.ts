@@ -5,7 +5,7 @@ import { Router } from '@angular/router';
 import { CredentialProcedureService } from 'src/app/core/services/credential-procedure.service';
 import { AuthService } from 'src/app/core/services/auth.service';
 import { MatSort, MatSortHeader } from '@angular/material/sort';
-import { CredentialProcedure, ProcedureResponse } from "../../core/models/dto/procedure-response.dto";
+import { CredentialProcedure, CredentialProceduresResponse } from "../../core/models/dto/credential-procedures-response.dto";
 import { TranslatePipe } from '@ngx-translate/core';
 import { NgClass, DatePipe } from '@angular/common';
 import { MatButton, MatButtonModule } from '@angular/material/button';
@@ -15,6 +15,7 @@ import { debounceTime, Subject, take } from 'rxjs';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { animate, state, style, transition, trigger } from '@angular/animations';
 import { MatIcon } from '@angular/material/icon';
+import { SubjectComponent } from './components/subject-component/subject-component.component';
 
 @Component({
     selector: 'app-credential-management',
@@ -43,6 +44,7 @@ import { MatIcon } from '@angular/material/icon';
         NgClass,
         MatPaginator,
         DatePipe,
+        SubjectComponent,
         TranslatePipe,
     ],
     animations: [
@@ -139,7 +141,7 @@ export class CredentialManagementComponent implements OnInit, AfterViewInit {
     this.credentialProcedureService.getCredentialProcedures()
     .pipe(take(1))
     .subscribe({
-      next: (data: ProcedureResponse) => {
+      next: (data: CredentialProceduresResponse) => {
         this.dataSource.data = data.credential_procedures;
       },
       error: (error) => {
