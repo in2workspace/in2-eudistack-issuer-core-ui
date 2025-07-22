@@ -1,24 +1,24 @@
 import { inject, Injectable, InjectionToken } from "@angular/core";
-import { CredentialIssuanceFormFieldSchema, CredentialIssuanceFormSchema, CredentialIssuanceSchemaBuilder, IssuanceCredentialType, IssuanceStaticDataSchema } from "src/app/core/models/entity/lear-credential-issuance";
+import { CredentialIssuanceTypedViewModelSchema, CredentialIssuanceSchemaProvider, IssuanceCredentialType, IssuanceStaticViewModel, CredentialIssuanceViewModelField, CredentialIssuanceViewModelSchema, IssuanceViewModelsTuple, CredentialIssuanceViewModelGroupField } from "src/app/core/models/entity/lear-credential-issuance";
 
-export const CREDENTIAL_SCHEMA_BUILDERS = new InjectionToken<CredentialIssuanceSchemaBuilder[]>('CREDENTIAL_SCHEMA_BUILDERS');
+export const CREDENTIAL_SCHEMA_PROVIDERS = new InjectionToken<CredentialIssuanceSchemaProvider<IssuanceCredentialType>[]>('CREDENTIAL_SCHEMA_PROVIDERS');
 
 @Injectable({ providedIn: 'root' })
 export class IssuanceSchemaBuilder {
-    private readonly builders: CredentialIssuanceSchemaBuilder[] = inject(CREDENTIAL_SCHEMA_BUILDERS);
+    private readonly schemaProviders: CredentialIssuanceSchemaProvider<IssuanceCredentialType>[] = inject(CREDENTIAL_SCHEMA_PROVIDERS);
 
 
-  public getIssuanceFormSchema(type: IssuanceCredentialType): CredentialIssuanceFormSchema{
+  public getIssuanceFormSchema<T extends IssuanceCredentialType>(type: T): CredentialIssuanceTypedViewModelSchema<T>{
     return this.getBuilder(type).getSchema();
   }
 
-  public schemasBuilder(
-  credType: IssuanceCredentialType,
-  asSigner: boolean
-  ): [CredentialIssuanceFormSchema, IssuanceStaticDataSchema] {
-    const rawSchema = this.getIssuanceFormSchema(credType);
-    const formSchema: CredentialIssuanceFormSchema = [];
-    const staticSchema: IssuanceStaticDataSchema = {};
+  public formSchemasBuilder<T extends IssuanceCredentialType>(
+    credType: T,
+    asSigner: boolean
+  ): IssuanceViewModelsTuple {
+    const rawSchema: CredentialIssuanceViewModelSchema  = this.getIssuanceFormSchema(credType).schema;
+    const formViewModel: CredentialIssuanceViewModelSchema = [];
+    const staticSchema: IssuanceStaticViewModel = {};
 
     for (const field of rawSchema) {
       if (this.shouldExtractStatic(field, asSigner)) {
@@ -26,19 +26,19 @@ export class IssuanceSchemaBuilder {
         continue;
       }
 
-      formSchema.push(field);
+      formViewModel.push(field);
     }
 
-    return [formSchema, staticSchema];
+    return [formViewModel, staticSchema];
   }
 
-  private shouldExtractStatic(field: CredentialIssuanceFormFieldSchema, asSigner: boolean): boolean {
+  private shouldExtractStatic(field: CredentialIssuanceViewModelGroupField, asSigner: boolean): boolean {
     if (field.display === 'side') return true;
     if (field.display === 'pref_side' && !asSigner) return true;
     return false;
   }
 
-  private extractStatic(field: CredentialIssuanceFormFieldSchema, staticSchema: IssuanceStaticDataSchema): void {
+  private extractStatic(field: CredentialIssuanceViewModelField, staticSchema: IssuanceStaticViewModel): void {
     const getter = field.staticValueGetter;
     if (typeof getter === 'function') {
       const val = getter();
@@ -50,8 +50,8 @@ export class IssuanceSchemaBuilder {
     }
 }
 
-  private getBuilder(type: IssuanceCredentialType): CredentialIssuanceSchemaBuilder {
-    const b = this.builders.find(x => x.credType === type);
+  private getBuilder<T extends IssuanceCredentialType>(type: T): CredentialIssuanceSchemaProvider<T> {
+    const b = this.schemaProviders.find(x => x.getSchema().type === type) as CredentialIssuanceSchemaProvider<T> | undefined;
     if(!b) throw new Error(`No schema builder for ${type}`);
     return b;
   }

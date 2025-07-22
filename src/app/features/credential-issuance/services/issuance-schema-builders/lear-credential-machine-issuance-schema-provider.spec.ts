@@ -1,5 +1,5 @@
 import { TestBed } from '@angular/core/testing';
-import { LearCredentialMachineIssuanceSchemaBuilder } from './lear-credential-machine-issuance-schema-builder';
+import { LearCredentialMachineIssuanceSchemaProvider } from './lear-credential-machine-issuance-schema-provider';
 import { AuthService } from 'src/app/core/services/auth.service';
 import { CountryService } from 'src/app/core/services/country.service';
 import * as fieldsHelpers from '../../helpers/fields-order-helpers';
@@ -13,8 +13,8 @@ import {
 import { KeyGeneratorComponent } from '../../components/key-generator/key-generator.component';
 import { IssuancePowerComponent } from '../../components/power/issuance-power.component';
 
-describe('LearCredentialMachineIssuanceSchemaBuilder', () => {
-  let service: LearCredentialMachineIssuanceSchemaBuilder;
+describe('LearCredentialMachineIssuanceSchemaProvider', () => {
+  let service: LearCredentialMachineIssuanceSchemaProvider;
   let authMock: jest.Mocked<AuthService>;
   let countryMock: jest.Mocked<CountryService>;
   const fakeCountries = [{ label: 'C', value: 'c' }];
@@ -45,13 +45,13 @@ describe('LearCredentialMachineIssuanceSchemaBuilder', () => {
 
     TestBed.configureTestingModule({
       providers: [
-        LearCredentialMachineIssuanceSchemaBuilder,
+        LearCredentialMachineIssuanceSchemaProvider,
         { provide: AuthService, useValue: authMock },
         { provide: CountryService, useValue: countryMock },
       ],
     });
 
-    service = TestBed.inject(LearCredentialMachineIssuanceSchemaBuilder);
+    service = TestBed.inject(LearCredentialMachineIssuanceSchemaProvider);
   });
 
   it('exposes the correct credType', () => {

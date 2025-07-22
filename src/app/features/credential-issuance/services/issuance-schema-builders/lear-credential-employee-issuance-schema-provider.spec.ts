@@ -1,11 +1,11 @@
 import { TestBed } from '@angular/core/testing';
 import {
-  CREDENTIAL_SCHEMA_BUILDERS,
+  CREDENTIAL_SCHEMA_PROVIDERS,
   IssuanceSchemaBuilder,
 } from './issuance-schema-builder';
 import {
-  CredentialIssuanceFormFieldSchema,
-  IssuanceStaticDataSchema,
+  CredentialIssuanceViewModelSchema,
+  IssuanceStaticData,
 } from 'src/app/core/models/entity/lear-credential-issuance';
 import { IssuanceCredentialType } from 'src/app/core/models/entity/lear-credential-issuance';
 
@@ -22,7 +22,7 @@ describe('IssuanceSchemaBuilder', () => {
 
     TestBed.configureTestingModule({
       providers: [
-        { provide: CREDENTIAL_SCHEMA_BUILDERS, useValue: [builderMock] },
+        { provide: CREDENTIAL_SCHEMA_PROVIDERS, useValue: [builderMock] },
         IssuanceSchemaBuilder,
       ],
     });
@@ -35,7 +35,7 @@ describe('IssuanceSchemaBuilder', () => {
 
   describe('getIssuanceFormSchema', () => {
     it('delegates to the correct builder.getSchema()', () => {
-      const fakeSchema: CredentialIssuanceFormFieldSchema[] = [
+      const fakeSchema: CredentialIssuanceViewModelSchema[] = [
         { key: 'a', type: 'control', controlType: 'text' },
       ];
       builderMock.getSchema.mockReturnValue(fakeSchema);
@@ -49,7 +49,7 @@ describe('IssuanceSchemaBuilder', () => {
       TestBed.resetTestingModule();
       TestBed.configureTestingModule({
         providers: [
-          { provide: CREDENTIAL_SCHEMA_BUILDERS, useValue: [] },
+          { provide: CREDENTIAL_SCHEMA_PROVIDERS, useValue: [] },
           IssuanceSchemaBuilder,
         ],
       });
@@ -60,7 +60,7 @@ describe('IssuanceSchemaBuilder', () => {
     });
   });
 
-  describe('schemasBuilder()', () => {
+  describe('formSchemasBuilder()', () => {
     let consoleWarnSpy: jest.SpyInstance;
 
     beforeEach(() => {
@@ -70,7 +70,7 @@ describe('IssuanceSchemaBuilder', () => {
       consoleWarnSpy.mockRestore();
     });
 
-    const baseField = (over: Partial<CredentialIssuanceFormFieldSchema>) =>
+    const baseField = (over: Partial<CredentialIssuanceViewModelSchema>) =>
       ({
         key: 'k',
         type: 'control',
@@ -84,13 +84,13 @@ describe('IssuanceSchemaBuilder', () => {
         custom: { component: {} as any, data: { foo: 'bar' } },
         staticValueGetter: undefined,
         ...over,
-      } as CredentialIssuanceFormFieldSchema);
+      } as CredentialIssuanceViewModelSchema);
 
     it('keeps a main control field intact', () => {
       const raw = [baseField({ key: 'main', display: 'main' })];
       builderMock.getSchema.mockReturnValue(raw);
 
-      const [form, stat] = service.schemasBuilder(TYPE, false);
+      const [form, stat] = service.formSchemasBuilder(TYPE, false);
       expect(form).toHaveLength(1);
       expect(form[0]).toMatchObject({
         key: 'main',
@@ -112,7 +112,7 @@ describe('IssuanceSchemaBuilder', () => {
       ];
       builderMock.getSchema.mockReturnValue(raw);
 
-      const [form, stat] = service.schemasBuilder(TYPE, true);
+      const [form, stat] = service.formSchemasBuilder(TYPE, true);
       expect(form).toHaveLength(0);
       expect(stat.mandator).toEqual([{ key: 'x', value: 'y' }]);
       expect(consoleWarnSpy).not.toHaveBeenCalled();
@@ -128,11 +128,11 @@ describe('IssuanceSchemaBuilder', () => {
       ];
       builderMock.getSchema.mockReturnValue(raw);
 
-      const [formFalse, statFalse] = service.schemasBuilder(TYPE, false);
+      const [formFalse, statFalse] = service.formSchemasBuilder(TYPE, false);
       expect(formFalse).toHaveLength(0);
       expect(statFalse.mandator).toEqual([{ key: 'p', value: 'q' }]);
 
-      const [formTrue, statTrue] = service.schemasBuilder(TYPE, true);
+      const [formTrue, statTrue] = service.formSchemasBuilder(TYPE, true);
       expect(formTrue).toHaveLength(1);
       expect(statTrue).toEqual({});
     });
@@ -152,7 +152,7 @@ describe('IssuanceSchemaBuilder', () => {
       ];
       builderMock.getSchema.mockReturnValue(raw);
 
-      const [form, stat] = service.schemasBuilder(TYPE, false);
+      const [form, stat] = service.formSchemasBuilder(TYPE, false);
       expect(form).toHaveLength(0);
       expect(stat).toEqual({});
       expect(consoleWarnSpy).toHaveBeenCalledTimes(2);
@@ -174,7 +174,7 @@ describe('IssuanceSchemaBuilder', () => {
       ];
       builderMock.getSchema.mockReturnValue(raw);
 
-      const [form, stat] = service.schemasBuilder(TYPE, false);
+      const [form, stat] = service.formSchemasBuilder(TYPE, false);
       expect(form).toHaveLength(1);
       const grp = form[0];
       expect(grp.type).toBe('group');

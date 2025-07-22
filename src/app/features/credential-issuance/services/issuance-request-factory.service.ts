@@ -7,172 +7,165 @@ import { IssuanceCredentialType, IssuanceRawCredentialPayload, IssuanceRawPowerF
   providedIn: 'root'
 })
 export class IssuanceRequestFactoryService {
-  private credentialRequestFactoryMap: Record<IssuanceCredentialType, (credData:IssuanceRawCredentialPayload) => IssuanceLEARCredentialPayload> = {
+  private credentialRequestFactoryMap: Record<IssuanceCredentialType, (credData: IssuanceRawCredentialPayload) => IssuanceLEARCredentialPayload> = {
     LEARCredentialEmployee: (data) => this.createLearCredentialEmployeeRequest(data),
     LEARCredentialMachine: (data) => this.createLearCredentialMachineRequest(data)
   }
-
-  public constructor() { }
-
-
 
   public createCredentialRequest(
       credentialData: IssuanceRawCredentialPayload, 
       credentialType: IssuanceCredentialType,
     ): IssuanceLEARCredentialPayload{
 
-      //Build credential request payload
-      console.log('selected factory')
-      console.log(this.credentialRequestFactoryMap[credentialType])
      return this.credentialRequestFactoryMap[credentialType](credentialData);
     }
 
-     private createLearCredentialEmployeeRequest(credentialData: IssuanceRawCredentialPayload): IssuanceLEARCredentialEmployeePayload{
-      console.log('CREATE LEAR CREDENTIAL EMPLOYEE');
-      console.log('Credential data: ');
-      console.log(credentialData);
-      // Power
-      const parsedPower = this.parsePower(credentialData.partialCredentialSubject['power'], 'LEARCredentialEmployee');
-      
-      // Mandatee
-      const mandatee = this.getMandateeFromCredentialData(credentialData) as unknown as EmployeeMandatee;
-      
-      // Mandator
-      const mandator = this.getMandatorFromCredentialData(credentialData);
-      if(!mandator){
-        console.error('Error getting mandator.'); 
-        return {} as IssuanceLEARCredentialEmployeePayload;
-      }
-      const country = mandator['country'];
-      const orgId = mandator['organizationIdentifier'];
-      const vatNumber = this.buildOrganizationId(country, orgId);
-      const mandatorCommonName = mandator['commonName'] ?? this.buildCommonName(mandator['firstName'], mandator['lastName']);
-      
-
-      const payload: IssuanceLEARCredentialEmployeePayload =    
-        {
-        mandator: {
-              emailAddress: mandator['emailAddress'],
-              organization: mandator['organization'],
-              country:  country,
-              commonName:  mandatorCommonName,
-              serialNumber:  mandator['serialNumber'],
-              organizationIdentifier: vatNumber
-          },
-          mandatee: {
-              ...mandatee
-          },
-          power: parsedPower
-        }
-        return payload;
+  private createLearCredentialEmployeeRequest(credentialData: IssuanceRawCredentialPayload): IssuanceLEARCredentialEmployeePayload{
+    console.log('CREATE LEAR CREDENTIAL EMPLOYEE');
+    console.log('Credential data: ');
+    console.log(credentialData);
+    // Power
+    const parsedPower = this.parsePower(credentialData.formData['power'], 'LEARCredentialEmployee');
+    
+    // Mandatee
+    const mandatee = this.getMandateeFromCredentialData(credentialData) as unknown as EmployeeMandatee;
+    
+    // Mandator
+    const mandator = this.getMandatorFromCredentialData(credentialData);
+    if(!mandator){
+      console.error('Error getting mandator.'); 
+      return {} as IssuanceLEARCredentialEmployeePayload;
     }
+    const country = mandator['country'];
+    const orgId = mandator['organizationIdentifier'];
+    const vatNumber = this.buildOrganizationId(country, orgId);
+    const mandatorCommonName = mandator['commonName'] ?? this.buildCommonName(mandator['firstName'], mandator['lastName']);
+    
 
-    private createLearCredentialMachineRequest(credentialData: IssuanceRawCredentialPayload): IssuanceLEARCredentialMachinePayload{
-      console.log('CREATE LEAR CREDENTIAL MACHINE');
-      console.log('Credential data: ');
-      console.log(credentialData);
-      // Power
-      const parsedPower = this.parsePower(credentialData.partialCredentialSubject['power'], 'LEARCredentialEmployee');
-
-      // Mandatee
-      const mandatee = this.getMandateeFromCredentialData(credentialData);
-      
-      // Mandator
-      const mandator = this.getMandatorFromCredentialData(credentialData);
-      if(!mandator){
-        console.error('Error getting mandator.'); 
-        return {} as IssuanceLEARCredentialMachinePayload;
-      }
-      const country = mandator['country'];
-      const orgId = mandator['organizationIdentifier'];
-      const mandatorId = this.buildDidElsi(orgId, country);
-      const mandatorCommonName = mandator['commonName'] ?? this.buildCommonName(mandator['firstName'], mandator['lastName']);
-      
-      const didKey = credentialData.partialCredentialSubject['keys']['didKey'];
-
-      const payload: IssuanceLEARCredentialMachinePayload =    
-        {
-        mandator: {
-          commonName:  mandatorCommonName,
-          serialNumber:  mandator['serialNumber'],
-          organization: mandator['organization'],
-          id: mandatorId,
-          country:  mandator['country'],
+    const payload: IssuanceLEARCredentialEmployeePayload =    
+      {
+      mandator: {
+            emailAddress: mandator['emailAddress'],
+            organization: mandator['organization'],
+            country:  country,
+            commonName:  mandatorCommonName,
+            serialNumber:  mandator['serialNumber'],
+            organizationIdentifier: vatNumber
         },
         mandatee: {
-            id:  didKey,
-            domain:  mandatee['domain'],
-            ipAddress:  mandatee["ipAddress"]
+            ...mandatee
         },
         power: parsedPower
       }
       return payload;
+  }
+
+  private createLearCredentialMachineRequest(credentialData: IssuanceRawCredentialPayload): IssuanceLEARCredentialMachinePayload{
+    console.log('CREATE LEAR CREDENTIAL MACHINE');
+    console.log('Credential data: ');
+    console.log(credentialData);
+    // Power
+    const parsedPower = this.parsePower(credentialData.formData['power'], 'LEARCredentialEmployee');
+
+    // Mandatee
+    const mandatee = this.getMandateeFromCredentialData(credentialData);
+    
+    // Mandator
+    const mandator = this.getMandatorFromCredentialData(credentialData);
+    if(!mandator){
+      console.error('Error getting mandator.'); 
+      return {} as IssuanceLEARCredentialMachinePayload;
     }
+    const country = mandator['country'];
+    const orgId = mandator['organizationIdentifier'];
+    const mandatorId = this.buildDidElsi(orgId, country);
+    const mandatorCommonName = mandator['commonName'] ?? this.buildCommonName(mandator['firstName'], mandator['lastName']);
+    
+    const didKey = credentialData.formData['keys']['didKey'];
 
-    private buildDidElsi(orgId: string, country: string): string{
-      const vatNumber = this.buildOrganizationId(country, orgId);
-      return "did:elsi:" + vatNumber;
+    const payload: IssuanceLEARCredentialMachinePayload =    
+      {
+      mandator: {
+        commonName:  mandatorCommonName,
+        serialNumber:  mandator['serialNumber'],
+        organization: mandator['organization'],
+        id: mandatorId,
+        country:  mandator['country'],
+      },
+      mandatee: {
+          id:  didKey,
+          domain:  mandatee['domain'],
+          ipAddress:  mandatee["ipAddress"]
+      },
+      power: parsedPower
     }
+    return payload;
+  }
 
-    private buildOrganizationId(country: string, vatNumber: string): string{
-      const hasVAT = this.checkIfHasVAT(vatNumber);
-      return  hasVAT ? vatNumber : ("VAT" + country + '-' + vatNumber);
-    }
+  private buildDidElsi(orgId: string, country: string): string{
+    const vatNumber = this.buildOrganizationId(country, orgId);
+    return "did:elsi:" + vatNumber;
+  }
 
-    private checkIfHasVAT(orgId: string){
-      const regex = /^VAT..-/;
-      return regex.test(orgId);
-    }
+  private buildOrganizationId(country: string, vatNumber: string): string{
+    const hasVAT = this.checkIfHasVAT(vatNumber);
+    return  hasVAT ? vatNumber : ("VAT" + country + '-' + vatNumber);
+  }
 
-    private buildCommonName(name: string, lastName: string){
-      return name + ' ' + lastName;
-    }
+  private checkIfHasVAT(orgId: string){
+    const regex = /^VAT..-/;
+    return regex.test(orgId);
+  }
 
-    private parsePower(
-      power: IssuanceRawPowerForm,
-      credType: IssuanceCredentialType
-    ): IssuancePayloadPower[] {
-      return Object.entries(power).reduce<IssuancePayloadPower[]>((acc, [funct, pow]) => {
-        const tmfFunc = funct as TmfFunction;
-        const base = powerMap[credType]?.[tmfFunc];
+  private buildCommonName(name: string, lastName: string){
+    return name + ' ' + lastName;
+  }
 
-        if (!base) {
-          console.error('Function key found in schema but not in received data: ' + funct);
-          return acc;
-        }
-        
-        const selectedActions = (Object.entries(pow) as [TmfAction, boolean][])
-          .filter(([_, enabled]) => enabled)
-          .map(([action]) => action);
+  private parsePower(
+    power: IssuanceRawPowerForm,
+    credType: IssuanceCredentialType
+  ): IssuancePayloadPower[] {
+    return Object.entries(power).reduce<IssuancePayloadPower[]>((acc, [funct, pow]) => {
+      const tmfFunc = funct as TmfFunction;
+      const base = powerMap[credType]?.[tmfFunc];
 
-        if (selectedActions.length === 0) {
-          console.error('Not actions found for this key: ' + funct);
-          return acc;
-        }
+      if (!base) {
+        console.error('Function key found in schema but not in received data: ' + funct);
+        return acc;
+      }
+      
+      const selectedActions = (Object.entries(pow) as [TmfAction, boolean][])
+        .filter(([_, enabled]) => enabled)
+        .map(([action]) => action);
 
-        // construïm el payload combinant base + accions filtrades
-        const parsed: IssuancePayloadPower = {
-          ...base,
-          action: selectedActions
-        };
+      if (selectedActions.length === 0) {
+        console.error('Not actions found for this key: ' + funct);
+        return acc;
+      }
 
-        return [...acc, parsed];
-      }, []);
-    }
+      // construïm el payload combinant base + accions filtrades
+      const parsed: IssuancePayloadPower = {
+        ...base,
+        action: selectedActions
+      };
+
+      return [...acc, parsed];
+    }, []);
+  }
 
 private getMandatorFromCredentialData(credentialData: IssuanceRawCredentialPayload): Record<string, string>{
   console.log('credData')
   console.log(credentialData);
   if(!credentialData.asSigner){
-    const unparsedMandator = credentialData.optional.staticData?.mandator;
+    const unparsedMandator = credentialData.staticData?.mandator;
     if(!unparsedMandator) throw Error('Could not get valid mandator as signer');
     return Object.fromEntries(unparsedMandator.map(item => [item.key, item.value]));
   }
-  return credentialData.partialCredentialSubject['mandator'];
+  return credentialData.formData['mandator'];
 }
     
 private getMandateeFromCredentialData(credentialData: IssuanceRawCredentialPayload): Record<string, string>{
-  return credentialData.partialCredentialSubject['mandatee'];
+  return credentialData.formData['mandatee'];
 }
 }
 

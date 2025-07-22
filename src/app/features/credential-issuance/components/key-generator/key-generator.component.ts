@@ -6,7 +6,7 @@ import { KeyGeneratorService } from '../../services/key-generator.service';
 import { MatIcon } from '@angular/material/icon';
 import { MatTooltip } from '@angular/material/tooltip';
 import { KeyForm, KeyState } from 'src/app/core/models/entity/lear-credential-issuance';
-import { HasFormInput } from 'src/app/features/credential-details/components/has-form-input';
+import { IssuanceCustomFormChild } from 'src/app/features/credential-details/components/issuance-custom-form-child';
 import { FormGroup } from '@angular/forms';
 
 @Component({
@@ -17,11 +17,12 @@ import { FormGroup } from '@angular/forms';
   templateUrl: './key-generator.component.html',
   styleUrl: './key-generator.component.scss'
 })
-export class KeyGeneratorComponent extends HasFormInput<FormGroup<KeyForm>> implements OnInit{
+export class KeyGeneratorComponent extends IssuanceCustomFormChild<FormGroup<KeyForm>> implements OnInit{
   public keyState$: Signal<KeyState | undefined>;
   public displayedKeys$: Signal<Partial<KeyState> | undefined>;
   public copiedKey = "";
   private readonly keyService = inject(KeyGeneratorService);
+  private alertMessages = ["error.form.no_key"];
 
   public constructor(){
     super();
@@ -30,18 +31,13 @@ export class KeyGeneratorComponent extends HasFormInput<FormGroup<KeyForm>> impl
   }
 
   public ngOnInit(){
-    this.updateAlertMessages();
+    this.updateAlertMessages(this.alertMessages);
   }
 
   public async generateKeys(): Promise<void>{
     await this.keyService.generateP256();
-    this.form().patchValue({didKey:this.keyState$()?.desmosDidKeyValue});
-    this.updateAlertMessages()
-  }
-
-  public updateAlertMessages(){
-    const messages = ["error.form.no_key"];
-    this.updateMessages()(messages);
+    this.form().patchValue({ didKey:this.keyState$()?.desmosDidKeyValue });
+    this.updateAlertMessages(this.alertMessages)
   }
 
   public copyToClipboard(text:string): void{

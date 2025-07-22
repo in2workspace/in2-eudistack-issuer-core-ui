@@ -17,10 +17,8 @@ export interface IssuancePayloadPower extends Power {
 }
 
 
-export interface IssuanceBaseLEARCredentialPayload {}
-
-export interface IssuanceLEARCredentialMachinePayload extends IssuanceBaseLEARCredentialPayload {
-    //it should probably be the same as in credentials, but details interface has to be updated first
+export interface IssuanceLEARCredentialMachinePayload {
+    //it should probably be the same as in credential details, but details feature/interface has to be updated first
     mandator: {
         id: string, //did-elsi
         organization: string,
@@ -28,7 +26,7 @@ export interface IssuanceLEARCredentialMachinePayload extends IssuanceBaseLEARCr
         commonName: string,
         serialNumber: string
     },
-    //it should probably be the same as in credentials, but details interface has to be updated first
+    //it should probably be the same as in credential details, but details feature/interface has to be updated first
     mandatee: {
         id: string, //did-key
         domain: string,
@@ -37,7 +35,7 @@ export interface IssuanceLEARCredentialMachinePayload extends IssuanceBaseLEARCr
     power: IssuancePayloadPower[]
 }
 
-export interface IssuanceLEARCredentialEmployeePayload extends IssuanceBaseLEARCredentialPayload{
+export interface IssuanceLEARCredentialEmployeePayload {
       mandatee: EmployeeMandatee;
       mandator: EmployeeMandator;
       power: IssuancePayloadPower[];

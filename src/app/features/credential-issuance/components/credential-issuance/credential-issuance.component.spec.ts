@@ -14,7 +14,7 @@ import { ConditionalConfirmDialogComponent } from 'src/app/shared/components/dia
 
 // Mock services
 class MockCredentialIssuanceService {
-  schemasBuilder = jest.fn((type, asSigner) => [{}, {}]);
+  formSchemasBuilder = jest.fn((type, asSigner) => [{}, {}]);
   formBuilder = jest.fn(() => new FormGroup({}));
   submitCredential = jest.fn(() => of({}));
 }

@@ -1,54 +1,65 @@
-import { Component, computed, input, Signal } from '@angular/core';
+import { Component, computed, input } from '@angular/core';
 import { FormGroup, FormControl, AbstractControl, ReactiveFormsModule } from '@angular/forms';
-import { MatCard, MatCardContent } from '@angular/material/card';
 import { MatError, MatFormField, MatLabel } from '@angular/material/form-field';
 import { MatInput } from '@angular/material/input';
 import { MatOption } from '@angular/material/core';
 import { TranslatePipe } from '@ngx-translate/core';
 import { MatSelect } from '@angular/material/select';
 import { AddAsteriskDirective } from 'src/app/shared/directives/add-asterisk.directive';
-import { CredentialIssuanceFormFieldSchema } from 'src/app/core/models/entity/lear-credential-issuance';
-import { NgComponentOutlet } from '@angular/common';
-import { PortalModule } from '@angular/cdk/portal';
+import { NgComponentOutlet, TitleCasePipe } from '@angular/common';
+import { CredentialIssuanceViewModelControlField, CredentialIssuanceViewModelField, CredentialIssuanceViewModelGroupField } from 'src/app/core/models/entity/lear-credential-issuance';
 
+/**
+ * DynamicFieldComponent
+ * - Takes a field schema (control or group), its name, and the parent FormGroup.
+ * - If the field schema type is 'control', it renders it. This case needs the parent Form Group because controls need parent FormGroup to be in the same view
+ * - If the field schema type is 'group', it iterates over the child fields and renders them recusively (calling the dynamic component itself)
+ */
 @Component({
   selector: 'app-dynamic-field',
   standalone: true,
-  imports: [AddAsteriskDirective, ReactiveFormsModule, MatCard, 
-        MatCard,
-        MatCardContent,
-        MatError,
-        MatFormField,
-        MatInput,
-        MatLabel,
-        MatOption,
-        MatSelect,
-        NgComponentOutlet,
-        TranslatePipe,
+  imports: [
+    AddAsteriskDirective,
+    NgComponentOutlet,
+    MatError,
+    MatFormField,
+    MatInput,
+    MatLabel,
+    MatOption,
+    MatSelect,
+    ReactiveFormsModule, 
+    TitleCasePipe,
+    TranslatePipe,
   ],
   templateUrl: './dynamic-field.component.html',
   styleUrl: './dynamic-field.component.scss'
 })
 export class DynamicFieldComponent {
-  public fieldSchema$ = input.required<CredentialIssuanceFormFieldSchema>();
-  public abstractControl$ = input.required<AbstractControl>();
-  public fieldName$ = input.required<string>();
-
-
-  public parentFormGroup$: Signal<FormGroup<any>> = computed(() => this.abstractControl$() as FormGroup);
-  
-  public control$: Signal<FormControl<any> | null> = computed(() => {
-    if(this.fieldSchema$().type === 'group') return null;
-
-    const parent = this.parentFormGroup$();
-    return parent ? parent.get(this.fieldName$()) as FormControl | null : null;
+  public fieldSchema$ = input.required<CredentialIssuanceViewModelField>();
+  public controlSchema$ = computed<CredentialIssuanceViewModelControlField | null>(() => {
+    const f = this.fieldSchema$();
+    return f.type === 'control' ? f : null;
   });
-  
-  public group$: Signal<FormGroup<any> | null> = computed(() => {
-    if(this.fieldSchema$().type === 'control') return null;
 
-    const parent = this.parentFormGroup$();
-    return parent ? parent.get(this.fieldName$()) as FormGroup | null : null;
+  public groupSchema$ = computed<CredentialIssuanceViewModelGroupField | null>(() => {
+    const f = this.fieldSchema$();
+    return f.type === 'group' ? f : null;
+  });
+
+  public fieldName$ = input.required<string>();
+  public parentFormGroup$ = input.required<FormGroup>();
+
+  
+  public childControl$ = computed<FormControl | null>(() => {
+    if (!this.controlSchema$()) return null;
+    const ac: AbstractControl | null = this.parentFormGroup$().get(this.fieldName$());
+    return ac instanceof FormControl ? ac : null;
+  });
+
+  public childGroup$ = computed<FormGroup | null>(() => {
+    if (!this.groupSchema$()) return null;
+    const ac: AbstractControl | null = this.parentFormGroup$().get(this.fieldName$());
+    return ac instanceof FormGroup ? ac : null;
   });
 
   public getErrorMessage(control: AbstractControl | null): string {
@@ -71,7 +82,7 @@ export class DynamicFieldComponent {
     return translateParams;
   }
 
-  
+
 
 }
 

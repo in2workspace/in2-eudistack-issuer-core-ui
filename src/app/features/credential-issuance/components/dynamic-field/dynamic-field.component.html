@@ -1,41 +1,44 @@
 @let fieldSchema = fieldSchema$();
 @let fieldName = fieldName$();
-@let control = control$();
+@let controlSchema = controlSchema$();
+@let groupSchema = groupSchema$();
+@let control = childControl$();
+@let group = childGroup$();
 
 <div class="container">
-  @if(abstractControl$() && fieldSchema) {
-    @if(fieldSchema.hint){
-      <div class="field-hint">
-        {{ "credentialIssuance.hint." + fieldSchema.hint | translate }}
-      </div>
-    }
+  @if(parentFormGroup$() && fieldSchema) {
+    <!-- CUSTOM (GROUP OR INDIVIDUAL CONTROL) -->
     @if(fieldSchema.custom){
-      <!-- <ng-container *ngComponentOutlet="fieldSchema.custom.component; inputs: {form: form.get(fieldSchema.key), updateMessages: updateAlertMessages.bind(this), data: field.custom.data}"></ng-container> -->
+      <ng-container *ngComponentOutlet="fieldSchema.custom.component; inputs: { form: group ?? control, data: fieldSchema.custom.data }"></ng-container>
     }@else{
-      @if (fieldSchema.type === 'group' && fieldSchema.groupFields) {
+      @if (groupSchema && groupSchema.groupFields && group) {
+        <h2 [class]="fieldSchema.classes">{{ "credentialIssuance." + fieldSchema.key | translate | titlecase }}</h2>
         <!-- GROUPS -->
-        <mat-card class="mb-4">
-          <mat-card-content [formGroup]="group$()!">
-            @for (field of fieldSchema.groupFields; track $index) {
+            @for (field of groupSchema.groupFields; track field.key) {
               <app-dynamic-field 
                 [fieldName$]="field.key" 
                 [fieldSchema$]="field" 
-                [abstractControl$]="group$()!">
+                [parentFormGroup$]="group">
               </app-dynamic-field>
             }
-          </mat-card-content>
-        </mat-card>
-      } @else {
+      } @else if(controlSchema){
         <!-- INDIVIDUAL CONTROLS -->
+        <!-- Currently only text, number and select are included. If other input types are needed in the future, they can be added here or a
+          custom component can be used -->
+        @if(controlSchema?.hint){
+          <div class="field-hint">
+            {{ "credentialIssuance.hint." + controlSchema?.hint | translate }}
+          </div>
+        }
         <mat-form-field [formGroup]="parentFormGroup$()">
           <mat-label appAddAsterisk [formGroup]="parentFormGroup$()" [controlName]="fieldName">{{ "credentialIssuance." + fieldName | translate }}</mat-label>
-          @let controlType = fieldSchema.controlType;
+          @let controlType = controlSchema.controlType;
           @if (controlType === 'number' || controlType === 'text') {
             <input matInput [type]="controlType" [formControlName]="fieldName" [id]="fieldName" [class]="fieldSchema.classes"/>
           }@else if(controlType === 'selector'){
               <mat-select [formControlName]="fieldName" [id]="fieldName" [class]="fieldSchema.classes">
                 <mat-option [value]="" disabled>{{ "credentialIssuance.selectA" | translate }}{{ fieldName }}</mat-option>
-                @for(option of fieldSchema.multiOptions; track $index){
+                @for(option of controlSchema.multiOptions; track $index){
                   <mat-option [value]="option.value">
                     {{ option.label }}
                   </mat-option>
@@ -45,7 +48,6 @@
           @if (control?.invalid && control?.touched) {
              <mat-error>{{getErrorMessage(control) | translate: getErrorsArgs(control) }}</mat-error>
           }
-  
         </mat-form-field>
       }
     }

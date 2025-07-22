@@ -12,22 +12,22 @@ import { routes } from "./app/app-routing";
 import { HttpLoaderFactory } from "./app/core/services/translate-http-loader.factory";
 import { overrideDefaultValueAccessor } from './app/core/overrides/value-accessor.overrides';
 import { IAM_PARAMS, IAM_POST_LOGIN_ROUTE, IAM_POST_LOGOUT_URI, IAM_REDIRECT_URI } from './app/core/constants/iam.constants';
-import { CREDENTIAL_SCHEMA_BUILDERS } from './app/features/credential-issuance/services/issuance-schema-builders/issuance-schema-builder';
-import { LearCredentialEmployeeSchemaBuilder } from './app/features/credential-issuance/services/issuance-schema-builders/lear-credential-employee-issuance-schema-builder';
-import { LearCredentialMachineIssuanceSchemaBuilder } from './app/features/credential-issuance/services/issuance-schema-builders/lear-credential-machine-issuance-schema-builder';
+import { CREDENTIAL_SCHEMA_PROVIDERS } from './app/features/credential-issuance/services/issuance-schema-builders/issuance-schema-builder';
+import { LearCredentialEmployeeSchemaProvider } from './app/features/credential-issuance/services/issuance-schema-builders/lear-credential-employee-issuance-schema-provider';
+import { LearCredentialMachineIssuanceSchemaProvider } from './app/features/credential-issuance/services/issuance-schema-builders/lear-credential-machine-issuance-schema-provider';
 
 overrideDefaultValueAccessor();
 
 bootstrapApplication(AppComponent, {
     providers: [
         {
-            provide: CREDENTIAL_SCHEMA_BUILDERS,
-            useClass: LearCredentialEmployeeSchemaBuilder,
+            provide: CREDENTIAL_SCHEMA_PROVIDERS,
+            useClass: LearCredentialEmployeeSchemaProvider,
             multi: true
         },
         {
-            provide: CREDENTIAL_SCHEMA_BUILDERS,
-            useClass: LearCredentialMachineIssuanceSchemaBuilder,
+            provide: CREDENTIAL_SCHEMA_PROVIDERS,
+            useClass: LearCredentialMachineIssuanceSchemaProvider,
             multi: true
         },
         importProvidersFrom(BrowserModule, RouterModule.forRoot(routes), TranslateModule.forRoot({

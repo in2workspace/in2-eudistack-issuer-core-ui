@@ -1,5 +1,5 @@
 import { DialogComponent } from 'src/app/shared/components/dialog/dialog-component/dialog.component';
-import { Component, EventEmitter, Input, OnDestroy, OnInit, Output, inject } from '@angular/core';
+import { Component, Input, OnDestroy, OnInit, inject } from '@angular/core';
 import { MatSelect, MatSelectTrigger } from '@angular/material/select';
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { MatIcon } from '@angular/material/icon';
@@ -14,7 +14,7 @@ import { EMPTY, Observable, Subject, takeUntil, tap } from 'rxjs';
 import { DialogData } from 'src/app/shared/components/dialog/dialog-data';
 import { AuthService } from 'src/app/core/services/auth.service';
 import { IssuanceFormPowerSchema, IssuanceRawPowerForm } from 'src/app/core/models/entity/lear-credential-issuance';
-import { HasFormInput } from 'src/app/features/credential-details/components/has-form-input';
+import { IssuanceCustomFormChild } from 'src/app/features/credential-details/components/issuance-custom-form-child';
 
 export interface TempIssuanceFormPowerSchema extends IssuanceFormPowerSchema{
   isDisabled: boolean;
@@ -39,7 +39,7 @@ export interface IssuancePowerValueAndValidity {
     standalone: true,
     imports: [KeyValuePipe, ReactiveFormsModule, MatFormField, MatSelect, MatSelectTrigger, MatOption, MatButton, MatSlideToggle, FormsModule, MatMiniFabButton, MatIcon, MatLabel, MatSelect, TranslatePipe]
 })
-export class IssuancePowerComponent extends HasFormInput<UntypedFormGroup> implements OnInit, OnDestroy{
+export class IssuancePowerComponent extends IssuanceCustomFormChild<UntypedFormGroup> implements OnInit, OnDestroy{
 
   public organizationIdentifierIsIn2: boolean;
   public _powersInput: IssuanceFormPowerSchema[] = [];

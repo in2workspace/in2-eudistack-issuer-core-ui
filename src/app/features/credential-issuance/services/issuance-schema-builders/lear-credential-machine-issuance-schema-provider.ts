@@ -1,5 +1,5 @@
 import { inject, Injectable } from "@angular/core";
-import { CredentialIssuanceFormSchema, CredentialIssuanceSchemaBuilder, IssuanceCredentialType } from "src/app/core/models/entity/lear-credential-issuance";
+import { CredentialIssuanceTypedViewModelSchema, CredentialIssuanceSchemaProvider } from "src/app/core/models/entity/lear-credential-issuance";
 import { AuthService } from "src/app/core/services/auth.service";
 import { CountryService } from "src/app/core/services/country.service";
 import { convertToOrderedArray, mandatorFieldsOrder } from "../../helpers/fields-order-helpers";
@@ -8,16 +8,18 @@ import { KeyGeneratorComponent } from "../../components/key-generator/key-genera
 import { IssuancePowerComponent } from '../../components/power/issuance-power.component';
 
 @Injectable({ providedIn: 'root' })
-export class LearCredentialMachineIssuanceSchemaBuilder implements CredentialIssuanceSchemaBuilder {
-  public readonly credType: IssuanceCredentialType = 'LEARCredentialMachine';
+export class LearCredentialMachineIssuanceSchemaProvider implements CredentialIssuanceSchemaProvider<'LEARCredentialMachine'> {
 
   private readonly authService = inject(AuthService);
   private readonly countryService = inject(CountryService);
 
-  public getSchema(): CredentialIssuanceFormSchema {
+  public getSchema(): CredentialIssuanceTypedViewModelSchema<'LEARCredentialMachine'> {
     const countriesSelectorOptions = this.countryService.getCountriesAsSelectorOptions();
 
-    const form: CredentialIssuanceFormSchema = [
+    return {
+      type: 'LEARCredentialMachine',
+      schema:
+      [
       // KEYS
       {
         key: 'keys',
@@ -30,6 +32,7 @@ export class LearCredentialMachineIssuanceSchemaBuilder implements CredentialIss
           {
             key: 'didKey',
             type: 'control',
+            controlType: 'text',
             validators: [{name: 'required'}]
           }
         ]
@@ -109,8 +112,7 @@ export class LearCredentialMachineIssuanceSchemaBuilder implements CredentialIss
           ]
         }
       },
-    ];
+    ]};
 
-    return form;
   }
 }

@@ -4,11 +4,12 @@ import { LEARCredential } from "./lear-credential";
 
 export type DetailsField = DetailsKeyValueField | DetailsGroupField;
 
-// Evaluate
+// Extended fields have had mapped the "custom" field
 export type ExtendedDetailsField = ExtendedDetailsGroupField | ExtendedDetailsKeyValueField;
 export type ExtendedDetailsGroupField = DetailsGroupField & { portal?: ComponentPortal<any>; };
 export type ExtendedDetailsKeyValueField = DetailsKeyValueField & { portal?: ComponentPortal<any>; };
 
+// Evaluated fields have had mapped the "value" field
 export type EvaluatedDetailsField = EvaluatedDetailsKeyValueField | EvaluatedDetailsGroupField;
 export type EvaluatedDetailsKeyValueField = DetailsKeyValueField & { value: EvaluatedDetailsField[] }
 export type EvaluatedDetailsGroupField = DetailsGroupField & { value: EvaluatedDetailsField[] }
