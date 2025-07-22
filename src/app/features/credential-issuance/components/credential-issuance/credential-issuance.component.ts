@@ -35,15 +35,16 @@ export class CredentialIssuanceComponent implements CanDeactivate<CanComponentDe
   //BUILD SCHEMAS FROM CREDENTIAL TYPE
   public credentialSchemas$: Signal<[CredentialIssuanceFormSchema, IssuanceStaticDataSchema] | null> = computed(() => 
     this.selectedCredentialType$() 
-  ? this.getCredentialFormSchemas(this.selectedCredentialType$()!) 
-  : null);
+    ? this.getCredentialFormSchemas(this.selectedCredentialType$()!) 
+    : null
+  );
 
   public credentialFormSchema$: Signal<CredentialIssuanceFormSchema | null> = computed(() => {
     const schema = this.credentialSchemas$();
-      return schema ? 
-      schema[0] :
-      null
-    });
+    return schema ? 
+    schema[0] :
+    null
+  });
 
 
   //CREDENTIAL DATA STATES
@@ -66,14 +67,26 @@ export class CredentialIssuanceComponent implements CanDeactivate<CanComponentDe
     return isValid;
   });
 
-  // todo
-  // Bottom alert messages
+
   public bottomAlertMessages$: WritableSignal<string[]> = signal([]);
-  public updateAlertMessages(messages: string[]){
+
+  //if the message is new, add it; otherwise, delete it
+  public updateAlertMessages(messages: string[]): void{
     console.log('update alert from issuance cmp!')
     const currentMessages = this.bottomAlertMessages$();
-    this.bottomAlertMessages$.set([ ...currentMessages, ...messages]);
-  }
+
+    const updatedMessages = [...currentMessages];
+
+    for (const message of messages) {
+      const index = updatedMessages.indexOf(message);
+      if (index !== -1) {
+        updatedMessages.splice(index, 1);
+      } else {
+        updatedMessages.push(message);
+      }
+    }
+    this.bottomAlertMessages$.set(updatedMessages);
+}
 
 
   // SIDE (STATIC CREDENTIAL DATA)
@@ -121,10 +134,10 @@ export class CredentialIssuanceComponent implements CanDeactivate<CanComponentDe
   }, { allowSignalWrites: true});
 
   public constructor(){
-  this.asSigner = this.route.snapshot.pathFromRoot
-      .flatMap(r => r.url)
-      .map(seg => seg.path)
-      .includes('create-as-signer');
+    this.asSigner = this.route.snapshot.pathFromRoot
+        .flatMap(r => r.url)
+        .map(seg => seg.path)
+        .includes('create-as-signer');
   }
 
   @HostListener('window:beforeunload', ['$event'])

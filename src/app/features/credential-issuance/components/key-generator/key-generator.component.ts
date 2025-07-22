@@ -1,4 +1,4 @@
-import { Component, effect, EventEmitter, inject, Output, Signal } from '@angular/core';
+import { Component, inject, OnInit, Signal } from '@angular/core';
 import { KeyValuePipe } from '@angular/common';
 import { TranslatePipe } from '@ngx-translate/core';
 import { MatButton } from '@angular/material/button';
@@ -17,7 +17,7 @@ import { FormGroup } from '@angular/forms';
   templateUrl: './key-generator.component.html',
   styleUrl: './key-generator.component.scss'
 })
-export class KeyGeneratorComponent extends HasFormInput<FormGroup<KeyForm>>{
+export class KeyGeneratorComponent extends HasFormInput<FormGroup<KeyForm>> implements OnInit{
   public keyState$: Signal<KeyState | undefined>;
   public displayedKeys$: Signal<Partial<KeyState> | undefined>;
   public copiedKey = "";
@@ -29,8 +29,7 @@ export class KeyGeneratorComponent extends HasFormInput<FormGroup<KeyForm>>{
     this.displayedKeys$ = this.keyService.displayedKeys$;
   }
 
-  ngOnInit(){
-    // setTimeout(() => this.updateAlertMessages(), 3000);
+  public ngOnInit(){
     this.updateAlertMessages();
   }
 
