@@ -9,7 +9,7 @@ import { TranslateModule } from '@ngx-translate/core';
 import { LoaderService } from 'src/app/core/services/loader.service';
 import { CredentialDetailsService } from './services/credential-details.service';
 import { CredentialDetailsComponent } from './credential-details.component';
-import { MappedExtendedDetailsField } from 'src/app/core/models/entity/lear-credential-details';
+import { EvaluatedExtendedDetailsField } from 'src/app/core/models/entity/lear-credential-details';
 import { mockCredentialStatus } from 'src/app/core/mocks/details.mock';
 import { CredentialType, LifeCycleStatus } from 'src/app/core/models/entity/lear-credential';
 import { StatusClass } from 'src/app/core/models/entity/lear-credential-management';
@@ -19,7 +19,7 @@ describe('CredentialDetailsComponent', () => {
   let component: CredentialDetailsComponent;
   let mockDetailsService: {
     procedureId$: ReturnType<typeof signal<string>>;
-    credentialDetailsData$: ReturnType<typeof signal<any>>;
+    credentialProcedureDetails$: ReturnType<typeof signal<any>>;
     lifeCycleStatus$: ReturnType<typeof signal<LifeCycleStatus | undefined>>;
     credentialValidFrom$: ReturnType<typeof signal<string>>;
     credentialValidUntil$: ReturnType<typeof signal<string>>;
@@ -27,8 +27,8 @@ describe('CredentialDetailsComponent', () => {
     credentialStatus$: ReturnType<typeof signal<any>>;
     lifeCycleStatusClass$: ReturnType<typeof signal<StatusClass | undefined>>;
 
-    mainTemplateModel$: ReturnType<typeof signal<MappedExtendedDetailsField[] | undefined>>;
-    sideTemplateModel$: ReturnType<typeof signal<MappedExtendedDetailsField[] | undefined>>;
+    mainViewModel$: ReturnType<typeof signal<EvaluatedExtendedDetailsField[] | undefined>>;
+    sideViewModel$: ReturnType<typeof signal<EvaluatedExtendedDetailsField[] | undefined>>;
     showSideTemplateCard$: ReturnType<typeof signal<boolean>>;
 
     showReminderButton$: ReturnType<typeof signal<boolean>>;
@@ -51,8 +51,8 @@ describe('CredentialDetailsComponent', () => {
     const type$ = signal<CredentialType | undefined>('LEARCredentialEmployee');
     const lifecycle$ = signal<LifeCycleStatus | undefined>('EXPIRED');
     const statusClass$ = signal<StatusClass | undefined>('status-expired');
-    const mainModel$ = signal<MappedExtendedDetailsField[] | undefined>([{ key: 'foo', type: 'key-value', value: 'bar' }]);
-    const sideModel$ = signal<MappedExtendedDetailsField[] | undefined>([]);
+    const mainModel$ = signal<EvaluatedExtendedDetailsField[] | undefined>([{ key: 'foo', type: 'key-value', value: 'bar' }]);
+    const sideModel$ = signal<EvaluatedExtendedDetailsField[] | undefined>([]);
     const showSide$ = signal<boolean>(false);
     const showRem$ = signal<boolean>(true);
     const showSign$ = signal<boolean>(true);
@@ -64,7 +64,7 @@ describe('CredentialDetailsComponent', () => {
 
     mockDetailsService = {
       procedureId$,
-      credentialDetailsData$: signal(undefined),
+      credentialProcedureDetails$: signal(undefined),
       lifeCycleStatus$: lifecycle$,
       credentialValidFrom$: validFrom$,
       credentialValidUntil$: validUntil$,
@@ -72,8 +72,8 @@ describe('CredentialDetailsComponent', () => {
       credentialStatus$: credentialStatus$,
       lifeCycleStatusClass$: statusClass$,
 
-      mainTemplateModel$: mainModel$,
-      sideTemplateModel$: sideModel$,
+      mainViewModel$: mainModel$,
+      sideViewModel$: sideModel$,
       showSideTemplateCard$: showSide$,
 
       showReminderButton$: showRem$,
@@ -131,8 +131,8 @@ describe('CredentialDetailsComponent', () => {
     expect(component.credentialType$()).toBe('LEARCredentialEmployee');
     expect(component.lifeCycleStatus$()).toBe('EXPIRED');
     expect(component.credentialStatus$()).toEqual(mockCredentialStatus);
-    expect(component.mainTemplateModel$()![0].key).toBe('foo');
-    expect(component.sideTemplateModel$()).toEqual([]);
+    expect(component.mainViewModel$()![0].key).toBe('foo');
+    expect(component.sideViewModel$()).toEqual([]);
   });
 
   it('should subscribe to loader.isLoading$', done => {

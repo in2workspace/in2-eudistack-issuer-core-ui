@@ -14,7 +14,7 @@ import { IssuanceLEARCredentialRequestDto } from '../models/dto/lear-credential-
 import { LEARCredentialDataNormalizer } from 'src/app/features/credential-details/utils/lear-credential-data-normalizer';
 import { API_PATH } from '../constants/api-paths.constants';
 import { CredentialRevokeRequestDto } from '../models/dto/credential-revoke-request.dto';
-import { CredentialProcedureDetailsResponse } from '../models/dto/lear-credential-data-details-response.dto';
+import { CredentialProcedureDetailsResponse } from '../models/dto/credential-procedure-details-response';
 
 @Injectable({
   providedIn: 'root'

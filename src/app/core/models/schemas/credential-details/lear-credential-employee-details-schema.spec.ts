@@ -1,9 +1,9 @@
 import { groupActionsByFunction } from 'src/app/features/credential-details/helpers/credential-details-helpers';
 import { LEARCredentialEmployee } from 'src/app/core/models/entity/lear-credential';
 import { FunctionActions } from 'src/app/features/credential-details/helpers/credential-details-helpers';
-import { LearCredentialEmployeeDetailsTemplateSchema } from './lear-credential-employee-details-schema';
+import { LearCredentialEmployeeDetailsViewModelSchema } from './lear-credential-employee-details-schema';
 
-describe('LearCredentialEmployeeDetailsTemplateSchema', () => {
+describe('LearCredentialEmployeeDetailsViewModelSchema', () => {
   const sample: LEARCredentialEmployee = {
     credentialSubject: {
       mandate: {
@@ -41,7 +41,7 @@ describe('LearCredentialEmployeeDetailsTemplateSchema', () => {
     credentialSubjectFormat: '',
   } as any;
 
-  const { main, side } = LearCredentialEmployeeDetailsTemplateSchema;
+  const { main, side } = LearCredentialEmployeeDetailsViewModelSchema;
 
   describe('main section', () => {
     const mandatorGroup = main.find(g => g.key === 'mandator')!;

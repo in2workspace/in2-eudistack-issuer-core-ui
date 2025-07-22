@@ -1,8 +1,8 @@
 import { isVerifiable, mapComplianceEntries } from "src/app/features/credential-details/helpers/credential-details-helpers";
 import { VerifiableCertification, LEARCredential } from "../../entity/lear-credential";
-import { TemplateSchema } from "../../entity/lear-credential-details";
+import { ViewModelSchema } from "../../entity/lear-credential-details";
 
-export const VerifiableCertificationDetailsTemplateSchema: TemplateSchema = {
+export const VerifiableCertificationDetailsViewModelSchema: ViewModelSchema = {
   main: [
     {
       key: 'company',

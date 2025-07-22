@@ -1,11 +1,11 @@
 import { inject, Injectable } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { CredentialProcedureService } from 'src/app/core/services/credential-procedure.service';
-import { IssuanceLEARCredentialPayload, IssuanceRawCredentialPayload, IssuanceLEARCredentialRequestDto } from 'src/app/core/models/dto/lear-credential-issuance-request.dto';
+import { IssuanceLEARCredentialPayload, IssuanceLEARCredentialRequestDto } from 'src/app/core/models/dto/lear-credential-issuance-request.dto';
 import { IssuanceRequestFactoryService } from './issuance-request-factory.service';
 import { Observable } from 'rxjs';
 import { IssuanceSchemaBuilder } from './issuance-schema-builders/issuance-schema-builder';
-import { CredentialIssuanceFormSchema, IssuanceCredentialType } from 'src/app/core/models/entity/lear-credential-issuance';
+import { CredentialIssuanceFormSchema, IssuanceCredentialType, IssuanceRawCredentialPayload } from 'src/app/core/models/entity/lear-credential-issuance';
 import { ExtendedValidatorFn, ValidatorEntry } from 'src/app/core/models/entity/validator-types';
 import { ALL_VALIDATORS_FACTORY_MAP, ValidatorName } from 'src/app/shared/validators/credential-issuance/all-validators';
 

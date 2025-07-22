@@ -18,7 +18,6 @@ export const mockCredentialStatus: CredentialStatus = {
   statusListCredential: "https://issuer.dome-marketplace.eu/credentials/status/1" 
 } 
 
-// todo restore type
 export const mockCredentialEmployee: CredentialProcedureDetails = {
   procedure_id: 'mock-procedure-employee',
   lifeCycleStatus: 'DRAFT',

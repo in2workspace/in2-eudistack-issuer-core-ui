@@ -2,9 +2,9 @@ import { isGxLabel } from 'src/app/features/credential-details/helpers/credentia
 import { GxLabelCredential, LEARCredential, CompliantCredential } from 'src/app/core/models/entity/lear-credential';
 import { CompliantCredentialsComponent, compliantCredentialsToken } from 'src/app/features/credential-details/components/compliant-credentials/compliant-credentials.component';
 import { DetailsKeyValueField } from '../../entity/lear-credential-details';
-import { GxLabelCredentialDetailsTemplateSchema } from './gx-label-credential-details-schema';
+import { GxLabelCredentialDetailsViewModelSchema } from './gx-label-credential-details-schema';
 
-describe('GxLabelCredentialDetailsTemplateSchema', () => {
+describe('GxLabelCredentialDetailsViewModelSchema', () => {
   const sampleLabel: GxLabelCredential = {
     type: ['gx:LabelCredential'],
     credentialSubject: {
@@ -37,14 +37,13 @@ describe('GxLabelCredentialDetailsTemplateSchema', () => {
     credentialSubjectFormat: '',
   } as any;
 
-  const { main, side } = GxLabelCredentialDetailsTemplateSchema;
+  const { main, side } = GxLabelCredentialDetailsViewModelSchema;
 
   describe('main section', () => {
     it('defines basic group with correct id, labelLevel, engineVersion, rulesVersion mapping', () => {
       const basicGroup = main.find((g: any) => g.key === 'basic')!;
       const fields = basicGroup.value as any[];
 
-      // id
       expect(fields[0].key).toBe('id');
       expect((fields[0].value as any)(sampleLabel)).toBe('ID1');
 
@@ -52,16 +51,13 @@ describe('GxLabelCredentialDetailsTemplateSchema', () => {
       expect(fields[1].key).toBe('gx:labelLevel');
       expect((fields[1].value as any)(sampleLabel)).toBe('Base Level');
 
-      // engineVersion
       expect(fields[2].key).toBe('gx:engineVersion');
       expect((fields[2].value as any)(sampleLabel)).toBe('E1');
 
-      // rulesVersion for isGxLabel true
       expect(isGxLabel(sampleLabel)).toBe(true);
       expect(fields[3].key).toBe('gx:rulesVersion');
       expect((fields[3].value as any)(sampleLabel)).toBe('R1');
 
-      // rulesVersion for non-label
       expect(isGxLabel(sampleNonLabel)).toBe(false);
       expect((fields[3].value as any)(sampleNonLabel)).toEqual([]);
     });
@@ -71,11 +67,9 @@ describe('GxLabelCredentialDetailsTemplateSchema', () => {
       expect(compGroup.custom!.component).toBe(CompliantCredentialsComponent);
       expect(compGroup.custom!.token).toBe(compliantCredentialsToken);
 
-      // value function returns subject array when label
       const valueFn = compGroup.custom!.value as any;
       expect(valueFn(sampleLabel)).toEqual(sampleLabel.credentialSubject['gx:compliantCredentials']);
 
-      // returns [] when not label
       expect(valueFn(sampleNonLabel)).toEqual([]);
     });
 

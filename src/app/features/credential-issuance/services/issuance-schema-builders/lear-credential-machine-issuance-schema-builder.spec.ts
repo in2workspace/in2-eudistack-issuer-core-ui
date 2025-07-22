@@ -9,7 +9,7 @@ import {
   organizationField,
   organizationIdentifierField,
   serialNumberField,
-} from './common-fields';
+} from './common-issuance-schema-fields';
 import { KeyGeneratorComponent } from '../../components/key-generator/key-generator.component';
 import { IssuancePowerComponent } from '../../components/power/issuance-power.component';
 

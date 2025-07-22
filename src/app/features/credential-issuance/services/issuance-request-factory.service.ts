@@ -1,9 +1,7 @@
-import { mandatorMock } from 'src/app/core/mocks/details.mock';
-import { IssuanceRawCredentialPayload } from './../../../core/models/dto/lear-credential-issuance-request.dto';
 import { Injectable } from '@angular/core';
 import { IssuancePayloadPower, IssuanceLEARCredentialEmployeePayload, IssuanceLEARCredentialPayload, IssuanceLEARCredentialMachinePayload } from 'src/app/core/models/dto/lear-credential-issuance-request.dto';
-import { TmfAction, TmfFunction } from 'src/app/core/models/entity/lear-credential';
-import { IssuanceCredentialType, IssuanceRawPowerForm } from 'src/app/core/models/entity/lear-credential-issuance';
+import { EmployeeMandatee, TmfAction, TmfFunction } from 'src/app/core/models/entity/lear-credential';
+import { IssuanceCredentialType, IssuanceRawCredentialPayload, IssuanceRawPowerForm } from 'src/app/core/models/entity/lear-credential-issuance';
 
 @Injectable({
   providedIn: 'root'
@@ -37,10 +35,10 @@ export class IssuanceRequestFactoryService {
       const parsedPower = this.parsePower(credentialData.partialCredentialSubject['power'], 'LEARCredentialEmployee');
       
       // Mandatee
-      const mandatee = this.getMandateeFromCredentialData(credentialData);
+      const mandatee = this.getMandateeFromCredentialData(credentialData) as unknown as EmployeeMandatee;
       
       // Mandator
-      let mandator = this.getMandatorFromCredentialData(credentialData);
+      const mandator = this.getMandatorFromCredentialData(credentialData);
       if(!mandator){
         console.error('Error getting mandator.'); 
         return {} as IssuanceLEARCredentialEmployeePayload;
@@ -80,14 +78,14 @@ export class IssuanceRequestFactoryService {
       const mandatee = this.getMandateeFromCredentialData(credentialData);
       
       // Mandator
-      let mandator = this.getMandatorFromCredentialData(credentialData);
+      const mandator = this.getMandatorFromCredentialData(credentialData);
       if(!mandator){
         console.error('Error getting mandator.'); 
         return {} as IssuanceLEARCredentialMachinePayload;
       }
       const country = mandator['country'];
       const orgId = mandator['organizationIdentifier'];
-      const mandatorId = this.buildDidElsi(orgId, country); //did-elsi
+      const mandatorId = this.buildDidElsi(orgId, country);
       const mandatorCommonName = mandator['commonName'] ?? this.buildCommonName(mandator['firstName'], mandator['lastName']);
       
       const didKey = credentialData.partialCredentialSubject['keys']['didKey'];
@@ -162,18 +160,18 @@ export class IssuanceRequestFactoryService {
       }, []);
     }
 
-private getMandatorFromCredentialData(credentialData: IssuanceRawCredentialPayload){
+private getMandatorFromCredentialData(credentialData: IssuanceRawCredentialPayload): Record<string, string>{
   console.log('credData')
   console.log(credentialData);
-  // if(!credentialData.asSigner){
-  //   const unparsedMandator = credentialData.optional.staticData?.mandator;
-  //   if(!unparsedMandator) throw Error('Could not get valid mandator as signer');
-  //   return Object.fromEntries(unparsedMandator.map(item => [item.key, item.value]));
-  // }
+  if(!credentialData.asSigner){
+    const unparsedMandator = credentialData.optional.staticData?.mandator;
+    if(!unparsedMandator) throw Error('Could not get valid mandator as signer');
+    return Object.fromEntries(unparsedMandator.map(item => [item.key, item.value]));
+  }
   return credentialData.partialCredentialSubject['mandator'];
 }
     
-private getMandateeFromCredentialData(credentialData: IssuanceRawCredentialPayload){
+private getMandateeFromCredentialData(credentialData: IssuanceRawCredentialPayload): Record<string, string>{
   return credentialData.partialCredentialSubject['mandatee'];
 }
 }

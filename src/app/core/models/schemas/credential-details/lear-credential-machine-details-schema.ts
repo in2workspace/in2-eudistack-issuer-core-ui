@@ -1,9 +1,9 @@
 import { groupActionsByFunction } from "src/app/features/credential-details/helpers/credential-details-helpers";
 import { LEARCredentialMachine } from "../../entity/lear-credential";
-import { TemplateSchema } from "../../entity/lear-credential-details";
+import { ViewModelSchema } from "../../entity/lear-credential-details";
 import { DetailsPowerComponent, detailsPowerToken } from "src/app/features/credential-details/components/details-power/details-power.component";
 
-export const LearCredentialMachineDetailsTemplateSchema: TemplateSchema = {
+export const LearCredentialMachineDetailsViewModelSchema: ViewModelSchema = {
   main: [
         {
       key: 'mandator',

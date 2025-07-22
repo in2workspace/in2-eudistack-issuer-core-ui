@@ -4,7 +4,7 @@ import { CredentialIssuanceFormSchema, CredentialIssuanceSchemaBuilder, Issuance
 import { AuthService } from "src/app/core/services/auth.service";
 import { CountryService } from "src/app/core/services/country.service";
 import { convertToOrderedArray, mandatorFieldsOrder } from "../../helpers/fields-order-helpers";
-import { firstNameField, lastNameField, organizationField, organizationIdentifierField, serialNumberField } from "./common-fields";
+import { firstNameField, lastNameField, organizationField, organizationIdentifierField, serialNumberField } from "./common-issuance-schema-fields";
 import { KeyGeneratorComponent } from "../../components/key-generator/key-generator.component";
 import { FormControl, FormGroup } from '@angular/forms';
 import { IssuancePowerComponent } from '../../components/power/issuance-power.component';

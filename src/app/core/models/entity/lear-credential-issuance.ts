@@ -62,3 +62,10 @@ export interface KeyState {
 export interface KeyForm{
   didKey: FormControl<string>,
 }
+
+// data collected in Issuance component after submitting form
+export interface IssuanceRawCredentialPayload {
+        partialCredentialSubject: Record<string, any>, 
+        optional: { staticData: IssuanceStaticDataSchema | null },
+        asSigner: boolean
+}

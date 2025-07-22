@@ -16,7 +16,7 @@ import { CredentialDetailsService } from './services/credential-details.service'
 import { PortalModule } from '@angular/cdk/portal';
 import { CredentialStatus, CredentialType, LifeCycleStatus } from 'src/app/core/models/entity/lear-credential';
 import { Observable } from 'rxjs';
-import { MappedExtendedDetailsField } from 'src/app/core/models/entity/lear-credential-details';
+import { EvaluatedExtendedDetailsField } from 'src/app/core/models/entity/lear-credential-details';
 import { StatusClass } from 'src/app/core/models/entity/lear-credential-management';
 import { KNOWLEDGEBASE_PATH } from 'src/app/core/constants/knowledge.constants';
 import { environment } from 'src/environments/environment';
@@ -41,8 +41,8 @@ export class CredentialDetailsComponent implements OnInit {
   public lifeCycleStatusClass$: Signal<StatusClass | undefined>;
   public credentialStatus$: Signal<CredentialStatus | undefined>;
   //Models
-  public mainTemplateModel$: WritableSignal<MappedExtendedDetailsField[] | undefined>; // credentialSubject data
-  public sideTemplateModel$: WritableSignal<MappedExtendedDetailsField[] | undefined>;
+  public mainViewModel$: WritableSignal<EvaluatedExtendedDetailsField[] | undefined>; // credentialSubject data
+  public sideViewModel$: WritableSignal<EvaluatedExtendedDetailsField[] | undefined>;
   public showSideTemplateCard$: Signal<boolean>;
   // Buttons
   public showReminderButton$: Signal<boolean>;
@@ -71,8 +71,8 @@ export class CredentialDetailsComponent implements OnInit {
     this.lifeCycleStatus$ = this.detailsService.lifeCycleStatus$;
     this.lifeCycleStatusClass$ = this.detailsService.lifeCycleStatusClass$;
     this.credentialStatus$ = this.detailsService.credentialStatus$;
-    this.mainTemplateModel$ = this.detailsService.mainTemplateModel$;
-    this.sideTemplateModel$ = this.detailsService.sideTemplateModel$;
+    this.mainViewModel$ = this.detailsService.mainViewModel$;
+    this.sideViewModel$ = this.detailsService.sideViewModel$;
     this.showSideTemplateCard$ = this.detailsService.showSideTemplateCard$;
     this.showReminderButton$ = this.detailsService.showReminderButton$;
     this.showSignCredentialButton$ = this.detailsService.showSignCredentialButton$;
@@ -83,7 +83,7 @@ export class CredentialDetailsComponent implements OnInit {
 
   public ngOnInit(): void {
     this.getProcedureId();
-    this.loadTemplateModel();
+    this.loadViewModel();
   }
 
   //SEND REMINDER
@@ -107,7 +107,7 @@ export class CredentialDetailsComponent implements OnInit {
     this.detailsService.setProcedureId(id);
   }
 
-  private loadTemplateModel(): void {
+  private loadViewModel(): void {
     this.detailsService.loadCredentialModels(this.injector);
   }
 

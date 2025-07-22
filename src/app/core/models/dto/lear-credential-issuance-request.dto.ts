@@ -1,19 +1,21 @@
 import { EmployeeMandatee, EmployeeMandator, Power, TmfAction } from "../entity/lear-credential";
-import { IssuanceStaticDataSchema } from "../entity/lear-credential-issuance";
 
-// data enviada per component
-export interface IssuanceRawCredentialPayload {
-        partialCredentialSubject: Record<string, any>, 
-        optional: { staticData: IssuanceStaticDataSchema | null },
-        asSigner: boolean
+export interface IssuanceLEARCredentialRequestDto {
+    schema: string,
+    format: string,
+    payload: IssuanceLEARCredentialPayload,
+    operation_mode: string,
+    validity_period?: number,
+    response_uri?: string
 }
+
+export type IssuanceLEARCredentialPayload = IssuanceLEARCredentialMachinePayload | IssuanceLEARCredentialEmployeePayload;
 
 //interfaces enviades a API
 export interface IssuancePayloadPower extends Power {
     action: TmfAction[]
 }
 
-export type IssuanceLEARCredentialPayload = IssuanceLEARCredentialMachinePayload | IssuanceLEARCredentialEmployeePayload;
 
 export interface IssuanceBaseLEARCredentialPayload {}
 
@@ -39,13 +41,4 @@ export interface IssuanceLEARCredentialEmployeePayload extends IssuanceBaseLEARC
       mandatee: EmployeeMandatee;
       mandator: EmployeeMandator;
       power: IssuancePayloadPower[];
-}
-
-export interface IssuanceLEARCredentialRequestDto {
-    schema: string,
-    format: string,
-    payload: IssuanceLEARCredentialPayload,
-    operation_mode: string,
-    validity_period?: number,
-    response_uri?: string
 }

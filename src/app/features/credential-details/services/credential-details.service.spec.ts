@@ -8,11 +8,11 @@ import { DialogWrapperService } from 'src/app/shared/components/dialog/dialog-wr
 import { CredentialActionsService } from './credential-actions.service';
 import { of } from 'rxjs';
 import { Injector } from '@angular/core';
-import { GxLabelCredentialDetailsTemplateSchema } from 'src/app/core/models/schemas/credential-details/gx-label-credential-details-schema';
-import { LearCredentialEmployeeDetailsTemplateSchema } from 'src/app/core/models/schemas/credential-details/lear-credential-employee-details-schema';
-import { LearCredentialMachineDetailsTemplateSchema } from 'src/app/core/models/schemas/credential-details/lear-credential-machine-details-schema';
-import { VerifiableCertificationDetailsTemplateSchema } from 'src/app/core/models/schemas/credential-details/verifiable-certification-details-schema';
-import { DetailsKeyValueField, DetailsGroupField, TemplateSchema } from 'src/app/core/models/entity/lear-credential-details';
+import { GxLabelCredentialDetailsViewModelSchema } from 'src/app/core/models/schemas/credential-details/gx-label-credential-details-schema';
+import { LearCredentialEmployeeDetailsViewModelSchema } from 'src/app/core/models/schemas/credential-details/lear-credential-employee-details-schema';
+import { LearCredentialMachineDetailsViewModelSchema } from 'src/app/core/models/schemas/credential-details/lear-credential-machine-details-schema';
+import { VerifiableCertificationDetailsViewModelSchema } from 'src/app/core/models/schemas/credential-details/verifiable-certification-details-schema';
+import { DetailsKeyValueField, DetailsGroupField, ViewModelSchema } from 'src/app/core/models/entity/lear-credential-details';
 import { ComponentPortal } from '@angular/cdk/portal';
 import * as actionHelpers from 'src/app/features/credential-details/helpers/actions-helpers';
 import { LEARCredentialEmployee, LEARCredential } from 'src/app/core/models/entity/lear-credential';
@@ -105,12 +105,12 @@ describe('CredentialDetailsService', () => {
         statusListCredential: ['list-1']
       }
     };
-    (service as any).credentialDetailsData$ = () => ({ credential: { vc: fakeCred } });
+    (service as any).credentialProcedureDetails$ = () => ({ credential: { vc: fakeCred } });
     expect((service as any).getCredential()).toBe(fakeCred);
   });
 
   it('getCredential ha de retornar undefined quan no hi ha dades', () => {
-    (service as any).credentialDetailsData$ = () => undefined;
+    (service as any).credentialProcedureDetails$ = () => undefined;
     expect((service as any).getCredential()).toBeUndefined();
   });
 
@@ -147,8 +147,8 @@ describe('CredentialDetailsService', () => {
     });
   });
 
-  describe('mapFieldMain', () => {
- it('should map “key-value” and “group” correctly', () => {
+  describe('evaluateFieldMain', () => {
+ it('should evaluate “key-value” and “group” correctly', () => {
     const credStub = { foo: 'bar' } as any;
 
     const kv: DetailsKeyValueField = {
@@ -176,39 +176,39 @@ describe('CredentialDetailsService', () => {
       value: [ kv ]
     };
 
-    const schema: TemplateSchema = {
+    const schema: ViewModelSchema = {
       main: [ kvGroup, grp ],
       side: []
     };
 
-    const mapped = (service as any).mapSchemaValues(schema, credStub);
+    const evaluated = (service as any).evaluateSchemaValues(schema, credStub);
 
-    const mappedGroup = mapped.main[0] as any;
-    expect(mappedGroup.key).toBe('gKv');
-    expect(Array.isArray(mappedGroup.value)).toBeTruthy();
+    const evaluatedGroup = evaluated.main[0] as any;
+    expect(evaluatedGroup.key).toBe('gKv');
+    expect(Array.isArray(evaluatedGroup.value)).toBeTruthy();
 
-    const mappedKv = mappedGroup.value[0] as any;
-    expect(mappedKv.key).toBe('x');
-    expect(mappedKv.value).toBe('valX');
-    expect(mappedKv.custom!.value).toBe('V');
+    const evaluatedKv = evaluatedGroup.value[0] as any;
+    expect(evaluatedKv.key).toBe('x');
+    expect(evaluatedKv.value).toBe('valX');
+    expect(evaluatedKv.custom!.value).toBe('V');
 
-    const mappedDynGroup = mapped.main[1] as any;
-    expect(mappedDynGroup.key).toBe('g');
-    expect(Array.isArray(mappedDynGroup.value)).toBeTruthy();
-    expect((mappedDynGroup.value[0] as any).value).toBe('valY');
+    const evaluatedDynGroup = evaluated.main[1] as any;
+    expect(evaluatedDynGroup.key).toBe('g');
+    expect(Array.isArray(evaluatedDynGroup.value)).toBeTruthy();
+    expect((evaluatedDynGroup.value[0] as any).value).toBe('valY');
   });
 });
 
   describe('getSchemaByType', () => {
     it('retorna el schema correcte per cada tipus', () => {
       expect((service as any).getSchemaByType('LEARCredentialEmployee'))
-        .toBe(LearCredentialEmployeeDetailsTemplateSchema);
+        .toBe(LearCredentialEmployeeDetailsViewModelSchema);
       expect((service as any).getSchemaByType('LEARCredentialMachine'))
-        .toBe(LearCredentialMachineDetailsTemplateSchema);
+        .toBe(LearCredentialMachineDetailsViewModelSchema);
       expect((service as any).getSchemaByType('VerifiableCertification'))
-        .toBe(VerifiableCertificationDetailsTemplateSchema);
+        .toBe(VerifiableCertificationDetailsViewModelSchema);
       expect((service as any).getSchemaByType('gx:LabelCredential'))
-        .toBe(GxLabelCredentialDetailsTemplateSchema);
+        .toBe(GxLabelCredentialDetailsViewModelSchema);
     });
   });
 
@@ -222,7 +222,7 @@ describe('CredentialDetailsService', () => {
     beforeEach(() => {
       // reset signals
       service.procedureId$.set('');
-      service.credentialDetailsData$.set(undefined);
+      service.credentialProcedureDetails$.set(undefined);
       // for the computed‐override tests
       jest.restoreAllMocks();
     });
@@ -233,55 +233,54 @@ describe('CredentialDetailsService', () => {
 
     it('lifeCycleStatus$() should return data.lifeCycleStatus', () => {
       const payload = { lifeCycleStatus: 'PENDING' } as any;
-      service.credentialDetailsData$.set(payload);
+      service.credentialProcedureDetails$.set(payload);
       expect(service.lifeCycleStatus$()).toBe('PENDING');
     });
 
     it('credential$() should return vc when present', () => {
-      service.credentialDetailsData$.set({ credential: { vc: mockVc } } as any);
+      service.credentialProcedureDetails$.set({ credential: { vc: mockVc } } as any);
       expect(service.credential$()).toBe(mockVc);
     });
 
     it('credential$() should be undefined when no vc', () => {
-      service.credentialDetailsData$.set({ credential: { vc: undefined } } as any);
+      service.credentialProcedureDetails$.set({ credential: { vc: undefined } } as any);
       expect(service.credential$()).toBeUndefined();
     });
 
     it('credentialValidFrom$() and credentialValidUntil$() fallback to empty string', () => {
-      // when credential$() is undefined
       expect(service.credentialValidFrom$()).toBe('');
       expect(service.credentialValidUntil$()).toBe('');
     });
 
     it('credentialValidFrom$() and credentialValidUntil$() map from vc', () => {
-      service.credentialDetailsData$.set({ credential: { vc: mockVc } } as any);
+      service.credentialProcedureDetails$.set({ credential: { vc: mockVc } } as any);
       expect(service.credentialValidFrom$()).toBe('2024-01-01');
       expect(service.credentialValidUntil$()).toBe('2024-12-31');
     });
 
     it('credentialStatus$() returns vc.credentialStatus', () => {
-      service.credentialDetailsData$.set({ credential: { vc: mockVc } } as any);
+      service.credentialProcedureDetails$.set({ credential: { vc: mockVc } } as any);
       expect(service.credentialStatus$()).toBe('VALID');
     });
 
     it('credentialType$() delegates to getCredentialType()', () => {
       const spy = jest.spyOn(service as any, 'getCredentialType').mockReturnValue('THE‑TYPE');
-      service.credentialDetailsData$.set({ credential: { vc: mockVc } } as any);
+      service.credentialProcedureDetails$.set({ credential: { vc: mockVc } } as any);
       expect(service.credentialType$()).toBe('THE‑TYPE');
       expect(spy).toHaveBeenCalledWith(mockVc);
     });
 
-    it('showSideTemplateCard$() is false by default, true when sideTemplateModel has items', () => {
+    it('showSideTemplateCard$() is false by default, true when sideViewModel has items', () => {
       expect(service.showSideTemplateCard$()).toBe(false);
-      service.sideTemplateModel$.set([ { foo: 'bar' } as any ]);
+      service.sideViewModel$.set([ { foo: 'bar' } as any ]);
       expect(service.showSideTemplateCard$()).toBe(true);
     });
 
     it('enableRevokeCredentialButton$() is false when no status, true when credentialStatus set', () => {
-      service.credentialDetailsData$.set({ credential: { vc: { validFrom: '', validUntil: '', credentialStatus: undefined } } } as any);
+      service.credentialProcedureDetails$.set({ credential: { vc: { validFrom: '', validUntil: '', credentialStatus: undefined } } } as any);
       expect(service.enableRevokeCredentialButton$()).toBe(false);
 
-      service.credentialDetailsData$.set({
+      service.credentialProcedureDetails$.set({
         credential: {
           vc: { validFrom: '', validUntil: '', credentialStatus: {status:'ANY'} }
         }
@@ -297,7 +296,7 @@ describe('CredentialDetailsService', () => {
     });
 
      it('showActionsButtonsContainer$() és true si almenys un botó està visible', () => {
-      service.credentialDetailsData$.set({
+      service.credentialProcedureDetails$.set({
         lifeCycleStatus: 'ANY',
         credential: { vc: { type: ['LEARCredentialEmployee'], validFrom: '', validUntil: '', credentialStatus: 'OK' } }
       } as any);
@@ -313,7 +312,7 @@ describe('CredentialDetailsService', () => {
 
 
 describe('Load models', () => {
-  it('should load and map credential models correctly', () => {
+  it('should load and evaluate credential models correctly', () => {
   const svc: any = service;
 
   jest.spyOn(svc, 'credentialType$').mockReturnValue('MyType');
@@ -323,17 +322,17 @@ describe('Load models', () => {
   jest.spyOn(svc, 'loadCredentialDetails').mockReturnValue(of(mockData));
 
   const getSchemaSpy   = jest.spyOn(svc, 'getSchemaByType').mockReturnValue({ schemaKey: 'schemaVal' });
-  const mapped         = { mappedKey: 'mappedVal' };
-  const mapSpy         = jest.spyOn(svc, 'mapSchemaValues').mockReturnValue(mapped);
-  const templateSpy    = jest.spyOn(svc, 'setTemplateModels').mockImplementation(() => {});
+  const evaluated         = { evaluatedKey: 'evaluatedVal' };
+  const evaluateSpy         = jest.spyOn(svc, 'evaluateSchemaValues').mockReturnValue(evaluated);
+  const templateSpy    = jest.spyOn(svc, 'setViewModels').mockImplementation(() => {});
 
   const injector = TestBed.inject(Injector);
   svc.loadCredentialModels(injector);
 
   expect(svc.loadCredentialDetails).toHaveBeenCalled();
   expect(getSchemaSpy).toHaveBeenCalledWith('MyType');
-  expect(mapSpy).toHaveBeenCalledWith({ schemaKey: 'schemaVal' }, vc);
-  expect(templateSpy).toHaveBeenCalledWith(mapped, injector);
+  expect(evaluateSpy).toHaveBeenCalledWith({ schemaKey: 'schemaVal' }, vc);
+  expect(templateSpy).toHaveBeenCalledWith(evaluated, injector);
 });
 });
 
@@ -378,16 +377,16 @@ describe('shouldIncludeSideField', () => {
   });
 });
 
-describe('setTemplateModels', () => {
-  let mockMainTemplateModel$: { set: jest.Mock<any, any> };
-  let mockSideTemplateModel$: { set: jest.Mock<any, any> };
+describe('setViewModels', () => {
+  let mockMainViewModel$: { set: jest.Mock<any, any> };
+  let mockSideViewModel$: { set: jest.Mock<any, any> };
 
   beforeEach(() => {
     // Mock the internal template model subjects
-    mockMainTemplateModel$ = { set: jest.fn() };
-    mockSideTemplateModel$ = { set: jest.fn() };
-    (service as any).mainTemplateModel$ = mockMainTemplateModel$;
-    (service as any).sideTemplateModel$ = mockSideTemplateModel$;
+    mockMainViewModel$ = { set: jest.fn() };
+    mockSideViewModel$ = { set: jest.fn() };
+    (service as any).mainViewModel$ = mockMainViewModel$;
+    (service as any).sideViewModel$ = mockSideViewModel$;
   });
 
   it('should extend main and side schemas and set the template models', () => {
@@ -404,15 +403,15 @@ describe('setTemplateModels', () => {
       .mockReturnValueOnce(extendedSide);
 
     // Act: call the private method
-    (service as any).setTemplateModels(dummySchema, dummyInjector);
+    (service as any).setViewModels(dummySchema, dummyInjector);
 
     // Assert extendFields calls
     expect(extendSpy).toHaveBeenCalledWith(dummySchema.main, dummyInjector);
     expect(extendSpy).toHaveBeenCalledWith(dummySchema.side, dummyInjector);
 
     // Assert that template models are set
-    expect(mockMainTemplateModel$.set).toHaveBeenCalledWith(extendedMain);
-    expect(mockSideTemplateModel$.set).toHaveBeenCalledWith(extendedSide);
+    expect(mockMainViewModel$.set).toHaveBeenCalledWith(extendedMain);
+    expect(mockSideViewModel$.set).toHaveBeenCalledWith(extendedSide);
   });
 });
 
