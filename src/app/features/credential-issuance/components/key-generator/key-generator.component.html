@@ -10,7 +10,7 @@
     <button type="button" matButton mat-raised-button color="primary" class="generate-button" (click)="generateKeys()">{{ "keys.buttonText" | translate }}</button>
     @if(displayedKeys){
         <div class="keys-container">
-            @for(key of displayedKeys| keyvalue; track $index){
+            @for(key of displayedKeys| keyvalue; track key.key){
                 @if(key.value){
                     <div class="key-container">
                         <div class="key">{{ key.value }}</div>
