@@ -48,8 +48,7 @@ export class CredentialIssuanceComponent implements CanDeactivate<CanComponentDe
         .flatMap(r => r.url)
         .map(seg => seg.path)
         .includes('create-as-signer');
-    // todo restore this.issuanceService.asSigner$.set(asSigner);
-    this.issuanceService.asSigner$.set(true)
+    this.issuanceService.asSigner$.set(asSigner);
     this.asSigner$ = this.issuanceService.asSigner$;
     this.hasSubmitted$ = this.issuanceService.hasSubmitted$;
     this.credentialTypesArr = this.issuanceService.credentialTypesArr;
