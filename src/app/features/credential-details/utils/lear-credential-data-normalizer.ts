@@ -28,21 +28,16 @@ interface RawVerifiableCertification extends VerifiableCertification{
 export class LEARCredentialDataNormalizer {
 
   public normalizeLearCredential(data: LEARCredential): LEARCredential {
-    // clonem superficialment l’input
-    console.log('normalizeLearCredential; data: ')
-    console.log(data)
     const normalized: any = { ...data };
     if (normalized.credentialSubject && typeof normalized.credentialSubject === 'object') {
       normalized.credentialSubject = { ...normalized.credentialSubject };
     }
 
-    // Calcular flags LOCALMENT
     const types = Array.isArray(normalized?.type) ? normalized.type : [];
     const isEmployee = types.includes('LEARCredentialEmployee');
     const isMachine  = types.includes('LEARCredentialMachine');
     const isVerCert  = types.includes('VerifiableCertification');
 
-    // Normalitzacions segons flags
     this.normalizeMandateIfNeeded(normalized, isEmployee, isMachine);
     this.normalizeCertificationIfNeeded(normalized, isVerCert);
 
@@ -83,10 +78,6 @@ private normalizeEmployeeMandatee(data: RawEmployeeMandatee): EmployeeMandatee {
   const lastName  = data.lastName ?? data.last_name ?? "";
   const email     = data.email ?? "";
   const nationality = data.nationality ?? "";
-
-  console.log('normalizeEmployeeMandatee')
-  console.log(firstName, lastName, email, nationality);
-
 
   return { firstName, lastName, email, nationality };
 }

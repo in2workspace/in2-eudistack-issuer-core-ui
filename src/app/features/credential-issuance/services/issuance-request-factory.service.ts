@@ -117,7 +117,7 @@ export class IssuanceRequestFactoryService {
     return regex.test(orgId);
   }
 
-  private buildCommonName(name: string, lastName: string){
+  private buildCommonName(name: string, lastName: string): string{
     return name + ' ' + lastName;
   }
 

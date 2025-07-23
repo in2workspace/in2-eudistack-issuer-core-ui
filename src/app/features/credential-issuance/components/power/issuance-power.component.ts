@@ -3,7 +3,7 @@ import { Component, Input, OnDestroy, OnInit, inject } from '@angular/core';
 import { MatSelect, MatSelectTrigger } from '@angular/material/select';
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { MatIcon } from '@angular/material/icon';
-import { FormControl, FormGroup, FormsModule, ReactiveFormsModule, UntypedFormGroup } from '@angular/forms';
+import { AbstractControl, FormControl, FormGroup, FormsModule, ReactiveFormsModule, UntypedFormGroup, ValidationErrors, ValidatorFn } from '@angular/forms';
 import { MatSlideToggle } from '@angular/material/slide-toggle';
 import { MatButton, MatMiniFabButton } from '@angular/material/button';
 import { MatOption } from '@angular/material/core';
@@ -26,12 +26,6 @@ export interface NormalizedTempIssuanceFormSchemaPower extends TempIssuanceFormP
 
 export type NormalizedAction = { action: string; value: boolean };
 
-export interface IssuancePowerValueAndValidity {
-  value: IssuanceRawPowerForm, 
-  hasOnePower: boolean, 
-  hasOneActionPerPower: boolean
-}
-
 @Component({
     selector: 'app-issuance-power',
     templateUrl: './issuance-power.component.html',
@@ -45,8 +39,6 @@ export class IssuancePowerComponent extends IssuanceCustomFormChild<UntypedFormG
   public _powersInput: IssuanceFormPowerSchema[] = [];
   public selectorPowers: TempIssuanceFormPowerSchema[] = [];
   public selectedPower: TempIssuanceFormPowerSchema | undefined;
-  public hasOnePower: boolean = false;
-  public hasOneActionPerPower: boolean = false;
 
   private readonly destroy$ = new Subject<void>();
   private readonly authService = inject(AuthService);
@@ -121,30 +113,12 @@ export class IssuancePowerComponent extends IssuanceCustomFormChild<UntypedFormG
   }
 
   public ngOnInit(){
+    this.form().addValidators(this.powerRulesValidator);
+    this.form().updateValueAndValidity({ emitEvent: false });
     const selectorPowers = this.data();
-       this._powersInput = selectorPowers || [];
+    this._powersInput = selectorPowers || [];
     this.selectorPowers = this.mapToTempPowerSchema(selectorPowers) || [];
-
-    //every time form changes, emit value and validity
-    this.form().valueChanges.pipe(
-      tap(
-        (value: IssuanceRawPowerForm) => {
-          //todo move in one function
-          const functions = Object.values(this.form().controls);
-          this.hasOnePower = functions.length > 0;
-          this.hasOneActionPerPower = functions.every(control =>
-            Object.values(control.value).some(v => v === true)
-          );
-        }
-      ),
-      takeUntil(this.destroy$)
-    ).subscribe();
   }
-
-  public submit(){
-  console.log('submit: ');
-  
-}
 
 // Mètode per obtenir un poder per la seva funció
 public getPowerByFunction(functionName: string): TempIssuanceFormPowerSchema | undefined {
@@ -161,19 +135,35 @@ public ngOnDestroy(): void {
   this.destroy$.complete();
 }
 
-  private mapToTempPowerSchema(powers: IssuanceFormPowerSchema[]): TempIssuanceFormPowerSchema[]{
-    return powers
-      .map(p => ({...p, isDisabled: false}))
-      .filter(p => this.organizationIdentifierIsIn2 || !p.isIn2Required);
-  }
+private mapToTempPowerSchema(powers: IssuanceFormPowerSchema[]): TempIssuanceFormPowerSchema[]{
+  return powers
+    .map(p => ({...p, isDisabled: false}))
+    .filter(p => this.organizationIdentifierIsIn2 || !p.isIn2Required);
+}
 
-  private resetForm() {
-    this.form().reset();            
-    for (const key of Object.keys(this.form().controls)) {
-      this.form().removeControl(key);
-    }
-    console.log('power form reset')
+private resetForm() {
+  this.form().reset();            
+  for (const key of Object.keys(this.form().controls)) {
+    this.form().removeControl(key);
   }
+  console.log('power form reset')
+}
+
+private powerRulesValidator: ValidatorFn = (ctrl: AbstractControl): ValidationErrors | null => {
+  const group = ctrl as FormGroup;
+  const controls = Object.values(group.controls) as FormGroup[];
+
+  const hasOnePower = controls.length > 0;
+  const hasOneActionPerPower = controls.every(c =>
+    Object.values(c.value as Record<string, boolean>).some(Boolean)
+  );
+
+  const errors: ValidationErrors = {};
+  if (!hasOnePower) errors['noPower'] = true;
+  if (!hasOneActionPerPower) errors['noActionPerPower'] = true;
+
+  return Object.keys(errors).length ? errors : null;
+};
   
 
 }

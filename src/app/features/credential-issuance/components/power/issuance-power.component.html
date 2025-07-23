@@ -75,9 +75,9 @@
   }
 
   <div>
-    @if(!hasOnePower){
+    @if(!form().hasError('noPower')){
       <div class="bottom-alert">{{ "error.form.no_power" | translate }}</div>
-    }@else if(!hasOneActionPerPower){
+    }@else if(!form().hasError('noActionPerPower')){
       <div class="bottom-alert">{{ "error.form.no_function" | translate }}</div>
     }
   </div>
