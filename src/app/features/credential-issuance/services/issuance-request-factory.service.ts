@@ -80,7 +80,8 @@ export class IssuanceRequestFactoryService {
     const orgId = mandator['organizationIdentifier'];
     const mandatorId = this.buildDidElsi(orgId, country);
     const mandatorCommonName = mandator['commonName'] ?? this.buildCommonName(mandator['firstName'], mandator['lastName']);
-    
+    const mandatorEmail = mandator['email'] ?? mandator['emailAddress'];
+
     const didKey = credentialData.formData['keys']['didKey'];
 
     const payload: IssuanceLEARCredentialMachinePayload =    
@@ -88,6 +89,7 @@ export class IssuanceRequestFactoryService {
       mandator: {
         commonName:  mandatorCommonName,
         serialNumber:  mandator['serialNumber'],
+        email: mandatorEmail, 
         organization: mandator['organization'],
         id: mandatorId,
         country:  mandator['country'],
@@ -154,8 +156,6 @@ export class IssuanceRequestFactoryService {
   }
 
 private getMandatorFromCredentialData(credentialData: IssuanceRawCredentialPayload): Record<string, string>{
-  console.log('credData')
-  console.log(credentialData);
   if(!credentialData.asSigner){
     const unparsedMandator = credentialData.staticData?.mandator;
     if(!unparsedMandator) throw Error('Could not get valid mandator as signer');

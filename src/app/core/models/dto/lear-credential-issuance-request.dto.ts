@@ -21,10 +21,11 @@ export interface IssuanceLEARCredentialMachinePayload {
     //it should probably be the same as in credential details, but details feature/interface has to be updated first
     mandator: {
         id: string, //did-elsi
+        commonName: string,
+        email: string,
+        serialNumber: string
         organization: string,
         country: string,
-        commonName: string,
-        serialNumber: string
     },
     //it should probably be the same as in credential details, but details feature/interface has to be updated first
     mandatee: {

@@ -4,6 +4,7 @@ import { AuthService } from 'src/app/core/services/auth.service';
 import { CountryService } from 'src/app/core/services/country.service';
 import * as fieldsHelpers from '../../helpers/fields-order-helpers';
 import {
+  emailField,
   firstNameField,
   lastNameField,
   organizationField,
@@ -117,9 +118,10 @@ describe('LearCredentialMachineIssuanceSchemaProvider', () => {
       const fields = mandator?.groupFields;
       expect(fields![0]).toEqual(firstNameField);
       expect(fields![1]).toEqual(lastNameField);
-      expect(fields![2]).toEqual(serialNumberField);
-      expect(fields![3]).toEqual(organizationField);
-      expect(fields![4]).toEqual(organizationIdentifierField);
+      expect(fields![2]).toEqual(lastNameField);
+      expect(fields![3]).toEqual(emailField);
+      expect(fields![4]).toEqual(organizationField);
+      expect(fields![5]).toEqual(organizationIdentifierField);
 
       const countryField = fields![5];
       expect(countryField).toMatchObject({
