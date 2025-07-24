@@ -1,4 +1,4 @@
-import { Component, inject, OnInit, Signal } from '@angular/core';
+import { Component, inject, OnDestroy, OnInit, Signal } from '@angular/core';
 import { KeyValuePipe } from '@angular/common';
 import { TranslatePipe } from '@ngx-translate/core';
 import { MatButton } from '@angular/material/button';
@@ -17,7 +17,7 @@ import { FormGroup } from '@angular/forms';
   templateUrl: './key-generator.component.html',
   styleUrl: './key-generator.component.scss'
 })
-export class KeyGeneratorComponent extends IssuanceCustomFormChild<FormGroup<KeyForm>> implements OnInit{
+export class KeyGeneratorComponent extends IssuanceCustomFormChild<FormGroup<KeyForm>> implements OnInit, OnDestroy{
   public keyState$: Signal<KeyState | undefined>;
   public displayedKeys$: Signal<Partial<KeyState> | undefined>;
   public copiedKey = "";
@@ -32,6 +32,12 @@ export class KeyGeneratorComponent extends IssuanceCustomFormChild<FormGroup<Key
 
   public ngOnInit(){
     this.updateAlertMessages(this.alertMessages);
+  }
+
+  public ngOnDestroy(){
+    if(!this.keyState$()){
+      this.updateAlertMessages(this.alertMessages);
+    }
   }
 
   public async generateKeys(): Promise<void>{

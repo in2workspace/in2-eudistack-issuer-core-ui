@@ -6,12 +6,13 @@ import { KeyState } from 'src/app/core/models/entity/lear-credential-issuance';
 export class KeyGeneratorService {
 
   public readonly displayedKeys$: Signal<Partial<KeyState>|undefined> = computed(() => {
-    return {desmosPrivateKeyValue: this.keyState$()?.desmosPrivateKeyValue}
+    return { desmosPrivateKeyValue: this.keyState$()?.desmosPrivateKeyValue }
   });
   private readonly keyState$: WritableSignal<KeyState|undefined> = signal(undefined);
   public getState(): Signal<KeyState | undefined>{
     return this.keyState$.asReadonly();
   }
+  
   public updateState(key: keyof(KeyState), value: string): void{
     const current = this.keyState$() ?? {
     desmosPrivateKeyValue: '',
