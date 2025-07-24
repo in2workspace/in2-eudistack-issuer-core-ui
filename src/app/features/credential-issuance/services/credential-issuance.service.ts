@@ -19,9 +19,7 @@ import { DialogWrapperService } from 'src/app/shared/components/dialog/dialog-wr
 import { Router } from '@angular/router';
 
 
-@Injectable({
-  providedIn: 'root'
-})
+@Injectable() //provided in Issuance Component
 export class CredentialIssuanceService {
 
   // CREDENTIAL TYPE SELECTOR

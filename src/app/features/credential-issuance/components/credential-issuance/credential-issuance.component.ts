@@ -16,6 +16,7 @@ import { CredentialIssuanceViewModelSchema, IssuanceCredentialType, IssuanceStat
 @Component({
   selector: 'app-credential-issuance',
   standalone: true,
+  providers: [CredentialIssuanceService],
   imports: [CommonModule, KeyValuePipe, ReactiveFormsModule, DynamicFieldComponent, MatButton, MatCard, MatCardContent, MatFormField, MatLabel, MatOption, MatSelect, NgComponentOutlet, TitleCasePipe, TranslatePipe],
   templateUrl: './credential-issuance.component.html',
   styleUrl: './credential-issuance.component.scss'
