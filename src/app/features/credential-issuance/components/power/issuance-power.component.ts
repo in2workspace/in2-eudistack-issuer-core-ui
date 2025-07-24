@@ -137,7 +137,7 @@ private resetForm() {
   console.log('power form reset')
 }
 
-private powerRulesValidator: ValidatorFn = (ctrl: AbstractControl): ValidationErrors | null => {
+private readonly powerRulesValidator: ValidatorFn = (ctrl: AbstractControl): ValidationErrors | null => {
   const group = ctrl as FormGroup;
   const controls = Object.values(group.controls) as FormGroup[];
 

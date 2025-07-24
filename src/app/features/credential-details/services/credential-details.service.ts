@@ -88,7 +88,7 @@ export class CredentialDetailsService {
     );
   });
 
-  public enableRevokeCredentialButton$ = computed(() => {
+  public enableRevokeCredentialButton$ = computed<boolean>(() => {
     return !!this.credentialStatus$();
   });
 
@@ -110,7 +110,7 @@ export class CredentialDetailsService {
   } as const;
 
   public constructor(){
-    this.lifeCycleStatusClass$ = computed(() => {
+    this.lifeCycleStatusClass$ = computed<StatusClass | undefined>(() => {
       const status = this.lifeCycleStatus$();
       if(!status) return 'status-default';
       return this.statusService.mapStatusToClass(status)

@@ -7,7 +7,7 @@ import { IssuanceCredentialType, IssuanceRawCredentialPayload, IssuanceRawPowerF
   providedIn: 'root'
 })
 export class IssuanceRequestFactoryService {
-  private credentialRequestFactoryMap: Record<IssuanceCredentialType, (credData: IssuanceRawCredentialPayload) => IssuanceLEARCredentialPayload> = {
+  private readonly credentialRequestFactoryMap: Record<IssuanceCredentialType, (credData: IssuanceRawCredentialPayload) => IssuanceLEARCredentialPayload> = {
     LEARCredentialEmployee: (data) => this.createLearCredentialEmployeeRequest(data),
     LEARCredentialMachine: (data) => this.createLearCredentialMachineRequest(data)
   }
