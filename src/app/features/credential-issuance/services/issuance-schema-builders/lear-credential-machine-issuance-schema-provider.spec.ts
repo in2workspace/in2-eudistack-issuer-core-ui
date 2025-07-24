@@ -118,13 +118,11 @@ describe('LearCredentialMachineIssuanceSchemaProvider', () => {
       const fields = mandator?.groupFields;
       expect(fields![0]).toEqual(firstNameField);
       expect(fields![1]).toEqual(lastNameField);
-      expect(fields![2]).toEqual(lastNameField);
-      expect(fields![3]).toEqual(emailField);
+      expect(fields![2]).toEqual(emailField);
+      expect(fields![3]).toEqual(serialNumberField);
       expect(fields![4]).toEqual(organizationField);
       expect(fields![5]).toEqual(organizationIdentifierField);
-
-      const countryField = fields![5];
-      expect(countryField).toMatchObject({
+      expect(fields![6]).toMatchObject({
         key: 'country',
         controlType: 'selector',
         multiOptions: fakeCountries,

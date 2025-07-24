@@ -30,6 +30,7 @@ describe('CredentialIssuanceService', () => {
     TestBed.configureTestingModule({
       imports: [TranslateModule.forRoot()],
       providers: [
+        CredentialIssuanceService,
         { provide: DialogWrapperService, useValue: dialogService },
         { provide: Router, useValue: { navigate: jest.fn() } },
         { provide: ActivatedRoute, useValue: { snapshot: { pathFromRoot: [] } } },

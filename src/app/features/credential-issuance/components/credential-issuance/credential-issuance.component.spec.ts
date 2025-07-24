@@ -49,7 +49,14 @@ describe('CredentialIssuanceComponent', () => {
         { provide: CredentialIssuanceService, useValue: mockService },
         { provide: ActivatedRoute, useValue: routeMock },
       ]
-    }).compileComponents();
+    })
+    // This is needed because the service is provided at component level
+    .overrideComponent(CredentialIssuanceComponent, {
+      remove: {
+        providers: [CredentialIssuanceService]
+      }
+    })
+    .compileComponents();
 
     fixture = TestBed.createComponent(CredentialIssuanceComponent);
     component = fixture.componentInstance;
