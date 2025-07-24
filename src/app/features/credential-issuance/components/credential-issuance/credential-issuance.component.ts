@@ -1,7 +1,7 @@
 
 import { MatButton } from '@angular/material/button';
 import { MatLabel } from '@angular/material/form-field';
-import { Component, inject, WritableSignal, HostListener, Signal } from '@angular/core';
+import { Component, inject, WritableSignal, HostListener, Signal, effect } from '@angular/core';
 import { MatFormField, MatOption, MatSelect } from '@angular/material/select';
 import { DynamicFieldComponent } from '../dynamic-field/dynamic-field.component';
 import { FormGroup, ReactiveFormsModule } from '@angular/forms';
@@ -39,6 +39,15 @@ export class CredentialIssuanceComponent implements CanDeactivate<CanComponentDe
   public hasSubmitted$: WritableSignal<boolean>;
 
   public bottomAlertMessages$: WritableSignal<string[]>;
+
+  //todo look for a better way to handle this
+  public isResetting = false;
+  public resetEffect = effect(() => {
+    const form = this.form$();
+    this.isResetting = true;
+    console.log('is resetting')
+    setTimeout(() => { this.isResetting = false}, 0);
+  });
 
 
   private readonly issuanceService = inject(CredentialIssuanceService);
