@@ -11,7 +11,6 @@ import {Router} from "@angular/router";
 import { API_PATH } from '../constants/api-paths.constants';
 import { CredentialProceduresResponse } from '../models/dto/credential-procedures-response.dto';
 import { CredentialProcedureDetails, CredentialStatus, LifeCycleStatus } from '../models/entity/lear-credential';
-import { CreateEmployeeProcedureRequest } from '../models/dto/create-credential-procedure-request.dto';
 
 const notFoundErrorResp = new HttpErrorResponse({
   error: '404 error',

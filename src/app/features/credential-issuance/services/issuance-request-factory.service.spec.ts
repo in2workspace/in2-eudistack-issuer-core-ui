@@ -1,11 +1,10 @@
 import { TestBed } from '@angular/core/testing';
 import { IssuanceRequestFactoryService } from './issuance-request-factory.service';
 import {
-  IssuanceRawCredentialPayload,
   IssuanceLEARCredentialEmployeePayload,
   IssuanceLEARCredentialMachinePayload
 } from '../../../core/models/dto/lear-credential-issuance-request.dto';
-import { IssuanceRawPowerForm } from 'src/app/core/models/entity/lear-credential-issuance';
+import { IssuanceRawCredentialPayload, IssuanceRawPowerForm } from 'src/app/core/models/entity/lear-credential-issuance';
 
 describe('IssuanceRequestFactoryService', () => {
   let service: IssuanceRequestFactoryService;
@@ -29,7 +28,7 @@ describe('IssuanceRequestFactoryService', () => {
     const payload = {
       asSigner: false,
       optional: { staticData: { mandator: {} } },
-      partialCredentialSubject: { mandatee: {} }
+      formData: { mandatee: {} }
     } as unknown as IssuanceRawCredentialPayload;
 
     expect(() => service.createCredentialRequest(payload, 'UNKNOWN' as any))
@@ -39,7 +38,7 @@ describe('IssuanceRequestFactoryService', () => {
   it('should create employee request with fallback commonName and VAT prefix', () => {
     const credentialData: any = {
       asSigner: true,
-      partialCredentialSubject: {
+      formData: {
         power: { Onboarding: { Execute: true } },
         mandator: {
           emailAddress: 'alice@example.com',
@@ -81,7 +80,7 @@ describe('IssuanceRequestFactoryService', () => {
   it('should use provided commonName and keep VAT prefix for employee', () => {
     const credentialData: any = {
       asSigner: true,
-      partialCredentialSubject: {
+      formData: {
         power: { Onboarding: { Execute: true } },
         mandator: {
           emailAddress: 'bob@example.com',
@@ -105,7 +104,7 @@ describe('IssuanceRequestFactoryService', () => {
   it('should create machine request with did and mandatee fields', () => {
     const credentialData: any = {
       asSigner: true,
-      partialCredentialSubject: {
+      formData: {
         power: { Onboarding: { Execute: true } },
         mandator: {
           firstName: 'Eve',
@@ -150,7 +149,7 @@ describe('IssuanceRequestFactoryService', () => {
   it('should use provided commonName and keep VAT prefix for machine', () => {
     const credentialData: any = {
       asSigner: true,
-      partialCredentialSubject: {
+      formData: {
         power: { Onboarding: { Execute: true } },
         mandator: {
           commonName: 'MachineCo',

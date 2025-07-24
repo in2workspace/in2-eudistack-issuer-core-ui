@@ -12,6 +12,7 @@ import {
 } from './common-issuance-schema-fields';
 import { KeyGeneratorComponent } from '../../components/key-generator/key-generator.component';
 import { IssuancePowerComponent } from '../../components/power/issuance-power.component';
+import { CredentialIssuanceTypedViewModelSchema } from 'src/app/core/models/entity/lear-credential-issuance';
 
 describe('LearCredentialMachineIssuanceSchemaProvider', () => {
   let service: LearCredentialMachineIssuanceSchemaProvider;
@@ -54,25 +55,21 @@ describe('LearCredentialMachineIssuanceSchemaProvider', () => {
     service = TestBed.inject(LearCredentialMachineIssuanceSchemaProvider);
   });
 
-  it('exposes the correct credType', () => {
-    expect(service.credType).toBe('LEARCredentialMachine');
-  });
-
   describe('getSchema()', () => {
-    let schema: any[];
+    let schema: CredentialIssuanceTypedViewModelSchema<"LEARCredentialMachine">;
 
     beforeEach(() => {
       schema = service.getSchema();
     });
 
     it('includes the keys group with KeyGeneratorComponent', () => {
-      const keysGroup = schema.find(f => f.key === 'keys');
+      const keysGroup = schema.schema.find(f => f.key === 'keys');
       expect(keysGroup).toBeDefined();
-      expect(keysGroup.type).toBe('group');
-      expect(keysGroup.display).toBe('main');
-      expect(keysGroup.custom?.component).toBe(KeyGeneratorComponent);
+      expect(keysGroup?.type).toBe('group');
+      expect(keysGroup?.display).toBe('main');
+      expect(keysGroup?.custom?.component).toBe(KeyGeneratorComponent);
 
-      const didField = keysGroup.groupFields[0];
+      const didField = keysGroup?.groupFields[0];
       expect(didField).toMatchObject({
         key: 'didKey',
         type: 'control',
@@ -81,11 +78,11 @@ describe('LearCredentialMachineIssuanceSchemaProvider', () => {
     });
 
     it('includes the mandatee group with domain and ipAddress fields', () => {
-      const mand = schema.find(f => f.key === 'mandatee');
+      const mand = schema.schema.find(f => f.key === 'mandatee');
       expect(mand).toBeDefined();
-      expect(mand.groupFields).toHaveLength(2);
+      expect(mand?.groupFields).toHaveLength(2);
 
-      const [domain, ip] = mand.groupFields;
+      const [domain, ip] = mand!.groupFields;
       expect(domain).toMatchObject({
         key: 'domain',
         controlType: 'text',
@@ -98,18 +95,18 @@ describe('LearCredentialMachineIssuanceSchemaProvider', () => {
     });
 
     it('includes the mandator group and staticValueGetter behavior', () => {
-      const mandator = schema.find(f => f.key === 'mandator');
+      const mandator = schema.schema.find(f => f.key === 'mandator');
       expect(mandator).toBeDefined();
-      expect(mandator.display).toBe('pref_side');
-      expect(typeof mandator.staticValueGetter).toBe('function');
+      expect(mandator?.display).toBe('pref_side');
+      expect(typeof mandator?.staticValueGetter).toBe('function');
 
       // when authService returns null
       authMock.getRawMandator.mockReturnValue(null);
-      expect(mandator.staticValueGetter!()).toBeNull();
+      expect(mandator?.staticValueGetter!()).toBeNull();
 
       // when authService returns a full object
       authMock.getRawMandator.mockReturnValue(fakeMandatorRaw as any);
-      const staticData = mandator.staticValueGetter!();
+      const staticData = mandator?.staticValueGetter!();
       expect(staticData).toHaveProperty('mandator');
       // should match our fakeMandatorRaw keys in the ordered array
       expect(staticData!.mandator).toEqual(
@@ -117,14 +114,14 @@ describe('LearCredentialMachineIssuanceSchemaProvider', () => {
       );
 
       // ensure the groupFields order and contents
-      const fields = mandator.groupFields;
-      expect(fields[0]).toEqual(firstNameField);
-      expect(fields[1]).toEqual(lastNameField);
-      expect(fields[2]).toEqual(serialNumberField);
-      expect(fields[3]).toEqual(organizationField);
-      expect(fields[4]).toEqual(organizationIdentifierField);
+      const fields = mandator?.groupFields;
+      expect(fields![0]).toEqual(firstNameField);
+      expect(fields![1]).toEqual(lastNameField);
+      expect(fields![2]).toEqual(serialNumberField);
+      expect(fields![3]).toEqual(organizationField);
+      expect(fields![4]).toEqual(organizationIdentifierField);
 
-      const countryField = fields[5];
+      const countryField = fields![5];
       expect(countryField).toMatchObject({
         key: 'country',
         controlType: 'selector',
@@ -134,11 +131,11 @@ describe('LearCredentialMachineIssuanceSchemaProvider', () => {
     });
 
     it('includes the power group with IssuancePowerComponent', () => {
-      const power = schema.find(f => f.key === 'power');
+      const power = schema.schema.find(f => f.key === 'power');
       expect(power).toBeDefined();
-      expect(power.type).toBe('group');
-      expect(power.groupFields).toEqual([]);
-      expect(power.custom).toMatchObject({
+      expect(power?.type).toBe('group');
+      expect(power?.groupFields).toEqual([]);
+      expect(power?.custom).toMatchObject({
         component: IssuancePowerComponent,
         data: [
           {

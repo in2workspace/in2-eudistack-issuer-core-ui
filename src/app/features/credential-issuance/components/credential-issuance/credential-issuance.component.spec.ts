@@ -1,153 +1,132 @@
-import { ComponentFixture, TestBed, fakeAsync, tick } from '@angular/core/testing';
+import { TestBed, ComponentFixture } from '@angular/core/testing';
+import { signal, Signal, WritableSignal } from '@angular/core';
 import { CredentialIssuanceComponent } from './credential-issuance.component';
-import { FormGroup, ReactiveFormsModule } from '@angular/forms';
-import { MatSelectModule } from '@angular/material/select';
-import { NoopAnimationsModule } from '@angular/platform-browser/animations';
-import { of, Subject } from 'rxjs';
-import { Router } from '@angular/router';
-import { ActivatedRoute } from '@angular/router';
 import { CredentialIssuanceService } from '../../services/credential-issuance.service';
-import { TranslateModule, TranslateService } from '@ngx-translate/core';
-import { DialogWrapperService } from 'src/app/shared/components/dialog/dialog-wrapper/dialog-wrapper.service';
-import { DialogComponent } from 'src/app/shared/components/dialog/dialog-component/dialog.component';
-import { ConditionalConfirmDialogComponent } from 'src/app/shared/components/dialog/conditional-confirm-dialog/conditional-confirm-dialog.component';
-
-// Mock services
-class MockCredentialIssuanceService {
-  formSchemasBuilder = jest.fn((type, asSigner) => [{}, {}]);
-  formBuilder = jest.fn(() => new FormGroup({}));
-  submitCredential = jest.fn(() => of({}));
-}
-
-class MockDialogWrapperService {
-  openDialogWithCallback = jest.fn((comp, data, cb) => cb());
-  openDialog = jest.fn(() => ({ afterClosed: () => of(true) }));
-}
-
-class MockTranslateService {
-  instant = jest.fn((key: string) => key);
-}
+import { ActivatedRoute } from '@angular/router';
+import { MatSelect } from '@angular/material/select';
+import { FormGroup, ReactiveFormsModule, FormBuilder } from '@angular/forms';
+import { TranslateModule } from '@ngx-translate/core';
+import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 
 describe('CredentialIssuanceComponent', () => {
   let component: CredentialIssuanceComponent;
   let fixture: ComponentFixture<CredentialIssuanceComponent>;
-  let issuanceService: MockCredentialIssuanceService;
-  let dialogService: MockDialogWrapperService;
-  let router: Router;
+  let mockService: Partial<CredentialIssuanceService>;
+  let routeMock: Partial<ActivatedRoute>;
 
   beforeEach(async () => {
-    issuanceService = new MockCredentialIssuanceService();
-    dialogService = new MockDialogWrapperService();
+    // Prepare basic signals for all service properties used
+    const emptyFormGroup = new FormGroup({});
+
+    mockService = {
+      // Signals
+      asSigner$: signal(false) as WritableSignal<boolean>,
+      hasSubmitted$: signal(false) as WritableSignal<boolean>,
+      credentialTypesArr: ['type1', 'LEARCredentialMachine'] as any,
+      selectedCredentialType$: signal(undefined) as WritableSignal<any>,
+      credentialFormSchema$: signal(null) as Signal<any>,
+      staticData$: signal(null) as Signal<any>,
+      form$: signal(emptyFormGroup) as Signal<FormGroup>,
+      formValue$: signal({ foo: 'bar' }) as Signal<Record<string, any>>,
+      isFormValid$: signal(false) as Signal<boolean>,
+      bottomAlertMessages$: signal([]) as WritableSignal<string[]>,
+      // Methods
+      updateSelectedType: jest.fn(),
+      canLeave: jest.fn().mockReturnValue(true),
+      canDeactivate: jest.fn().mockReturnValue('canDeactivateReturn'),
+      openLeaveConfirm: jest.fn().mockReturnValue(true),
+      openSubmitDialog: jest.fn(),
+      openLEARCredentialMachineSubmitDialog: jest.fn(),
+    };
+
+    routeMock = {
+      snapshot: { pathFromRoot: [{ url: [] }] } as any
+    };
 
     await TestBed.configureTestingModule({
-      imports: [
-        CredentialIssuanceComponent,
-        ReactiveFormsModule,
-        MatSelectModule,
-        NoopAnimationsModule,
-        TranslateModule.forRoot()
-      ],
+      imports: [CredentialIssuanceComponent, ReactiveFormsModule, TranslateModule.forRoot(), NoopAnimationsModule],
       providers: [
-        { provide: CredentialIssuanceService, useValue: issuanceService },
-        { provide: DialogWrapperService, useValue: dialogService },
-        { provide: Router, useValue: { navigate: jest.fn() } },
-        { provide: ActivatedRoute, useValue: { snapshot: { pathFromRoot: [] } } }
+        { provide: CredentialIssuanceService, useValue: mockService },
+        { provide: ActivatedRoute, useValue: routeMock },
       ]
     }).compileComponents();
 
     fixture = TestBed.createComponent(CredentialIssuanceComponent);
     component = fixture.componentInstance;
-    router = TestBed.inject(Router);
     fixture.detectChanges();
   });
 
-  it('should create', () => {
+  it('should create the component', () => {
     expect(component).toBeTruthy();
   });
 
-  it('updateAlertMessages should append messages', () => {
-    component.bottomAlertMessages$.set(['initial']);
-    component.updateAlertMessages(['new1', 'new2']);
-    expect(component.bottomAlertMessages$()).toEqual(['initial', 'new1', 'new2']);
+  it('should initialize asSigner$ based on route', () => {
+    expect(mockService.asSigner$!()).toBeFalsy();
   });
 
-  it('onSelectionChange sets new credential type when no change guard', () => {
-    const select: any = { value: null };
-    component.onSelectionChange('TypeA' as any, select);
-    expect(component.selectedCredentialType$()).toBe('TypeA');
+  describe('onTypeSelectionChange', () => {
+    it('should call updateSelectedType on the service', () => {
+      const type = 'type1';
+      const matSelect = {} as MatSelect;
+      component.onTypeSelectionChange(type as any, matSelect);
+      expect(mockService.updateSelectedType).toHaveBeenCalledWith(type, matSelect);
+    });
   });
 
-  it('onSelectionChange prevents change if guard returns false', () => {
-    const select: any = { value: 'LEARCredentialEmployee' };
-    component.selectedCredentialType$.set('LEARCredentialEmployee');
-    jest.spyOn<any, any>(component as any, 'canLeave').mockReturnValue(false);
-    window.confirm = jest.fn().mockReturnValue(false);
-
-    component.onSelectionChange('newType' as any, select);
-    expect(component.selectedCredentialType$()).toBe('LEARCredentialEmployee');
-    expect(select.value).toBe('LEARCredentialEmployee');
+  describe('canLeave', () => {
+    it('should delegate to service.canLeave()', () => {
+      (mockService.canLeave as jest.Mock).mockReturnValue(false);
+      expect(component.canLeave()).toBeFalsy();
+      expect(mockService.canLeave).toHaveBeenCalled();
+    });
   });
 
-  it('onSubmit does nothing when form invalid', () => {
-    // set underlying isFormValid signal to false
-    component['isFormValid$'].set(false);
-    component.onSubmit();
-    expect(dialogService.openDialogWithCallback).not.toHaveBeenCalled();
-    expect(issuanceService.submitCredential).not.toHaveBeenCalled();
+  describe('canDeactivate', () => {
+    it('should delegate to service.canDeactivate()', () => {
+      const result = component.canDeactivate();
+      expect(mockService.canDeactivate).toHaveBeenCalled();
+      expect(result).toBe('canDeactivateReturn');
+    });
   });
 
-  it('onSubmit opens normal dialog for non-LEAR type when valid', fakeAsync(() => {
-    component.selectedCredentialType$.set('SomeType' as any);
-    component['isFormValid$'].set(true);
-    component.onSubmit();
-    tick();
-    expect(dialogService.openDialogWithCallback).toHaveBeenCalledWith(
-      DialogComponent,
-      expect.any(Object),
-      expect.any(Function)
-    );
-  }));
+  describe('onSubmit', () => {
+    beforeEach(() => {
+      jest.spyOn(console, 'error').mockImplementation(() => {});
+      jest.spyOn(console, 'log').mockImplementation(() => {});
+    });
 
-  it('onSubmit opens LEAR dialog for LEARCredentialMachine type when valid', fakeAsync(() => {
-    component.selectedCredentialType$.set('LEARCredentialMachine');
-    component['isFormValid$'].set(true);
-    component.onSubmit();
-    tick();
-    expect(dialogService.openDialogWithCallback).toHaveBeenCalledWith(
-      ConditionalConfirmDialogComponent,
-      expect.any(Object),
-      expect.any(Function)
-    );
-  }));
+    it('should not proceed when form is invalid', () => {
+      // Override component signals
+      (component as any).isFormValid$ = () => false;
+      (component as any).formValue$ = () => ({ foo: 'bar' });
 
-  it('canDeactivate returns true when canLeave true', () => {
-    jest.spyOn<any, any>(component as any, 'canLeave').mockReturnValue(true);
-    expect(component.canDeactivate()).toBe(true);
+      component.onSubmit();
+
+      expect(console.error).toHaveBeenCalledWith('Invalid form: ');
+      expect(mockService.openSubmitDialog).not.toHaveBeenCalled();
+      expect(mockService.openLEARCredentialMachineSubmitDialog).not.toHaveBeenCalled();
+    });
+
+    it('should open LEARCredentialMachine dialog when selected type is LEARCredentialMachine', () => {
+      (component as any).isFormValid$ = () => true;
+      (component as any).formValue$ = () => ({ foo: 'bar' });
+      (component as any).selectedCredentialType$ = () => 'LEARCredentialMachine' as any;
+
+      component.onSubmit();
+
+      expect(mockService.openLEARCredentialMachineSubmitDialog).toHaveBeenCalled();
+      expect(mockService.openSubmitDialog).not.toHaveBeenCalled();
+    });
+
+    it('should open default submit dialog for other credential types', () => {
+      (component as any).isFormValid$ = () => true;
+      (component as any).formValue$ = () => ({ foo: 'bar' });
+      (component as any).selectedCredentialType$ = () => 'type1' as any;
+
+      component.onSubmit();
+
+      expect(mockService.openSubmitDialog).toHaveBeenCalled();
+      expect(mockService.openLEARCredentialMachineSubmitDialog).not.toHaveBeenCalled();
+    });
   });
-
-  it('canDeactivate calls confirm when canLeave false', () => {
-    jest.spyOn<any, any>(component as any, 'canLeave').mockReturnValue(false);
-    jest.spyOn<any, any>(component as any, 'openLeaveConfirm').mockReturnValue('confirm' as any);
-    expect(component.canDeactivate()).toBe('confirm');
-  });
-
-  it('ngOnDestroy emits and completes destroyForm$', () => {
-    const destroy$ = component['destroyForm$'] as Subject<void>;
-    jest.spyOn(destroy$, 'next');
-    jest.spyOn(destroy$, 'complete');
-
-    component.ngOnDestroy();
-    expect(destroy$.next).toHaveBeenCalled();
-    expect(destroy$.complete).toHaveBeenCalled();
-  });
-
-  it('navigateToCredentials calls router.navigate', fakeAsync(() => {
-    (router.navigate as jest.Mock).mockReturnValue(Promise.resolve(true));
-    let result: boolean | undefined;
-    component.navigateToCredentials().then(res => result = res);
-    tick();
-    expect(router.navigate).toHaveBeenCalledWith(['/organization/credentials']);
-    expect(result).toBe(true);
-  }));
-
 });

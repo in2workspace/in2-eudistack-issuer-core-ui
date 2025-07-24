@@ -1,5 +1,5 @@
 import { DialogComponent } from 'src/app/shared/components/dialog/dialog-component/dialog.component';
-import { Component, Input, OnDestroy, OnInit, inject } from '@angular/core';
+import { Component, Input, OnInit, inject } from '@angular/core';
 import { MatSelect, MatSelectTrigger } from '@angular/material/select';
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { MatIcon } from '@angular/material/icon';
@@ -10,10 +10,10 @@ import { MatOption } from '@angular/material/core';
 import { MatFormField, MatLabel } from '@angular/material/form-field';
 import { KeyValuePipe } from '@angular/common';
 import { DialogWrapperService } from 'src/app/shared/components/dialog/dialog-wrapper/dialog-wrapper.service';
-import { EMPTY, Observable, Subject, takeUntil, tap } from 'rxjs';
+import { EMPTY, Observable } from 'rxjs';
 import { DialogData } from 'src/app/shared/components/dialog/dialog-data';
 import { AuthService } from 'src/app/core/services/auth.service';
-import { IssuanceFormPowerSchema, IssuanceRawPowerForm } from 'src/app/core/models/entity/lear-credential-issuance';
+import { IssuanceFormPowerSchema } from 'src/app/core/models/entity/lear-credential-issuance';
 import { IssuanceCustomFormChild } from 'src/app/features/credential-details/components/issuance-custom-form-child';
 
 export interface TempIssuanceFormPowerSchema extends IssuanceFormPowerSchema{
@@ -33,14 +33,13 @@ export type NormalizedAction = { action: string; value: boolean };
     standalone: true,
     imports: [KeyValuePipe, ReactiveFormsModule, MatFormField, MatSelect, MatSelectTrigger, MatOption, MatButton, MatSlideToggle, FormsModule, MatMiniFabButton, MatIcon, MatLabel, MatSelect, TranslatePipe]
 })
-export class IssuancePowerComponent extends IssuanceCustomFormChild<UntypedFormGroup> implements OnInit, OnDestroy{
+export class IssuancePowerComponent extends IssuanceCustomFormChild<UntypedFormGroup> implements OnInit{
 
   public organizationIdentifierIsIn2: boolean;
   public _powersInput: IssuanceFormPowerSchema[] = [];
   public selectorPowers: TempIssuanceFormPowerSchema[] = [];
   public selectedPower: TempIssuanceFormPowerSchema | undefined;
 
-  private readonly destroy$ = new Subject<void>();
   private readonly authService = inject(AuthService);
   private readonly dialog = inject(DialogWrapperService);
   private readonly translate = inject(TranslateService);
@@ -53,10 +52,7 @@ export class IssuancePowerComponent extends IssuanceCustomFormChild<UntypedFormG
   
   @Input()
   public set powersInput(value: IssuanceFormPowerSchema[]) {
-    // console.warn('Power component received empty list.');
     this.resetForm();
-    console.log('power received: ')
-    console.log(value)
     this._powersInput = value || [];
     this.selectorPowers = this.mapToTempPowerSchema(value) || [];
   }
@@ -65,7 +61,6 @@ export class IssuancePowerComponent extends IssuanceCustomFormChild<UntypedFormG
   public keepOrder = (_: any, _2: any) => 0;
 
   public addPower(funcName: string) {
-    // update form
     const power = this._powersInput.find(p => p.function === funcName);
     const actions = power?.action;
     if(!actions){
@@ -77,14 +72,12 @@ export class IssuancePowerComponent extends IssuanceCustomFormChild<UntypedFormG
       toggleGroup[action] = new FormControl(false);
     }
     this.form().addControl(funcName, new FormGroup(toggleGroup));
-    //update available powers
     this.selectorPowers = [...this.selectorPowers.map(p => {
       if(p.function === funcName){
         p = { ...p, isDisabled: true}
       }
       return p;
     })];
-    //reset selected
     this.selectedPower = undefined;
   }
 
@@ -128,11 +121,6 @@ public getPowerByFunction(functionName: string): TempIssuanceFormPowerSchema | u
 // Mètode per obtenir el FormGroup d'un control
 public getFormGroup(control: any): FormGroup {
   return control as FormGroup;
-}
-
-public ngOnDestroy(): void {
-  this.destroy$.next();
-  this.destroy$.complete();
 }
 
 private mapToTempPowerSchema(powers: IssuanceFormPowerSchema[]): TempIssuanceFormPowerSchema[]{

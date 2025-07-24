@@ -1,3 +1,4 @@
+import { DialogComponent } from './../../../shared/components/dialog/dialog-component/dialog.component';
 import { TestBed } from '@angular/core/testing';
 import { Router } from '@angular/router';
 import { of } from 'rxjs';
@@ -69,7 +70,7 @@ describe('CredentialActionsService', () => {
       const procedureId = 'proc123';
       service.openSendReminderDialog(procedureId);
       expect(mockDialog.openDialogWithCallback).toHaveBeenCalledTimes(1);
-      const [dialogData, callback] = (mockDialog.openDialogWithCallback as jest.Mock).mock.calls[0];
+      const [_, dialogData, callback] = (mockDialog.openDialogWithCallback as jest.Mock).mock.calls[0];
       expect(dialogData.title).toBe('credentialDetails.sendReminderConfirm.title');
       expect(dialogData.message).toBe('credentialDetails.sendReminderConfirm.message');
       expect(dialogData.confirmationType).toBe('async');
@@ -82,7 +83,7 @@ describe('CredentialActionsService', () => {
       const procedureId = 'proc456';
       service.openSignCredentialDialog(procedureId);
       expect(mockDialog.openDialogWithCallback).toHaveBeenCalledTimes(1);
-      const [dialogData, callback] = (mockDialog.openDialogWithCallback as jest.Mock).mock.calls[0];
+      const [_, dialogData, callback] = (mockDialog.openDialogWithCallback as jest.Mock).mock.calls[0];
       expect(dialogData.title).toBe('credentialDetails.signCredentialConfirm.title');
       expect(dialogData.message).toBe('credentialDetails.signCredentialConfirm.message');
       expect(dialogData.confirmationType).toBe('async');
@@ -96,7 +97,7 @@ describe('CredentialActionsService', () => {
       const credentialList = 'listXYZ';
       service.openRevokeCredentialDialog(credentialId, credentialList);
       expect(mockDialog.openDialogWithCallback).toHaveBeenCalledTimes(1);
-      const [dialogData, callback] = (mockDialog.openDialogWithCallback as jest.Mock).mock.calls[0];
+      const [_, dialogData, callback] = (mockDialog.openDialogWithCallback as jest.Mock).mock.calls[0];
       expect(dialogData.title).toBe('credentialDetails.revokeCredentialConfirm.title');
       expect(dialogData.message).toBe('credentialDetails.revokeCredentialConfirm.message');
       expect(dialogData.confirmationType).toBe('async');
@@ -124,7 +125,7 @@ describe('CredentialActionsService', () => {
       service['executeActionByProcedureId'](procId, actionSpy, titleKey, messageKey)
         .subscribe((res) => {
           expect(actionSpy).toHaveBeenCalledWith(procId);
-          expect(mockDialog.openDialog).toHaveBeenCalledWith(expect.objectContaining({ title: titleKey, message: messageKey }));
+          expect(mockDialog.openDialog).toHaveBeenCalledWith(DialogComponent, expect.objectContaining({ title: titleKey, message: messageKey }));
           expect(mockRouter.navigate).toHaveBeenCalledWith(['/organization/credentials']);
           expect(window.location.reload).toHaveBeenCalled();
           expect(res).toBe(true);
@@ -153,7 +154,7 @@ describe('CredentialActionsService', () => {
       service['executeActionByCredentialId'](credId, actionSpy, titleKey, messageKey)
         .subscribe((res) => {
           expect(actionSpy).toHaveBeenCalledWith(credId);
-          expect(mockDialog.openDialog).toHaveBeenCalledWith(expect.objectContaining({ title: titleKey, message: messageKey }));
+          expect(mockDialog.openDialog).toHaveBeenCalledWith(DialogComponent, expect.objectContaining({ title: titleKey, message: messageKey }));
           expect(mockRouter.navigate).toHaveBeenCalledWith(['/organization/credentials']);
           expect(window.location.reload).toHaveBeenCalled();
           expect(res).toBe(true);

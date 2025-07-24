@@ -5,18 +5,16 @@ import {
 } from './issuance-schema-builder';
 import {
   CredentialIssuanceViewModelSchema,
-  IssuanceStaticData,
 } from 'src/app/core/models/entity/lear-credential-issuance';
 import { IssuanceCredentialType } from 'src/app/core/models/entity/lear-credential-issuance';
 
 describe('IssuanceSchemaBuilder', () => {
   let service: IssuanceSchemaBuilder;
-  let builderMock: any;
+  let builderMock: { getSchema: jest.Mock };
   const TYPE = 'TEST_TYPE' as IssuanceCredentialType;
 
   beforeEach(() => {
     builderMock = {
-      credType: TYPE,
       getSchema: jest.fn(),
     };
 
@@ -35,14 +33,18 @@ describe('IssuanceSchemaBuilder', () => {
 
   describe('getIssuanceFormSchema', () => {
     it('delegates to the correct builder.getSchema()', () => {
-      const fakeSchema: CredentialIssuanceViewModelSchema[] = [
-        { key: 'a', type: 'control', controlType: 'text' },
+      const fakeSchema: CredentialIssuanceViewModelSchema = [
+        { key: 'a', type: 'group',  groupFields: [] },
       ];
-      builderMock.getSchema.mockReturnValue(fakeSchema);
+      const fakeTyped = { type: TYPE, schema: fakeSchema };
+      builderMock.getSchema.mockReturnValue(fakeTyped);
 
       const result = service.getIssuanceFormSchema(TYPE);
-      expect(builderMock.getSchema).toHaveBeenCalled();
-      expect(result).toBe(fakeSchema);
+
+      expect(builderMock.getSchema).toHaveBeenCalledWith();
+      expect(result).toBe(fakeTyped);
+      expect(result.type).toBe(TYPE);
+      expect(result.schema).toBe(fakeSchema);
     });
 
     it('throws if no builder for type', () => {
@@ -54,6 +56,7 @@ describe('IssuanceSchemaBuilder', () => {
         ],
       });
       const svc = TestBed.inject(IssuanceSchemaBuilder);
+
       expect(() => svc.getIssuanceFormSchema(TYPE)).toThrowError(
         `No schema builder for ${TYPE}`
       );
@@ -70,7 +73,7 @@ describe('IssuanceSchemaBuilder', () => {
       consoleWarnSpy.mockRestore();
     });
 
-    const baseField = (over: Partial<CredentialIssuanceViewModelSchema>) =>
+    const baseField = (over: Partial<CredentialIssuanceViewModelSchema[0]>) =>
       ({
         key: 'k',
         type: 'control',
@@ -84,13 +87,14 @@ describe('IssuanceSchemaBuilder', () => {
         custom: { component: {} as any, data: { foo: 'bar' } },
         staticValueGetter: undefined,
         ...over,
-      } as CredentialIssuanceViewModelSchema);
+      } as any);
 
     it('keeps a main control field intact', () => {
       const raw = [baseField({ key: 'main', display: 'main' })];
-      builderMock.getSchema.mockReturnValue(raw);
+      builderMock.getSchema.mockReturnValue({ type: TYPE, schema: raw });
 
       const [form, stat] = service.formSchemasBuilder(TYPE, false);
+
       expect(form).toHaveLength(1);
       expect(form[0]).toMatchObject({
         key: 'main',
@@ -110,9 +114,10 @@ describe('IssuanceSchemaBuilder', () => {
           staticValueGetter: () => ({ mandator: [{ key: 'x', value: 'y' }] }),
         }),
       ];
-      builderMock.getSchema.mockReturnValue(raw);
+      builderMock.getSchema.mockReturnValue({ type: TYPE, schema: raw });
 
       const [form, stat] = service.formSchemasBuilder(TYPE, true);
+
       expect(form).toHaveLength(0);
       expect(stat.mandator).toEqual([{ key: 'x', value: 'y' }]);
       expect(consoleWarnSpy).not.toHaveBeenCalled();
@@ -126,7 +131,7 @@ describe('IssuanceSchemaBuilder', () => {
           staticValueGetter: () => ({ mandator: [{ key: 'p', value: 'q' }] }),
         }),
       ];
-      builderMock.getSchema.mockReturnValue(raw);
+      builderMock.getSchema.mockReturnValue({ type: TYPE, schema: raw });
 
       const [formFalse, statFalse] = service.formSchemasBuilder(TYPE, false);
       expect(formFalse).toHaveLength(0);
@@ -147,15 +152,13 @@ describe('IssuanceSchemaBuilder', () => {
         baseField({
           key: 'bad2',
           display: 'side',
-          staticValueGetter: () => ({} as any), // empty object OK, but test non-object: use e.g. a number cast
+          staticValueGetter: () => (42 as any),
         }),
       ];
-      // To truly test non-object, let's override second:
-      raw[1].staticValueGetter = () => (42 as any);
-
-      builderMock.getSchema.mockReturnValue(raw);
+      builderMock.getSchema.mockReturnValue({ type: TYPE, schema: raw });
 
       const [form, stat] = service.formSchemasBuilder(TYPE, false);
+
       expect(form).toHaveLength(0);
       expect(stat).toEqual({});
       expect(consoleWarnSpy).toHaveBeenCalledTimes(2);
@@ -175,9 +178,10 @@ describe('IssuanceSchemaBuilder', () => {
           display: 'main',
         },
       ];
-      builderMock.getSchema.mockReturnValue(raw);
+      builderMock.getSchema.mockReturnValue({ type: TYPE, schema: raw });
 
       const [form, stat] = service.formSchemasBuilder(TYPE, false);
+
       expect(form).toHaveLength(1);
       const grp = form[0];
       expect(grp.type).toBe('group');
@@ -188,21 +192,19 @@ describe('IssuanceSchemaBuilder', () => {
 
   describe('private helpers', () => {
     it('shouldExtractStatic logic', () => {
-      // @ts-ignore
-      expect(service['shouldExtractStatic']({ display: 'side' }, true)).toBe(true);
-      // @ts-ignore
-      expect(service['shouldExtractStatic']({ display: 'pref_side' }, false)).toBe(true);
-      // @ts-ignore
-      expect(service['shouldExtractStatic']({ display: 'pref_side' }, true)).toBe(false);
-      // @ts-ignore
-      expect(service['shouldExtractStatic']({ display: 'main' }, false)).toBe(false);
+      expect((service as any).shouldExtractStatic({ display: 'side' }, true)).toBe(true);
+      expect((service as any).shouldExtractStatic({ display: 'pref_side' }, false)).toBe(true);
+      expect((service as any).shouldExtractStatic({ display: 'pref_side' }, true)).toBe(false);
+      expect((service as any).shouldExtractStatic({ display: 'main' }, false)).toBe(false);
     });
 
-    it('getBuilder with no match throws', () => {
-      // @ts-ignore
-      expect(() => service['getBuilder']('OTHER' as any)).toThrowError(
-        'No schema builder for OTHER'
-      );
-    });
+it('getBuilder with no match throws', () => {
+    builderMock.getSchema.mockReturnValue({ type: TYPE, schema: [] });
+
+    expect(() => (service as any).getBuilder('OTHER')).toThrowError(
+      `No schema builder for OTHER`
+    );
+  });
+
   });
 });

@@ -5,10 +5,10 @@ import { DynamicFieldComponent } from './dynamic-field.component';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { TranslateModule } from '@ngx-translate/core';
 
-const mockControl = new FormControl('field-name');
+const mockControl = new FormControl('value');
 const mockGroup = new FormGroup({ prop: mockControl });
-const mockControlSchema = { type: 'control' };
-const mockGroupSchema = { type: 'group', fields: [{ key: 'fieldOne' }] };
+const mockControlSchema = { type: 'control' } as any;
+const mockGroupSchema = { type: 'group', fields: [{ key: 'fieldOne' }] } as any;
 
 describe('DynamicFieldComponent', () => {
   let component: DynamicFieldComponent;
@@ -21,7 +21,7 @@ describe('DynamicFieldComponent', () => {
         DynamicFieldComponent,
         ReactiveFormsModule,
         TranslateModule.forRoot(),
-        NoopAnimationsModule
+        NoopAnimationsModule,
       ],
     }).compileComponents();
 
@@ -29,9 +29,9 @@ describe('DynamicFieldComponent', () => {
     component = fixture.componentInstance;
     componentRef = fixture.componentRef;
 
-    componentRef.setInput('abstractControl$', mockGroup);
+    componentRef.setInput('parentFormGroup$', mockGroup);
     componentRef.setInput('fieldName$', 'prop');
-    componentRef.setInput('fieldSchema$', mockControlSchema as any);
+    componentRef.setInput('fieldSchema$', mockControlSchema);
   });
 
   it('should create', () => {
@@ -39,37 +39,52 @@ describe('DynamicFieldComponent', () => {
   });
 
   describe('computed properties', () => {
-    it('parentFormGroup$() should return the FormGroup passed via abstractControl$', () => {
+    it('parentFormGroup$() should return the FormGroup passed via parentFormGroup$', () => {
       expect(component.parentFormGroup$()).toBe(mockGroup);
     });
 
-    it('control$() should return null if the type is group', () => {
+    it('controlSchema$() should return null if the type is group', () => {
       componentRef.setInput('fieldSchema$', mockGroupSchema);
-      expect(component.control$()).toBe(null);
+      expect(component.controlSchema$()).toBeNull();
     });
 
-    it('control$() should return the form group\'s control', () => {
-      expect(component.control$()).toBe(mockControl);
+    it('controlSchema$() should return the schema when the type is control', () => {
+      expect(component.controlSchema$()).toBe(mockControlSchema);
     });
 
-    it('control$() should return null if the form group is null', () => {
-      componentRef.setInput('abstractControl$', null);
-      expect(component.control$()).toBe(null);
+    it('groupSchema$() should return null if the type is control', () => {
+      expect(component.groupSchema$()).toBeNull();
     });
 
-    it('group$() should return null if the type is control', () => {
-      expect(component.group$()).toBe(null);
-    });
-
-    it('group$() should return null if the parent group is null', () => {
+    it('groupSchema$() should return the schema when the type is group', () => {
       componentRef.setInput('fieldSchema$', mockGroupSchema);
-      componentRef.setInput('abstractControl$', null);
-      expect(component.group$()).toBe(null);
+      expect(component.groupSchema$()).toBe(mockGroupSchema);
     });
 
-    it('group$() should return the child control when the type is group', () => {
+    it('childControl$() should return the FormControl when type is control', () => {
+      expect(component.childControl$()).toBe(mockControl);
+    });
+
+    it('childControl$() should throw if the parent group is null', () => {
+      componentRef.setInput('parentFormGroup$', null);
+      expect(() => component.childControl$()).toThrow();
+    });
+
+    it('childGroup$() should return null when type is control', () => {
+      expect(component.childGroup$()).toBeNull();
+    });
+
+    it('childGroup$() should return the FormGroup when the field is a nested FormGroup', () => {
+      const nestedGroup = new FormGroup({ inner: new FormControl('') });
+      const wrapper = new FormGroup({ prop: nestedGroup });
+      componentRef.setInput('parentFormGroup$', wrapper);
       componentRef.setInput('fieldSchema$', mockGroupSchema);
-      expect(component.group$()).toBe(mockControl);
+      expect(component.childGroup$()).toBe(nestedGroup);
+    });
+
+    it('childGroup$() should return null if the field is not a FormGroup', () => {
+      componentRef.setInput('fieldSchema$', mockGroupSchema);
+      expect(component.childGroup$()).toBeNull();
     });
   });
 

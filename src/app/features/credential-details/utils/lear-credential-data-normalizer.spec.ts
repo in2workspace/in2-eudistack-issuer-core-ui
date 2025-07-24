@@ -3,7 +3,8 @@ import {
   LEARCredentialEmployee,
   LEARCredentialMachine, Attester,
   EmployeeMandatee,
-  Power
+  Power,
+  CredentialStatus
 } from '../../../core/models/entity/lear-credential';
 import { LEARCredentialDataNormalizer } from './lear-credential-data-normalizer';
 
@@ -99,6 +100,7 @@ describe('LEARCredentialDataNormalizer', () => {
         id: '1',
         type: ['LEARCredentialEmployee'],
         description: 'desc',
+        credentialStatus: {} as CredentialStatus,
         credentialSubject: {
           mandate: {
             id: 'm1',
@@ -143,6 +145,7 @@ describe('LEARCredentialDataNormalizer', () => {
       ];
       const input: LEARCredentialMachine = {
         id: '2',
+        credentialStatus: {} as CredentialStatus,
         type: ['LEARCredentialMachine'],
         description: 'desc',
         credentialSubject: {

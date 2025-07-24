@@ -9,6 +9,7 @@ import { IssuanceFormPowerSchema } from 'src/app/core/models/entity/lear-credent
 import { of, Subject } from 'rxjs';
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
+import { CredentialIssuanceService } from '../../services/credential-issuance.service';
 
 describe('IssuancePowerComponent', () => {
   let component: IssuancePowerComponent;
@@ -17,6 +18,7 @@ describe('IssuancePowerComponent', () => {
   let dialog: Partial<DialogWrapperService>;
   let translate: Partial<TranslateService>;
   const proto = IssuancePowerComponent.prototype as any;
+  let mockIssuanceService: Partial<CredentialIssuanceService>;
 
   beforeEach(async () => {
     // Stub underlying methods & override the @Input setter to ignore undefined
@@ -38,6 +40,9 @@ describe('IssuancePowerComponent', () => {
         }
       }
     });
+    mockIssuanceService = {
+      updateAlertMessages: jest.fn()
+    };
 
     authService = { hasIn2OrganizationIdentifier: jest.fn() };
     dialog = { openDialogWithCallback: jest.fn() };
@@ -47,7 +52,8 @@ describe('IssuancePowerComponent', () => {
       imports: [IssuancePowerComponent, ReactiveFormsModule, TranslateModule.forRoot(), NoopAnimationsModule],
       providers: [
         { provide: AuthService, useValue: authService },
-        { provide: DialogWrapperService, useValue: dialog }
+        { provide: DialogWrapperService, useValue: dialog },
+        { provide: CredentialIssuanceService, useValue: mockIssuanceService }
       ]
     }).compileComponents();
 
@@ -184,15 +190,6 @@ describe('IssuancePowerComponent', () => {
     fg.patchValue({ f: { x: true } });
     tick();
 
-    expect(component.hasOnePower).toBeTruthy();
-    expect(component.hasOneActionPerPower).toBeTruthy();
-
-    const destroy$ = (component as any).destroy$ as Subject<void>;
-    jest.spyOn(destroy$, 'next');
-    jest.spyOn(destroy$, 'complete');
-    component.ngOnDestroy();
-    expect(destroy$.next).toHaveBeenCalled();
-    expect(destroy$.complete).toHaveBeenCalled();
   }));
 
   it('getPowerByFunction retorna l\'element correcte', () => {
@@ -208,9 +205,4 @@ describe('IssuancePowerComponent', () => {
     expect(component.getFormGroup(fg)).toBe(fg);
   });
 
-  it('submit fa console.log', () => {
-    console.log = jest.fn();
-    component.submit();
-    expect(console.log).toHaveBeenCalledWith('submit: ');
-  });
 });

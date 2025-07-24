@@ -5,6 +5,8 @@ import { signal, WritableSignal } from '@angular/core';
 import { TranslateModule } from '@ngx-translate/core';
 import { KeyState } from 'src/app/core/models/entity/lear-credential-issuance';
 import { FormGroup } from '@angular/forms';
+import { CredentialIssuanceService } from '../../services/credential-issuance.service';
+import { CredentialProcedureService } from 'src/app/core/services/credential-procedure.service';
 
 describe('KeyGeneratorComponent', () => {
   let component: KeyGeneratorComponent;
@@ -12,10 +14,14 @@ describe('KeyGeneratorComponent', () => {
   let mockService: Partial<KeyGeneratorService>;
   let rawStateSignal: WritableSignal<KeyState | undefined>;
   let displayedSignal: WritableSignal<Partial<KeyState> | undefined>;
+  let mockIssuanceService: Partial<CredentialIssuanceService>;
 
   beforeEach(async () => {
     rawStateSignal = signal(undefined);
     displayedSignal = signal({ desmosPrivateKeyValue: undefined });
+    mockIssuanceService = {
+      updateAlertMessages: jest.fn()
+    };
 
     mockService = {
       getState: () => rawStateSignal,
@@ -30,7 +36,7 @@ describe('KeyGeneratorComponent', () => {
       {
         configurable: true,
         writable: true,
-        value: () => () => {}
+        value: (_msgs: string[]) => {}
       }
     );
 
@@ -41,7 +47,8 @@ describe('KeyGeneratorComponent', () => {
       .overrideComponent(KeyGeneratorComponent, {
         set: {
           providers: [
-            { provide: KeyGeneratorService, useValue: mockService }
+            { provide: KeyGeneratorService, useValue: mockService },
+            { provide: CredentialIssuanceService, useValue: mockIssuanceService }
           ]
         }
       })
@@ -61,21 +68,19 @@ describe('KeyGeneratorComponent', () => {
   });
 
   it('ngOnInit ha de cridar updateAlertMessages', () => {
-    const spy = jest.spyOn(component, 'updateAlertMessages').mockImplementation(() => {});
-    component.ngOnInit();
+    const spy = jest
+      .spyOn(component as any, 'updateAlertMessages')
+      .mockImplementation(() => {});
+    (component as any).ngOnInit();
     expect(spy).toHaveBeenCalled();
   });
 
-  it('updateAlertMessages ha de cridar la funció stubbed per updateMessages', () => {
-    const updateSpy = jest.fn();
-    Object.defineProperty(component, 'updateMessages', {
-      configurable: true,
-      value: () => updateSpy
-    });
-
-    component.updateAlertMessages();
-    expect(updateSpy).toHaveBeenCalledWith(['error.form.no_key']);
+  it('updateAlertMessages ha de delegar al servei issuance.updateAlertMessages', () => {
+    const msgs = ['error.form.no_key'];
+    (component as any).updateAlertMessages(msgs);
+    expect((mockIssuanceService.updateAlertMessages as jest.Mock)).toHaveBeenCalledWith(msgs);
   });
+
 
   it('generateKeys ha de cridar generateP256 i parchejar el form amb el didKey', async () => {
     const fakeState: KeyState = {
@@ -90,8 +95,8 @@ describe('KeyGeneratorComponent', () => {
       value: () => fakeForm
     });
 
-    // Stub updateAlertMessages per evitar l'error NG0950
-    jest.spyOn(component, 'updateAlertMessages').mockImplementation(() => {});
+    // Stub updateAlertMessages per evitar NG0950
+    jest.spyOn(component as any, 'updateAlertMessages').mockImplementation(() => {});
 
     await component.generateKeys();
 

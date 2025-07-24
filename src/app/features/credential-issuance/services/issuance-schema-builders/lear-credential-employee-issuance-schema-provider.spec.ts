@@ -1,205 +1,147 @@
 import { TestBed } from '@angular/core/testing';
+import { AuthService } from 'src/app/core/services/auth.service';
+import { CountryService } from 'src/app/core/services/country.service';
+import * as fieldsHelpers from '../../helpers/fields-order-helpers';
 import {
-  CREDENTIAL_SCHEMA_PROVIDERS,
-  IssuanceSchemaBuilder,
-} from './issuance-schema-builder';
-import {
-  CredentialIssuanceViewModelSchema,
-  IssuanceStaticData,
-} from 'src/app/core/models/entity/lear-credential-issuance';
-import { IssuanceCredentialType } from 'src/app/core/models/entity/lear-credential-issuance';
+  firstNameField,
+  lastNameField,
+  emailField,
+  organizationField,
+  organizationIdentifierField,
+  serialNumberField,
+} from './common-issuance-schema-fields';
+import { IssuancePowerComponent } from '../../components/power/issuance-power.component';
+import { CredentialIssuanceTypedViewModelSchema } from 'src/app/core/models/entity/lear-credential-issuance';
+import { LearCredentialEmployeeSchemaProvider } from './lear-credential-employee-issuance-schema-provider';
 
-describe('IssuanceSchemaBuilder', () => {
-  let service: IssuanceSchemaBuilder;
-  let builderMock: any;
-  const TYPE = 'TEST_TYPE' as IssuanceCredentialType;
+describe('LearCredentialEmployeeSchemaProvider', () => {
+  let service: LearCredentialEmployeeSchemaProvider;
+  let authMock: jest.Mocked<AuthService>;
+  let countryMock: jest.Mocked<CountryService>;
+  const fakeCountries = [{ label: 'C', value: 'c' }];
+
+  // construïm un fake mandator amb totes les claus de mandatorFieldsOrder
+  const fakeMandatorRaw: Record<string, string> = {};
+  for (const k of fieldsHelpers.mandatorFieldsOrder) {
+    fakeMandatorRaw[k] = `val-${k}`;
+  }
 
   beforeEach(() => {
-    builderMock = {
-      credType: TYPE,
-      getSchema: jest.fn(),
-    };
+    authMock = {
+      getRawMandator: jest.fn(),
+    } as any;
+
+    countryMock = {
+      getCountriesAsSelectorOptions: jest.fn().mockReturnValue(fakeCountries),
+    } as any;
+
+    // mock convertToOrderedArray per respectar qualsevol any[]
+    jest
+      .spyOn(fieldsHelpers, 'convertToOrderedArray')
+      .mockImplementation((obj: any, order: any[]) =>
+        order
+          .filter((k: any) => obj[k] != null)
+          .map((k: any) => ({ key: k, value: obj[k] }))
+      );
 
     TestBed.configureTestingModule({
       providers: [
-        { provide: CREDENTIAL_SCHEMA_PROVIDERS, useValue: [builderMock] },
-        IssuanceSchemaBuilder,
+        LearCredentialEmployeeSchemaProvider,
+        { provide: AuthService, useValue: authMock },
+        { provide: CountryService, useValue: countryMock },
       ],
     });
-    service = TestBed.inject(IssuanceSchemaBuilder);
+
+    service = TestBed.inject(LearCredentialEmployeeSchemaProvider);
   });
 
-  it('should be created', () => {
-    expect(service).toBeTruthy();
-  });
-
-  describe('getIssuanceFormSchema', () => {
-    it('delegates to the correct builder.getSchema()', () => {
-      const fakeSchema: CredentialIssuanceViewModelSchema[] = [
-        { key: 'a', type: 'control', controlType: 'text' },
-      ];
-      builderMock.getSchema.mockReturnValue(fakeSchema);
-
-      const result = service.getIssuanceFormSchema(TYPE);
-      expect(builderMock.getSchema).toHaveBeenCalled();
-      expect(result).toBe(fakeSchema);
-    });
-
-    it('throws if no builder for type', () => {
-      TestBed.resetTestingModule();
-      TestBed.configureTestingModule({
-        providers: [
-          { provide: CREDENTIAL_SCHEMA_PROVIDERS, useValue: [] },
-          IssuanceSchemaBuilder,
-        ],
-      });
-      const svc = TestBed.inject(IssuanceSchemaBuilder);
-      expect(() => svc.getIssuanceFormSchema(TYPE)).toThrowError(
-        `No schema builder for ${TYPE}`
-      );
-    });
-  });
-
-  describe('formSchemasBuilder()', () => {
-    let consoleWarnSpy: jest.SpyInstance;
+  describe('getSchema()', () => {
+    let schema: CredentialIssuanceTypedViewModelSchema<'LEARCredentialEmployee'>;
 
     beforeEach(() => {
-      consoleWarnSpy = jest.spyOn(console, 'warn').mockImplementation();
-    });
-    afterEach(() => {
-      consoleWarnSpy.mockRestore();
+      schema = service.getSchema();
     });
 
-    const baseField = (over: Partial<CredentialIssuanceViewModelSchema>) =>
-      ({
-        key: 'k',
-        type: 'control',
-        controlType: 'text',
-        display: 'main',
-        validators: [],
-        hint: 'h',
-        classes: 'c1 c2',
-        multiOptions: [{ label: 'L', value: 'V' }],
-        groupFields: [],
-        custom: { component: {} as any, data: { foo: 'bar' } },
-        staticValueGetter: undefined,
-        ...over,
-      } as CredentialIssuanceViewModelSchema);
+    it('inclou el grup mandatee amb firstName, lastName, email i nationality', () => {
+      const mand = schema.schema.find(f => f.key === 'mandatee');
+      expect(mand).toBeDefined();
+      expect(mand?.type).toBe('group');
+      expect(mand?.display).toBe('main');
 
-    it('keeps a main control field intact', () => {
-      const raw = [baseField({ key: 'main', display: 'main' })];
-      builderMock.getSchema.mockReturnValue(raw);
-
-      const [form, stat] = service.formSchemasBuilder(TYPE, false);
-      expect(form).toHaveLength(1);
-      expect(form[0]).toMatchObject({
-        key: 'main',
-        type: 'control',
-        controlType: 'text',
-        hint: 'h',
-        classes: 'c1 c2',
+      const [fn, ln, email, nat] = mand!.groupFields;
+      expect(fn).toEqual(firstNameField);
+      expect(ln).toEqual(lastNameField);
+      expect(email).toEqual(emailField);
+      expect(nat).toMatchObject({
+        key: 'nationality',
+        controlType: 'selector',
+        multiOptions: fakeCountries,
+        validators: [{ name: 'required' }],
       });
-      expect(stat).toEqual({});
     });
 
-    it('extracts side fields via staticValueGetter returning mandator array', () => {
-      const raw = [
-        baseField({
-          key: 'side',
-          display: 'side',
-          staticValueGetter: () => ({ mandator: [{ key: 'x', value: 'y' }] }),
-        }),
-      ];
-      builderMock.getSchema.mockReturnValue(raw);
+    it('inclou el grup mandator amb staticValueGetter i camps ordenats', () => {
+      const mandator = schema.schema.find(f => f.key === 'mandator');
+      expect(mandator).toBeDefined();
+      expect(mandator?.display).toBe('pref_side');
+      expect(typeof mandator?.staticValueGetter).toBe('function');
 
-      const [form, stat] = service.formSchemasBuilder(TYPE, true);
-      expect(form).toHaveLength(0);
-      expect(stat.mandator).toEqual([{ key: 'x', value: 'y' }]);
-      expect(consoleWarnSpy).not.toHaveBeenCalled();
-    });
+      // quan authService retorna null
+      authMock.getRawMandator.mockReturnValue(null);
+      expect(mandator?.staticValueGetter!()).toBeNull();
 
-    it('extracts pref_side only when asSigner=false', () => {
-      const raw = [
-        baseField({
-          key: 'pref',
-          display: 'pref_side',
-          staticValueGetter: () => ({ mandator: [{ key: 'p', value: 'q' }] }),
-        }),
-      ];
-      builderMock.getSchema.mockReturnValue(raw);
-
-      const [formFalse, statFalse] = service.formSchemasBuilder(TYPE, false);
-      expect(formFalse).toHaveLength(0);
-      expect(statFalse.mandator).toEqual([{ key: 'p', value: 'q' }]);
-
-      const [formTrue, statTrue] = service.formSchemasBuilder(TYPE, true);
-      expect(formTrue).toHaveLength(1);
-      expect(statTrue).toEqual({});
-    });
-
-    it('logs warning if staticValueGetter returns null or non-object', () => {
-      const raw = [
-        baseField({
-          key: 'bad1',
-          display: 'side',
-          staticValueGetter: () => null,
-        }),
-        baseField({
-          key: 'bad2',
-          display: 'side',
-          staticValueGetter: () => (42 as any),
-        }),
-      ];
-      builderMock.getSchema.mockReturnValue(raw);
-
-      const [form, stat] = service.formSchemasBuilder(TYPE, false);
-      expect(form).toHaveLength(0);
-      expect(stat).toEqual({});
-      expect(consoleWarnSpy).toHaveBeenCalledTimes(2);
-      expect(consoleWarnSpy).toHaveBeenCalledWith(
-        expect.stringContaining('Could not get static value from field bad1')
+      // quan authService retorna l'objecte complet
+      authMock.getRawMandator.mockReturnValue(fakeMandatorRaw as any);
+      const staticData = mandator?.staticValueGetter!();
+      expect(staticData).toHaveProperty('mandator');
+      expect(staticData!.mandator).toEqual(
+        fieldsHelpers.mandatorFieldsOrder.map(k => ({ key: k, value: fakeMandatorRaw[k] }))
       );
-      expect(consoleWarnSpy).toHaveBeenCalledWith(
-        expect.stringContaining('Could not get static value from field bad2')
-      );
+
+      // comprovem l'ordre i contingut de groupFields
+      const fields = mandator?.groupFields!;
+      expect(fields[0]).toEqual(firstNameField);
+      expect(fields[1]).toEqual(lastNameField);
+      expect(fields[2]).toMatchObject({ ...emailField, key: 'emailAddress' });
+      expect(fields[3]).toEqual(serialNumberField);
+      expect(fields[4]).toEqual(organizationField);
+      expect(fields[5]).toEqual(organizationIdentifierField);
+
+      const countryField = fields[6];
+      expect(countryField).toMatchObject({
+        key: 'country',
+        controlType: 'selector',
+        multiOptions: fakeCountries,
+        validators: [{ name: 'required' }],
+      });
     });
 
-    it('passes through group fields without extraction', () => {
-      const child = baseField({ key: 'child', display: 'main' });
-      const raw = [
-        {
-          ...baseField({ key: 'group1', type: 'group', groupFields: [child] }),
-          display: 'main',
-        },
-      ];
-      builderMock.getSchema.mockReturnValue(raw);
+    it('inclou el grup power amb IssuancePowerComponent i dades correctes', () => {
+      const power = schema.schema.find(f => f.key === 'power');
+      expect(power).toBeDefined();
+      expect(power?.type).toBe('group');
+      expect(power?.groupFields).toEqual([]);
 
-      const [form, stat] = service.formSchemasBuilder(TYPE, false);
-      expect(form).toHaveLength(1);
-      const grp = form[0];
-      expect(grp.type).toBe('group');
-      expect(grp.groupFields).toEqual([child]);
-      expect(stat).toEqual({});
-    });
-  });
-
-  describe('private helpers', () => {
-    it('shouldExtractStatic logic', () => {
-      // @ts-ignore
-      expect(service['shouldExtractStatic']({ display: 'side' }, true)).toBe(true);
-      // @ts-ignore
-      expect(service['shouldExtractStatic']({ display: 'pref_side' }, false)).toBe(true);
-      // @ts-ignore
-      expect(service['shouldExtractStatic']({ display: 'pref_side' }, true)).toBe(false);
-      // @ts-ignore
-      expect(service['shouldExtractStatic']({ display: 'main' }, false)).toBe(false);
-    });
-
-    it('getBuilder with no match throws', () => {
-      // @ts-ignore
-      expect(() => service['getBuilder']('OTHER' as any)).toThrowError(
-        'No schema builder for OTHER'
-      );
+      expect(power?.custom).toMatchObject({
+        component: IssuancePowerComponent,
+        data: [
+          {
+            action: ['Execute'],
+            function: 'Onboarding',
+            isIn2Required: true,
+          },
+          {
+            action: ['Create', 'Update', 'Delete'],
+            function: 'ProductOffering',
+            isIn2Required: false,
+          },
+          {
+            action: ['Upload', 'Attest'],
+            function: 'Certification',
+            isIn2Required: true,
+          },
+        ],
+      });
     });
   });
 });
