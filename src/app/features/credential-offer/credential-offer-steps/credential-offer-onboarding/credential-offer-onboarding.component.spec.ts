@@ -3,7 +3,6 @@ import { CredentialOfferOnboardingComponent } from './credential-offer-onboardin
 import { TranslateModule } from '@ngx-translate/core';
 import { QRCodeModule } from 'angularx-qrcode';
 import { environment } from 'src/environments/environment';
-import {API} from "../../../../core/constants/api.constants";
 
 describe('CredentialOfferOnboardingComponent', () => {
   let component: CredentialOfferOnboardingComponent;

@@ -6,7 +6,7 @@ interface Window {
         server_url?: string;
         wallet_url?: string;
         wallet_url_test?: string;
-        show_wallet_url_test: boolean;
+        show_wallet_url_test: string;
         knowledge_base_url?: string;
         procedures?: string;
         saveCredential?: string;

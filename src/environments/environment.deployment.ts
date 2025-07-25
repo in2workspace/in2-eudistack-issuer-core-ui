@@ -11,7 +11,7 @@ export const environment = {
   // Wallet base URL for tests (REQUIRED)
   wallet_url_test: window["env"]["wallet_url_test"],
   // Determines whether to show wallet_url_test or not (REQUIRED)
-  show_wallet_url_test: window["env"]["wallet_url"] === "true",
+  show_wallet_url_test: window["env"]["show_wallet_url_test"] === "true",
   // Knowledgebase base URL (REQUIRED)
   knowledge_base_url: window["env"]["knowledge_base_url"],
   customizations:{

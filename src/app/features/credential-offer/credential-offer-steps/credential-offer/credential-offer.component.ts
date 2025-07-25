@@ -25,7 +25,7 @@ export class CredentialOfferComponent{
 
   //TEST URLS
   public readonly showWalletSameDeviceUrlTest =  environment.show_wallet_url_test;
-  public readonly walletSameDeviceTestUrl = environment.show_wallet_url_test + '/tabs/home/';
+  public readonly walletSameDeviceTestUrl = environment.wallet_url_test + '/tabs/home/';
 
   public walletSameDeviceTestUrl$ = computed<string>(()=>{
     const cutOfferUri = this.removeProtocol(this.credentialOfferUri$());

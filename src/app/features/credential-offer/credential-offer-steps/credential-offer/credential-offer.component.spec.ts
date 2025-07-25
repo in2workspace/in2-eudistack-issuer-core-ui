@@ -1,10 +1,9 @@
-import {TestBed} from '@angular/core/testing';
-import {CredentialOfferComponent} from './credential-offer.component';
-import {TranslateModule} from '@ngx-translate/core';
-import {QRCodeModule} from 'angularx-qrcode';
-import {NgIf} from '@angular/common';
-import {environment} from 'src/environments/environment';
-import {API} from "../../../../core/constants/api.constants";
+import { TestBed } from '@angular/core/testing';
+import { CredentialOfferComponent } from './credential-offer.component';
+import { TranslateModule } from '@ngx-translate/core';
+import { QRCodeModule } from 'angularx-qrcode';
+import { NgIf } from '@angular/common';
+import { environment } from 'src/environments/environment';
 
 describe('CredentialOfferComponent', () => {
   let component: CredentialOfferComponent;
@@ -51,7 +50,7 @@ describe('CredentialOfferComponent', () => {
   });
 
   it('should initialize walletSameDeviceTestUrl with the correct value from the environment', () => {
-    const expectedTestUrl = environment.show_wallet_url_test + '/tabs/home/';
+    const expectedTestUrl = environment.wallet_url_test + '/tabs/home/';
     expect(component.walletSameDeviceTestUrl).toBe(expectedTestUrl);
   });
 
@@ -60,7 +59,7 @@ describe('CredentialOfferComponent', () => {
     (component as any).credentialOfferUri$ = () => credentialOfferUriMock;
 
     const expectedComputedTestUrl =
-      environment.show_wallet_url_test + '/tabs/home/' + credentialOfferUriMock;
+      environment.wallet_url_test + '/tabs/home/' + credentialOfferUriMock;
 
     expect(component.walletSameDeviceTestUrl$()).toBe(expectedComputedTestUrl);
   });
