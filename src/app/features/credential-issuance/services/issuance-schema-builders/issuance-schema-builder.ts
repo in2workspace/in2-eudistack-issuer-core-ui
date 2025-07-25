@@ -1,5 +1,5 @@
 import { inject, Injectable, InjectionToken } from "@angular/core";
-import { CredentialIssuanceTypedViewModelSchema, CredentialIssuanceSchemaProvider, IssuanceCredentialType, IssuanceStaticViewModel, CredentialIssuanceViewModelField, CredentialIssuanceViewModelSchema, IssuanceViewModelsTuple, CredentialIssuanceViewModelGroupField } from "src/app/core/models/entity/lear-credential-issuance";
+import { CredentialIssuanceTypedViewModelSchema, CredentialIssuanceSchemaProvider, IssuanceCredentialType, IssuanceStaticViewModel, CredentialIssuanceViewModelField, CredentialIssuanceViewModelSchema, IssuanceViewModelsTuple, CredentialIssuanceViewModelGroupField, CredentialIssuanceViewModelSchemaWithId, CredentialIssuanceViewModelGroupFieldWithId } from "src/app/core/models/entity/lear-credential-issuance";
 
 export const CREDENTIAL_SCHEMA_PROVIDERS = new InjectionToken<CredentialIssuanceSchemaProvider<IssuanceCredentialType>[]>('CREDENTIAL_SCHEMA_PROVIDERS');
 
@@ -17,16 +17,19 @@ export class IssuanceSchemaBuilder {
     asSigner: boolean
   ): IssuanceViewModelsTuple {
     const rawSchema: CredentialIssuanceViewModelSchema  = this.getIssuanceFormSchema(credType).schema;
-    const formViewModel: CredentialIssuanceViewModelSchema = [];
+    const formViewModel: CredentialIssuanceViewModelSchemaWithId = [];
     const staticSchema: IssuanceStaticViewModel = {};
 
     for (const field of rawSchema) {
-      if (this.shouldExtractStatic(field, asSigner)) {
-        this.extractStatic(field, staticSchema);
+      // id is added to enable the "track" function in the fields @for loop
+      const fieldWithId: CredentialIssuanceViewModelGroupFieldWithId = { ...field, id: Math.random() * 1000 }; // NOSONAR
+
+      if (this.shouldExtractStatic(fieldWithId, asSigner)) {
+        this.extractStatic(fieldWithId, staticSchema);
         continue;
       }
 
-      formViewModel.push(field);
+      formViewModel.push(fieldWithId);
     }
 
     return [formViewModel, staticSchema];

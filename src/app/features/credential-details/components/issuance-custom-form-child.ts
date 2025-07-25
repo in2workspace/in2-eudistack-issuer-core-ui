@@ -1,13 +1,12 @@
-import { Directive, inject, input } from '@angular/core';
+import { Directive, inject } from '@angular/core';
 import { AbstractControl } from '@angular/forms';
 import { CredentialIssuanceService } from '../../credential-issuance/services/credential-issuance.service';
+import { BaseIssuanceCustomFormChild } from './base-issuance-custom-form-child';
 
-// This class is extended by Issuance Form custom children components
+
 @Directive()
-export abstract class IssuanceCustomFormChild<T extends AbstractControl = AbstractControl> {
-   public readonly data = input<any>(); 
-   public readonly form = input.required<T>();
-   protected readonly issuance = inject(CredentialIssuanceService);
+export abstract class IssuanceCustomFormChild<T extends AbstractControl = AbstractControl> extends BaseIssuanceCustomFormChild<T> {
+  protected readonly issuance = inject(CredentialIssuanceService);
 
   protected updateAlertMessages(messages: string[]): void {
     this.issuance.updateAlertMessages(messages);

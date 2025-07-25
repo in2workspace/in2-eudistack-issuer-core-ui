@@ -15,6 +15,7 @@ import { DialogData } from 'src/app/shared/components/dialog/dialog-data';
 import { AuthService } from 'src/app/core/services/auth.service';
 import { IssuanceFormPowerSchema } from 'src/app/core/models/entity/lear-credential-issuance';
 import { IssuanceCustomFormChild } from 'src/app/features/credential-details/components/issuance-custom-form-child';
+import { BaseIssuanceCustomFormChild } from 'src/app/features/credential-details/components/base-issuance-custom-form-child';
 
 export interface TempIssuanceFormPowerSchema extends IssuanceFormPowerSchema{
   isDisabled: boolean;
@@ -33,7 +34,7 @@ export type NormalizedAction = { action: string; value: boolean };
     standalone: true,
     imports: [KeyValuePipe, ReactiveFormsModule, MatFormField, MatSelect, MatSelectTrigger, MatOption, MatButton, MatSlideToggle, FormsModule, MatMiniFabButton, MatIcon, MatLabel, MatSelect, TranslatePipe]
 })
-export class IssuancePowerComponent extends IssuanceCustomFormChild<UntypedFormGroup> implements OnInit{
+export class IssuancePowerComponent extends BaseIssuanceCustomFormChild<UntypedFormGroup> implements OnInit{
 
   public organizationIdentifierIsIn2: boolean;
   public _powersInput: IssuanceFormPowerSchema[] = [];

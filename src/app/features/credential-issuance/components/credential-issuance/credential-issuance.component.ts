@@ -11,7 +11,7 @@ import { ActivatedRoute, CanDeactivate } from '@angular/router';
 import { MatCard, MatCardContent } from '@angular/material/card';
 import { CanComponentDeactivate, CanDeactivateType } from 'src/app/core/guards/can-component-deactivate.guard';
 import { CredentialIssuanceService } from '../../services/credential-issuance.service';
-import { CredentialIssuanceViewModelSchema, IssuanceCredentialType, IssuanceStaticViewModel } from 'src/app/core/models/entity/lear-credential-issuance';
+import { CredentialIssuanceViewModelSchema, CredentialIssuanceViewModelSchemaWithId, IssuanceCredentialType, IssuanceStaticViewModel } from 'src/app/core/models/entity/lear-credential-issuance';
 
 @Component({
   selector: 'app-credential-issuance',
@@ -28,7 +28,7 @@ export class CredentialIssuanceComponent implements CanDeactivate<CanComponentDe
   public selectedCredentialType$: WritableSignal<IssuanceCredentialType | undefined>;
 
   // FORM STATE
-  public formSchema$: Signal<CredentialIssuanceViewModelSchema | null>;
+  public formSchema$: Signal<CredentialIssuanceViewModelSchemaWithId | null>;
   
   public staticData$: Signal<IssuanceStaticViewModel | null>;
   public form$: Signal <FormGroup<Record<string, FormGroup>>>;
@@ -39,15 +39,6 @@ export class CredentialIssuanceComponent implements CanDeactivate<CanComponentDe
   public hasSubmitted$: WritableSignal<boolean>;
 
   public bottomAlertMessages$: WritableSignal<string[]>;
-
-  //todo look for a better way to handle this
-  public isResetting = false;
-  public resetEffect = effect(() => {
-    const form = this.form$();
-    this.isResetting = true;
-    console.log('is resetting')
-    setTimeout(() => { this.isResetting = false}, 0);
-  });
 
 
   private readonly issuanceService = inject(CredentialIssuanceService);
