@@ -68,9 +68,9 @@ export class CredentialProcedureService {
   }
 
   public createProcedure(procedureRequest: IssuanceLEARCredentialRequestDto): Observable<void> {
-    // todo remove logs
-    console.log('Sending API request to create procedure');
-    console.log(procedureRequest);
+    console.info('Sending API request to create procedure');
+    console.info(procedureRequest);
+
     return this.http.post<void>(this.saveCredential, procedureRequest).pipe(
       catchError(this.handleError)
     );
@@ -127,7 +127,7 @@ export class CredentialProcedureService {
       errorDetail = error.message;
     }
 
-    console.log('handleError -> status:', error.status, 'errorDetail:', errorDetail);
+    console.info('handleError -> status:', error.status, 'errorDetail:', errorDetail);
     // this 503 error handling is specific to credential-procedure endpoints
     if (error.status === 503 && errorDetail.trim() === 'Error during communication with the mail server') {
       const errorMessage = this.translate.instant('error.serverMailError.message');

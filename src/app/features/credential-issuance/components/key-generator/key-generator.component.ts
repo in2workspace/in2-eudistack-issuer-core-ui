@@ -22,7 +22,7 @@ export class KeyGeneratorComponent extends IssuanceCustomFormChild<FormGroup<Key
   public displayedKeys$: Signal<Partial<KeyState> | undefined>;
   public copiedKey = "";
   private readonly keyService = inject(KeyGeneratorService);
-  private alertMessages = ["error.form.no_key"];
+  private readonly alertMessages = ["error.form.no_key"];
 
   public constructor(){
     super();

@@ -104,7 +104,6 @@ export class CredentialIssuanceService {
 
   //if the message is new, add it; otherwise, delete it
   public updateAlertMessages(messages: string[]): void{
-    console.log('update alert from issuance cmp!')
     const currentMessages = this.bottomAlertMessages$();
 
     const updatedMessages = [...currentMessages];
@@ -228,17 +227,11 @@ export class CredentialIssuanceService {
         return of(EMPTY);
       }
   
-      console.log('SUBMIT FORM: ');
-      console.log(formValue);
-  
       const rawCredentialPayload: IssuanceRawCredentialPayload = { 
         formData: formValue, 
         staticData: this.staticData$(),
         asSigner: this.asSigner$()
       }
-  
-      console.log('RAW CREDENTIAL PAYLOAD');
-      console.log(rawCredentialPayload);
 
       const request = this.buildCredentialRequest(rawCredentialPayload, credentialType);
   
@@ -285,8 +278,6 @@ export class CredentialIssuanceService {
   }
 
   private sendCredentialRequest(credentialPayload: IssuanceLEARCredentialRequestDto): Observable<void>{
-    console.log('SEND CREDENTIAL: ');
-    console.log(credentialPayload);
     return this.credentialProcedureService.createProcedure(credentialPayload);
   }
 

@@ -21,9 +21,6 @@ export class IssuanceRequestFactoryService {
     }
 
   private createLearCredentialEmployeeRequest(credentialData: IssuanceRawCredentialPayload): IssuanceLEARCredentialEmployeePayload{
-    console.log('CREATE LEAR CREDENTIAL EMPLOYEE');
-    console.log('Credential data: ');
-    console.log(credentialData);
     // Power
     const parsedPower = this.parsePower(credentialData.formData['power'], 'LEARCredentialEmployee');
     
@@ -61,9 +58,6 @@ export class IssuanceRequestFactoryService {
   }
 
   private createLearCredentialMachineRequest(credentialData: IssuanceRawCredentialPayload): IssuanceLEARCredentialMachinePayload{
-    console.log('CREATE LEAR CREDENTIAL MACHINE');
-    console.log('Credential data: ');
-    console.log(credentialData);
     // Power
     const parsedPower = this.parsePower(credentialData.formData['power'], 'LEARCredentialEmployee');
 

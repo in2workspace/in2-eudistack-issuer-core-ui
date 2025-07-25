@@ -8,7 +8,7 @@ export interface CredentialProcedure {
   credential_procedure: {
     procedure_id: string;
     subject: string;
-    credential_type: string; //todo ideally, this should be CredentialProcedureType
+    credential_type: CredentialProcedureType;
     status: LifeCycleStatus;
     updated: string;
   }

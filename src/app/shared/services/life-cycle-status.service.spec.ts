@@ -37,7 +37,7 @@ describe('StatusService', () => {
           credential_procedure: {
             procedure_id: '1',
             subject: 'Alpha',
-            credential_type: 'TypeA',
+            credential_type: 'LEAR_CREDENTIAL_EMPLOYEE',
             status: 'VALID',
             updated: '2025-07-09T12:00:00Z',
           },
@@ -46,7 +46,7 @@ describe('StatusService', () => {
           credential_procedure: {
             procedure_id: '2',
             subject: 'Beta',
-            credential_type: 'TypeB',
+            credential_type: 'LEAR_CREDENTIAL_MACHINE',
             status: 'UNKNOWN' as LifeCycleStatus,
             updated: '2025-07-09T13:00:00Z',
           },

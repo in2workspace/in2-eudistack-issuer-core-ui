@@ -14,7 +14,6 @@ import { EMPTY, Observable } from 'rxjs';
 import { DialogData } from 'src/app/shared/components/dialog/dialog-data';
 import { AuthService } from 'src/app/core/services/auth.service';
 import { IssuanceFormPowerSchema } from 'src/app/core/models/entity/lear-credential-issuance';
-import { IssuanceCustomFormChild } from 'src/app/features/credential-details/components/issuance-custom-form-child';
 import { BaseIssuanceCustomFormChild } from 'src/app/features/credential-details/components/base-issuance-custom-form-child';
 
 export interface TempIssuanceFormPowerSchema extends IssuanceFormPowerSchema{
@@ -135,7 +134,6 @@ private resetForm() {
   for (const key of Object.keys(this.form().controls)) {
     this.form().removeControl(key);
   }
-  console.log('power form reset')
 }
 
 private readonly powerRulesValidator: ValidatorFn = (ctrl: AbstractControl): ValidationErrors | null => {

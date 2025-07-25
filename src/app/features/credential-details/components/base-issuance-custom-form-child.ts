@@ -8,5 +8,4 @@ export abstract class BaseIssuanceCustomFormChild<T extends AbstractControl = Ab
   public readonly data = input<any>(); 
   public readonly form = input.required<T>();
 }
-45
 

@@ -52,9 +52,6 @@ export class KeyGeneratorService {
 
     const privateKeyPkcs8Bytes: Uint8Array = new Uint8Array(privateKeyPkcs8);
 
-    const privateKeyPkcs8Hex: string = this.bytesToHexString(privateKeyPkcs8Bytes);
-    console.log("Private Key P-256 (Secp256r1) PKCS#8 (HEX): ", privateKeyPkcs8Hex);
-
     const privateKeyBytes: Uint8Array = privateKeyPkcs8Bytes.slice(36, 36 + 32);
 
     const privateKeyHexBytes: string = this.bytesToHexString(privateKeyBytes);

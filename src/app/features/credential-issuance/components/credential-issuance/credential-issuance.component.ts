@@ -1,7 +1,7 @@
 
 import { MatButton } from '@angular/material/button';
 import { MatLabel } from '@angular/material/form-field';
-import { Component, inject, WritableSignal, HostListener, Signal, effect } from '@angular/core';
+import { Component, inject, WritableSignal, HostListener, Signal } from '@angular/core';
 import { MatFormField, MatOption, MatSelect } from '@angular/material/select';
 import { DynamicFieldComponent } from '../dynamic-field/dynamic-field.component';
 import { FormGroup, ReactiveFormsModule } from '@angular/forms';
@@ -11,7 +11,7 @@ import { ActivatedRoute, CanDeactivate } from '@angular/router';
 import { MatCard, MatCardContent } from '@angular/material/card';
 import { CanComponentDeactivate, CanDeactivateType } from 'src/app/core/guards/can-component-deactivate.guard';
 import { CredentialIssuanceService } from '../../services/credential-issuance.service';
-import { CredentialIssuanceViewModelSchema, CredentialIssuanceViewModelSchemaWithId, IssuanceCredentialType, IssuanceStaticViewModel } from 'src/app/core/models/entity/lear-credential-issuance';
+import { CredentialIssuanceViewModelSchemaWithId, IssuanceCredentialType, IssuanceStaticViewModel } from 'src/app/core/models/entity/lear-credential-issuance';
 
 @Component({
   selector: 'app-credential-issuance',
@@ -66,7 +66,6 @@ export class CredentialIssuanceComponent implements CanDeactivate<CanComponentDe
   private unloadAlert($event: BeforeUnloadEvent): void{
     if(!this.canLeave()){
       const confirm = this.issuanceService.openLeaveConfirm();
-      //todo maybe use event.returnValue
       if(!confirm) $event.preventDefault();
     }
   }
@@ -91,9 +90,6 @@ export class CredentialIssuanceComponent implements CanDeactivate<CanComponentDe
       console.error(formValue);
       return;
     } 
-
-    console.log('Form is valid');
-    console.log(formValue);
 
     if(this.selectedCredentialType$() === 'LEARCredentialMachine'){
       this.issuanceService.openLEARCredentialMachineSubmitDialog();

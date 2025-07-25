@@ -110,7 +110,7 @@ export class LearCredentialMachineIssuanceSchemaProvider implements CredentialIs
                 {
                   action: ['Execute'],
                   function: 'Onboarding',
-                  isIn2Required: false //todo segur?
+                  isIn2Required: false
                 }
           ]
         }
