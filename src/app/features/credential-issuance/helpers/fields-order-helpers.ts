@@ -2,11 +2,11 @@ import { CommonMandator } from "src/app/core/models/entity/lear-credential";
 
 export const mandatorFieldsOrder: Array<keyof CommonMandator> = [
   "commonName",
-  "country",
   "emailAddress",
   "serialNumber",
   "organization",
-  "organizationIdentifier"
+  "organizationIdentifier",
+  "country"
 ];
 
 export function convertToOrderedArray<T extends object, K extends keyof T>(
