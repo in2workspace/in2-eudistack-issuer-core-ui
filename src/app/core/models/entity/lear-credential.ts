@@ -1,4 +1,4 @@
-//normalized version of CreateCredentialProcedureResponse
+//normalized version of CredentialProcedureDetailsResponse
 export interface CredentialProcedureDetails {
   procedure_id: string;
   lifeCycleStatus: LifeCycleStatus;
