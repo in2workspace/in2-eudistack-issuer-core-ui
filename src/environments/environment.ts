@@ -5,6 +5,8 @@ export const environment = {
   iam_url: 'https://keycloak-dev.ssihub.org/realms/in2-issuer',
   server_url: 'http://localhost:8081',
   wallet_url: 'http://localhost:4200',
+  wallet_url_test: 'http://localhost:4200',
+  show_wallet_url_test: false,
   knowledge_base_url: "https://knowledgebase.dome-marketplace-sbx.org/",
   customizations:{
     colors:{

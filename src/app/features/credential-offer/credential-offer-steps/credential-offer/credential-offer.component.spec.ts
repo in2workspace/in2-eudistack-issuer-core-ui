@@ -47,11 +47,11 @@ describe('CredentialOfferComponent', () => {
   });
 
   it('should get showWalletSameDeviceUrlTest', () => {
-    expect(component.showWalletSameDeviceUrlTest).toBe(API.SHOW_WALLET_URL_TEST);
+    expect(component.showWalletSameDeviceUrlTest).toBe(environment.show_wallet_url_test);
   });
 
   it('should initialize walletSameDeviceTestUrl with the correct value from the environment', () => {
-    const expectedTestUrl = API.WALLET_URL_TEST + '/tabs/home/';
+    const expectedTestUrl = environment.show_wallet_url_test + '/tabs/home/';
     expect(component.walletSameDeviceTestUrl).toBe(expectedTestUrl);
   });
 
@@ -60,7 +60,7 @@ describe('CredentialOfferComponent', () => {
     (component as any).credentialOfferUri$ = () => credentialOfferUriMock;
 
     const expectedComputedTestUrl =
-      API.WALLET_URL_TEST + '/tabs/home/' + credentialOfferUriMock;
+      environment.show_wallet_url_test + '/tabs/home/' + credentialOfferUriMock;
 
     expect(component.walletSameDeviceTestUrl$()).toBe(expectedComputedTestUrl);
   });
