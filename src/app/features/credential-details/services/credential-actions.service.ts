@@ -60,7 +60,7 @@ export class CredentialActionsService {
       title: this.translate.instant("credentialDetails.revokeCredentialConfirm.title"),
       message: this.translate.instant("credentialDetails.revokeCredentialConfirm.message"),
       confirmationType: 'async',
-      status: 'default'
+      status: 'error'
     };
 
     const revokeCredentialAfterConfirm = (): Observable<boolean> => {
