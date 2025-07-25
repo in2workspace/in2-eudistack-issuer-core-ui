@@ -1,7 +1,7 @@
 import { DestroyRef, inject, Injectable, Type } from '@angular/core';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { filter, Observable, switchMap, take, tap } from 'rxjs';
-import { LoaderService } from 'src/app/core/services/loader.service';
+import { LoaderService } from 'src/app/shared/services/loader.service';
 import { BaseDialogData, DialogData } from '../dialog-data';
 import { AbstractDialogComponent } from '../abstract-dialog-component';
 

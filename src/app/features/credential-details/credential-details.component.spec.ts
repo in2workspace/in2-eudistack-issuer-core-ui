@@ -6,7 +6,7 @@ import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 import { TranslateModule } from '@ngx-translate/core';
 
-import { LoaderService } from 'src/app/core/services/loader.service';
+import { LoaderService } from 'src/app/shared/services/loader.service';
 import { CredentialDetailsService } from './services/credential-details.service';
 import { CredentialDetailsComponent } from './credential-details.component';
 import { EvaluatedExtendedDetailsField } from 'src/app/core/models/entity/lear-credential-details';

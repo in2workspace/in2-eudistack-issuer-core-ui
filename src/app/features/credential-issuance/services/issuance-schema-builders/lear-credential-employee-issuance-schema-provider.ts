@@ -1,6 +1,6 @@
 import { inject, Injectable } from "@angular/core";
 import { AuthService } from "src/app/core/services/auth.service";
-import { CountryService } from "src/app/core/services/country.service";
+import { CountryService } from "src/app/shared/services/country.service";
 import { CredentialIssuanceTypedViewModelSchema, CredentialIssuanceSchemaProvider } from "src/app/core/models/entity/lear-credential-issuance";
 import { convertToOrderedArray, mandatorFieldsOrder } from "../../helpers/fields-order-helpers";
 import { emailField, firstNameField, lastNameField, organizationField, organizationIdentifierField, serialNumberField } from "./common-issuance-schema-fields";

@@ -2,7 +2,7 @@ import { TestBed } from '@angular/core/testing';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { of, throwError, Subject } from 'rxjs';
 import { DialogWrapperService } from './dialog-wrapper.service';
-import { LoaderService } from 'src/app/core/services/loader.service';
+import { LoaderService } from 'src/app/shared/services/loader.service';
 import { DialogComponent } from '../dialog-component/dialog.component';
 import { DialogData } from '../dialog-data';
 

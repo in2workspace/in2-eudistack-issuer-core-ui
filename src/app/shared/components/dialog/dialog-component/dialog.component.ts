@@ -9,7 +9,7 @@ import { MatButton } from '@angular/material/button';
 import { TranslatePipe } from '@ngx-translate/core';
 import { AsyncPipe, NgClass } from '@angular/common';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
-import { LoaderService } from 'src/app/core/services/loader.service';
+import { LoaderService } from 'src/app/shared/services/loader.service';
 import {
   CdkPortalOutlet, PortalModule
 } from '@angular/cdk/portal';

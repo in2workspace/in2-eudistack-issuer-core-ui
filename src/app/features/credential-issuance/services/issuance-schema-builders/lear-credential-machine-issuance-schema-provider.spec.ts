@@ -1,7 +1,7 @@
 import { TestBed } from '@angular/core/testing';
 import { LearCredentialMachineIssuanceSchemaProvider } from './lear-credential-machine-issuance-schema-provider';
 import { AuthService } from 'src/app/core/services/auth.service';
-import { CountryService } from 'src/app/core/services/country.service';
+import { CountryService } from 'src/app/shared/services/country.service';
 import * as fieldsHelpers from '../../helpers/fields-order-helpers';
 import {
   emailField,

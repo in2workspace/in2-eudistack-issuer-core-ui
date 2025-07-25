@@ -1,7 +1,7 @@
 import { TestBed } from '@angular/core/testing';
 import { CredentialIssuanceService } from './credential-issuance.service';
 import { IssuanceRequestFactoryService } from './issuance-request-factory.service';
-import { CountryService } from 'src/app/core/services/country.service';
+import { CountryService } from 'src/app/shared/services/country.service';
 import { AuthService } from 'src/app/core/services/auth.service';
 import { CredentialProcedureService } from 'src/app/core/services/credential-procedure.service';
 import { CREDENTIAL_SCHEMA_PROVIDERS, IssuanceSchemaBuilder } from './issuance-schema-builders/issuance-schema-builder';

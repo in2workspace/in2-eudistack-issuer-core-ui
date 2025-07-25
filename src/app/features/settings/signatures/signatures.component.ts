@@ -21,7 +21,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { ComponentPortal } from '@angular/cdk/portal';
 import { DATA_CREDENTIAL, FormCloudSignatureConfigurationComponent, FORM_MODE } from './form-signature-configuration/form-cloud-signature-configuration.component';
 import { ActivatedRoute } from '@angular/router';
-import { LoaderService } from 'src/app/core/services/loader.service';
+import { LoaderService } from 'src/app/shared/services/loader.service';
 import { DialogData } from 'src/app/shared/components/dialog/dialog-data';
 
 @Component({

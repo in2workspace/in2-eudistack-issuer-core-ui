@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { COUNTRIES } from 'src/app/core/constants/countries';
-import { SelectorOption } from '../models/entity/lear-credential-issuance';
+import { SelectorOption } from '../../core/models/entity/lear-credential-issuance';
 
 export interface Country {
   name: string;

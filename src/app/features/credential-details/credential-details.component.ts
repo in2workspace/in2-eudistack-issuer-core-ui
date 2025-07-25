@@ -9,7 +9,7 @@ import { MatInput } from '@angular/material/input';
 import { TranslatePipe } from '@ngx-translate/core';
 import { MatIcon } from '@angular/material/icon';
 import { MatButton } from '@angular/material/button';
-import { LoaderService } from 'src/app/core/services/loader.service';
+import { LoaderService } from 'src/app/shared/services/loader.service';
 import { CapitalizePipe } from 'src/app/shared/pipes/capitalize.pipe';
 import { AddPrefixPipe } from 'src/app/shared/pipes/add-prefix.pipe';
 import { CredentialDetailsService } from './services/credential-details.service';
