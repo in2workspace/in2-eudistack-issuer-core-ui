@@ -7,6 +7,7 @@ import { ConditionalConfirmDialogData } from '../dialog-data';
 import { TranslatePipe } from '@ngx-translate/core';
 import { AbstractDialogComponent } from '../abstract-dialog-component';
 
+// This dialog has a checkbox that must be filled to confirm
 @Component({
   selector: 'app-conditional-confirm-dialog',
   standalone: true,

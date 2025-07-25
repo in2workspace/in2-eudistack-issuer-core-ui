@@ -1,4 +1,3 @@
-
 import {
   LEARCredentialEmployee,
   LEARCredentialMachine, Attester,
@@ -19,8 +18,8 @@ describe('LEARCredentialDataNormalizer', () => {
     jest.restoreAllMocks();
   });
 
-  describe('mètodes privats', () => {
-    it('normalizeEmployeeMandatee unifica firstName/first_name i lastName/last_name', () => {
+  describe('private methods', () => {
+    it('normalizeEmployeeMandatee merges firstName/first_name and lastName/last_name', () => {
       const raw1: any = {
         firstName: 'John',
         last_name: 'Doe',
@@ -51,7 +50,7 @@ describe('LEARCredentialDataNormalizer', () => {
       });
     });
 
-    it('normalizePower unifica action/tmf_action, domain/tmf_domain, etc.', () => {
+    it('normalizePower merges action/tmf_action, domain/tmf_domain, etc.', () => {
       const raw1: any = {
         action: 'read',
         tmf_domain: 'domain.com',
@@ -84,7 +83,7 @@ describe('LEARCredentialDataNormalizer', () => {
   });
 
   describe('normalizeLearCredential', () => {
-    it('normalitza un LEARCredentialEmployee: mandatee i power', () => {
+    it('normalizes a LEARCredentialEmployee: mandatee and power', () => {
       const rawMandatee: any = {
         first_name: 'Alice',
         lastName: 'Wonder',
@@ -120,7 +119,6 @@ describe('LEARCredentialDataNormalizer', () => {
 
       const out = normalizer.normalizeLearCredential(input as any) as any;
 
-      // Mandatee normalitzat
       expect((out.credentialSubject.mandate.mandatee as EmployeeMandatee)).toEqual({
         firstName: 'Alice',
         lastName: 'Wonder',
@@ -128,18 +126,16 @@ describe('LEARCredentialDataNormalizer', () => {
         nationality: 'GB'
       });
 
-      // Power array normalitzat
       expect(out.credentialSubject.mandate.power).toEqual<Power[]>([
         { action: 'a1', domain: 'd1', function: 'f1', type: 't1' },
         { action: 'a2', domain: 'd2', function: 'f2', type: 't2' }
       ]);
 
-      // L'input original no s'ha mutat
       expect((input.credentialSubject.mandate.mandatee as any).first_name).toBeDefined();
       expect((input.credentialSubject.mandate.power as any[])[0]).toHaveProperty('tmf_domain');
     });
 
-    it('normalitza un LEARCredentialMachine: només power', () => {
+    it('normalizes a LEARCredentialMachine: only power', () => {
       const rawPowers: any[] = [
         { tmf_action: 'mx', tmf_domain: 'my', tmf_function: 'mf', tmf_type: 'mt' }
       ];
@@ -174,16 +170,14 @@ describe('LEARCredentialDataNormalizer', () => {
 
       const out = normalizer.normalizeLearCredential(input as any) as any;
 
-      // No s'ha tocat el mandatee
       expect(out.credentialSubject.mandate.mandatee).toEqual(input.credentialSubject.mandate.mandatee);
 
-      // S'ha normalitzat el power
       expect(out.credentialSubject.mandate.power).toEqual<Power[]>([
         { action: 'mx', domain: 'my', function: 'mf', type: 'mt' }
       ]);
     });
 
-    it('no canvia power si no és array', () => {
+    it('does not change power if it is not an array', () => {
       const input: any = {
         type: ['LEARCredentialEmployee'],
         credentialSubject: { mandate: { power: 'no-array' } }
@@ -193,7 +187,7 @@ describe('LEARCredentialDataNormalizer', () => {
       expect(out.credentialSubject.mandate.power).toBe('no-array');
     });
 
-    it('normalitza un VerifiableCertification: mou atester → attester', () => {
+    it('normalizes a VerifiableCertification: moves atester → attester', () => {
       const fakeAtt: Attester = {
         id: 'a1',
         organization: 'Org',
@@ -206,7 +200,7 @@ describe('LEARCredentialDataNormalizer', () => {
         id: '3',
         type: ['VerifiableCertification'],
         credentialSubject: { foo: 'bar' },
-        attester: fakeAtt,
+        atester: fakeAtt,
         validFrom: '2025-01-01T00:00:00Z',
         validUntil: '2025-12-31T23:59:59Z',
         issuer: {} as any,
@@ -219,7 +213,7 @@ describe('LEARCredentialDataNormalizer', () => {
       expect(out.credentialSubject).toEqual({ foo: 'bar' });
     });
 
-    it('si no hi ha tipus rellevant retorna un clon sense canvis', () => {
+    it('if there is no relevant type returns an unchanged clone', () => {
       const input: any = {
         id: '4',
         type: ['GXSomethingElse'],
@@ -237,12 +231,11 @@ describe('LEARCredentialDataNormalizer', () => {
       };
 
       const out = normalizer.normalizeLearCredential(input as any);
-      // Igualtat d'objecte però no mateixa referència
       expect(out).toEqual(input);
       expect(out).not.toBe(input);
     });
 
-    it('si falta mandate dins credentialSubject i és LEARCredentialEmployee no falla', () => {
+    it('does not throw if mandate is missing in credentialSubject for LEARCredentialEmployee', () => {
       const input: any = {
         type: ['LEARCredentialEmployee'],
         credentialSubject: { somethingElse: 123 }

@@ -101,20 +101,17 @@ describe('LearCredentialMachineIssuanceSchemaProvider', () => {
       expect(mandator?.display).toBe('pref_side');
       expect(typeof mandator?.staticValueGetter).toBe('function');
 
-      // when authService returns null
       authMock.getRawMandator.mockReturnValue(null);
       expect(mandator?.staticValueGetter!()).toBeNull();
 
-      // when authService returns a full object
       authMock.getRawMandator.mockReturnValue(fakeMandatorRaw as any);
       const staticData = mandator?.staticValueGetter!();
       expect(staticData).toHaveProperty('mandator');
-      // should match our fakeMandatorRaw keys in the ordered array
+
       expect(staticData!.mandator).toEqual(
         fieldsHelpers.mandatorFieldsOrder.map(k => ({ key: k, value: fakeMandatorRaw[k] }))
       );
 
-      // ensure the groupFields order and contents
       const fields = mandator?.groupFields;
       expect(fields![0]).toEqual(firstNameField);
       expect(fields![1]).toEqual(lastNameField);

@@ -1,12 +1,11 @@
 import { DialogData } from 'src/app/shared/components/dialog/dialog-data';
-import { DialogComponent } from 'src/app/shared/components/dialog/dialog-component/dialog.component';
 import { ComponentFixture, TestBed, fakeAsync, tick } from '@angular/core/testing';
 import { IssuancePowerComponent, TempIssuanceFormPowerSchema } from './issuance-power.component';
 import { AuthService } from 'src/app/core/services/auth.service';
 import { DialogWrapperService } from 'src/app/shared/components/dialog/dialog-wrapper/dialog-wrapper.service';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { IssuanceFormPowerSchema } from 'src/app/core/models/entity/lear-credential-issuance';
-import { of, Subject } from 'rxjs';
+import { of } from 'rxjs';
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { CredentialIssuanceService } from '../../services/credential-issuance.service';
@@ -21,7 +20,6 @@ describe('IssuancePowerComponent', () => {
   let mockIssuanceService: Partial<CredentialIssuanceService>;
 
   beforeEach(async () => {
-    // Stub underlying methods & override the @Input setter to ignore undefined
     proto.updateMessages = () => () => {};
     proto.data = () => [];
     proto.resetForm = () => {};
@@ -59,29 +57,25 @@ describe('IssuancePowerComponent', () => {
 
     fixture = TestBed.createComponent(IssuancePowerComponent);
     component = fixture.componentInstance;
-    // do not auto detectChanges
   });
 
-  it('hauria de crear el component', () => {
+  it('should create the component', () => {
     (authService.hasIn2OrganizationIdentifier as jest.Mock).mockReturnValue(true);
-    // Com que el component espera un input "form", el definim aquí
     Object.defineProperty(component, 'form', {
       value: () => new FormGroup({}),
       configurable: true
     });
-    // Cal passar també powersInput perquè @Input() powersInput és required
     component.powersInput = [];
     fixture.detectChanges();
     expect(component).toBeTruthy();
   });
 
-  it('organizationIdentifierIsIn2 es truthy si el servei ho indica', () => {
+  it('organizationIdentifierIsIn2 is truthy if the service indicates so', () => {
     (authService.hasIn2OrganizationIdentifier as jest.Mock).mockReturnValue(true);
     Object.defineProperty(component, 'form', {
       value: () => new FormGroup({}),
       configurable: true
     });
-    // **Afegim aquesta línia** per sincronitzar la propietat amb el mock
     component.organizationIdentifierIsIn2 = true;
     component.powersInput = [];
     fixture.detectChanges();
@@ -100,12 +94,11 @@ describe('IssuancePowerComponent', () => {
     expect(cmp2.organizationIdentifierIsIn2).toBeFalsy();
   });
 
-
-  it('keepOrder retorna sempre 0', () => {
+  it('keepOrder always returns 0', () => {
     expect(component.keepOrder('x', 'y')).toBe(0);
   });
 
-  it('addPower afegeix un control i deshabilita el selector', () => {
+  it('addPower adds a control and disables the selector', () => {
     (authService.hasIn2OrganizationIdentifier as jest.Mock).mockReturnValue(true);
     const schema: TempIssuanceFormPowerSchema = {
       function: 'power1',
@@ -130,7 +123,7 @@ describe('IssuancePowerComponent', () => {
     expect(component.selectedPower).toBeUndefined();
   });
 
-  it('addPower amb accions undefined fa console.error i no modifica el form', () => {
+  it('addPower with undefined actions logs an error and does not modify the form', () => {
     console.error = jest.fn();
     (authService.hasIn2OrganizationIdentifier as jest.Mock).mockReturnValue(true);
     const schema: IssuanceFormPowerSchema = {
@@ -147,7 +140,7 @@ describe('IssuancePowerComponent', () => {
     expect(fg.contains('p2')).toBeFalsy();
   });
 
-  it('removePower obre el diàleg i després elimina el control i habilita selector', fakeAsync(() => {
+  it('removePower opens the dialog then removes the control and enables the selector', fakeAsync(() => {
     (authService.hasIn2OrganizationIdentifier as jest.Mock).mockReturnValue(true);
     const schema: IssuanceFormPowerSchema = {
       function: 'pw',
@@ -173,7 +166,7 @@ describe('IssuancePowerComponent', () => {
     expect(p.isDisabled).toBeFalsy();
   }));
 
-  it('ngOnInit inicialitza data() i observa valueChanges', fakeAsync(() => {
+  it('ngOnInit initializes data() and subscribes to valueChanges', fakeAsync(() => {
     (authService.hasIn2OrganizationIdentifier as jest.Mock).mockReturnValue(true);
     const initial: IssuanceFormPowerSchema[] = [
       { function: 'f', action: ['x'], isIn2Required: false }
@@ -192,7 +185,7 @@ describe('IssuancePowerComponent', () => {
 
   }));
 
-  it('getPowerByFunction retorna l\'element correcte', () => {
+  it('getPowerByFunction returns the correct element', () => {
     component.selectorPowers = [
       { function: 'a', action: [], isIn2Required: false, isDisabled: false }
     ];
@@ -200,7 +193,7 @@ describe('IssuancePowerComponent', () => {
     expect(component.getPowerByFunction('nope')).toBeUndefined();
   });
 
-  it('getFormGroup fa cast correcte', () => {
+  it('getFormGroup performs the correct cast', () => {
     const fg = new FormGroup({});
     expect(component.getFormGroup(fg)).toBe(fg);
   });

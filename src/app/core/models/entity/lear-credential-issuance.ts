@@ -19,13 +19,13 @@ export interface BaseCredentialIssuanceViewModelField {
 export interface CredentialIssuanceViewModelControlField extends BaseCredentialIssuanceViewModelField {
     type: 'control'; // for FormControl or custom components with one FormControl
     controlType: 'text' | 'number' | 'selector',
-    multiOptions?: SelectorOption[], //only for 'selector' (and similars if added in the future: 'radio' and 'checkbox')
+    multiOptions?: SelectorOption[], //only for 'selector' controlType (and similars if added in the future: 'radio' and 'checkbox')
     validators: ValidatorEntryUnion[];
     hint?: string; //hint that is shown above the control
 }
 
 export interface CredentialIssuanceViewModelGroupField extends BaseCredentialIssuanceViewModelField {
-    type: 'group'; // for FormGroup or custom components which include several controls
+    type: 'group'; // for FormGroup or custom components which include multiple controls
     display?: 'main' | 'side' | 'pref_side'; // this specifies whether the group should be displayed in the main space or as a side card. 'pref_side' for sections that are only displayed in main when not "asSigner" mode
     groupFields: CredentialIssuanceViewModelField[];
 }

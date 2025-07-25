@@ -102,7 +102,8 @@ export class CredentialIssuanceService {
     this.selectedCredentialType$.set(selectedCredentialType);
   }
 
-  //if the message is new, add it; otherwise, delete it
+  // if the message is new, add it; otherwise, delete it
+  // this is called by some custom form child components
   public updateAlertMessages(messages: string[]): void{
     const currentMessages = this.bottomAlertMessages$();
 

@@ -22,6 +22,7 @@ export class IssuanceSchemaBuilder {
 
     for (const field of rawSchema) {
       // id is added to enable the "track" function in the fields @for loop
+      // we add NOSONAR since this id is sufficient for the number of fields we manage + the id is not sent to backend
       const fieldWithId: CredentialIssuanceViewModelGroupFieldWithId = { ...field, id: Math.random() * 1000 }; // NOSONAR
 
       if (this.shouldExtractStatic(fieldWithId, asSigner)) {

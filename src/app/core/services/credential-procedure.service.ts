@@ -68,8 +68,6 @@ export class CredentialProcedureService {
   }
 
   public createProcedure(procedureRequest: IssuanceLEARCredentialRequestDto): Observable<void> {
-    console.info('Sending API request to create procedure');
-    console.info(procedureRequest);
 
     return this.http.post<void>(this.saveCredential, procedureRequest).pipe(
       catchError(this.handleError)

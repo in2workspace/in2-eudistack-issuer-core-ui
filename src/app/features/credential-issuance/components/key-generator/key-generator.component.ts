@@ -6,7 +6,7 @@ import { KeyGeneratorService } from '../../services/key-generator.service';
 import { MatIcon } from '@angular/material/icon';
 import { MatTooltip } from '@angular/material/tooltip';
 import { KeyForm, KeyState } from 'src/app/core/models/entity/lear-credential-issuance';
-import { IssuanceCustomFormChild } from 'src/app/features/credential-details/components/issuance-custom-form-child';
+import { IssuanceCustomFormChildWithAlert } from 'src/app/features/credential-details/components/issuance-custom-form-child';
 import { FormGroup } from '@angular/forms';
 
 @Component({
@@ -17,7 +17,7 @@ import { FormGroup } from '@angular/forms';
   templateUrl: './key-generator.component.html',
   styleUrl: './key-generator.component.scss'
 })
-export class KeyGeneratorComponent extends IssuanceCustomFormChild<FormGroup<KeyForm>> implements OnInit, OnDestroy{
+export class KeyGeneratorComponent extends IssuanceCustomFormChildWithAlert<FormGroup<KeyForm>> implements OnInit, OnDestroy{
   public keyState$: Signal<KeyState | undefined>;
   public displayedKeys$: Signal<Partial<KeyState> | undefined>;
   public copiedKey = "";
@@ -35,9 +35,7 @@ export class KeyGeneratorComponent extends IssuanceCustomFormChild<FormGroup<Key
   }
 
   public ngOnDestroy(){
-    if(!this.keyState$()){
-      this.updateAlertMessages(this.alertMessages);
-    }
+    this.cleanUpAlertMessages();
   }
 
   public async generateKeys(): Promise<void>{
@@ -54,5 +52,11 @@ export class KeyGeneratorComponent extends IssuanceCustomFormChild<FormGroup<Key
 
   private resetCopiedKey(): void{
     this.copiedKey = "";
+  }
+
+  private cleanUpAlertMessages(): void{
+    if(!this.keyState$()){
+      this.updateAlertMessages(this.alertMessages);
+    }
   }
 }

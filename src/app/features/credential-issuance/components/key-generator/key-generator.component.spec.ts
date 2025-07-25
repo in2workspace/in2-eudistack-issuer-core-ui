@@ -29,7 +29,7 @@ describe('KeyGeneratorComponent', () => {
       generateP256: jest.fn().mockResolvedValue(undefined),
     };
 
-    // Stub updateMessages al prototype per evitar NG0950 de "required Input"
+    // Stub updateMessages on the prototype to avoid NG0950 "required Input"
     Object.defineProperty(
       KeyGeneratorComponent.prototype,
       'updateMessages',
@@ -58,16 +58,16 @@ describe('KeyGeneratorComponent', () => {
     component = fixture.componentInstance;
   });
 
-  it('hauria de crear el component', () => {
+  it('should create the component', () => {
     expect(component).toBeTruthy();
   });
 
-  it('inicialment keyState$ i displayedKeys$ provenen del servei', () => {
+  it('initially keyState$ and displayedKeys$ come from the service', () => {
     expect(component.keyState$()).toBeUndefined();
     expect(component.displayedKeys$()).toEqual({ desmosPrivateKeyValue: undefined });
   });
 
-  it('ngOnInit ha de cridar updateAlertMessages', () => {
+  it('ngOnInit should call updateAlertMessages', () => {
     const spy = jest
       .spyOn(component as any, 'updateAlertMessages')
       .mockImplementation(() => {});
@@ -75,14 +75,13 @@ describe('KeyGeneratorComponent', () => {
     expect(spy).toHaveBeenCalled();
   });
 
-  it('updateAlertMessages ha de delegar al servei issuance.updateAlertMessages', () => {
+  it('updateAlertMessages should delegate to issuance.updateAlertMessages service', () => {
     const msgs = ['error.form.no_key'];
     (component as any).updateAlertMessages(msgs);
     expect((mockIssuanceService.updateAlertMessages as jest.Mock)).toHaveBeenCalledWith(msgs);
   });
 
-
-  it('generateKeys ha de cridar generateP256 i parchejar el form amb el didKey', async () => {
+  it('generateKeys should call generateP256 and patch the form with the didKey', async () => {
     const fakeState: KeyState = {
       desmosDidKeyValue: 'DID-123',
       desmosPrivateKeyValue: 'PRIV'
@@ -95,7 +94,7 @@ describe('KeyGeneratorComponent', () => {
       value: () => fakeForm
     });
 
-    // Stub updateAlertMessages per evitar NG0950
+    // Stub updateAlertMessages to avoid NG0950
     jest.spyOn(component as any, 'updateAlertMessages').mockImplementation(() => {});
 
     await component.generateKeys();
@@ -104,7 +103,7 @@ describe('KeyGeneratorComponent', () => {
     expect(fakeForm.patchValue).toHaveBeenCalledWith({ didKey: 'DID-123' });
   });
 
-  it('copyToClipboard escriu al clipboard i reseteja copiedKey després de 2s', fakeAsync(() => {
+  it('copyToClipboard should write to the clipboard and reset copiedKey after 2 seconds', fakeAsync(() => {
     Object.defineProperty(navigator, 'clipboard', {
       value: { writeText: jest.fn().mockResolvedValue(undefined) },
       writable: true
@@ -120,7 +119,7 @@ describe('KeyGeneratorComponent', () => {
     expect(component.copiedKey).toBe('');
   }));
 
-  it('resetCopiedKey ha de buidar copiedKey', () => {
+  it('resetCopiedKey should clear copiedKey', () => {
     component.copiedKey = 'xxx';
     (component as any).resetCopiedKey();
     expect(component.copiedKey).toBe('');

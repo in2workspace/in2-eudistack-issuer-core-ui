@@ -17,8 +17,8 @@ export interface IssuancePayloadPower extends Power {
 }
 
 
+//it should probably be the same as in credential details, but details feature/interface has to be updated first
 export interface IssuanceLEARCredentialMachinePayload {
-    //it should probably be the same as in credential details, but details feature/interface has to be updated first
     mandator: {
         id: string, //did-elsi
         commonName: string,
@@ -27,7 +27,6 @@ export interface IssuanceLEARCredentialMachinePayload {
         organization: string,
         country: string,
     },
-    //it should probably be the same as in credential details, but details feature/interface has to be updated first
     mandatee: {
         id: string, //did-key
         domain: string,

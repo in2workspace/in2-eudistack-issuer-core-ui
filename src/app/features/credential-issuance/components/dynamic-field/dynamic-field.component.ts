@@ -11,7 +11,7 @@ import { CredentialIssuanceViewModelControlField, CredentialIssuanceViewModelFie
 
 /**
  * DynamicFieldComponent
- * - Takes a field schema (control or group), its name, and the parent FormGroup.
+ * - Takes as inputs a field schema (control or group), its name and the parent FormGroup.
  * - If the field schema type is 'control', it renders it. This case needs the parent Form Group because controls need parent FormGroup to be in the same view
  * - If the field schema type is 'group', it iterates over the child fields and renders them recusively (calling the dynamic component itself)
  */

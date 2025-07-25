@@ -5,7 +5,7 @@ import { Component, inject, WritableSignal, HostListener, Signal } from '@angula
 import { MatFormField, MatOption, MatSelect } from '@angular/material/select';
 import { DynamicFieldComponent } from '../dynamic-field/dynamic-field.component';
 import { FormGroup, ReactiveFormsModule } from '@angular/forms';
-import { TitleCasePipe, KeyValuePipe, NgComponentOutlet, CommonModule } from '@angular/common';
+import { TitleCasePipe, KeyValuePipe, CommonModule } from '@angular/common';
 import { TranslatePipe } from '@ngx-translate/core';
 import { ActivatedRoute, CanDeactivate } from '@angular/router';
 import { MatCard, MatCardContent } from '@angular/material/card';
@@ -13,11 +13,16 @@ import { CanComponentDeactivate, CanDeactivateType } from 'src/app/core/guards/c
 import { CredentialIssuanceService } from '../../services/credential-issuance.service';
 import { CredentialIssuanceViewModelSchemaWithId, IssuanceCredentialType, IssuanceStaticViewModel } from 'src/app/core/models/entity/lear-credential-issuance';
 
+/**
+ * CredentialIssuanceComponent
+ * - Renders a credential type selector. When a type is selected, a form corresponding to this type is built and rendered
+ * - If the form has been touched, an alert is shown if the user tries to change the selected type or leave the page
+ */
 @Component({
   selector: 'app-credential-issuance',
   standalone: true,
   providers: [CredentialIssuanceService],
-  imports: [CommonModule, KeyValuePipe, ReactiveFormsModule, DynamicFieldComponent, MatButton, MatCard, MatCardContent, MatFormField, MatLabel, MatOption, MatSelect, NgComponentOutlet, TitleCasePipe, TranslatePipe],
+  imports: [CommonModule, KeyValuePipe, ReactiveFormsModule, DynamicFieldComponent, MatButton, MatCard, MatCardContent, MatFormField, MatLabel, MatOption, MatSelect, TitleCasePipe, TranslatePipe],
   templateUrl: './credential-issuance.component.html',
   styleUrl: './credential-issuance.component.scss'
 })

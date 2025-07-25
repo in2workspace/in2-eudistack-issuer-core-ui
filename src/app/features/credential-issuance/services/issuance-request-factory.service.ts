@@ -38,7 +38,7 @@ export class IssuanceRequestFactoryService {
     const vatNumber = this.buildOrganizationId(country, orgId);
     const mandatorCommonName = mandator['commonName'] ?? this.buildCommonName(mandator['firstName'], mandator['lastName']);
     
-
+    // Payload
     const payload: IssuanceLEARCredentialEmployeePayload =    
       {
       mandator: {
@@ -78,6 +78,7 @@ export class IssuanceRequestFactoryService {
 
     const didKey = credentialData.formData['keys']['didKey'];
 
+    // Payload
     const payload: IssuanceLEARCredentialMachinePayload =    
       {
       mandator: {
@@ -139,7 +140,6 @@ export class IssuanceRequestFactoryService {
         return acc;
       }
 
-      // construïm el payload combinant base + accions filtrades
       const parsed: IssuancePayloadPower = {
         ...base,
         action: selectedActions

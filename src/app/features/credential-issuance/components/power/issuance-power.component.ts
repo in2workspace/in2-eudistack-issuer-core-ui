@@ -113,12 +113,10 @@ export class IssuancePowerComponent extends BaseIssuanceCustomFormChild<UntypedF
     this.selectorPowers = this.mapToTempPowerSchema(selectorPowers) || [];
   }
 
-// Mètode per obtenir un poder per la seva funció
 public getPowerByFunction(functionName: string): TempIssuanceFormPowerSchema | undefined {
   return this.selectorPowers.find(p => p.function === functionName);
 }
 
-// Mètode per obtenir el FormGroup d'un control
 public getFormGroup(control: any): FormGroup {
   return control as FormGroup;
 }

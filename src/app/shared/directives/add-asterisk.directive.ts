@@ -1,6 +1,7 @@
 import { Directive, ElementRef, Input, OnInit, Renderer2 } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 
+// This adds an asterisk, which is useful to indicate that a field in a form is mandatory
 @Directive({
   selector: '[appAddAsterisk]',
   standalone: true

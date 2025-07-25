@@ -5,7 +5,7 @@ import { BaseIssuanceCustomFormChild } from './base-issuance-custom-form-child';
 
 
 @Directive()
-export abstract class IssuanceCustomFormChild<T extends AbstractControl = AbstractControl> extends BaseIssuanceCustomFormChild<T> {
+export abstract class IssuanceCustomFormChildWithAlert<T extends AbstractControl = AbstractControl> extends BaseIssuanceCustomFormChild<T> {
   protected readonly issuance = inject(CredentialIssuanceService);
 
   protected updateAlertMessages(messages: string[]): void {
