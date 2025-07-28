@@ -227,7 +227,7 @@
     },
     "create-success-dialog": {
       "title": "Credential created",
-      "message": "LEARCredentialEmployee was created successfully."
+      "message": "The credential was created successfully."
     },
     "creating-credential": "Creating credential",
     "create-credential": "Create credential",
