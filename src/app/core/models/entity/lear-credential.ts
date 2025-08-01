@@ -1,8 +1,8 @@
-export interface CredentialProcedureDataDetails {
+//normalized version of CredentialProcedureDetailsResponse
+export interface CredentialProcedureDetails {
   procedure_id: string;
-  // In the future, "lifeCycleStatus" will be replaced by "lifecycle_procedure_status"
   lifeCycleStatus: LifeCycleStatus;
-  credential: LEARCredentialJwtPayload;
+  credential: LEARCredentialJwtPayload; 
 }
 
 export type LifeCycleStatus = 'WITHDRAWN' | 'VALID' | 'EXPIRED' | 'PEND_DOWNLOAD' | 'PEND_SIGNATURE' | 'DRAFT' | 'ISSUED' | 'REVOKED';

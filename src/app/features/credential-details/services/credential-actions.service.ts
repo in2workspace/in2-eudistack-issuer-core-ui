@@ -1,10 +1,11 @@
+import { DialogComponent } from 'src/app/shared/components/dialog/dialog-component/dialog.component';
 import { inject, Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
 import { Observable, switchMap, from, tap, EMPTY } from 'rxjs';
 import { CredentialProcedureService } from 'src/app/core/services/credential-procedure.service';
 import { DialogWrapperService } from 'src/app/shared/components/dialog/dialog-wrapper/dialog-wrapper.service';
-import { DialogData } from 'src/app/shared/components/dialog/dialog.component';
+import { DialogData } from 'src/app/shared/components/dialog/dialog-data';
 
 @Injectable({
   providedIn: 'root'
@@ -30,7 +31,7 @@ export class CredentialActionsService {
       return this.sendReminder(procedureId);
     }
 
-    this.dialog.openDialogWithCallback(dialogData, sendReminderAfterConfirm);
+    this.dialog.openDialogWithCallback(DialogComponent, dialogData, sendReminderAfterConfirm);
 
   }
 
@@ -48,7 +49,7 @@ export class CredentialActionsService {
       return this.signCredential(procedureId);
     }
     
-    this.dialog.openDialogWithCallback(dialogData, signCredentialAfterConfirm);
+    this.dialog.openDialogWithCallback(DialogComponent, dialogData, signCredentialAfterConfirm);
   }
 
   // REVOKE CREDENTIAL
@@ -59,14 +60,14 @@ export class CredentialActionsService {
       title: this.translate.instant("credentialDetails.revokeCredentialConfirm.title"),
       message: this.translate.instant("credentialDetails.revokeCredentialConfirm.message"),
       confirmationType: 'async',
-      status: 'default'
+      status: 'error'
     };
 
     const revokeCredentialAfterConfirm = (): Observable<boolean> => {
       return this.revokeCredential(credentialId, credentialList);
     }
     
-    this.dialog.openDialogWithCallback(dialogData, revokeCredentialAfterConfirm);
+    this.dialog.openDialogWithCallback(DialogComponent, dialogData, revokeCredentialAfterConfirm);
   }
 
   //executes backend callback by CREDENTIAL ID
@@ -86,7 +87,7 @@ export class CredentialActionsService {
           status: 'default'
         };
   
-        const dialogRef = this.dialog.openDialog(dialogData);
+        const dialogRef = this.dialog.openDialog(DialogComponent, dialogData);
         return dialogRef.afterClosed();
       }),
       switchMap(()  =>

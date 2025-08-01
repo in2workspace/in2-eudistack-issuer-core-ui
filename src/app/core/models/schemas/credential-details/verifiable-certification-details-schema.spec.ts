@@ -1,9 +1,9 @@
 import { isVerifiable, mapComplianceEntries } from 'src/app/features/credential-details/helpers/credential-details-helpers';
 import { LEARCredential, VerifiableCertification, ComplianceEntry } from 'src/app/core/models/entity/lear-credential';
-import { TemplateSchema } from '../../entity/lear-credential-details';
-import { VerifiableCertificationDetailsTemplateSchema } from './verifiable-certification-details-schema';
+import { ViewModelSchema } from '../../entity/lear-credential-details';
+import { VerifiableCertificationDetailsViewModelSchema } from './verifiable-certification-details-schema';
 
-describe('VerifiableCertificationDetailsTemplateSchema', () => {
+describe('VerifiableCertificationDetailsViewModelSchema', () => {
   const sample: VerifiableCertification = {
     credentialSubject: {
       company: {
@@ -43,7 +43,7 @@ describe('VerifiableCertificationDetailsTemplateSchema', () => {
     credentialSubjectFormat: '',
   } as any;
 
-  const schema: TemplateSchema = VerifiableCertificationDetailsTemplateSchema;
+  const schema: ViewModelSchema = VerifiableCertificationDetailsViewModelSchema;
   const main = schema.main;
   const side = schema.side;
 

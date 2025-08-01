@@ -1,8 +1,8 @@
 import { groupActionsByFunction, FunctionActions } from 'src/app/features/credential-details/helpers/credential-details-helpers';
 import { LEARCredentialMachine } from 'src/app/core/models/entity/lear-credential';
-import { LearCredentialMachineDetailsTemplateSchema } from './lear-credential-machine-details-schema';
+import { LearCredentialMachineDetailsViewModelSchema } from './lear-credential-machine-details-schema';
 
-describe('LearCredentialMachineDetailsTemplateSchema', () => {
+describe('LearCredentialMachineDetailsViewModelSchema', () => {
   const sample: LEARCredentialMachine = {
     credentialSubject: {
       mandate: {
@@ -39,7 +39,7 @@ describe('LearCredentialMachineDetailsTemplateSchema', () => {
     credentialSubjectFormat: '',
   } as any;
 
-  const { main, side } = LearCredentialMachineDetailsTemplateSchema;
+  const { main, side } = LearCredentialMachineDetailsViewModelSchema;
 
   describe('main section', () => {
     it('extracts mandator fields correctly', () => {

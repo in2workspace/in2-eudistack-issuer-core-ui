@@ -169,7 +169,7 @@ describe('CredentialManagementComponent', () => {
         subject: 'S1',
         status: 'DRAFT',
         updated: '2025-07-01',
-        credential_type: 'T1',
+        credential_type: 'LEAR_CREDENTIAL_EMPLOYEE',
       }
     };
     const mockResponse = { credential_procedures: [ mockProc ] } as CredentialProceduresResponse;

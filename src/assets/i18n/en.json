@@ -1,6 +1,8 @@
 {
   "next": "Next",
   "back": "Back",
+  "copy": "Copy",
+  "copied": "Copied",
   "verifiable-credential": "Verifiable Credential",
   "dome-wallet": "DOME Wallet",
   "home": {
@@ -35,7 +37,6 @@
   },
   "mandator": {
     "organizationid": "Company VAT number",
-    "organizationidHint": "Enter only the characters after 'VAT...-'. For example, if 'VATEU-123ABC', enter '123ABC'",
     "organization": "Company name",
     "name": "Name",
     "first-name": "First name",
@@ -216,16 +217,43 @@
     }
   },
   "credentialIssuance": {
+    "title": "LEARCredential Issuance",
     "learCredentialEmployee": "LEARCredentialEmployee",
     "create-confirm-dialog": {
       "title": "Create credential",
-      "message": "Are you sure you want to create this credential?"
+      "message": "Are you sure you want to create this credential?",
+      "checkboxLabel": "I confirm that I have copied and safely stored the private key.",
+      "belowText": "Without the private key, you will not be able to use this credential later."
     },
     "create-success-dialog": {
       "title": "Credential created",
-      "message": "LEARCredentialEmployee was created successfully."
+      "message": "The credential was created successfully."
     },
-    "creating-credential": "Creating credential"
+    "creating-credential": "Creating credential",
+    "create-credential": "Create credential",
+    "credentialType": "Credential Type",
+    "cancel": "Cancel",
+    "mandatee": "mandatee",
+    "mandator": "mandator",
+    "select-type": "Select credential type",
+    "firstName": "First name",
+    "lastName": "Last name",
+    "commonName": "Name",
+    "email": "Email",
+    "emailAddress": "Email",
+    "nationality": "Nationality",
+    "serialNumber": "ID card number",
+    "organization": "Company name",
+    "organizationIdentifier": "Company VAT number",
+    "country": "Country",
+    "domain": "Domain",
+    "ipAddress": "IP Address",
+    "selectA": "Select a ",
+    "hint": {
+      "organizationIdentifier": "Enter only the characters after 'VAT...-'. For example, if 'VATEU-123ABC', enter '123ABC'"
+    },
+    "changeCredentialAlert": "Are you sure you want to change the type of credential? Your progress will be lost.",
+    "unloadAlert": "Are you sure yo want to leave? Your progress will be lost."
   },
   "error": {
     "not_found": "The requested resource was not found.",
@@ -251,6 +279,13 @@
     },
     "form":{
       "required": "This field is required.",
+      "min": "Minimum is {{0}}",
+      "max": "Maximum is {{0}}",
+      "minLength": "Minimum characters: {{0}}",
+      "maxLength": "Maximum characters exceeded: {{0}}",
+      "pattern": "Invalid pattern",
+      "ip": "Invalid IP address. Please enter a valid IPv4 or IPv6 address.",
+      "domain": "Invalid domain",
       "invalid_character": "Invalid character/s",
       "only_letters_and_numbers": "Only letters and numbers are allowed",
       "only_letters_numbers_hyphens": "Only letters, numbers and hyphens are allowed",
@@ -269,6 +304,7 @@
         "top_level_domain_part_min": "The portion of the domain after the last '.' must be at least 2 characters long."
       },
       "org_id_startsWithVAT": "Enter the id without VAT nor the country prefix",
+      "no_key": "You need to generate a key to submit.",
       "no_power": "You need to add at least one power",
       "no_function": "Each power must have at least one selected function"
     }
@@ -320,6 +356,12 @@
       }
       
     }
+  },
+  "keys": {
+    "title": "Private Key",
+    "buttonText": "Generate Key",
+    "alert": "Make sure to copy this key.",
+    "tooltip": "Your private key is a secret that lets you sign and prove ownership of your credential. Without it you can’t use your credential. Store it safely, back it up and never share it."
   }
 }
 

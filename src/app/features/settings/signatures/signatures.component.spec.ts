@@ -7,7 +7,7 @@ import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { ConfigurationService } from '../services/configuration.service';
 import { SignatureConfigurationService } from '../services/signatureConfiguration.service';
 import { DialogWrapperService } from 'src/app/shared/components/dialog/dialog-wrapper/dialog-wrapper.service';
-import { LoaderService } from 'src/app/core/services/loader.service';
+import { LoaderService } from 'src/app/shared/services/loader.service';
 import {
   SignatureConfigPayload,
   SignatureConfigurationRequest,

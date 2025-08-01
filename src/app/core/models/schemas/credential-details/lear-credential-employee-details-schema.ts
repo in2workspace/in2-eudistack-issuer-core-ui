@@ -1,10 +1,10 @@
 import { groupActionsByFunction } from "src/app/features/credential-details/helpers/credential-details-helpers";
 import { LEARCredentialEmployee } from "../../entity/lear-credential";
-import { TemplateSchema } from "../../entity/lear-credential-details";
+import { ViewModelSchema } from "../../entity/lear-credential-details";
 import { DetailsPowerComponent, detailsPowerToken } from "src/app/features/credential-details/components/details-power/details-power.component";
 
 
-export const LearCredentialEmployeeDetailsTemplateSchema: TemplateSchema = {
+export const LearCredentialEmployeeDetailsViewModelSchema: ViewModelSchema = {
   main: [
     {
       key: 'mandator',

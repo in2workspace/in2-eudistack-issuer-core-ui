@@ -4,16 +4,18 @@ import { LEARCredential } from "./lear-credential";
 
 export type DetailsField = DetailsKeyValueField | DetailsGroupField;
 
+// Extended fields have had mapped the "custom" field
 export type ExtendedDetailsField = ExtendedDetailsGroupField | ExtendedDetailsKeyValueField;
 export type ExtendedDetailsGroupField = DetailsGroupField & { portal?: ComponentPortal<any>; };
 export type ExtendedDetailsKeyValueField = DetailsKeyValueField & { portal?: ComponentPortal<any>; };
 
-export type MappedDetailsField = MappedDetailsKeyValueField | MappedDetailsGroupField;
-export type MappedDetailsKeyValueField = DetailsKeyValueField & { value: MappedDetailsField[] }
-export type MappedDetailsGroupField = DetailsGroupField & { value: MappedDetailsField[] }
+// Evaluated fields have had mapped the "value" field
+export type EvaluatedDetailsField = EvaluatedDetailsKeyValueField | EvaluatedDetailsGroupField;
+export type EvaluatedDetailsKeyValueField = DetailsKeyValueField & { value: EvaluatedDetailsField[] }
+export type EvaluatedDetailsGroupField = DetailsGroupField & { value: EvaluatedDetailsField[] }
 
-export type MappedExtendedDetailsGroupField = ExtendedDetailsGroupField & { value: MappedDetailsField[] }
-export type MappedExtendedDetailsField = ExtendedDetailsField & { value: MappedDetailsField[] }
+export type EvaluatedExtendedDetailsGroupField = ExtendedDetailsGroupField & { value: EvaluatedDetailsField[] }
+export type EvaluatedExtendedDetailsField = ExtendedDetailsField & { value: EvaluatedDetailsField[] }
 
 //todo: separate custom and value (which contains value) in different interfaces, or handle differently
 export type DetailsKeyValueField = {
@@ -34,11 +36,11 @@ export type CustomDetailsField = {
   value: any;
 };
 
-export type TemplateSchema = {
+export type ViewModelSchema = {
   main: DetailsGroupField[];
   side: DetailsGroupField[];
 };
-export type MappedTemplateSchema = {
-  main: MappedDetailsField[],
-  side: MappedDetailsField[]
+export type EvaluatedViewModelSchema = {
+  main: EvaluatedDetailsField[],
+  side: EvaluatedDetailsField[]
 }

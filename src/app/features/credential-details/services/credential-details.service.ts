@@ -2,28 +2,30 @@ import { computed, inject, Injectable, Injector, Signal, signal, WritableSignal 
 import { Observable } from 'rxjs';
 import { CredentialProcedureService } from 'src/app/core/services/credential-procedure.service';
 import { DialogWrapperService } from 'src/app/shared/components/dialog/dialog-wrapper/dialog-wrapper.service';
-import { CredentialStatus, CredentialType, LEARCredential, CredentialProcedureDataDetails, LifeCycleStatus, CREDENTIAL_TYPES_ARRAY } from 'src/app/core/models/entity/lear-credential';
+import { CredentialStatus, CredentialType, LEARCredential, CredentialProcedureDetails, LifeCycleStatus, CREDENTIAL_TYPES_ARRAY } from 'src/app/core/models/entity/lear-credential';
 import { ComponentPortal } from '@angular/cdk/portal';
-import { LearCredentialEmployeeDetailsTemplateSchema } from 'src/app/core/models/schemas/credential-details/lear-credential-employee-details-schema';
-import { LearCredentialMachineDetailsTemplateSchema } from 'src/app/core/models/schemas/credential-details/lear-credential-machine-details-schema';
-import { GxLabelCredentialDetailsTemplateSchema } from 'src/app/core/models/schemas/credential-details/gx-label-credential-details-schema';
-import { VerifiableCertificationDetailsTemplateSchema } from 'src/app/core/models/schemas/credential-details/verifiable-certification-details-schema';
-import { MappedExtendedDetailsField, TemplateSchema, MappedTemplateSchema, DetailsField, MappedDetailsField, CustomDetailsField, MappedExtendedDetailsGroupField } from 'src/app/core/models/entity/lear-credential-details';
+import { LearCredentialEmployeeDetailsViewModelSchema } from 'src/app/core/models/schemas/credential-details/lear-credential-employee-details-schema';
+import { LearCredentialMachineDetailsViewModelSchema } from 'src/app/core/models/schemas/credential-details/lear-credential-machine-details-schema';
+import { GxLabelCredentialDetailsViewModelSchema } from 'src/app/core/models/schemas/credential-details/gx-label-credential-details-schema';
+import { VerifiableCertificationDetailsViewModelSchema } from 'src/app/core/models/schemas/credential-details/verifiable-certification-details-schema';
+import { EvaluatedExtendedDetailsField, ViewModelSchema, EvaluatedViewModelSchema, DetailsField, EvaluatedDetailsField, CustomDetailsField, EvaluatedExtendedDetailsGroupField } from 'src/app/core/models/entity/lear-credential-details';
 import { LifeCycleStatusService } from 'src/app/shared/services/life-cycle-status.service';
 import { CredentialActionsService } from './credential-actions.service';
 import { StatusClass } from 'src/app/core/models/entity/lear-credential-management';
 import { statusHasSendReminderlButton, credentialTypeHasSendReminderButton, statusHasSignCredentialButton, credentialTypeHasSignCredentialButton, statusHasRevokeCredentialButton, credentialTypeHasRevokeCredentialButton } from '../helpers/actions-helpers';
+import { DialogComponent } from 'src/app/shared/components/dialog/dialog-component/dialog.component';
+
 
 @Injectable() //provided in component
 export class CredentialDetailsService {
   // CREDENTIAL DATA
   public procedureId$ = signal<string>('');
-  public credentialDetailsData$ = signal<CredentialProcedureDataDetails | undefined>(undefined);
+  public credentialProcedureDetails$ = signal<CredentialProcedureDetails | undefined>(undefined);
   public lifeCycleStatus$ = computed<LifeCycleStatus | undefined>(() => {
-    return this.credentialDetailsData$()?.lifeCycleStatus;
+    return this.credentialProcedureDetails$()?.lifeCycleStatus;
   });
   public credential$ = computed<LEARCredential | undefined>(() => {
-    const credentialProcedureData = this.credentialDetailsData$();
+    const credentialProcedureData = this.credentialProcedureDetails$();
     return credentialProcedureData?.credential?.vc;
   });
   public credentialValidFrom$ = computed<string>(() => {
@@ -42,10 +44,11 @@ export class CredentialDetailsService {
   })
 
   //MODELS
-  public sideTemplateModel$: WritableSignal<MappedExtendedDetailsField[] | undefined> = signal(undefined);
-  public mainTemplateModel$: WritableSignal<MappedExtendedDetailsField[] | undefined> = signal(undefined);
+  public sideViewModel$: WritableSignal<EvaluatedExtendedDetailsField[] | undefined> = signal(undefined);
+  // Currently this contains the Credential Subject data
+  public mainViewModel$: WritableSignal<EvaluatedExtendedDetailsField[] | undefined> = signal(undefined);
   public showSideTemplateCard$ = computed<boolean>(() =>
-    Boolean(this.sideTemplateModel$()?.length)
+    Boolean(this.sideViewModel$()?.length)
   );
 
   //BUTTONS
@@ -85,7 +88,7 @@ export class CredentialDetailsService {
     );
   });
 
-  public enableRevokeCredentialButton$ = computed(() => {
+  public enableRevokeCredentialButton$ = computed<boolean>(() => {
     return !!this.credentialStatus$();
   });
 
@@ -99,15 +102,15 @@ export class CredentialDetailsService {
   private readonly statusService = inject(LifeCycleStatusService);
 
   
-  private readonly schemasByTypeMap: Record<CredentialType, TemplateSchema> = {
-    'LEARCredentialEmployee': LearCredentialEmployeeDetailsTemplateSchema,
-    'LEARCredentialMachine': LearCredentialMachineDetailsTemplateSchema,
-    'VerifiableCertification': VerifiableCertificationDetailsTemplateSchema,
-    'gx:LabelCredential': GxLabelCredentialDetailsTemplateSchema,
+  private readonly schemasByTypeMap: Record<CredentialType, ViewModelSchema> = {
+    'LEARCredentialEmployee': LearCredentialEmployeeDetailsViewModelSchema,
+    'LEARCredentialMachine': LearCredentialMachineDetailsViewModelSchema,
+    'VerifiableCertification': VerifiableCertificationDetailsViewModelSchema,
+    'gx:LabelCredential': GxLabelCredentialDetailsViewModelSchema,
   } as const;
 
   public constructor(){
-    this.lifeCycleStatusClass$ = computed(() => {
+    this.lifeCycleStatusClass$ = computed<StatusClass | undefined>(() => {
       const status = this.lifeCycleStatus$();
       if(!status) return 'status-default';
       return this.statusService.mapStatusToClass(status)
@@ -121,7 +124,7 @@ export class CredentialDetailsService {
   public loadCredentialModels(injector: Injector): void {  
     this.loadCredentialDetails()
     .subscribe(data => {
-      this.credentialDetailsData$.set(data);
+      this.credentialProcedureDetails$.set(data);
       const vc = this.credential$();
       if(!vc) throw Error('No credential found.');
 
@@ -133,8 +136,8 @@ export class CredentialDetailsService {
       }
 
       const schema = this.getSchemaByType(type);
-      const mappedSchema = this.mapSchemaValues(schema, vc);
-      this.setTemplateModels(mappedSchema, injector);
+      const mappedSchema = this.evaluateSchemaValues(schema, vc);
+      this.setViewModels(mappedSchema, injector);
     });
   }
 
@@ -151,24 +154,24 @@ export class CredentialDetailsService {
   public openRevokeCredentialDialog(): void{
     if(this.lifeCycleStatus$() !== 'VALID'){
       console.error("Only credentials with status VALID can be revoked.");
-      this.dialog.openErrorInfoDialog('error.unknown_error');
+      this.dialog.openErrorInfoDialog(DialogComponent, 'error.unknown_error');
       return;
     }
     if(!this.credentialStatus$()){
       console.error("Only credentials with statusCredential field can be revoked.");
-      this.dialog.openErrorInfoDialog('error.unknown_error');
+      this.dialog.openErrorInfoDialog(DialogComponent, 'error.unknown_error');
       return;
     }
     const credentialId = this.getCredentialId();
     if(!credentialId){
       console.error("Couldn't get credential id from vc.");
-      this.dialog.openErrorInfoDialog('error.unknown_error');
+      this.dialog.openErrorInfoDialog(DialogComponent, 'error.unknown_error');
       return;
     }
     const listId = this.getCredentialListId();
     if(!listId){
       console.error("Couldn't get credential list from vc.");
-      this.dialog.openErrorInfoDialog('error.unknown_error');
+      this.dialog.openErrorInfoDialog(DialogComponent, 'error.unknown_error');
       return;
     }
     return this.actionsService.openRevokeCredentialDialog(credentialId, listId);
@@ -179,7 +182,7 @@ export class CredentialDetailsService {
   }
 
   private getCredential(): LEARCredential | undefined{
-    return this.credentialDetailsData$()?.credential?.vc;
+    return this.credentialProcedureDetails$()?.credential?.vc;
   }
 
   private getCredentialId(): string | undefined {
@@ -200,11 +203,11 @@ export class CredentialDetailsService {
   }
 
   
-  private loadCredentialDetails(): Observable<CredentialProcedureDataDetails> {
+  private loadCredentialDetails(): Observable<CredentialProcedureDetails> {
     return this.credentialProcedureService.getCredentialProcedureById(this.procedureId$());
   }
 
-  private getSchemaByType(credType: CredentialType): TemplateSchema{
+  private getSchemaByType(credType: CredentialType): ViewModelSchema{
     return this.schemasByTypeMap[credType];
   }
       
@@ -214,42 +217,42 @@ export class CredentialDetailsService {
     return type;
   }
 
-private mapSchemaValues(
-  schema: TemplateSchema,
+private evaluateSchemaValues(
+  schema: ViewModelSchema,
   credential: LEARCredential
-): MappedTemplateSchema {
-  const mapFields = (fields: DetailsField[]): MappedDetailsField[] =>
-    fields.map(field => this.mapField(field, credential));
+): EvaluatedViewModelSchema {
+  const evaluateFields = (fields: DetailsField[]): EvaluatedDetailsField[] =>
+    fields.map(field => this.evaluateField(field, credential));
 
-  const mainMapped = mapFields(schema.main);
+  const mainEvaluated = evaluateFields(schema.main);
 
-  const sideMapped = mapFields(schema.side)
+  const sideEvaluated = evaluateFields(schema.side)
     .filter(field => this.shouldIncludeSideField(field));
 
   return {
-    main: mainMapped,
-    side: sideMapped
+    main: mainEvaluated,
+    side: sideEvaluated
   };
 }
 
-  private mapField(
+  private evaluateField(
   field: DetailsField,
   credential: LEARCredential
-): MappedDetailsField {
-  const mapCustom = (custom: CustomDetailsField) => ({
+): EvaluatedDetailsField {
+  const evaluateCustom = (custom: CustomDetailsField) => ({
     ...custom,
     value: this.safeCompute(custom.value, credential, custom.token.toString())
   });
   
 
   if (field.type === 'key-value') {
-    const kv = field;
-    const ob = {
-      ...kv,
-      value: this.safeCompute(kv.value, credential, kv.key),
-      custom: kv.custom ? mapCustom(kv.custom) : undefined
+    const keyValueField = field;
+    const evaluatedKeyValueField: EvaluatedDetailsField = {
+      ...keyValueField,
+      value: this.safeCompute(keyValueField.value, credential, keyValueField.key),
+      custom: keyValueField.custom ? evaluateCustom(keyValueField.custom) : undefined
     };
-    return ob;
+    return evaluatedKeyValueField;
   }
 
 
@@ -260,14 +263,14 @@ private mapSchemaValues(
       ? rawGroup(credential)
       : rawGroup;
   } catch (e) {
-    console.warn(`Error mapping group "${field.key}":`, e);
+    console.warn(`Error evaluating group "${field.key}":`, e);
     children = [];
   }
 
   return {
     ...field,
-    value: children.map(child => this.mapField(child, credential)),
-    custom: field.custom ? mapCustom(field.custom) : undefined
+    value: children.map(child => this.evaluateField(child, credential)),
+    custom: field.custom ? evaluateCustom(field.custom) : undefined
   };
 }
 
@@ -288,7 +291,7 @@ private mapSchemaValues(
     }
   }
 
-  private shouldIncludeSideField(field: MappedDetailsField): boolean {
+  private shouldIncludeSideField(field: EvaluatedDetailsField): boolean {
   if (field.key !== 'issuer') {
     return true;
   }
@@ -312,9 +315,9 @@ private mapSchemaValues(
 }
 
   // add "portal" prop to fields
-  private extendFields(fields: MappedDetailsField[], injector: Injector): MappedExtendedDetailsField[] {
+  private extendFields(fields: EvaluatedDetailsField[], injector: Injector): EvaluatedExtendedDetailsField[] {
       return fields.map((field) => {
-        let extended: MappedExtendedDetailsField = { ...field };
+        let extended: EvaluatedExtendedDetailsField = { ...field };
   
         if (field.custom) {
           const childInjector = Injector.create({
@@ -333,7 +336,7 @@ private mapSchemaValues(
   
         if (field.type === 'group') {
           const groupField = field;
-          extended = { ...extended } as MappedExtendedDetailsGroupField;
+          extended = { ...extended } as EvaluatedExtendedDetailsGroupField;
           extended.value = this.extendFields(groupField.value, injector);
         }
   
@@ -341,12 +344,12 @@ private mapSchemaValues(
       });
     }
 
-  private setTemplateModels(schema: MappedTemplateSchema, injector: Injector){
+  private setViewModels(schema: EvaluatedViewModelSchema, injector: Injector){
     const extendedMainSchema = this.extendFields(schema.main, injector);
     const extendedSideSchema = this.extendFields(schema.side, injector);
     
-    this.mainTemplateModel$.set(extendedMainSchema);
-    this.sideTemplateModel$.set(extendedSideSchema);     
+    this.mainViewModel$.set(extendedMainSchema);
+    this.sideViewModel$.set(extendedSideSchema);     
   }
 
 }

@@ -1,9 +1,8 @@
-import {Component, computed, EventEmitter, input, Output} from '@angular/core';
-import {TranslatePipe} from '@ngx-translate/core';
-import {QRCodeModule} from 'angularx-qrcode';
-import {environment} from 'src/environments/environment';
-import {KNOWLEDGEBASE_PATH} from 'src/app/core/constants/knowledge.constants';
-import {API} from "../../../../core/constants/api.constants";
+import { Component, computed, EventEmitter, input, Output } from '@angular/core';
+import { TranslatePipe } from '@ngx-translate/core';
+import { QRCodeModule } from 'angularx-qrcode';
+import { environment } from 'src/environments/environment';
+import { KNOWLEDGEBASE_PATH } from 'src/app/core/constants/knowledge.constants';
 
 @Component({
     selector: 'app-credential-offer',
@@ -25,8 +24,8 @@ export class CredentialOfferComponent{
   });
 
   //TEST URLS
-  public readonly showWalletSameDeviceUrlTest =  API.SHOW_WALLET_URL_TEST;
-  public readonly walletSameDeviceTestUrl = API.WALLET_URL_TEST + '/tabs/home/';
+  public readonly showWalletSameDeviceUrlTest =  environment.show_wallet_url_test;
+  public readonly walletSameDeviceTestUrl = environment.wallet_url_test + '/tabs/home/';
 
   public walletSameDeviceTestUrl$ = computed<string>(()=>{
     const cutOfferUri = this.removeProtocol(this.credentialOfferUri$());

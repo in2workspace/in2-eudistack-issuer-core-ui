@@ -1,4 +1,14 @@
-import { CredentialProcedureDataDetails, CredentialStatus } from "../models/entity/lear-credential";
+import { CommonMandator } from 'src/app/core/models/entity/lear-credential';
+import { CredentialProcedureDetails, CredentialStatus } from "../models/entity/lear-credential";
+
+export const mandatorMock: CommonMandator = {
+  commonName: "name surname",
+  country: "FR",
+  emailAddress: "email@domain.com",
+  organization: "Org Name",
+  organizationIdentifier: "ORG_ID",
+  serialNumber: "SERIAL-NUMBER-01",
+}
 
 export const mockCredentialStatus: CredentialStatus = {   
   id: "https://issuer.dome-marketplace.eu/credentials/status/1#<nonce>",
@@ -8,8 +18,7 @@ export const mockCredentialStatus: CredentialStatus = {
   statusListCredential: "https://issuer.dome-marketplace.eu/credentials/status/1" 
 } 
 
-// todo restore type
-export const mockCredentialEmployee: CredentialProcedureDataDetails = {
+export const mockCredentialEmployee: CredentialProcedureDetails = {
   procedure_id: 'mock-procedure-employee',
   lifeCycleStatus: 'DRAFT',
   credential: {
@@ -77,7 +86,7 @@ export const mockCredentialEmployee: CredentialProcedureDataDetails = {
   }
 };
 
-export const mockCredentialMachine: CredentialProcedureDataDetails = {
+export const mockCredentialMachine: CredentialProcedureDetails = {
   procedure_id: 'mock-procedure-machine',
   lifeCycleStatus: 'PEND_SIGNATURE',
   credential: {
@@ -147,7 +156,7 @@ export const mockCredentialMachine: CredentialProcedureDataDetails = {
   }
 };
 
-export const mockCredentialCertification: CredentialProcedureDataDetails = {
+export const mockCredentialCertification: CredentialProcedureDetails = {
   procedure_id: 'mock-procedure-cert',
   lifeCycleStatus: 'PEND_DOWNLOAD',
   credential: {
@@ -221,7 +230,7 @@ export const mockCredentialCertification: CredentialProcedureDataDetails = {
 };
 
 
-export const mockGxLabel: CredentialProcedureDataDetails = {
+export const mockGxLabel: CredentialProcedureDetails = {
   procedure_id: 'mock-procedure-gx-label',
   lifeCycleStatus: 'DRAFT',
   credential: {

@@ -28,7 +28,7 @@ export interface RawVerifiableCertification extends VerifiableCertification{
 export class LEARCredentialDataNormalizer {
 
   /**
-   * Normalizes the complete LearCredentialEmployeeDataDetail object.
+   * Normalizes the complete LEARCredential object.
    * It applies normalization to the mandatee object and each element of the power array.
    */
   public normalizeLearCredential(data: LEARCredential): LEARCredential {
