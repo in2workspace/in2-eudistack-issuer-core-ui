@@ -1,6 +1,7 @@
-import { CommonMandator } from "src/app/core/models/entity/lear-credential";
+import { EmployeeMandator } from "src/app/core/models/entity/lear-credential";
 
-export const mandatorFieldsOrder: Array<keyof CommonMandator> = [
+
+export const employeeMandatorFieldsOrder: Array<keyof EmployeeMandator> = [
   "commonName",
   "emailAddress",
   "serialNumber",

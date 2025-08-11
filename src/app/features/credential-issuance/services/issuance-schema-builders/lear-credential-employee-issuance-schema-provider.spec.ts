@@ -22,7 +22,7 @@ describe('LearCredentialEmployeeSchemaProvider', () => {
 
   // construïm un fake mandator amb totes les claus de mandatorFieldsOrder
   const fakeMandatorRaw: Record<string, string> = {};
-  for (const k of fieldsHelpers.mandatorFieldsOrder) {
+  for (const k of fieldsHelpers.employeeMandatorFieldsOrder) {
     fakeMandatorRaw[k] = `val-${k}`;
   }
 
@@ -95,7 +95,7 @@ describe('LearCredentialEmployeeSchemaProvider', () => {
       const staticData = mandator?.staticValueGetter!();
       expect(staticData).toHaveProperty('mandator');
       expect(staticData!.mandator).toEqual(
-        fieldsHelpers.mandatorFieldsOrder.map(k => ({ key: k, value: fakeMandatorRaw[k] }))
+        fieldsHelpers.employeeMandatorFieldsOrder.map(k => ({ key: k, value: fakeMandatorRaw[k] }))
       );
 
       // comprovem l'ordre i contingut de groupFields

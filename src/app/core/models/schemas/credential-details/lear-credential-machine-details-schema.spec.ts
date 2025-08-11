@@ -8,10 +8,10 @@ describe('LearCredentialMachineDetailsViewModelSchema', () => {
       mandate: {
         mandator: {
           commonName: 'Alice',
-          emailAddress: 'alice@example.com',
+          email: 'alice@example.com',
           serialNumber: 'SN123',
           organization: 'ExampleOrg',
-          organizationIdentifier: 'ORG-001',
+          id: 'ORG-001',
           country: 'ES',
         },
         mandatee: {
