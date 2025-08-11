@@ -20,7 +20,6 @@ describe('LearCredentialEmployeeSchemaProvider', () => {
   let countryMock: jest.Mocked<CountryService>;
   const fakeCountries = [{ label: 'C', value: 'c' }];
 
-  // construïm un fake mandator amb totes les claus de mandatorFieldsOrder
   const fakeMandatorRaw: Record<string, string> = {};
   for (const k of fieldsHelpers.employeeMandatorFieldsOrder) {
     fakeMandatorRaw[k] = `val-${k}`;
@@ -35,7 +34,6 @@ describe('LearCredentialEmployeeSchemaProvider', () => {
       getCountriesAsSelectorOptions: jest.fn().mockReturnValue(fakeCountries),
     } as any;
 
-    // mock convertToOrderedArray per respectar qualsevol any[]
     jest
       .spyOn(fieldsHelpers, 'convertToOrderedArray')
       .mockImplementation((obj: any, order: any[]) =>
@@ -62,7 +60,7 @@ describe('LearCredentialEmployeeSchemaProvider', () => {
       schema = service.getSchema();
     });
 
-    it('inclou el grup mandatee amb firstName, lastName, email i nationality', () => {
+    it('should include mandatee group with correct fields', () => {
       const mand = schema.schema.find(f => f.key === 'mandatee');
       expect(mand).toBeDefined();
       expect(mand?.type).toBe('group');
@@ -80,7 +78,7 @@ describe('LearCredentialEmployeeSchemaProvider', () => {
       });
     });
 
-    it('inclou el grup mandator amb staticValueGetter i camps ordenats', () => {
+    it('should include mandator group with staticValueGetter and ordered fields', () => {
       const mandator = schema.schema.find(f => f.key === 'mandator');
       expect(mandator).toBeDefined();
       expect(mandator?.display).toBe('pref_side');
@@ -116,7 +114,7 @@ describe('LearCredentialEmployeeSchemaProvider', () => {
       });
     });
 
-    it('inclou el grup power amb IssuancePowerComponent i dades correctes', () => {
+    it('should include power group with IssuancePowerComponent i and correct data', () => {
       const power = schema.schema.find(f => f.key === 'power');
       expect(power).toBeDefined();
       expect(power?.type).toBe('group');
