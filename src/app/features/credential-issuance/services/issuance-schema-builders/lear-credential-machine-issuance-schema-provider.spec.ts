@@ -23,7 +23,7 @@ describe('LearCredentialMachineIssuanceSchemaProvider', () => {
 
   // build a fake mandator object whose keys cover mandatorFieldsOrder
   const fakeMandatorRaw: Record<string, string> = {};
-  for (const k of fieldsHelpers.mandatorFieldsOrder) {
+  for (const k of fieldsHelpers.employeeMandatorFieldsOrder) {
     fakeMandatorRaw[k] = `val-${k}`;
   }
 
@@ -109,7 +109,7 @@ describe('LearCredentialMachineIssuanceSchemaProvider', () => {
       expect(staticData).toHaveProperty('mandator');
 
       expect(staticData!.mandator).toEqual(
-        fieldsHelpers.mandatorFieldsOrder.map(k => ({ key: k, value: fakeMandatorRaw[k] }))
+        fieldsHelpers.employeeMandatorFieldsOrder.map(k => ({ key: k, value: fakeMandatorRaw[k] }))
       );
 
       const fields = mandator?.groupFields;
