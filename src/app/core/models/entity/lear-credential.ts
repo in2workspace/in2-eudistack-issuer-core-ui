@@ -152,7 +152,6 @@ export interface LEARCredentialMachine {
   credentialStatus: CredentialStatus;
 }
 
-// this has been simplified in v2.x.x, which includes only id, domain and ipAddress
 export interface MachineMandatee {
   id: string; // did:key:...
   domain: string;
@@ -161,8 +160,8 @@ export interface MachineMandatee {
 
 
 export interface MachineMandator extends CommonMandatorFields {
-  id: string // v2.x.x: did:elsi:...
-  email: string, //v2.x.x
+  id: string // did:elsi:...
+  email: string,
 }
 export interface MachineSigner extends CommonSigner {}
 export interface MachineIssuer extends CommonIssuer {}
