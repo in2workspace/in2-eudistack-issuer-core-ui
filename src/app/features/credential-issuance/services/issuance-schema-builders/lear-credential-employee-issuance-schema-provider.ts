@@ -2,7 +2,7 @@ import { inject, Injectable } from "@angular/core";
 import { AuthService } from "src/app/core/services/auth.service";
 import { CountryService } from "src/app/shared/services/country.service";
 import { CredentialIssuanceTypedViewModelSchema, CredentialIssuanceSchemaProvider } from "src/app/core/models/entity/lear-credential-issuance";
-import { convertToOrderedArray, employeeMandatorFieldsOrder } from "../../helpers/fields-order-helpers";
+import { convertToOrderedArray, mandatorFieldsOrder } from "../../helpers/fields-order-helpers";
 import { emailField, firstNameField, lastNameField, organizationField, organizationIdentifierField, serialNumberField } from "./common-issuance-schema-fields";
 import { IssuancePowerComponent } from "../../components/power/issuance-power.component";
 
@@ -47,7 +47,7 @@ export class LearCredentialEmployeeSchemaProvider implements CredentialIssuanceS
           display: 'pref_side',
           staticValueGetter: () => {
             const mandator = this.authService.getRawMandator();
-            return mandator ? { mandator: convertToOrderedArray(mandator, employeeMandatorFieldsOrder) } : null;
+            return mandator ? { mandator: convertToOrderedArray(mandator, mandatorFieldsOrder) } : null;
           },
           groupFields: [
             {

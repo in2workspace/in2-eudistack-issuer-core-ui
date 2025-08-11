@@ -1,6 +1,7 @@
-import { CredentialProcedureDetails, CredentialStatus, EmployeeMandator } from "../models/entity/lear-credential";
+import { CommonMandator } from 'src/app/core/models/entity/lear-credential';
+import { CredentialProcedureDetails, CredentialStatus } from "../models/entity/lear-credential";
 
-export const mandatorMock: EmployeeMandator = {
+export const mandatorMock: CommonMandator = {
   commonName: "name surname",
   country: "FR",
   emailAddress: "email@domain.com",
@@ -117,15 +118,23 @@ export const mockCredentialMachine: CredentialProcedureDetails = {
           life_span: { start: '2024-01-01', end: '2025-01-01' },
           mandatee: {
             id: 'machine-1',
+            serviceName: 'Service X',
+            serviceType: 'API',
+            version: '1.0',
             domain: 'cloud',
             ipAddress: '192.168.0.1',
+            description: 'Main processing unit',
+            contact: {
+              email: 'contact@machine.com',
+              phone: '+34999999999'
+            }
           },
           mandator: {
             commonName: 'Mandator MAC',
             country: 'DE',
-            email: 'mandator@mac.com',
+            emailAddress: 'mandator@mac.com',
             organization: 'Org Mandator MAC',
-            id: 'ORG-MAN-MAC',
+            organizationIdentifier: 'ORG-MAN-MAC',
             serialNumber: 'SN-MAC'
           },
           power: [
