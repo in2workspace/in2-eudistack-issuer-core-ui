@@ -5,10 +5,13 @@ import { ConditionalConfirmDialogComponent } from './conditional-confirm-dialog.
 import { ConditionalConfirmDialogData } from '../dialog-data';
 import { TranslateModule } from '@ngx-translate/core';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
+import { LoaderService } from 'src/app/shared/services/loader.service';
+import { of } from 'rxjs';
 
 describe('ConditionalConfirmDialogComponent', () => {
   let component: ConditionalConfirmDialogComponent;
   let mockDialogRef: jest.Mocked<MatDialogRef<ConditionalConfirmDialogComponent>>;
+  let mockLoaderService: jest.Mocked<LoaderService>;
 
   const mockData: ConditionalConfirmDialogData = {
     title: 'Test Title',
@@ -25,12 +28,17 @@ describe('ConditionalConfirmDialogComponent', () => {
       removePanelClass: jest.fn(),
     } as unknown as jest.Mocked<MatDialogRef<ConditionalConfirmDialogComponent>>;
 
+    mockLoaderService = {
+      isLoading$: of(true),
+    } as unknown as jest.Mocked<LoaderService>;
+
     TestBed.configureTestingModule({
       imports: [TranslateModule.forRoot(), NoopAnimationsModule],
       providers: [
         ConditionalConfirmDialogComponent,
         { provide: MAT_DIALOG_DATA, useValue: mockData },
         { provide: MatDialogRef, useValue: mockDialogRef },
+        { provide: LoaderService, useValue: mockLoaderService }
       ],
     });
 
@@ -43,6 +51,12 @@ describe('ConditionalConfirmDialogComponent', () => {
 
   it('should create the component', () => {
     expect(component).toBeTruthy();
+  });
+
+  it('should expose isLoading$ from LoaderService', () => {
+    let loading: boolean | undefined;
+    component.isLoading$.subscribe(v => (loading = v));
+    expect(loading).toBe(true);
   });
 
   it('should add panel classes for default style and status in constructor', () => {

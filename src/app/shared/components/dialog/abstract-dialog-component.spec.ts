@@ -2,6 +2,7 @@ import { TestBed } from '@angular/core/testing';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { BaseDialogData, DialogStatus } from './dialog-data';
 import { AbstractDialogComponent } from './abstract-dialog-component';
+import { Subject } from 'rxjs';
 
 interface TestData extends BaseDialogData {}
 
@@ -106,13 +107,6 @@ describe('AbstractDialogComponent', () => {
     (component as any).confirmSubject$.next(true);
   });
 
-  it('should emit and close on onConfirm()', () => {
-    const nextSpy = jest.spyOn((component as any).confirmSubject$, 'next');
-    component.onConfirm();
-    expect(nextSpy).toHaveBeenCalledWith(true);
-    expect(mockDialogRef.close).toHaveBeenCalledWith(true);
-  });
-
   it('should close with false on onCancel()', () => {
     component.onCancel();
     expect(mockDialogRef.close).toHaveBeenCalledWith(false);
@@ -124,5 +118,35 @@ describe('AbstractDialogComponent', () => {
 
   it('getDefaultStyle() should return "dialog-custom"', () => {
     expect((component as any).getDefaultStyle()).toBe('dialog-custom');
+  });
+
+  describe('onConfirm', () => {
+    let confirmSubj: Subject<boolean>;
+
+    beforeEach(() => {
+      confirmSubj = (component as any).confirmSubject$ as Subject<boolean>;
+      jest.spyOn(confirmSubj, 'next');
+      jest.spyOn(component, 'onCancel');
+    });
+
+    it('should call onCancel when confirmationType is "none"', () => {
+      component.data.confirmationType = 'none';
+      component.onConfirm();
+      expect(component.onCancel).toHaveBeenCalled();
+    });
+
+    it('should emit and close when confirmationType is "sync"', () => {
+      component.data.confirmationType = 'sync';
+      component.onConfirm();
+      expect(confirmSubj.next).toHaveBeenCalledWith(true);
+      expect(mockDialogRef.close).toHaveBeenCalledWith(true);
+    });
+
+    it('should only emit when confirmationType is "async"', () => {
+      component.data.confirmationType = 'async';
+      component.onConfirm();
+      expect(confirmSubj.next).toHaveBeenCalledWith(true);
+      expect(mockDialogRef.close).not.toHaveBeenCalled();
+    });
   });
 });

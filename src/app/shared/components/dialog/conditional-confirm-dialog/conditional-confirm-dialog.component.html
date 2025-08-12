@@ -1,31 +1,47 @@
-<h2 mat-dialog-title>{{ data.title }}</h2>
-
-<div mat-dialog-content>
-  <p>{{ data.message }}</p>
-
-  <mat-checkbox 
-    [checked]="checkboxChecked()"
-    (change)="toggleCheckbox($event.checked)">
-    {{ data.checkboxLabel }}
-  </mat-checkbox>
-
-  @if(data.belowText){
-    <p  class="below-text">
-      <span style="color: #FFA500; font-size: 1em;">
-        ⚠
-      </span>
-      {{ data.belowText }}
+<!-- DATA TO BE DISPLAYED WHILE LOADING ASYNC OPERATIONS -->
+@if((isLoading$|async) && data.confirmationType === 'async'){
+  <h2 mat-dialog-title>{{ data.loadingData?.title || 'Please wait while the process is completed...'}}</h2>
+  <div mat-dialog-content>
+    <p>
+      {{ data.loadingData?.message || ''}}
     </p>
-  }
-</div>
+    @if(data.loadingData?.template; as loadingTemplate){
+      <ng-template [cdkPortalOutlet]="loadingTemplate"></ng-template>
+    }@else{
+      <mat-spinner [diameter]="50"></mat-spinner>
+    }
+  </div>
+}@else{
+  <!-- DEFAULT DIALOG DATA (NON-LOADING) -->
+  <h2 mat-dialog-title>{{ data.title }}</h2>
 
-<div mat-dialog-actions >
-  <button mat-button (click)="onCancel()">
-    {{ data.cancelLabel || ("dialog.cancel" | translate) }}
-  </button>
-  <button mat-flat-button color="primary"
-          [disabled]="!checkboxChecked()"
-          (click)="onConfirm()">
-    {{ data.confirmationLabel || ("dialog.accept" | translate) }}
-  </button>
-</div>
+  <div mat-dialog-content>
+    <p>{{ data.message }}</p>
+
+    <mat-checkbox 
+      [checked]="checkboxChecked()"
+      (change)="toggleCheckbox($event.checked)">
+      {{ data.checkboxLabel }}
+    </mat-checkbox>
+
+    @if(data.belowText){
+      <p  class="below-text">
+        <span style="color: #FFA500; font-size: 1em;">
+          ⚠
+        </span>
+        {{ data.belowText }}
+      </p>
+    }
+  </div>
+
+  <div mat-dialog-actions >
+    <button mat-button (click)="onCancel()">
+      {{ data.cancelLabel || ("dialog.cancel" | translate) }}
+    </button>
+    <button mat-flat-button color="primary"
+            [disabled]="!checkboxChecked()"
+            (click)="onConfirm()">
+      {{ data.confirmationLabel || ("dialog.accept" | translate) }}
+    </button>
+  </div>
+}

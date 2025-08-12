@@ -51,8 +51,18 @@ export abstract class AbstractDialogComponent<T extends BaseDialogData> {
 
   /** Confirma (+tanca) */
   public onConfirm(): void {
-    this.confirmSubject$.next(true);
-    this.dialogRef.close(true);
+    switch (this.data.confirmationType) {
+      case 'none':
+        this.onCancel();
+        break;
+      case 'sync':
+        this.confirmSubject$.next(true);
+        this.dialogRef.close(true);
+        break;
+      case 'async':
+        this.confirmSubject$.next(true);
+        break;
+    }
   }
 
   /** Cancel·la (tanca amb false) */
