@@ -3,7 +3,7 @@ import { credentialTypeHasSendReminderButton, credentialTypeHasSignCredentialBut
 
 describe('Credential Helpers', () => {
   describe('credentialTypeHasSendReminderButton', () => {
-    const allowed: CredentialType[] = ['LEARCredentialEmployee', 'gx:LabelCredential'];
+    const allowed: CredentialType[] = ['LEARCredentialEmployee', 'gx:LabelCredential', 'LEARCredentialMachine'];
     const disallowed: any = 'SomeOtherType';
 
     it.each(allowed)('returns true for allowed type %s', (type) => {
