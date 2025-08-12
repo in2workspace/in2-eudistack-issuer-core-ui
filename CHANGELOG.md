@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - LEARCredentialMachine Details.
 - Management buttons alignment.
 - Select search input when opening it.
+- Credential type selector width so that the type can be read.
 
 ### Changed
 - Normalize displayed texts from "LEARCredentialX" to "LEAR Credential X" across UI labels.
