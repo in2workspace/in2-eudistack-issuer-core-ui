@@ -20,7 +20,7 @@
 
     <mat-checkbox 
       [checked]="checkboxChecked()"
-      (change)="toggleCheckbox($event.checked)">
+      (change)="toggleCheckbox($event.checked)" [color]="'primary'">
       {{ data.checkboxLabel }}
     </mat-checkbox>
 
