@@ -56,6 +56,7 @@ describe('KeyGeneratorComponent', () => {
 
     fixture = TestBed.createComponent(KeyGeneratorComponent);
     component = fixture.componentInstance;
+    jest.spyOn((component as any), 'updateAlertMessages');
   });
 
   it('should create the component', () => {
@@ -102,6 +103,32 @@ describe('KeyGeneratorComponent', () => {
     expect(mockService.generateP256).toHaveBeenCalled();
     expect(fakeForm.patchValue).toHaveBeenCalledWith({ didKey: 'DID-123' });
   });
+
+it('generateKeys should only update alert message if it is first time', async () => {
+  component.ngOnInit();
+  expect((component as any).updateAlertMessages).toHaveBeenCalledTimes(1);
+
+  const fakeForm = { patchValue: jest.fn() } as unknown as FormGroup<any>;
+  Object.defineProperty(component, 'form', { configurable: true, value: () => fakeForm });
+
+  await component.generateKeys();
+
+  expect((component as any).updateAlertMessages).toHaveBeenCalledTimes(2);
+});
+
+it('generateKeys should NOT update alert message if it is NOT the first time', async () => {
+  component.ngOnInit();
+  const fakeForm = { patchValue: jest.fn() } as unknown as FormGroup<any>;
+  Object.defineProperty(component, 'form', { configurable: true, value: () => fakeForm });
+
+  rawStateSignal.set({ desmosDidKeyValue: 'X', desmosPrivateKeyValue: 'Y' });
+
+  await component.generateKeys();
+
+  expect((component as any).updateAlertMessages).toHaveBeenCalledTimes(1);
+});
+
+
 
   it('copyToClipboard should write to the clipboard and reset copiedKey after 2 seconds', fakeAsync(() => {
     Object.defineProperty(navigator, 'clipboard', {

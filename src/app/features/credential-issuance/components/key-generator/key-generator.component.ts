@@ -21,8 +21,9 @@ export class KeyGeneratorComponent extends IssuanceCustomFormChildWithAlert<Form
   public keyState$: Signal<KeyState | undefined>;
   public displayedKeys$: Signal<Partial<KeyState> | undefined>;
   public copiedKey = "";
-  private readonly keyService = inject(KeyGeneratorService);
   private readonly alertMessages = ["error.form.no_key"];
+
+  private readonly keyService = inject(KeyGeneratorService);
 
   public constructor(){
     super();
@@ -39,9 +40,12 @@ export class KeyGeneratorComponent extends IssuanceCustomFormChildWithAlert<Form
   }
 
   public async generateKeys(): Promise<void>{
+    const isFirstKeyUpdate = this.keyState$();
     await this.keyService.generateP256();
     this.form().patchValue({ didKey:this.keyState$()?.desmosDidKeyValue });
-    this.updateAlertMessages(this.alertMessages)
+    if(!isFirstKeyUpdate){
+      this.updateAlertMessages(this.alertMessages)
+    }
   }
 
   public copyToClipboard(text:string): void{
