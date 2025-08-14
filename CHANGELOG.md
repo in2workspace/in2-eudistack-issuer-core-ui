@@ -8,11 +8,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 - Fill LEARCredentialMachine Details fields correctly.
 - Show "Send reminder" button for LEARCredentialMachine.
-- Show spinner while sending LEARCredentialMachine request.
-- In LEARCredentialMachine issuance form, don't show missing key alert when key is set.
-- Management buttons alignment.
-- Select search input when opening it.
-- Credential type selector width so that the type can be read.
+- Show spinner while sending LEARCredentialMachine issuance request.
+- In LEARCredentialMachine issuance form, don't show missing key alert if key is already generated.
+- Adjust credential type selector width so that the type can be read.
+- In management page, align buttons.
+- When opening credentials search bar, automatically select input box so user can write directly in it.
 
 ### Changed
 - Normalize displayed texts from "LEARCredentialX" to "LEAR Credential X" across UI labels.
