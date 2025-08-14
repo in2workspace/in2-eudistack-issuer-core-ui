@@ -45,12 +45,10 @@ export interface LifeSpan {
   end: string;
 }
 
-export interface CommonMandator {
+export interface CommonMandatorFields {
   commonName: string;
   country: string;
-  emailAddress: string;
   organization: string;
-  organizationIdentifier: string;
   serialNumber: string;
 }
 
@@ -126,7 +124,10 @@ export interface EmployeeMandatee {
   mobile_phone?: string;
   nationality: string;
 }
-export interface EmployeeMandator extends CommonMandator {}
+export interface EmployeeMandator extends CommonMandatorFields {
+  organizationIdentifier: string;
+  emailAddress: string;
+}
 export interface EmployeeSigner extends CommonSigner {}
 export interface EmployeeIssuer extends CommonIssuer {}
 
@@ -152,20 +153,16 @@ export interface LEARCredentialMachine {
 }
 
 export interface MachineMandatee {
-  id: string;
-  serviceName: string;
-  serviceType: string;
-  version: string;
+  id: string; // did:key:...
   domain: string;
   ipAddress: string;
-  description: string;
-  contact: {
-    email: string;
-    phone: string;
-  };
 }
 
-export interface MachineMandator extends CommonMandator {}
+
+export interface MachineMandator extends CommonMandatorFields {
+  id: string // did:elsi:...
+  email: string,
+}
 export interface MachineSigner extends CommonSigner {}
 export interface MachineIssuer extends CommonIssuer {}
 

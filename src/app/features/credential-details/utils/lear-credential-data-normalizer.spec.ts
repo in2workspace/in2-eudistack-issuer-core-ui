@@ -150,13 +150,8 @@ describe('LEARCredentialDataNormalizer', () => {
             life_span: {} as any,
             mandatee: {
               id: 'man2',
-              serviceName: 'svc',
-              serviceType: 'type',
-              version: 'v1',
               domain: 'dom',
               ipAddress: '127.0.0.1',
-              description: 'desc',
-              contact: { email: 'e', phone: 'p' }
             } as any,
             mandator: {} as any,
             power: rawPowers as any,

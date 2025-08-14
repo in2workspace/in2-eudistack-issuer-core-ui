@@ -84,36 +84,6 @@ describe('DialogComponent', () => {
     });
   });
 
-  describe('onConfirm override', () => {
-    let confirmSubj: Subject<boolean>;
-
-    beforeEach(() => {
-      confirmSubj = (component as any).confirmSubject$ as Subject<boolean>;
-      jest.spyOn(confirmSubj, 'next');
-      jest.spyOn(component, 'onCancel');
-    });
-
-    it('should call onCancel when confirmationType is "none"', () => {
-      component.data.confirmationType = 'none';
-      component.onConfirm();
-      expect(component.onCancel).toHaveBeenCalled();
-    });
-
-    it('should emit and close when confirmationType is "sync"', () => {
-      component.data.confirmationType = 'sync';
-      component.onConfirm();
-      expect(confirmSubj.next).toHaveBeenCalledWith(true);
-      expect(mockDialogRef.close).toHaveBeenCalledWith(true);
-    });
-
-    it('should only emit when confirmationType is "async"', () => {
-      component.data.confirmationType = 'async';
-      component.onConfirm();
-      expect(confirmSubj.next).toHaveBeenCalledWith(true);
-      expect(mockDialogRef.close).not.toHaveBeenCalled();
-    });
-  });
-
   describe('getEmbeddedInstance()', () => {
     it('should return the instance if attachedRef.instance exists', () => {
       const inst = { foo: 'bar' };

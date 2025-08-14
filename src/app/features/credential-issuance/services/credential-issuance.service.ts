@@ -161,7 +161,11 @@ export class CredentialIssuanceService {
           checkboxLabel: this.translate.instant("credentialIssuance.create-confirm-dialog.checkboxLabel"),
           belowText: this.translate.instant("credentialIssuance.create-confirm-dialog.belowText"),
           status: 'default',
-          confirmationType: 'async'
+          confirmationType: 'async',
+          loadingData: {
+            title: this.translate.instant("credentialIssuance.creating-credential"),
+            message: ''
+          }
         };
 
 

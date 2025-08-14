@@ -4,6 +4,19 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.2.1](https://github.com/in2workspace/in2-issuer-ui/releases/tag/v2.2.1)
+### Fixed
+- Fill LEARCredentialMachine Details fields correctly.
+- Show "Send reminder" button for LEARCredentialMachine.
+- Show spinner while sending LEARCredentialMachine issuance request.
+- In LEARCredentialMachine issuance form, don't show missing key alert if key is already generated.
+- Adjust credential type selector width so that the type can be read.
+- In management page, align buttons.
+- When opening credentials search bar, automatically select input box so user can write directly in it.
+
+### Changed
+- Normalize displayed texts from "LEARCredentialX" to "LEAR Credential X" across UI labels.
+
 ## [2.2.0](https://github.com/in2workspace/in2-issuer-ui/releases/tag/v2.2.0)
 ### Added
 - LEARCredentialMachine Issuance.

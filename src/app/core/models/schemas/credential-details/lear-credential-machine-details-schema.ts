@@ -10,10 +10,10 @@ export const LearCredentialMachineDetailsViewModelSchema: ViewModelSchema = {
       type: 'group',
       value: [
         { key: 'name', type: 'key-value', value: (c: LEARCredentialMachine) => c.credentialSubject.mandate.mandator.commonName},
-        { key: 'email', type: 'key-value', value: (c: LEARCredentialMachine) => c.credentialSubject.mandate.mandator.emailAddress },
+        { key: 'email', type: 'key-value', value: (c: LEARCredentialMachine) => c.credentialSubject.mandate.mandator.email },
         { key: 'serialNumber', type: 'key-value', value: (c: LEARCredentialMachine) => c.credentialSubject.mandate.mandator.serialNumber},
         { key: 'organization', type: 'key-value', value: (c: LEARCredentialMachine) => c.credentialSubject.mandate.mandator.organization },
-        { key: 'organizationId', type: 'key-value', value: (c: LEARCredentialMachine) => c.credentialSubject.mandate.mandator.organizationIdentifier },
+        { key: 'organizationId', type: 'key-value', value: (c: LEARCredentialMachine) => c.credentialSubject.mandate.mandator.id.replace('did:elsi:', '') },
         { key: 'country', type: 'key-value', value: (c: LEARCredentialMachine) => c.credentialSubject.mandate.mandator.country }
       ]
     },

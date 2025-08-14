@@ -180,18 +180,22 @@ export class CredentialManagementComponent implements OnInit, AfterViewInit {
 
   public toggleSearchBar(){
     this.hideSearchBar = !this.hideSearchBar;
+    const searchInputNativeEl = this.searchInput.nativeElement;
 
     if (this.hideSearchBar) {
 
       this.searchSubject.next('');
       
       if (this.searchInput) {
-        this.searchInput.nativeElement.value = '';
+        searchInputNativeEl.value = '';
       }
   
       if (this.dataSource.paginator) {
         this.dataSource.paginator.firstPage();
       }
+    }else{
+      searchInputNativeEl.focus();
+      searchInputNativeEl.select();
     }
   }
 

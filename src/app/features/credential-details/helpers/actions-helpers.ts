@@ -1,6 +1,6 @@
 import { CredentialType, LifeCycleStatus } from "src/app/core/models/entity/lear-credential";
 
-const credentialTypeHasSendReminderButtonArr: CredentialType[] = ['LEARCredentialEmployee', 'gx:LabelCredential'];
+const credentialTypeHasSendReminderButtonArr: CredentialType[] = ['LEARCredentialEmployee', 'LEARCredentialMachine', 'gx:LabelCredential'];
 const credentialTypeHasSignCredentialButtonArr: CredentialType[] = ['LEARCredentialEmployee', 'VerifiableCertification', 'gx:LabelCredential'];
 const credentialTypeHasRevokeCredentialButtonArr: CredentialType[] = ['LEARCredentialEmployee', 'LEARCredentialMachine', 'gx:LabelCredential'];
 

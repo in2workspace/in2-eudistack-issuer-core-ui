@@ -12,6 +12,16 @@ import { of, throwError } from 'rxjs';
 import { LifeCycleStatusService } from 'src/app/shared/services/life-cycle-status.service';
 import { CredentialProcedureWithClass } from 'src/app/core/models/entity/lear-credential-management';
 import { CredentialProceduresResponse, CredentialProcedure } from 'src/app/core/models/dto/credential-procedures-response.dto';
+import { ElementRef } from '@angular/core';
+
+// helper to mock search input
+ function createMockInput(initialValue = '') {
+    const el = document.createElement('input');
+    el.value = initialValue;
+    const focusSpy = jest.spyOn(el, 'focus').mockImplementation(() => {});
+    const selectSpy = jest.spyOn(el, 'select').mockImplementation(() => {});
+    return { el, focusSpy, selectSpy };
+  }
 
 describe('CredentialManagementComponent', () => {
   let component: CredentialManagementComponent;
@@ -160,6 +170,48 @@ describe('CredentialManagementComponent', () => {
     const nextSpy = jest.spyOn(component['searchSubject'], 'next');
     component.applyFilter(event);
     expect(nextSpy).toHaveBeenCalledWith('searchTerm');
+  });
+
+ it('should focus and select input when opening the search bar', () => {
+    component.hideSearchBar = true;
+
+    const { el, focusSpy, selectSpy } = createMockInput();
+    component.searchInput = new ElementRef<HTMLInputElement>(el);
+
+    component.toggleSearchBar();
+
+    expect(component.hideSearchBar).toBe(false);
+    expect(focusSpy).toHaveBeenCalled();
+    expect(selectSpy).toHaveBeenCalled();
+  });
+
+  it('should clear value, push empty filter, and go to first page when closing the search bar', () => {
+    component.hideSearchBar = false;
+
+    const { el } = createMockInput('lorem');
+    component.searchInput = new ElementRef<HTMLInputElement>(el);
+
+    component.dataSource['_paginator'] = { firstPage: jest.fn() } as any;
+    const firstPageSpy = jest.spyOn(component.dataSource.paginator!, 'firstPage');
+
+
+    const nextSpy = jest.spyOn(component['searchSubject'], 'next');
+    component.toggleSearchBar();
+
+    expect(component.hideSearchBar).toBe(true);
+    expect(el.value).toBe('');
+    expect(nextSpy).toHaveBeenCalledWith('');
+    expect(firstPageSpy).toHaveBeenCalled(); 
+  });
+
+  it('should toggle searchbar', () => {
+    component.hideSearchBar = true;
+
+    component.toggleSearchBar();
+    expect(component.hideSearchBar).toBeFalsy();
+
+    component.toggleSearchBar();
+    expect(component.hideSearchBar).toBeTruthy(); // <-- arreglat
   });
 
   it('should load credential data and update dataSource', fakeAsync(() => {
