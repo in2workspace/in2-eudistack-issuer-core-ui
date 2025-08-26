@@ -4,7 +4,14 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [2.2.1](https://github.com/in2workspace/in2-issuer-ui/releases/tag/v2.2.1)
+
+
+## [2.0.0](https://github.com/in2workspace/in2-issuer-ui/releases/tag/v2.0.0)
+### Added
+- Credential revokation.
+- Gx-label credentials view.
+- LEARCredentialMachine Issuance.
+
 ### Fixed
 - Fill LEARCredentialMachine Details fields correctly.
 - Show "Send reminder" button for LEARCredentialMachine.
@@ -16,18 +23,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 - Normalize displayed texts from "LEARCredentialX" to "LEAR Credential X" across UI labels.
-
-## [2.2.0](https://github.com/in2workspace/in2-issuer-ui/releases/tag/v2.2.0)
-### Added
-- LEARCredentialMachine Issuance.
-
-## [2.1.0](https://github.com/in2workspace/in2-issuer-ui/releases/tag/v2.1.0)
-### Added
-- Gx-label credentials view.
-
-## [2.0.0](https://github.com/in2workspace/in2-issuer-ui/releases/tag/v2.0.0)
-### Added
-- Credential revokation.
+- Update api-path-constants endpoints
 
 ## [1.13.1](https://github.com/in2workspace/in2-issuer-ui/releases/tag/v1.13.1)
 ### Fixed
