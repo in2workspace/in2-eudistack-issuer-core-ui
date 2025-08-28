@@ -15,7 +15,7 @@ jobs:
   deploy:
     name: Deploy to AWS Amplify
     runs-on: ubuntu-latest
-    environment: local
+    environment: stg
     # Environment variables used throughout the workflow
     # These are available to all steps in the job
     env:
@@ -45,6 +45,28 @@ jobs:
       # Compiles the app in production mode and outputs to dist/out directory
       - name: Npm Build
         run: npm run build -- --output-path=./dist/out --configuration "production"
+
+      # Step 4.1: Generate runtime-config.json to inject runtime variables
+      # Creates a JSON file with environment-specific settings for the app
+      - name: Generate runtime-config.json
+        run: |
+          mkdir -p dist/out/assets
+          cat > dist/out/assets/runtime-config.json << 'EOF'
+          {
+            "BASE_URL": "${{ vars.BASE_URL }}",
+            "FAVICON_SRC": "${{ vars.FAVICON_SRC }}",
+            "IAM_URL": "${{ vars.IAM_URL }}",
+            "KNOWLEDGE_BASE_URL": "${{ vars.KNOWLEDGE_BASE_URL }}",
+            "LOGO_SRC": "${{ vars.LOGO_SRC }}",
+            "PRIMARY": "${{ vars.PRIMARY }}",
+            "PRIMARY_CONTRAST": "${{ vars.PRIMARY_CONTRAST }}",
+            "SECONDARY": "${{ vars.SECONDARY }}",
+            "SECONDARY_CONTRAST": "${{ vars.SECONDARY_CONTRAST }}",
+            "WALLET_URL": "${{ vars.WALLET_URL }}",
+            "SHOW_WALLET_URL_TEST": "${{ vars.SHOW_WALLET_URL_TEST }}",
+            "WALLET_URL_TEST": "${{ vars.WALLET_URL_TEST }}"
+          }
+          EOF
 
       # Step 5: Create deployment zip file
       # Creates a zip archive of the built application for AWS Amplify deployment
