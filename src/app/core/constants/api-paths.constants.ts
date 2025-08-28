@@ -8,5 +8,5 @@ export const API_PATH = Object.freeze({
     REVOKE: '/backoffice/v1/credentials/status/revoke',
     SAVE_CREDENTIAL: '/backoffice/v1/issuances',
     SIGNATURE_CONFIG:'/backoffice/v1/signatures/configs',
-    SIGN_CREDENTIAL: '/backoffice /v1/retry-sign-credential'
+    SIGN_CREDENTIAL: '/backoffice/v1/retry-sign-credential'
 });
