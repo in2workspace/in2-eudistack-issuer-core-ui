@@ -1,4 +1,4 @@
-# GitHub Actions workflow for deploying DOME Issuer UI to AWS Amplify
+# GitHub Actions workflow for deploying EUDIStack Issuer UI to AWS Amplify
 # This workflow builds the Angular application and deploys it to AWS Amplify
 # Triggered on pushes to the main branch
 name: Deploy to AWS Amplify
