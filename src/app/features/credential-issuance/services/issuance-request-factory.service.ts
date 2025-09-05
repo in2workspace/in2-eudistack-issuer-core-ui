@@ -71,7 +71,8 @@ export class IssuanceRequestFactoryService {
       return {} as IssuanceLEARCredentialMachinePayload;
     }
     const country = mandator['country'];
-    const orgId = mandator['organizationIdentifier'];
+    const orgIdSuffix = mandator['organizationIdentifier'];
+    const orgId = this.buildOrganizationId(country, orgIdSuffix);
     const mandatorId = this.buildDidElsi(orgId, country);
     const mandatorCommonName = mandator['commonName'] ?? this.buildCommonName(mandator['firstName'], mandator['lastName']);
     const mandatorEmail = mandator['email'] ?? mandator['emailAddress'];
@@ -101,13 +102,12 @@ export class IssuanceRequestFactoryService {
   }
 
   private buildDidElsi(orgId: string, country: string): string{
-    const vatNumber = this.buildOrganizationId(country, orgId);
-    return "did:elsi:" + vatNumber;
+    return "did:elsi:" + orgId;
   }
 
-  private buildOrganizationId(country: string, vatNumber: string): string{
-    const hasVAT = this.checkIfHasVAT(vatNumber);
-    return  hasVAT ? vatNumber : ("VAT" + country + '-' + vatNumber);
+  private buildOrganizationId(country: string, orgIdSuffix: string): string{
+    const hasVAT = this.checkIfHasVAT(orgIdSuffix);
+    return  hasVAT ? orgIdSuffix : ("VAT" + country + '-' + orgIdSuffix);
   }
 
   private checkIfHasVAT(orgId: string){
