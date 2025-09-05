@@ -73,7 +73,9 @@ export class IssuanceRequestFactoryService {
     const country = mandator['country'];
     const orgIdSuffix = mandator['organizationIdentifier'];
     const orgId = this.buildOrganizationId(country, orgIdSuffix);
-    const mandatorId = this.buildDidElsi(orgId, country);
+    console.log("orgId");
+    console.log(orgId);
+    const mandatorId = this.buildDidElsi(orgId);
     const mandatorCommonName = mandator['commonName'] ?? this.buildCommonName(mandator['firstName'], mandator['lastName']);
     const mandatorEmail = mandator['email'] ?? mandator['emailAddress'];
 
@@ -101,7 +103,9 @@ export class IssuanceRequestFactoryService {
     return payload;
   }
 
-  private buildDidElsi(orgId: string, country: string): string{
+  private buildDidElsi(orgId: string): string{
+    console.log("buildDidElsi: orgId");
+    console.log(orgId);
     return "did:elsi:" + orgId;
   }
 
