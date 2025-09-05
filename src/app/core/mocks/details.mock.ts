@@ -125,6 +125,7 @@ export const mockCredentialMachine: CredentialProcedureDetails = {
             country: 'DE',
             email: 'mandator@mac.com',
             organization: 'Org Mandator MAC',
+            organizationIdentifier: 'VATES-999999',
             id: 'ORG-MAN-MAC',
             serialNumber: 'SN-MAC'
           },

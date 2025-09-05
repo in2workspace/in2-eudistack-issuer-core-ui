@@ -87,6 +87,7 @@ export class IssuanceRequestFactoryService {
         email: mandatorEmail, 
         organization: mandator['organization'],
         id: mandatorId,
+        organizationIdentifier: orgId,
         country:  mandator['country'],
       },
       mandatee: {

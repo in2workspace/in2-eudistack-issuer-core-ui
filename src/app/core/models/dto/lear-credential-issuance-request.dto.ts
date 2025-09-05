@@ -21,6 +21,7 @@ export interface IssuancePayloadPower extends Power {
 export interface IssuanceLEARCredentialMachinePayload {
     mandator: {
         id: string, //did-elsi
+        organizationIdentifier: string,
         commonName: string,
         email: string,
         serialNumber: string

@@ -11,6 +11,7 @@ describe('LearCredentialMachineDetailsViewModelSchema', () => {
           email: 'alice@example.com',
           serialNumber: 'SN123',
           organization: 'ExampleOrg',
+          organizationIdentifier: 'VATES-ORG',
           id: 'ORG-001',
           country: 'ES',
         },
@@ -50,6 +51,7 @@ describe('LearCredentialMachineDetailsViewModelSchema', () => {
         'alice@example.com',
         'SN123',
         'ExampleOrg',
+        'VATES-ORG',
         'ORG-001',
         'ES',
       ]);
