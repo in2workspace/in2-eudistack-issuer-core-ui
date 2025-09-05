@@ -16,7 +16,7 @@ describe('Credential Helpers', () => {
   });
 
   describe('credentialTypeHasSignCredentialButton', () => {
-    const allowed: CredentialType[] = ['LEARCredentialEmployee', 'VerifiableCertification', 'gx:LabelCredential'];
+    const allowed: CredentialType[] = ['LEARCredentialEmployee', 'gx:LabelCredential'];
     const disallowed: any = 'AnotherType';
 
     it.each(allowed)('returns true for allowed type %s', (type) => {

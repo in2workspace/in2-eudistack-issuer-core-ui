@@ -111,7 +111,7 @@ describe('IssuanceRequestFactoryService', () => {
           lastName: 'Doe',
           organization: 'Tech Corp',
           country: 'ES',
-          organizationIdentifier: 'VATES-246',
+          organizationIdentifier: '246',
           serialNumber: 'S246'
         },
         mandatee: { domain: 'example.com', ipAddress: '127.0.0.1' },
@@ -127,6 +127,7 @@ describe('IssuanceRequestFactoryService', () => {
         commonName: 'Eve Doe',
         serialNumber: 'S246',
         organization: 'Tech Corp',
+        organizationIdentifier: 'VATES-246',
         id: 'did:elsi:VATES-246',
         country: 'ES'
       },
