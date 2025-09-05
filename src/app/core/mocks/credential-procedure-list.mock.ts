@@ -6,7 +6,7 @@ export const credentialProcedureListMock: CredentialProcedure[] =[
             procedure_id: "aaa",
             subject: "AAAAAAAAAAAAA BBBBBBB",
             status: "ISSUED",
-            credential_type: "VERIFIABLE_CERTIFICATION",
+            credential_type: "LABEL_CREDENTIAL",
             updated: "2024-11-25T14:35:45.123+01:00"
         }
     },
@@ -15,7 +15,7 @@ export const credentialProcedureListMock: CredentialProcedure[] =[
             procedure_id: "aaa",
             subject: "ddddddddd CCCCCCCCCCCCCcc",
             status: "PEND_DOWNLOAD",
-            credential_type: "VERIFIABLE_CERTIFICATION",
+            credential_type: "LABEL_CREDENTIAL",
             updated: "2024-11-26T14:35:45.123+01:00"
         }
     },
