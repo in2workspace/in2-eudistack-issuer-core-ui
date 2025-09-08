@@ -21,7 +21,7 @@ jobs:
     # Environment variables used throughout the workflow
     # These are available to all steps in the job
     env:
-      AMPLIFY_APP_NAME: issuer-ui  # Name of the AWS Amplify app to deploy to
+      AMPLIFY_APP_NAME: issuer_ui  # Name of the AWS Amplify app to deploy to
       BRANCH_NAME: main            # Target branch for deployment
 
     steps:
