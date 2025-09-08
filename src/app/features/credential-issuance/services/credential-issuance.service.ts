@@ -6,7 +6,7 @@ import { IssuanceLEARCredentialPayload, IssuanceLEARCredentialRequestDto } from 
 import { IssuanceRequestFactoryService } from './issuance-request-factory.service';
 import { EMPTY, from, map, Observable, of, startWith, switchMap, tap } from 'rxjs';
 import { IssuanceSchemaBuilder } from './issuance-schema-builders/issuance-schema-builder';
-import { CredentialIssuanceViewModelField, CredentialIssuanceViewModelSchema, CredentialIssuanceViewModelSchemaWithId, ISSUANCE_CREDENTIAL_TYPES_ARRAY, IssuanceCredentialType, IssuanceRawCredentialPayload, IssuanceStaticViewModel, IssuanceViewModelsTuple } from 'src/app/core/models/entity/lear-credential-issuance';
+import { CredentialIssuanceViewModelField, CredentialIssuanceViewModelSchemaWithId, ISSUANCE_CREDENTIAL_TYPES_ARRAY, IssuanceCredentialType, IssuanceRawCredentialPayload, IssuanceStaticViewModel, IssuanceViewModelsTuple } from 'src/app/core/models/entity/lear-credential-issuance';
 import { ExtendedValidatorFn, ValidatorEntry } from 'src/app/core/models/entity/validator-types';
 import { ALL_VALIDATORS_FACTORY_MAP, ValidatorName } from 'src/app/shared/validators/credential-issuance/all-validators';
 import { MatSelect } from '@angular/material/select';
