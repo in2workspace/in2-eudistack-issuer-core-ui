@@ -49,6 +49,7 @@ export interface CommonMandatorFields {
   commonName: string;
   country: string;
   organization: string;
+  organizationIdentifier: string;
   serialNumber: string;
 }
 
@@ -125,7 +126,6 @@ export interface EmployeeMandatee {
   nationality: string;
 }
 export interface EmployeeMandator extends CommonMandatorFields {
-  organizationIdentifier: string;
   emailAddress: string;
 }
 export interface EmployeeSigner extends CommonSigner {}

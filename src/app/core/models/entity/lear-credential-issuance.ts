@@ -53,7 +53,7 @@ export type CredentialIssuanceViewModelSchemaWithId = CredentialIssuanceViewMode
 
 
 export type IssuanceStaticViewModel = {
-    mandator?: { key:string, value:string }[];
+    mandator?: { key: string, value: string }[];
 }
 
 export type IssuanceViewModelsTuple = [CredentialIssuanceViewModelSchemaWithId, IssuanceStaticViewModel];
