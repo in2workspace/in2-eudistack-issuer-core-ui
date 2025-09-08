@@ -21,7 +21,7 @@ jobs:
     # Environment variables used throughout the workflow
     # These are available to all steps in the job
     env:
-      AMPLIFY_APP_NAME: issuer_ui  # Name of the AWS Amplify app to deploy to
+      AMPLIFY_APP_NAME: issuer-ui  # Name of the AWS Amplify app to deploy to
       BRANCH_NAME: main            # Target branch for deployment
 
     steps:
@@ -75,6 +75,8 @@ jobs:
           AMPLIFY_APP_ID=$(aws amplify list-apps --query "apps[?name=='${{ env.AMPLIFY_APP_NAME }}'].appId" --output text)
           echo "AMPLIFY_APP_ID=$AMPLIFY_APP_ID" >> $GITHUB_ENV
           echo "Found App ID: $AMPLIFY_APP_ID for app: ${{ env.AMPLIFY_APP_NAME }}"
+          aws amplify list-apps --region eu-west-1
+
 
       # Step 8: Create AWS Amplify Deployment
       # Initiates a new deployment and extracts the upload URL and job ID
