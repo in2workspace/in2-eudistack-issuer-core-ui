@@ -3,16 +3,17 @@
 # Triggered on pushes to the features/cicd-aws branch
 name: Release
 on:
-  push:
+  pull_request:
     branches:
-      - features/cicd-aws
+      - main
+    types: [opened, synchronize, reopened]
 
 # Required permissions for the workflow
 permissions:
   contents: write
 
 jobs:
-  
+
   release:
     name: Release
     runs-on: ubuntu-latest
@@ -22,7 +23,7 @@ jobs:
     env:
       AMPLIFY_APP_NAME: issuer-ui  # Name of the AWS Amplify app to deploy to
       BRANCH_NAME: main            # Target branch for deployment
-    
+
     steps:
       # Step 1: Checkout the repository code
       # This action downloads the repository content to the runner
@@ -51,20 +52,20 @@ jobs:
       # Step 5: Create deployment zip file
       # Creates a zip archive of the built application for AWS Amplify deployment
       # The zip contains all the compiled static files
-      - name: Create Zip File  
-        run: |  
-          cd dist/out  
-          zip -r ../out.zip .  
-          echo "ZIP_FILE=dist/out.zip" >> $GITHUB_ENV  
-      
+      - name: Create Zip File
+        run: |
+          cd dist/out
+          zip -r ../out.zip .
+          echo "ZIP_FILE=dist/out.zip" >> $GITHUB_ENV
+
       # Step 6: Configure AWS CLI credentials
       # Sets up AWS authentication using stored secrets for API access
-      - name: Configure AWS Credentials  
-        uses: aws-actions/configure-aws-credentials@v2  
-        with:  
-          aws-access-key-id:     ${{ secrets.AWS_ACCESS_KEY_ID }}  
-          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}  
-          aws-region:            'eu-west-1'    
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v2
+        with:
+          aws-access-key-id:     ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region:            'eu-west-1'
 
       # Step 7: Dynamically extract Amplify App ID
       # Queries AWS Amplify to find the app ID based on the app name
@@ -74,7 +75,7 @@ jobs:
           AMPLIFY_APP_ID=$(aws amplify list-apps --query "apps[?name=='${{ env.AMPLIFY_APP_NAME }}'].appId" --output text)
           echo "AMPLIFY_APP_ID=$AMPLIFY_APP_ID" >> $GITHUB_ENV
           echo "Found App ID: $AMPLIFY_APP_ID for app: ${{ env.AMPLIFY_APP_NAME }}"
-      
+
       # Step 8: Create AWS Amplify Deployment
       # Initiates a new deployment and extracts the upload URL and job ID
       - name: Create AWS Amplify Deployment
@@ -100,4 +101,4 @@ jobs:
           echo "Starting deployment for Job ID: ${{ env.JOB_ID }}"
           aws amplify start-deployment --app-id ${{ env.AMPLIFY_APP_ID }} --branch-name ${{ env.BRANCH_NAME }} --job-id ${{ env.JOB_ID }}
 
-   
+
