@@ -1,3 +1,4 @@
+import { DialogComponent } from 'src/app/shared/components/dialog/dialog-component/dialog.component';
 import { inject, Injectable } from '@angular/core';
 import { HttpInterceptor, HttpRequest, HttpHandler, HttpEvent, HttpErrorResponse } from '@angular/common/http';
 import { catchError, Observable, throwError } from 'rxjs';
@@ -28,7 +29,7 @@ export class ServeErrorInterceptor implements HttpInterceptor {
           errorMessage = this.getServerErrorMessage(error);
         }
         const translatedMessage = this.translate.instant(errorMessage);
-        this.dialog.openErrorInfoDialog(translatedMessage);
+        this.dialog.openErrorInfoDialog(DialogComponent, translatedMessage);
         
         return throwError(() => error);
       })

@@ -1,10 +1,12 @@
-import { fakeAsync, TestBed, tick } from '@angular/core/testing';
-import { HttpErrorResponse, HttpResponse, HttpStatusCode, HttpRequest, HttpEvent } from '@angular/common/http';
-import { of, throwError } from 'rxjs';
-import { TranslateService } from '@ngx-translate/core';
-import { ServeErrorInterceptor } from './server-error-interceptor';
-import { DialogWrapperService } from 'src/app/shared/components/dialog/dialog-wrapper/dialog-wrapper.service';
-import { environment } from 'src/environments/environment';
+import { HttpRequest, HttpErrorResponse, HttpResponse, HttpStatusCode, HttpEvent } from "@angular/common/http";
+import { TestBed, fakeAsync, tick } from "@angular/core/testing";
+import { TranslateService } from "@ngx-translate/core";
+import { throwError, of } from "rxjs";
+import { DialogWrapperService } from "src/app/shared/components/dialog/dialog-wrapper/dialog-wrapper.service";
+import { environment } from "src/environments/environment";
+import { ServeErrorInterceptor } from "./server-error-interceptor";
+import { DialogComponent } from "src/app/shared/components/dialog/dialog-component/dialog.component";
+
 
 describe('ServeErrorInterceptor', () => {
   let interceptor: ServeErrorInterceptor;
@@ -52,7 +54,7 @@ describe('ServeErrorInterceptor', () => {
         error: (err: HttpErrorResponse) => {
           expect(err.status).toBe(404);
           expect(translateServiceSpy.instant).toHaveBeenCalledWith('error.not_found');
-          expect(dialogServiceSpy.openErrorInfoDialog).toHaveBeenCalledWith('error.not_found');
+          expect(dialogServiceSpy.openErrorInfoDialog).toHaveBeenCalledWith(DialogComponent, 'error.not_found');
         }
       });
       tick();
@@ -69,7 +71,7 @@ describe('ServeErrorInterceptor', () => {
         error: (err: HttpErrorResponse) => {
           expect(err.status).toBe(401);
           expect(translateServiceSpy.instant).toHaveBeenCalledWith('error.unauthorized');
-          expect(dialogServiceSpy.openErrorInfoDialog).toHaveBeenCalledWith('error.unauthorized');
+          expect(dialogServiceSpy.openErrorInfoDialog).toHaveBeenCalledWith(DialogComponent, 'error.unauthorized');
           done();
         }
       });
@@ -86,7 +88,7 @@ describe('ServeErrorInterceptor', () => {
         error: (err: HttpErrorResponse) => {
           expect(err.status).toBe(403);
           expect(translateServiceSpy.instant).toHaveBeenCalledWith('error.forbidden');
-          expect(dialogServiceSpy.openErrorInfoDialog).toHaveBeenCalledWith('error.forbidden');
+          expect(dialogServiceSpy.openErrorInfoDialog).toHaveBeenCalledWith(DialogComponent, 'error.forbidden');
           done();
         }
       });
@@ -103,7 +105,7 @@ describe('ServeErrorInterceptor', () => {
         error: (err: HttpErrorResponse) => {
           expect(err.status).toBe(500);
           expect(translateServiceSpy.instant).toHaveBeenCalledWith('error.internal_server');
-          expect(dialogServiceSpy.openErrorInfoDialog).toHaveBeenCalledWith('error.internal_server');
+          expect(dialogServiceSpy.openErrorInfoDialog).toHaveBeenCalledWith(DialogComponent, 'error.internal_server');
           done();
         }
       });
@@ -120,7 +122,7 @@ describe('ServeErrorInterceptor', () => {
         error: (err: HttpErrorResponse) => {
           expect(err.status).toBe(0);
           expect(translateServiceSpy.instant).toHaveBeenCalledWith('error.unknown_error');
-          expect(dialogServiceSpy.openErrorInfoDialog).toHaveBeenCalledWith('error.unknown_error');
+          expect(dialogServiceSpy.openErrorInfoDialog).toHaveBeenCalledWith(DialogComponent, 'error.unknown_error');
           done();
         }
       });

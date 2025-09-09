@@ -4,18 +4,18 @@
   "verifiable-credential": "Credencial Verificable",
   "dome-wallet": "Wallet de DOME",
   "home": {
-    "title": "Bienvenido al DOME Issuer para LEARCredentials",
+    "title": "Bienvenido al DOME Issuer para LEAR Credentials",
     "learn-more": "Más información",
     "scroll": "Desplázate para ver más",
-    "intro-main": "Este sitio está destinado a los Representantes Legales de empresas que deseen emitir una o más LEARCredentials para uno o más empleados de la empresa. Una LEARCredential es un tipo de Credencial Verificable que permite a un empleado, designado por un representante legal, actuar en nombre de una organización con un poder restringido frente a terceros.",
-    "intro-first": "El emisor de la LEARCredential <strong>debe ser un representante legal</strong> de la empresa. El representante legal firmará la LEARCredential con un certificado digital eIDAS, que puede ser personal o un certificado de representación.",
-    "intro-second": "El receptor de la LEARCredential (tanto el sujeto como el titular de la credencial) <strong>puede ser cualquier empleado (o contratista)</strong> de la empresa. El representante legal delegará un conjunto restringido de poderes a esa persona. Esos poderes restringidos están incluidos dentro de la credencial y pueden ser verificados por cualquier tercera parte a quien el titular presente la LEARCredential.",
+    "intro-main": "Este sitio está destinado a los Representantes Legales de empresas que deseen emitir una o más LEAR Credentials para uno o más empleados de la empresa. Una LEAR Credential es un tipo de Credencial Verificable que permite a un empleado, designado por un representante legal, actuar en nombre de una organización con un poder restringido frente a terceros.",
+    "intro-first": "El emisor de la LEAR Credential <strong>debe ser un representante legal</strong> de la empresa. El representante legal firmará la LEAR Credential con un certificado digital eIDAS, que puede ser personal o un certificado de representación.",
+    "intro-second": "El receptor de la LEAR Credential (tanto el sujeto como el titular de la credencial) <strong>puede ser cualquier empleado (o contratista)</strong> de la empresa. El representante legal delegará un conjunto restringido de poderes a esa persona. Esos poderes restringidos están incluidos dentro de la credencial y pueden ser verificados por cualquier tercera parte a quien el titular presente la LEAR Credential.",
     "legal-first": "Debes ser un representante legal de la empresa para poder delegar el poder restringido requerido para DOME.",
     "legal-second": "Necesitas un certificado eIDAS para poder usar el sistema. Además, tendrás que registrar el correo electrónico de tu empresa.",
     "legal-third": "Nota: si estás leyendo esto en tu móvil, es probable que el botón no funcione, a menos que tengas instalado tu certificado eIDAS en el móvil. Normalmente necesitas usar un ordenador con el certificado instalado en el navegador.",
     "login-btn": "Inicia sesión como Representante Legal",
     "obtain-wallet-title": "Obtén tu cartera",
-    "obtain-wallet-intro": "Necesitas una cartera para almacenar tus LEARCredentials y presentarlas a terceras partes como el DOME Marketplace.",
+    "obtain-wallet-intro": "Necesitas una cartera para almacenar tus LEAR Credentials y presentarlas a terceras partes como el DOME Marketplace.",
     "obtain-wallet-detail": "DOME proporciona una cartera simple suficiente para autenticarte en el DOME Marketplace y realizar todos los procesos necesarios.",
     "wallet-instructions": "Escanea este código QR o ve en tu móvil a",
     "footer-license": "CC BY 4.0",
@@ -35,7 +35,6 @@
   },
   "mandator": {
     "organizationid": "Número VAT de empresa",
-    "organizationidHint": "Introduzca solo los caracteres de después de 'VAT-'.Por ejemplo, si el número completo es 'VAT-123ABC', introduzca '123ABC'",
     "organization": "Nombre de empresa",
     "name": "Nombre",
     "first-name": "Nombre",
@@ -63,8 +62,18 @@
   },
 "credentialDetails": {
     "title": "Detalles de la credencial",
-    "basic_info": "Información básica",
     "type" : "tipo",
+	 "gx:LabelCredential": "Label Credential",
+    "LEARCredentialEmployee": "LEAR Credential Employee",
+    "LEARCredentialMachine": "LEAR Credential Machine",
+    "VerifiableCertification": "Verifiable Certification",
+    "DRAFT": "DRAFT",
+    "PEND_SIGNATURE": "PEND_SIGNATURE",
+    "WITHDRAWN": "WITHDRAWN",
+    "VALID": "VALID",
+    "EXPIRED": "EXPIRED",
+    "PEND_DOWNLOAD": "PEND_DOWNLOAD",
+    "ISSUED": "ISSUED",
     "status": "estatus",
     "valid_from": "válido desde",
     "valid_until": "válido hasta",
@@ -80,18 +89,13 @@
     "emailAddress": "correo electrónico",
     "email": "correo electrónico",
     "serialNumber": "número del documento de identidad",
+	"name": "nombre",
     "firstName": "nombre",
     "lastName": "apellido",
     "mobile_phone": "teléfono móvil",
     "nationality": "nacionalidad",
-    "serviceName": "nombre del servicio",
-    "serviceType": "tipo de servicio",
-    "version": "versión",
     "domain": "dominio",
     "ipAddress": "dirección IP",
-    "description": "descripción",
-    "contact": "información de contacto",
-    "phone": "teléfono",
     "address": "dirección",
     "productId": "id del producto",
     "productName": "nombre del producto",
@@ -103,6 +107,15 @@
     "hash": "hash",
     "scope": "alcance",
     "standard": "estándar",
+	"basic": "básico",
+	"gx:labelLevel": "Label Level",
+    "gx:rulesVersion": "Rules Version",
+    "gx:engineRules": "Engine Rules",
+    "gx:compliantCredentials": "Compliant Credentials",
+    "gx:validatedCriteria": "Validated Criteria",
+    "gx:validatedCriteriaReference": "Validated Criteria Reference",
+    "revoke": "revocar",
+    "revokeTooltip": "Esta credencial no puede ser revocada porque es de tipo legacy. Para consultar cómo revocar este tipo de credencial, consulte nuestra <a href='{{url}}' style='color: white; font-weight:700' target='_blank' rel='noopener noreferrer'>guía</a>.",
     "sendReminderConfirm": {
       "title": "Enviar recordatorio",
       "message": "¿Estás seguro de que deseas enviar un recordatorio para esta oferta de credencial?"
@@ -118,6 +131,14 @@
     "signCredentialSuccess": {
       "title": "Credencial firmada",
       "message": "La credencial se firmó correctamente."
+    },
+    "revokeCredentialConfirm": {
+      "title": "Revocar Credencial",
+      "message": "Estás seguro de que deseas revocar la credencial?"
+    },
+    "revokeCredentialSuccess": {
+      "title": "Credencial revocada",
+      "message": "La credencial ha sido revocada."
     }
   },
   "credentialOffer": {
@@ -188,17 +209,47 @@
         "message": "Seguro que quieres eliminar este power? "
       }
     },
-    "credentialIssuance":{
-      "learCredentialEmployee": "LEARCredentialEmployee",
+    "credentialIssuance": {
+      "title": "Emisión de  redential",
+      "learCredentialEmployee": "LEAR Credential Employee",
+      "LEARCredentialEmployee":"LEAR Credential Employee",
+      "learCredentialMachine": "LEAR Credential Machine",
+      "LEARCredentialMachine":"LEAR Credential Machine",
       "create-confirm-dialog": {
         "title": "Crear credencial",
-        "message": "Seguro que quiere crear esta credencial?"
+        "message": "¿Estás seguro de que quieres crear esta credencial?",
+        "checkboxLabel": "Confirmo que he copiado y guardado de forma segura la clave privada.",
+        "belowText": "Sin la clave privada, no podrás usar esta credencial más adelante."
       },
       "create-success-dialog": {
         "title": "Credencial creada",
-        "message": "La LEARCredentialEmployee ha sido creada con éxito."
+        "message": "La credencial se ha creado correctamente."
       },
-      "creating-credential": "Creando credencial"
+      "creating-credential": "Creando credencial",
+      "create-credential": "Crear credencial",
+      "credentialType": "Tipo de credencial",
+      "cancel": "Cancelar",
+      "mandatee": "mandatario",
+      "mandator": "mandante",
+      "select-type": "Selecciona el tipo de credencial",
+      "firstName": "Nombre",
+      "lastName": "Apellido",
+      "commonName": "Nombre común",
+      "email": "Correo electrónico",
+      "emailAddress": "Correo electrónico",
+      "nationality": "Nacionalidad",
+      "serialNumber": "Número de documento de identidad",
+      "organization": "Nombre de la empresa",
+      "organizationIdentifier": "NIF de la empresa",
+      "country": "País",
+      "domain": "Dominio",
+      "ipAddress": "Dirección IP",
+      "selectA": "Selecciona un ",
+      "hint": {
+        "organizationIdentifier": "Introduce solo los caracteres que van después de 'VAT...-'. Por ejemplo, si es 'VATEU-123ABC', introduce '123ABC'."
+      },
+      "changeCredentialAlert": "¿Estás seguro de que quieres cambiar el tipo de credencial? Se perderá el progreso.",
+      "unloadAlert": "¿Estás seguro de que deseas salir? Se perderá el progreso."
     },
     "error": {
       "not_found": "El recurso solicitado no fue encontrado.",

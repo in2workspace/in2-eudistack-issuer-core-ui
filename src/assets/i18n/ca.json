@@ -4,18 +4,18 @@
   "verifiable-credential": "Credencial Verificable",
   "dome-wallet": "Wallet de DOME",
   "home": {
-    "title": "Benvingut al DOME Issuer per a LEARCredentials",
+    "title": "Benvingut al DOME Issuer per a LEAR Credentials",
     "learn-more": "Més informació",
     "scroll": "Desplaça't per veure més",
-    "intro-main": "Aquest lloc està destinat als Representants Legals d'empreses que vulguin emetre una o més LEARCredentials per a un o més empleats de l'empresa. Una LEARCredential és un tipus de Credencial Verificable que permet a un empleat, designat per un representant legal, actuar en nom d'una organització amb un poder restringit envers tercers.",
-    "intro-first": "L'emissor de la LEARCredential <strong>ha de ser un representant legal</strong> de l'empresa. El representant legal signarà la LEARCredential amb un certificat digital eIDAS, que pot ser personal o un certificat de representació.",
-    "intro-second": "El receptor de la LEARCredential (tant el subjecte com el titular de la credencial) <strong>pot ser qualsevol empleat (o contractista)</strong> de l'empresa. El representant legal delegarà un conjunt restringit de poders a aquesta persona. Aquests poders restringits estan inclosos dins la credencial i poden ser verificats per qualsevol tercera part que el titular presenti la LEARCredential.",
+    "intro-main": "Aquest lloc està destinat als Representants Legals d'empreses que vulguin emetre una o més LEAR Credentials per a un o més empleats de l'empresa. Una LEAR Credential és un tipus de Credencial Verificable que permet a un empleat, designat per un representant legal, actuar en nom d'una organització amb un poder restringit envers tercers.",
+    "intro-first": "L'emissor de la LEAR Credential <strong>ha de ser un representant legal</strong> de l'empresa. El representant legal signarà la LEAR Credential amb un certificat digital eIDAS, que pot ser personal o un certificat de representació.",
+    "intro-second": "El receptor de la LEAR Credential (tant el subjecte com el titular de la credencial) <strong>pot ser qualsevol empleat (o contractista)</strong> de l'empresa. El representant legal delegarà un conjunt restringit de poders a aquesta persona. Aquests poders restringits estan inclosos dins la credencial i poden ser verificats per qualsevol tercera part que el titular presenti la LEAR Credential.",
     "legal-first": "Has de ser un representant legal de l'empresa per poder delegar el poder restringit requerit per a DOME.",
     "legal-second": "Necessites un certificat eIDAS per poder utilitzar el sistema. A més, hauràs de registrar el correu electrònic de la teva empresa.",
     "legal-third": "Nota: si estàs llegint això al teu mòbil, probablement el botó no funcionarà, a menys que tinguis instal·lat el teu certificat eIDAS al mòbil. Normalment cal utilitzar un ordinador amb el certificat instal·lat al navegador.",
     "login-btn": "Inicia sessió com a Representant Legal",
     "obtain-wallet-title": "Obté la teva cartera",
-    "obtain-wallet-intro": "Necessites una cartera per emmagatzemar les teves LEARCredentials i presentar-les a terceres parts com el DOME Marketplace.",
+    "obtain-wallet-intro": "Necessites una cartera per emmagatzemar les teves LEAR Credentials i presentar-les a terceres parts com el DOME Marketplace.",
     "obtain-wallet-detail": "DOME proporciona una cartera senzilla suficient per autenticar-se al DOME Marketplace i dur a terme tots els processos necessaris.",
     "wallet-instructions": "Escaneja aquest codi QR o ves al teu mòbil a",
     "footer-license": "CC BY 4.0",
@@ -35,7 +35,6 @@
   },
   "mandator": {
     "organizationid": "Número VAT de l'empresa",
-    "organizationidHint": "Introdueix només els caràcters de després de 'VAT-'. Per exemple, si el número complet és  'VAT-123ABC', introdueix '123ABC'",
     "organization": "Nom de l'empresa",
     "name": "Nom",
     "first-name": "Nom",
@@ -63,7 +62,19 @@
   },
   "credentialDetails": {
     "title": "Detalls de la credencial",
-    "basic_info": "Informació bàsica",
+	  "gx:LabelCredential": "Label Credential",
+    "learCredentialEmployee": "LEAR Credential Employee",
+    "LEARCredentialEmployee":"LEAR Credential Employee",
+    "learCredentialMachine": "LEAR Credential Machine",
+    "LEARCredentialMachine":"LEAR Credential Machine",
+    "VerifiableCertification": "Verifiable Certification",
+    "DRAFT": "DRAFT",
+    "PEND_SIGNATURE": "PEND_SIGNATURE",
+    "WITHDRAWN": "WITHDRAWN",
+    "VALID": "VALID",
+    "EXPIRED": "EXPIRED",
+    "PEND_DOWNLOAD": "PEND_DOWNLOAD",
+    "ISSUED": "ISSUED",
     "type" : "tipus",
     "status": "estatus",
     "valid_from": "vàlid des de",
@@ -80,18 +91,13 @@
     "emailAddress": "correu electrònic",
     "email": "correu electrònic",
     "serialNumber": "número del document d'identitat",
+	  "name": "nom",
     "firstName": "nom",
     "lastName": "cognom",
     "mobile_phone": "telèfon mòbil",
     "nationality": "nacionalitat",
-    "serviceName": "nom del servei",
-    "serviceType": "tipus de servei",
-    "version": "versió",
     "domain": "domini",
     "ipAddress": "adreça IP",
-    "description": "descripció",
-    "contact": "informació de contacte",
-    "phone": "telèfon",
     "address": "adreça",
     "productId": "id del producte",
     "productName": "nom del producte",
@@ -103,6 +109,15 @@
     "hash": "hash",
     "scope": "abast",
     "standard": "estàndard",
+	  "basic": "bàsic",
+	  "gx:labelLevel": "Label Level",
+    "gx:rulesVersion": "Rules Version",
+    "gx:engineRules": "Engine Rules",
+    "gx:compliantCredentials": "Compliant Credentials",
+    "gx:validatedCriteria": "Validated Criteria",
+    "gx:validatedCriteriaReference": "Validated Criteria Reference",
+    "revoke": "revocar",
+        "revokeTooltip": "Aquesta credencial no pot ser revocada perquè és de tipus legacy. Per consultar com revocar aquest tipus de credencial, consulti la nostra <a href='{{url}}' style='color: white; font-weight:700' target='_blank' rel='noopener noreferrer'>guia</a>.",
     "sendReminderConfirm": {
       "title": "Enviar recordatori",
       "message": "Estàs segur que vols enviar un recordatori per aquesta oferta de credencial?"
@@ -118,6 +133,14 @@
     "signCredentialSuccess": {
       "title": "Credencial signada",
       "message": "La credencial s'ha signat correctament."
+    },
+    "revokeCredentialConfirm": {
+      "title": "Revocar Credencial",
+      "message": "Estàs segur que vols revocar la credencial?"
+    },
+    "revokeCredentialSuccess": {
+      "title": "Credencial revocada",
+      "message": "La credencial ha estat revocada."
     }
   },  
   "credentialOffer": {
@@ -187,71 +210,98 @@
         "message": "Segur que vols eliminar aquest power? "
       }
     },
-    "credentialIssuance":{
-      "learCredentialEmployee": "LEARCredentialEmployee",
-      "create-confirm-dialog": {
-        "title": "Crear credencial",
-        "message": "Segur que vols crear aquesta credencial?"
-      },
-      "create-success-dialog": {
-        "title": "Credencial creada",
-        "message": "La LEARCredentialEmployee ha estat creada amb èxit."
-      },
-      "creating-credential": "Creant credencial"
+   "credentialIssuance": {
+    "title": "Emissió de LEAR Credential",
+    "learCredentialEmployee": "LEAR Credential Employee",
+    "create-confirm-dialog": {
+      "title": "Crear credencial",
+      "message": "Segur que vols crear aquesta credencial?",
+      "checkboxLabel": "Confirmo que he copiat i desat de manera segura la clau privada.",
+      "belowText": "Sense la clau privada no podràs utilitzar aquesta credencial més endavant."
     },
-    "error": {
-      "not_found": "El recurs sol·licitat no s'ha trobat.",
-      "unauthorized": "No estàs autoritzat per realitzar aquesta acció.",
-      "forbidden": "No tens permís per accedir a aquest recurs.",
-      "internal_server": "S'ha produït un error al servidor. Si us plau, torna-ho a intentar més tard.",
-      "unknown_error": "S'ha produït un error desconegut. Si us plau, torna-ho a intentar.",
-      "credential_submission": "S'ha produït un error en crear la credencial.",
-      "one_power_min":"Hi ha d'haver almenys un poder seleccionat, i cada poder requereix almenys una acció.",
-      "policy": {
-          "title": "Accés Denegat",
-          "message": "No tens els poders necessaris per accedir-hi."
-      },
-      "credentialOffer": {
-        "invalid-url": "URL no vàlida. No es pot obtenir l'oferta de credencial.",
-        "unexpected": "S'ha produït un error inesperat. Torna-ho a intentar més tard o posa't en contacte amb el Representant Legal de la teva empresa per obtenir una nova credencial.",
-        "not-found": "Aquesta oferta de credencial no és vàlida. Pot ser que ja s'hagi descarregat, hagi caducat o hagi estat reemplaçada per una de nova. Si has rebut una nova oferta, consulta el teu correu electrònic. Si ha caducat o no pots trobar-ne cap de vàlida, contacta amb el Representant Legal de la teva empresa per sol·licitar-ne una de nova.",
-        "conflict": "L'oferta de credencial no és vàlida. Pot ser que ja s'hagi descarregat o hagi estat reemplaçada per una de nova. Si has rebut una nova oferta, consulta el teu correu electrònic."
-      },
-      "serverMailError": {
-        "title": "Error del servidor de correu",
-        "message": "S'ha produït un error amb el servidor de correu. Si us plau, torneu-ho a intentar més tard per enviar un recordatori; si el problema persisteix, poseu-vos en contacte amb el nostre equip de suport."
-      },
-      "form":{
-        "required": "Camp obligatori.",
-        "invalid_character": "Caràcter/s invàlid/s",
-        "only_letters_and_numbers": "Només lletres i xifres",
-        "only_letters_numbers_hyphens": "Només lletres, xifres i guions",
-        "only_numbers": "Només es permeten xifres",
-        "max_50": "50 caràcters com a màxim",
-        "max_15": "15 caràcters com a màxim",
-        "max_9": "9 caràcters com a màxim",
-        "min_7": "27 caràcters com a mínim",
-        "min_2": "2 caràcters com a mínim",
-        "email":{
-          "invalid": "Adreça electrònica invàlida. Pot ser que contingui un caràcter invàlid o en una posició invàlida.",
-          "local_part_max": "La part local de l'adreça el. no pot superar els 64 caràcters.",
-          "domain_part_max": "El domini de l'adreça el. no pot superar els 189 caràcters.",
-          "main_domain_part_min": "La part entre '@' i '.' ha de tenir almenys 2 caràcters.",
-          "top_level_domain_part_min": "La part entre l'últim punt i el final ha de tenir almenys 2 caràcters."
-        },
-        "no_power": "Afegeix almenys un poder",
-        "no_function": "Cada poder ha de tenir almenys una funció"
-      }
+    "create-success-dialog": {
+      "title": "Credencial creada",
+      "message": "La credencial s'ha creat correctament."
     },
-    "dialog": {
-      "ok": "D'acord",
-      "close": "Tancar",
-      "cancel": "Cancel·lar",
-      "accept": "Acceptar",
-       "delete" : "Eliminar",
-       "save" : "Desar"
+    "creating-credential": "Creant credencial",
+    "create-credential": "Crear credencial",
+    "credentialType": "Tipus de credencial",
+    "cancel": "Cancel·lar",
+    "mandatee": "mandatari",
+    "mandator": "mandant",
+    "select-type": "Selecciona el tipus de credencial",
+    "firstName": "Nom",
+    "lastName": "Cognom",
+    "commonName": "Nom comú",
+    "email": "Correu electrònic",
+    "emailAddress": "Correu electrònic",
+    "nationality": "Nacionalitat",
+    "serialNumber": "Número del document d’identitat",
+    "organization": "Nom de l’empresa",
+    "organizationIdentifier": "NIF de l’empresa",
+    "country": "País",
+    "domain": "Domini",
+    "ipAddress": "Adreça IP",
+    "selectA": "Selecciona un/una ",
+    "hint": {
+      "organizationIdentifier": "Introdueix només els caràcters que van després de 'VAT...-'. Per exemple, si és 'VATEU-123ABC', introdueix '123ABC'."
     },
-    "signature": {
+    "changeCredentialAlert": "Segur que vols canviar el tipus de credencial? Perdràs el progrés fet.",
+    "unloadAlert": "Segur que vols sortir? Perdràs el progrés fet."
+  },
+  "error": {
+    "not_found": "El recurs sol·licitat no s'ha trobat.",
+    "unauthorized": "No estàs autoritzat per realitzar aquesta acció.",
+    "forbidden": "No tens permís per accedir a aquest recurs.",
+    "internal_server": "S'ha produït un error al servidor. Si us plau, torna-ho a intentar més tard.",
+    "unknown_error": "S'ha produït un error desconegut. Si us plau, torna-ho a intentar.",
+    "credential_submission": "S'ha produït un error en crear la credencial.",
+    "one_power_min":"Hi ha d'haver almenys un poder seleccionat, i cada poder requereix almenys una acció.",
+    "policy": {
+        "title": "Accés Denegat",
+        "message": "No tens els poders necessaris per accedir-hi."
+    },
+    "credentialOffer": {
+      "invalid-url": "URL no vàlida. No es pot obtenir l'oferta de credencial.",
+      "unexpected": "S'ha produït un error inesperat. Torna-ho a intentar més tard o posa't en contacte amb el Representant Legal de la teva empresa per obtenir una nova credencial.",
+      "not-found": "Aquesta oferta de credencial no és vàlida. Pot ser que ja s'hagi descarregat, hagi caducat o hagi estat reemplaçada per una de nova. Si has rebut una nova oferta, consulta el teu correu electrònic. Si ha caducat o no pots trobar-ne cap de vàlida, contacta amb el Representant Legal de la teva empresa per sol·licitar-ne una de nova.",
+      "conflict": "L'oferta de credencial no és vàlida. Pot ser que ja s'hagi descarregat o hagi estat reemplaçada per una de nova. Si has rebut una nova oferta, consulta el teu correu electrònic."
+    },
+    "serverMailError": {
+      "title": "Error del servidor de correu",
+      "message": "S'ha produït un error amb el servidor de correu. Si us plau, torneu-ho a intentar més tard per enviar un recordatori; si el problema persisteix, poseu-vos en contacte amb el nostre equip de suport."
+    },
+    "form":{
+      "required": "Camp obligatori.",
+      "invalid_character": "Caràcter/s invàlid/s",
+      "only_letters_and_numbers": "Només lletres i xifres",
+      "only_letters_numbers_hyphens": "Només lletres, xifres i guions",
+      "only_numbers": "Només es permeten xifres",
+      "max_50": "50 caràcters com a màxim",
+      "max_15": "15 caràcters com a màxim",
+      "max_9": "9 caràcters com a màxim",
+      "min_7": "27 caràcters com a mínim",
+      "min_2": "2 caràcters com a mínim",
+      "email":{
+        "invalid": "Adreça electrònica invàlida. Pot ser que contingui un caràcter invàlid o en una posició invàlida.",
+        "local_part_max": "La part local de l'adreça el. no pot superar els 64 caràcters.",
+        "domain_part_max": "El domini de l'adreça el. no pot superar els 189 caràcters.",
+        "main_domain_part_min": "La part entre '@' i '.' ha de tenir almenys 2 caràcters.",
+        "top_level_domain_part_min": "La part entre l'últim punt i el final ha de tenir almenys 2 caràcters."
+      },
+      "no_power": "Afegeix almenys un poder",
+      "no_function": "Cada poder ha de tenir almenys una funció"
+    }
+  },
+  "dialog": {
+    "ok": "D'acord",
+    "close": "Tancar",
+    "cancel": "Cancel·lar",
+    "accept": "Acceptar",
+      "delete" : "Eliminar",
+      "save" : "Desar"
+  },
+  "signature": {
       "settings": {
         "title": "Configuració de signatura",
         "enableRemote": "Habilitar signatura remota",

@@ -1,3 +1,4 @@
+import { DialogComponent } from 'src/app/shared/components/dialog/dialog-component/dialog.component';
 import { ComponentFixture, fakeAsync, TestBed, tick } from '@angular/core/testing';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { provideHttpClient, HttpErrorResponse } from '@angular/common/http';
@@ -518,7 +519,7 @@ describe('getCredentialOffer', () => {
       error: (error) => {
         expect(error.message).toBe('No transaction nor c code to fetch credential offer.');
         expect(consoleErrorSpy).toHaveBeenCalledWith("Client error: Transaction code not found. Can't get credential offer");
-        expect(dialogSpy).toHaveBeenCalledWith(message);
+        expect(dialogSpy).toHaveBeenCalledWith(DialogComponent, message);
         done();
       }
     });
@@ -587,7 +588,7 @@ describe('getCredentialOfferByTransactionCode', () => {
 
     result$.subscribe({
       error: (error) => {
-        expect(dialogSpy).toHaveBeenCalledWith(message);
+        expect(dialogSpy).toHaveBeenCalledWith(DialogComponent, message);
         expect(error).toEqual(new Error());
         expect(redirectSpy).toHaveBeenCalled();
         done();
@@ -627,7 +628,7 @@ describe('getCredentialOfferByCTransactionCode', () => {
 
     result$.subscribe({
       error: (error) => {
-        expect(dialogSpy).toHaveBeenCalledWith(message);
+        expect(dialogSpy).toHaveBeenCalledWith(DialogComponent, message);
         expect(redirectSpy).toHaveBeenCalled();
         expect(error).toEqual(new Error());
         done();
@@ -697,7 +698,7 @@ it('should navigate when c_transaction_code is provided', () => {
 
     expect(redirectSpy).toHaveBeenCalled();
     expect(dialogOpenSpy).toHaveBeenCalled();
-    expect(dialogOpenSpy).toHaveBeenCalledWith(message);
+    expect(dialogOpenSpy).toHaveBeenCalledWith(DialogComponent, message);
   });
 
   

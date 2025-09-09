@@ -1,24 +1,30 @@
+import { CustomTooltipDirective } from './../../shared/directives/custom-tooltip.directive';
 import { MatCard, MatCardContent } from '@angular/material/card';
-import { Component, computed, inject, OnInit } from '@angular/core';
+import { Component, inject, Injector, OnInit, Signal, WritableSignal } from '@angular/core';
 import { ActivatedRoute, RouterLink } from '@angular/router';
-import { AbstractControl, FormArray, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
-
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { MatFormField, MatLabel } from '@angular/material/form-field';
 import { MatInput } from '@angular/material/input';
-import { MatSlideToggle } from '@angular/material/slide-toggle';
 import { TranslatePipe } from '@ngx-translate/core';
 import { MatIcon } from '@angular/material/icon';
 import { MatButton } from '@angular/material/button';
-import { LoaderService } from 'src/app/core/services/loader.service';
+import { LoaderService } from 'src/app/shared/services/loader.service';
 import { CapitalizePipe } from 'src/app/shared/pipes/capitalize.pipe';
 import { AddPrefixPipe } from 'src/app/shared/pipes/add-prefix.pipe';
 import { CredentialDetailsService } from './services/credential-details.service';
+import { PortalModule } from '@angular/cdk/portal';
+import { CredentialStatus, CredentialType, LifeCycleStatus } from 'src/app/core/models/entity/lear-credential';
+import { Observable } from 'rxjs';
+import { EvaluatedExtendedDetailsField } from 'src/app/core/models/entity/lear-credential-details';
+import { StatusClass } from 'src/app/core/models/entity/lear-credential-management';
+import { KNOWLEDGEBASE_PATH } from 'src/app/core/constants/knowledge.constants';
+import { environment } from 'src/environments/environment';
 
 
 @Component({
   standalone: true,
-  imports: [AddPrefixPipe, CapitalizePipe, CommonModule, FormsModule, MatButton, MatCard, MatCardContent, MatFormField, MatIcon, MatInput, MatLabel, MatSlideToggle, ReactiveFormsModule, RouterLink, TranslatePipe ],
+  imports: [AddPrefixPipe, CapitalizePipe, CommonModule, CustomTooltipDirective, FormsModule, MatButton, MatCard, MatCardContent, MatFormField, MatIcon, MatInput, MatLabel, PortalModule, ReactiveFormsModule, RouterLink, TranslatePipe ],
   providers:[CredentialDetailsService],
   selector: 'app-credential-details',
   templateUrl: './credential-details.component.html',
@@ -26,54 +32,58 @@ import { CredentialDetailsService } from './services/credential-details.service'
 })
 export class CredentialDetailsComponent implements OnInit {
   
+  //SIGNALS
+  //Credential data
+  public credentialValidFrom$: Signal<string>;
+  public credentialValidUntil$: Signal<string>
+  public credentialType$: Signal<CredentialType | undefined>;
+  public lifeCycleStatus$: Signal<LifeCycleStatus | undefined>;
+  public lifeCycleStatusClass$: Signal<StatusClass | undefined>;
+  public credentialStatus$: Signal<CredentialStatus | undefined>;
+  //Models
+  public mainViewModel$: WritableSignal<EvaluatedExtendedDetailsField[] | undefined>; // credentialSubject data
+  public sideViewModel$: WritableSignal<EvaluatedExtendedDetailsField[] | undefined>;
+  public showSideTemplateCard$: Signal<boolean>;
+  // Buttons
+  public showReminderButton$: Signal<boolean>;
+  public showSignCredentialButton$: Signal<boolean>;
+  public showRevokeCredentialButton$: Signal<boolean>;
+  public enableRevokeCredentialButton$: Signal<boolean>;
+  public showActionsButtonsContainer$: Signal<boolean>;
+  
+  //OBSERVABLES
+  public isLoading$: Observable<boolean>;
+
+  //RAW VARIABLES
+  public tooltipText: string = "credentialDetails.revokeTooltip";
+  public knowledgeBaseUrl = environment.knowledge_base_url + KNOWLEDGEBASE_PATH.ISSUER + KNOWLEDGEBASE_PATH.ISSUER_REVOKATION;
+
   private readonly detailsService = inject(CredentialDetailsService);
+  private readonly injector = inject(Injector);
   private readonly loader = inject(LoaderService);
   private readonly route = inject(ActivatedRoute);
 
-  //signals
-  public credentialValidFrom$ = this.detailsService.credentialValidFrom$;
-  public credentialValidUntil$ = this.detailsService.credentialValidUntil$;
-  public credentialType$ = this.detailsService.credentialType$;
-  public credentialStatus$ = this.detailsService.credentialStatus$;
-  public credentialDetailsForm$ = this.detailsService.credentialDetailsForm$;
-  public credentialDetailsFormSchema$ = this.detailsService.credentialDetailsFormSchema$;
-
-  public showReminderButton$ = computed(() => {
-    return (
-      (
-        this.credentialStatus$() === 'WITHDRAWN' ||
-        this.credentialStatus$() === 'DRAFT' ||
-        this.credentialStatus$() === 'PEND_DOWNLOAD'
-      ) &&
-      this.credentialType$() === 'LEARCredentialEmployee'
-    );
-  });
-
-  public showSignCredentialButton$ = computed(()=>{
-    return (this.credentialStatus$() === 'PEND_SIGNATURE') && 
-    (this.credentialType$() === 'LEARCredentialEmployee' || this.credentialType$() === 'VerifiableCertification');
-  });
-
-    //observables
-    public isLoading$ = this.loader.isLoading$;
+  public constructor(){
+    this.isLoading$ = this.loader.isLoading$;
+    this.credentialValidFrom$ = this.detailsService.credentialValidFrom$;
+    this.credentialValidUntil$ = this.detailsService.credentialValidUntil$;
+    this.credentialType$ = this.detailsService.credentialType$;
+    this.lifeCycleStatus$ = this.detailsService.lifeCycleStatus$;
+    this.lifeCycleStatusClass$ = this.detailsService.lifeCycleStatusClass$;
+    this.credentialStatus$ = this.detailsService.credentialStatus$;
+    this.mainViewModel$ = this.detailsService.mainViewModel$;
+    this.sideViewModel$ = this.detailsService.sideViewModel$;
+    this.showSideTemplateCard$ = this.detailsService.showSideTemplateCard$;
+    this.showReminderButton$ = this.detailsService.showReminderButton$;
+    this.showSignCredentialButton$ = this.detailsService.showSignCredentialButton$;
+    this.showRevokeCredentialButton$ = this.detailsService.showRevokeCredentialButton$;
+    this.enableRevokeCredentialButton$ = this.detailsService.enableRevokeCredentialButton$;
+    this.showActionsButtonsContainer$ = this.detailsService.showActionsButtonsContainer$;
+  }
 
   public ngOnInit(): void {
     this.getProcedureId();
-    this.initializeForm();
-  }
-  
-  private getProcedureId(): void {
-    const id = this.route.snapshot.paramMap.get('id')!;
-    this.detailsService.setProcedureId(id);
-  }
-  
-
-  private loadCredentialDetailsAndForm(): void {
-    this.detailsService.loadCredentialDetailsAndForm();
-  }
-
-  private initializeForm(): void {
-    this.loadCredentialDetailsAndForm();
+    this.loadViewModel();
   }
 
   //SEND REMINDER
@@ -86,24 +96,19 @@ export class CredentialDetailsComponent implements OnInit {
     this.detailsService.openSignCredentialDialog();
   }
 
-  //TEMPLATE FUNCTIONS
-  public formKeys(group: AbstractControl | null | undefined): string[] {
-    if (group instanceof FormGroup) {
-      return Object.keys(group.controls);
-    }
-    return [];
+  // REVOKE
+  public openRevokeCredentialDialog(){
+    this.detailsService.openRevokeCredentialDialog();
   }
   
-  public getControlType(control: AbstractControl | null | undefined): 'group' | 'control' {
-    if (control instanceof FormGroup) {
-      return 'group';
-    }
-    return 'control';
+  // DATA FETCHING
+  private getProcedureId(): void {
+    const id = this.route.snapshot.paramMap.get('id')!;
+    this.detailsService.setProcedureId(id);
   }
 
-  public asFormArray(control: AbstractControl | null): FormArray {
-    return control as FormArray;
+  private loadViewModel(): void {
+    this.detailsService.loadCredentialModels(this.injector);
   }
-  
 
 }

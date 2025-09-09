@@ -3,7 +3,6 @@ import { CredentialOfferOnboardingComponent } from './credential-offer-onboardin
 import { TranslateModule } from '@ngx-translate/core';
 import { QRCodeModule } from 'angularx-qrcode';
 import { environment } from 'src/environments/environment';
-import {API} from "../../../../core/constants/api.constants";
 
 describe('CredentialOfferOnboardingComponent', () => {
   let component: CredentialOfferOnboardingComponent;
@@ -39,12 +38,12 @@ describe('CredentialOfferOnboardingComponent', () => {
   });
 
   it('should initialize walletTestUrl with the value from the environment', () => {
-    const expectedTestUrl = API.WALLET_URL_TEST;
+    const expectedTestUrl = environment.wallet_url_test;
     expect(component.walletTestUrl).toBe(expectedTestUrl);
   });
 
   it('should get showWalletSameDeviceUrlTest', () => {
-    expect(component.showWalletSameDeviceUrlTest).toBe(API.SHOW_WALLET_URL_TEST);
+    expect(component.showWalletSameDeviceUrlTest).toBe(environment.show_wallet_url_test);
   });
 
   it('should initialize walletUsersGuideUrl with the correct value from the environment', () => {

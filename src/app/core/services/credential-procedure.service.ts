@@ -1,29 +1,32 @@
+import { DialogComponent } from 'src/app/shared/components/dialog/dialog-component/dialog.component';
 import { inject, Injectable } from '@angular/core';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { Observable, throwError } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
-import { environment} from 'src/environments/environment';
-import { ProcedureResponse } from '../models/dto/procedure-response.dto';
+import { environment } from 'src/environments/environment';
+import { CredentialProceduresResponse } from '../models/dto/credential-procedures-response.dto';
 import { CredentialOfferResponse } from '../models/dto/credential-offer-response.dto';
-import { LEARCredentialDataDetails } from '../models/entity/lear-credential';
+import { CredentialProcedureDetails } from '../models/entity/lear-credential';
 import { DialogWrapperService } from "../../shared/components/dialog/dialog-wrapper/dialog-wrapper.service";
 import { TranslateService } from "@ngx-translate/core";
 import { Router } from "@angular/router";
-import { API } from "../constants/api.constants";
-import { LEARCredentialDataNormalizer } from '../models/entity/lear-credential-employee-data-normalizer';
-import { EmployeeProcedureRequest } from '../models/dto/procedure-request.dto';
-import { LEARCredentialDataDetailsResponse } from '../models/dto/lear-credential-data-details-response.dto';
+import { IssuanceLEARCredentialRequestDto } from '../models/dto/lear-credential-issuance-request.dto';
+import { LEARCredentialDataNormalizer } from 'src/app/features/credential-details/utils/lear-credential-data-normalizer';
+import { API_PATH } from '../constants/api-paths.constants';
+import { CredentialRevokeRequestDto } from '../models/dto/credential-revoke-request.dto';
+import { CredentialProcedureDetailsResponse } from '../models/dto/credential-procedure-details-response';
 
 @Injectable({
   providedIn: 'root'
 })
 export class CredentialProcedureService {
 
-  private readonly saveCredential = `${environment.server_url}${API.SAVE_CREDENTIAL_PATH}`;
-  private readonly organizationProcedures = `${environment.server_url}${API.PROCEDURES_PATH}`;
-  private readonly credentialOfferUrl = `${environment.server_url}${API.CREDENTIAL_OFFER_PATH}`;
-  private readonly notificationProcedure = `${environment.server_url}${API.NOTIFICATION_PATH}`;
-  private readonly signCredentialUrl = `${environment.server_url}${API.SIGN_CREDENTIAL_PATH}`;
+  private readonly organizationProcedures = `${environment.server_url}${API_PATH.PROCEDURES}`;
+  private readonly saveCredential = `${environment.server_url}${API_PATH.SAVE_CREDENTIAL}`;
+  private readonly credentialOfferUrl = `${environment.server_url}${API_PATH.CREDENTIAL_OFFER}`;
+  private readonly notificationProcedure = `${environment.server_url}${API_PATH.NOTIFICATION}`;
+  private readonly signCredentialUrl = `${environment.server_url}${API_PATH.SIGN_CREDENTIAL}`;
+  private readonly revokeCredentialUrl = `${environment.server_url}${API_PATH.REVOKE}`;
 
   private readonly http = inject(HttpClient);
   private readonly normalizer = new LEARCredentialDataNormalizer();
@@ -31,14 +34,15 @@ export class CredentialProcedureService {
   private readonly translate = inject(TranslateService);
   private readonly router = inject(Router);
 
-  public getCredentialProcedures(): Observable<ProcedureResponse> {
-    return this.http.get<ProcedureResponse>(this.organizationProcedures).pipe(
+  public getCredentialProcedures(): Observable<CredentialProceduresResponse> {
+    return this.http.get<CredentialProceduresResponse>(this.organizationProcedures).pipe(
       catchError(this.handleError)
     );
   }
 
-  public getCredentialProcedureById(procedureId: string): Observable<LEARCredentialDataDetails> {
-    return this.http.get<LEARCredentialDataDetailsResponse>(
+  // get credential and normalize it
+  public getCredentialProcedureById(procedureId: string): Observable<CredentialProcedureDetails> {
+    return this.http.get<CredentialProcedureDetailsResponse>(
       `${this.organizationProcedures}/${procedureId}/credential-decoded`
     )
     .pipe(
@@ -49,7 +53,6 @@ export class CredentialProcedureService {
           ? credential.vc
           : credential;
 
-        // Normalize the part which is of type LEARCredentialEmployee
         const normalizedCredential = this.normalizer.normalizeLearCredential(credentialData);
 
         return {
@@ -58,13 +61,14 @@ export class CredentialProcedureService {
             ...credential,
             vc: normalizedCredential
           }
-        } as LEARCredentialDataDetails;
+        } as CredentialProcedureDetails;
       }),
       catchError(this.handleError)
     );
   }
 
-  public createProcedure(procedureRequest: EmployeeProcedureRequest): Observable<void> {
+  public createProcedure(procedureRequest: IssuanceLEARCredentialRequestDto): Observable<void> {
+
     return this.http.post<void>(this.saveCredential, procedureRequest).pipe(
       catchError(this.handleError)
     );
@@ -78,6 +82,13 @@ export class CredentialProcedureService {
 
   public signCredential(procedureId: string): Observable<void> {
     return this.http.post<void>(`${this.signCredentialUrl}/${procedureId}`, {} ).pipe(
+      catchError(this.handleError)
+    );
+  }
+
+  public revokeCredential(credentialId: string, listId: string): Observable<void>{
+    const body: CredentialRevokeRequestDto = { credentialId, listId };
+    return this.http.post<void>(this.revokeCredentialUrl, body).pipe(
       catchError(this.handleError)
     );
   }
@@ -114,7 +125,7 @@ export class CredentialProcedureService {
       errorDetail = error.message;
     }
 
-    console.log('handleError -> status:', error.status, 'errorDetail:', errorDetail);
+    console.info('handleError -> status:', error.status, 'errorDetail:', errorDetail);
     // this 503 error handling is specific to credential-procedure endpoints
     if (error.status === 503 && errorDetail.trim() === 'Error during communication with the mail server') {
       const errorMessage = this.translate.instant('error.serverMailError.message');
@@ -143,7 +154,7 @@ export class CredentialProcedureService {
       errorMessage = this.translate.instant("error.credentialOffer.conflict");
     }
   
-    this.dialog.openErrorInfoDialog(errorMessage);
+    this.dialog.openErrorInfoDialog(DialogComponent, errorMessage);
     setTimeout(()=>{
       this.router.navigate(['/home']);
     }, 0);

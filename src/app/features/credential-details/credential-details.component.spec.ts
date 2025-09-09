@@ -1,214 +1,178 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { CredentialDetailsComponent } from './credential-details.component';
-import { ActivatedRoute } from '@angular/router';
-import { FormArray, FormControl, FormGroup } from '@angular/forms';
-import { CredentialDetailsService } from './services/credential-details.service';
-import { LoaderService } from 'src/app/core/services/loader.service';
+import { TestBed, ComponentFixture } from '@angular/core/testing';
 import { signal } from '@angular/core';
-import { CredentialProcedureService } from 'src/app/core/services/credential-procedure.service';
-import { HttpClient } from '@angular/common/http';
+import { Observable, of } from 'rxjs';
+import { ActivatedRoute } from '@angular/router';
+import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { RouterTestingModule } from '@angular/router/testing';
 import { TranslateModule } from '@ngx-translate/core';
-import { of } from 'rxjs';
-import { mockCredentialEmployee } from 'src/app/core/mocks/details-mocks';
-import { NoopAnimationsModule } from '@angular/platform-browser/animations';
-import { CredentialStatus, CredentialType } from 'src/app/core/models/entity/lear-credential';
+
+import { LoaderService } from 'src/app/shared/services/loader.service';
+import { CredentialDetailsService } from './services/credential-details.service';
+import { CredentialDetailsComponent } from './credential-details.component';
+import { EvaluatedExtendedDetailsField } from 'src/app/core/models/entity/lear-credential-details';
+import { mockCredentialStatus } from 'src/app/core/mocks/details.mock';
+import { CredentialType, LifeCycleStatus } from 'src/app/core/models/entity/lear-credential';
+import { StatusClass } from 'src/app/core/models/entity/lear-credential-management';
 
 describe('CredentialDetailsComponent', () => {
-  let component: CredentialDetailsComponent;
   let fixture: ComponentFixture<CredentialDetailsComponent>;
+  let component: CredentialDetailsComponent;
+  let mockDetailsService: {
+    procedureId$: ReturnType<typeof signal<string>>;
+    credentialProcedureDetails$: ReturnType<typeof signal<any>>;
+    lifeCycleStatus$: ReturnType<typeof signal<LifeCycleStatus | undefined>>;
+    credentialValidFrom$: ReturnType<typeof signal<string>>;
+    credentialValidUntil$: ReturnType<typeof signal<string>>;
+    credentialType$: ReturnType<typeof signal<CredentialType | undefined>>;
+    credentialStatus$: ReturnType<typeof signal<any>>;
+    lifeCycleStatusClass$: ReturnType<typeof signal<StatusClass | undefined>>;
 
-  const mockDetailsService = {
-    credentialValidFrom$: signal('2023-01-01'),
-    credentialValidUntil$: signal('2023-12-31'),
-    credentialType$: signal<CredentialType>('LEARCredentialEmployee'),
-    credentialStatus$: signal<CredentialStatus>('DRAFT'),
-    credentialDetailsForm$: signal(new FormGroup({})),
-    credentialDetailsFormSchema$: signal({}),
-    setProcedureId: jest.fn(),
-    loadCredentialDetailsAndForm: jest.fn(),
-    openSendReminderDialog: jest.fn(),
-    openSignCredentialDialog: jest.fn(),
+    mainViewModel$: ReturnType<typeof signal<EvaluatedExtendedDetailsField[] | undefined>>;
+    sideViewModel$: ReturnType<typeof signal<EvaluatedExtendedDetailsField[] | undefined>>;
+    showSideTemplateCard$: ReturnType<typeof signal<boolean>>;
+
+    showReminderButton$: ReturnType<typeof signal<boolean>>;
+    showSignCredentialButton$: ReturnType<typeof signal<boolean>>;
+    showRevokeCredentialButton$: ReturnType<typeof signal<boolean>>;
+    enableRevokeCredentialButton$: ReturnType<typeof signal<boolean>>;
+    showActionsButtonsContainer$: ReturnType<typeof signal<boolean>>;
+
+    setProcedureId: jest.Mock;
+    loadCredentialModels: jest.Mock;
+    openSendReminderDialog: jest.Mock;
+    openSignCredentialDialog: jest.Mock;
+    openRevokeCredentialDialog: jest.Mock;
   };
-
-  const mockLoaderService = {
-    isLoading$: of(false),
-  };
-
-  const mockActivatedRoute = {
-    snapshot: {
-      paramMap: {
-        get: jest.fn(() => '123'),
-      },
-    },
-  };
-
-  const mockCredentialProcedureService = {
-    getCredentialProcedureById: jest.fn().mockReturnValue(of(mockCredentialEmployee)),
-    signCredential: jest.fn(),
-    sendReminder: jest.fn(),
-  }
+  let mockLoader: { isLoading$: Observable<boolean> };
 
   beforeEach(async () => {
-    await TestBed.configureTestingModule({
-      imports: [CredentialDetailsComponent, TranslateModule.forRoot(), NoopAnimationsModule],
-      providers: [
-        { provide: CredentialDetailsService, useValue: mockDetailsService },
-        { provide: CredentialProcedureService, useValue: mockCredentialProcedureService },
-        { provide: HttpClient, useValue: {} },
-        { provide: LoaderService, useValue: mockLoaderService },
-        { provide: ActivatedRoute, useValue: mockActivatedRoute },
-      ],
-    }).compileComponents();
+    const validFrom$ = signal('2025-01-01');
+    const validUntil$ = signal('2025-12-31');
+    const type$ = signal<CredentialType | undefined>('LEARCredentialEmployee');
+    const lifecycle$ = signal<LifeCycleStatus | undefined>('EXPIRED');
+    const statusClass$ = signal<StatusClass | undefined>('status-expired');
+    const mainModel$ = signal<EvaluatedExtendedDetailsField[] | undefined>([{ key: 'foo', type: 'key-value', value: 'bar' }]);
+    const sideModel$ = signal<EvaluatedExtendedDetailsField[] | undefined>([]);
+    const showSide$ = signal<boolean>(false);
+    const showRem$ = signal<boolean>(true);
+    const showSign$ = signal<boolean>(true);
+    const showRev$ = signal<boolean>(false);
+    const enableRev$ = signal<boolean>(true);
+    const showActions$ = signal<boolean>(true);
+    const credentialStatus$ = signal(mockCredentialStatus);
+    const procedureId$ = signal<string>('the-id');
 
-    TestBed.overrideProvider(CredentialDetailsService, { useValue: mockDetailsService });
+    mockDetailsService = {
+      procedureId$,
+      credentialProcedureDetails$: signal(undefined),
+      lifeCycleStatus$: lifecycle$,
+      credentialValidFrom$: validFrom$,
+      credentialValidUntil$: validUntil$,
+      credentialType$: type$,
+      credentialStatus$: credentialStatus$,
+      lifeCycleStatusClass$: statusClass$,
+
+      mainViewModel$: mainModel$,
+      sideViewModel$: sideModel$,
+      showSideTemplateCard$: showSide$,
+
+      showReminderButton$: showRem$,
+      showSignCredentialButton$: showSign$,
+      showRevokeCredentialButton$: showRev$,
+      enableRevokeCredentialButton$: enableRev$,
+      showActionsButtonsContainer$: showActions$,
+
+      setProcedureId: jest.fn(),
+      loadCredentialModels: jest.fn(),
+      openSendReminderDialog: jest.fn(),
+      openSignCredentialDialog: jest.fn(),
+      openRevokeCredentialDialog: jest.fn(),
+    };
+
+    mockLoader = { isLoading$: of(true) };
+
+    const fakeActivatedRoute = {
+      snapshot: { paramMap: { get: (_: string) => 'the-id' } }
+    };
+
+    await TestBed.configureTestingModule({
+      imports: [
+        CredentialDetailsComponent,
+        HttpClientTestingModule,
+        RouterTestingModule,
+        TranslateModule.forRoot()
+      ],
+      providers: [
+        { provide: ActivatedRoute, useValue: fakeActivatedRoute }
+      ]
+    })
+    .overrideComponent(CredentialDetailsComponent, {
+      set: {
+        providers: [
+          { provide: CredentialDetailsService, useValue: mockDetailsService },
+          { provide: LoaderService, useValue: mockLoader }
+        ]
+      }
+    })
+    .compileComponents();
+
     fixture = TestBed.createComponent(CredentialDetailsComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });
 
-  it('should create the component', () => {
+  it('creates component and initializes signals', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should show reminder button', () => {
-    mockDetailsService.credentialStatus$.set('WITHDRAWN');
-    mockDetailsService.credentialType$.set('LEARCredentialEmployee');
-    expect(component.showReminderButton$()).toBe(true);
-
-    mockDetailsService.credentialStatus$.set('WITHDRAWN');
-    mockDetailsService.credentialType$.set('LEARCredentialMachine');
-    expect(component.showReminderButton$()).toBe(false);
-
-    mockDetailsService.credentialStatus$.set('DRAFT');
-    mockDetailsService.credentialType$.set('LEARCredentialEmployee');
-    expect(component.showReminderButton$()).toBe(true);
-
-    mockDetailsService.credentialStatus$.set('WITHDRAWN');
-    mockDetailsService.credentialType$.set('VerifiableCertification');
-    expect(component.showReminderButton$()).toBe(false);
-
-    mockDetailsService.credentialStatus$.set('VALID');
-    mockDetailsService.credentialType$.set('LEARCredentialEmployee');
-    expect(component.showReminderButton$()).toBe(false);
-
-    mockDetailsService.credentialStatus$.set('VALID');
-    mockDetailsService.credentialType$.set('LEARCredentialMachine');
-    expect(component.showReminderButton$()).toBe(false);
-
-    mockDetailsService.credentialStatus$.set('VALID');
-    mockDetailsService.credentialType$.set('VerifiableCertification');
-    expect(component.showReminderButton$()).toBe(false);
-
+  it('should initialize main signals correctly', () => {
+    expect(component.credentialValidFrom$()).toBe('2025-01-01');
+    expect(component.credentialValidUntil$()).toBe('2025-12-31');
+    expect(component.credentialType$()).toBe('LEARCredentialEmployee');
+    expect(component.lifeCycleStatus$()).toBe('EXPIRED');
+    expect(component.credentialStatus$()).toEqual(mockCredentialStatus);
+    expect(component.mainViewModel$()![0].key).toBe('foo');
+    expect(component.sideViewModel$()).toEqual([]);
   });
 
-  it('should show sign credential button', () => {
-    // Cas positiu: status i type correctes
-    mockDetailsService.credentialStatus$.set('PEND_SIGNATURE');
-    mockDetailsService.credentialType$.set('LEARCredentialEmployee');
-    expect(component.showSignCredentialButton$()).toBe(true);
-  
-    mockDetailsService.credentialStatus$.set('PEND_SIGNATURE');
-    mockDetailsService.credentialType$.set('VerifiableCertification');
-    expect(component.showSignCredentialButton$()).toBe(true);
-  
-    // Casos negatius: status o type incorrectes
-    mockDetailsService.credentialStatus$.set('PEND_SIGNATURE');
-    mockDetailsService.credentialType$.set('LEARCredentialMachine');
-    expect(component.showSignCredentialButton$()).toBe(false);
-  
-    mockDetailsService.credentialStatus$.set('DRAFT');
-    mockDetailsService.credentialType$.set('LEARCredentialEmployee');
-    expect(component.showSignCredentialButton$()).toBe(false);
-  
-    mockDetailsService.credentialStatus$.set('DRAFT');
-    mockDetailsService.credentialType$.set('LEARCredentialMachine');
-    expect(component.showSignCredentialButton$()).toBe(false);
-  
-    mockDetailsService.credentialStatus$.set('VALID');
-    mockDetailsService.credentialType$.set('VerifiableCertification');
-    expect(component.showSignCredentialButton$()).toBe(false);
-  });
-  
-
-  it('should call getProcedureId and initializeForm on ngOnInit', () => {
-    const getProcedureIdSpy = jest.spyOn(component as any, 'getProcedureId');
-    const initializeFormSpy = jest.spyOn(component as any, 'initializeForm');
-  
-    component.ngOnInit();
-  
-    expect(getProcedureIdSpy).toHaveBeenCalled();
-    expect(initializeFormSpy).toHaveBeenCalled();
-  });
-
-  it('should call detailsService.loadCredentialDetailsAndForm in loadCredentialDetailsAndForm()', () => {
-    const spy = jest.spyOn(mockDetailsService, 'loadCredentialDetailsAndForm');
-  
-    // Accés a mètode privat via cast
-    (component as any).loadCredentialDetailsAndForm();
-  
-    expect(spy).toHaveBeenCalled();
-  });
-  
-  it('should call loadCredentialDetailsAndForm in initializeForm()', () => {
-    const spy = jest.spyOn(component as any, 'loadCredentialDetailsAndForm');
-  
-    (component as any).initializeForm();
-  
-    expect(spy).toHaveBeenCalled();
-  });
-  
-  it('should call detailsService.openSendReminderDialog when openSendReminderDialog is called', () => {
-    const spy = jest.spyOn(mockDetailsService, 'openSendReminderDialog');
-  
-    component.openSendReminderDialog();
-  
-    expect(spy).toHaveBeenCalled();
-  });
-  
-  it('should call detailsService.openSignCredentialDialog when openSignCredentialDialog is called', () => {
-    const spy = jest.spyOn(mockDetailsService, 'openSignCredentialDialog');
-  
-    component.openSignCredentialDialog();
-  
-    expect(spy).toHaveBeenCalled();
-  });
-  
-  it('should return form control keys from a FormGroup', () => {
-    const testGroup = new FormGroup({
-      name: new FormControl(''),
-      age: new FormControl(''),
-      email: new FormControl('')
+  it('should subscribe to loader.isLoading$', done => {
+    component.isLoading$.subscribe(v => {
+      expect(v).toBe(true);
+      done();
     });
-  
-    const result = component.formKeys(testGroup);
-  
-    expect(result).toEqual(['name', 'age', 'email']);
   });
 
-  it('should return the correct control type', () => {
-    const cases = [
-      { control: new FormGroup({ name: new FormControl('') }), expected: 'group' },
-      { control: new FormControl(''), expected: 'control' },
-    ] as const;
-  
-    for (const { control, expected } of cases) {
-      const result = component.getControlType(control);
-      expect(result).toBe(expected);
-    }
+  it('should call setProcedureId and loadCredentialModels on ngOnInit', () => {
+    expect(mockDetailsService.setProcedureId).toHaveBeenCalledWith('the-id');
+    expect(mockDetailsService.loadCredentialModels)
+      .toHaveBeenCalledWith((component as any).injector);
   });
-  
-  
-  it('should cast control to FormArray', () => {
-    const formArray = new FormArray([
-      new FormControl('one'),
-      new FormControl('two')
-    ]);
-  
-    const result = component.asFormArray(formArray);
-    expect(result).toBe(formArray); // mateixa referència
-    expect(result.controls.length).toBe(2); // comportament típic de FormArray
-  });
-  
 
-  
+  describe('button signal bindings', () => {
+    it('should reflect the service state', () => {
+      expect(component.showReminderButton$()).toBe(true);
+      expect(component.showSignCredentialButton$()).toBe(true);
+      expect(component.showRevokeCredentialButton$()).toBe(false);
+      expect(component.enableRevokeCredentialButton$()).toBe(true);
+      expect(component.showActionsButtonsContainer$()).toBe(true);
+      expect(component.showSideTemplateCard$()).toBe(false);
+    });
+  });
+
+  describe('button action methods', () => {
+    it('should call openSendReminderDialog on service', () => {
+      component.openSendReminderDialog();
+      expect(mockDetailsService.openSendReminderDialog).toHaveBeenCalled();
+    });
+
+    it('should call openSignCredentialDialog on service', () => {
+      component.openSignCredentialDialog();
+      expect(mockDetailsService.openSignCredentialDialog).toHaveBeenCalled();
+    });
+
+    it('should call openRevokeCredentialDialog on service', () => {
+      component.openRevokeCredentialDialog();
+      expect(mockDetailsService.openRevokeCredentialDialog).toHaveBeenCalled();
+    });
+  });
 });

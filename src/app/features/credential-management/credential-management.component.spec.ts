@@ -1,22 +1,27 @@
-import { ComponentFixture, fakeAsync, TestBed, tick } from '@angular/core/testing';
-import { MatTableDataSource, MatTableModule } from '@angular/material/table';
-import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
-import { MatButtonModule } from '@angular/material/button';
+import { ComponentFixture, TestBed, fakeAsync, tick } from '@angular/core/testing';
+import { CredentialManagementComponent } from './credential-management.component';
+import { MatTableModule } from '@angular/material/table';
+import { MatPaginatorModule } from '@angular/material/paginator';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { Router, ActivatedRoute, RouterModule } from '@angular/router';
-import { of, throwError } from 'rxjs';
-import { CredentialManagementComponent } from './credential-management.component';
 import { CredentialProcedureService } from 'src/app/core/services/credential-procedure.service';
-import { TranslateModule, TranslateService } from '@ngx-translate/core';
-import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { AuthService } from 'src/app/core/services/auth.service';
-import { AuthModule } from 'angular-auth-oidc-client';
-import { By } from '@angular/platform-browser';
-import { CredentialProcedure} from 'src/app/core/models/dto/procedure-response.dto';
-import { credentialProcedureListMock } from 'src/app/core/mocks/credential-procedure-list';
-import { MatSort } from '@angular/material/sort';
-import { ElementRef } from '@angular/core';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { provideHttpClient } from '@angular/common/http';
+import { of, throwError } from 'rxjs';
+import { LifeCycleStatusService } from 'src/app/shared/services/life-cycle-status.service';
+import { CredentialProcedureWithClass } from 'src/app/core/models/entity/lear-credential-management';
+import { CredentialProceduresResponse, CredentialProcedure } from 'src/app/core/models/dto/credential-procedures-response.dto';
+import { ElementRef } from '@angular/core';
+
+// helper to mock search input
+ function createMockInput(initialValue = '') {
+    const el = document.createElement('input');
+    el.value = initialValue;
+    const focusSpy = jest.spyOn(el, 'focus').mockImplementation(() => {});
+    const selectSpy = jest.spyOn(el, 'select').mockImplementation(() => {});
+    return { el, focusSpy, selectSpy };
+  }
 
 describe('CredentialManagementComponent', () => {
   let component: CredentialManagementComponent;
@@ -25,76 +30,60 @@ describe('CredentialManagementComponent', () => {
   let credentialProcedureSpy: jest.SpyInstance;
   let authService: jest.Mocked<any>;
   let router: Router;
+  let statusService: LifeCycleStatusService;
 
   beforeEach(async () => {
     authService = {
-      getMandator:()=> of(null),
-      getEmailName() {
-        return of('User Name');
-      },
-      getName(){
-        return of('Name')
-      },
-      getToken(){
-        return of('token')
-      },
-      logout() {
-        return of(void 0);
-      },
+      getMandator: () => of(null),
+      getEmailName: () => of('User Name'),
+      getName: () => of('Name'),
+      getToken: () => of('token'),
+      logout: () => of(void 0),
       hasPower: () => true,
-      hasIn2OrganizationIdentifier: jest.fn().mockReturnValue(true)
-    } as jest.Mocked<any>
+      hasIn2OrganizationIdentifier: jest.fn().mockReturnValue(true),
+    } as jest.Mocked<any>;
 
     await TestBed.configureTestingModule({
-    imports: [NoopAnimationsModule,
-        MatButtonModule,
+      imports: [
+        NoopAnimationsModule,
         MatTableModule,
         MatPaginatorModule,
         RouterModule.forRoot([]),
         TranslateModule.forRoot({}),
-        AuthModule.forRoot({ config: {} }),
-        CredentialManagementComponent],
-    providers: [
+        CredentialManagementComponent,
+      ],
+      providers: [
         CredentialProcedureService,
-        Router,
         TranslateService,
         { provide: AuthService, useValue: authService },
         {
-            provide: ActivatedRoute,
-            useValue: {
-                snapshot: {
-                    paramMap: {
-                        get: () => '1',
-                    },
-                },
-            },
+          provide: ActivatedRoute,
+          useValue: {
+            snapshot: { paramMap: { get: () => '1' } },
+          },
         },
-        provideHttpClient(),
-        provideHttpClientTesting(),
-    ]
-}).compileComponents();
+        provideHttpClient()
+      ],
+    }).compileComponents();
 
-    credentialProcedureService = TestBed.inject(
-      CredentialProcedureService
-    );
+    credentialProcedureService = TestBed.inject(CredentialProcedureService);
     credentialProcedureSpy = jest.spyOn(credentialProcedureService, 'getCredentialProcedures');
     router = TestBed.inject(Router);
     jest.spyOn(router, 'navigate');
-
+    statusService = TestBed.inject(LifeCycleStatusService);
   });
 
   beforeEach(() => {
     fixture = TestBed.createComponent(CredentialManagementComponent);
     component = fixture.componentInstance;
-
-    credentialProcedureSpy.mockReturnValue(of());
-
+    // perquè no dongui error en ngOnInit
+    credentialProcedureSpy.mockReturnValue(of({ credential_procedures: [] } as CredentialProceduresResponse));
     fixture.detectChanges();
   });
 
   afterEach(() => {
-    TestBed.resetTestingModule();
     jest.resetAllMocks();
+    TestBed.resetTestingModule();
   });
 
   it('should create', () => {
@@ -108,297 +97,156 @@ describe('CredentialManagementComponent', () => {
   });
 
   it('should call loadCredentialData on ngOnInit', () => {
-    const loadCredentialDataSpy = jest.spyOn(component, 'loadCredentialData');
+    const loadSpy = jest.spyOn(component, 'loadCredentialData');
     component.ngOnInit();
-    expect(loadCredentialDataSpy).toHaveBeenCalled();
+    expect(loadSpy).toHaveBeenCalled();
   });
 
   it('should set dataSource filter and reset paginator on search', fakeAsync(() => {
-    const paginatorSpy = jest.spyOn(component.dataSource['_paginator'], 'firstPage');
+    // assignem un paginator real per a que firstPage existeixi
+    component.dataSource['_paginator'] = { firstPage: jest.fn() } as any;
+    const paginatorSpy = jest.spyOn(component.dataSource.paginator!, 'firstPage');
 
-    const searchValue = 'test search';
-    component['searchSubject'].next(searchValue);
-
+    component['searchSubject'].next('FOO');
     tick(500);
 
-    expect(component.dataSource.filter).toBe(searchValue.trim().toLowerCase());
+    expect(component.dataSource.filter).toBe('foo');
     expect(paginatorSpy).toHaveBeenCalled();
   }));
 
-  it('should set data sorting accessor', ()=>{
-    component.ngAfterViewInit();
-    const item = {
-      credential_procedure: {
-        procedure_id: 'Id',
-        subject: 'Name',
-        status: 'Status',
-        updated: 'Updated',
-        credential_type: 'Type'
-      }
-    } as any;
-    const resStatus = component.dataSource.sortingDataAccessor(item, 'status');
-    expect(resStatus).toBe(item.credential_procedure.status.toLowerCase());
-
-    const resName = component.dataSource.sortingDataAccessor(item, 'subject');
-    expect(resName).toBe(item.credential_procedure.subject.toLowerCase());
-
-    const resUpdated = component.dataSource.sortingDataAccessor(item, 'updated');
-    expect(resUpdated).toBe(item.credential_procedure.updated.toLowerCase());
-
-    const resType = component.dataSource.sortingDataAccessor(item, 'credential_type');
-    expect(resType).toBe(item.credential_procedure.credential_type.toLowerCase());
-
-    const resDefault = component.dataSource.sortingDataAccessor(item, 'random');
-    expect(resDefault).toBe('');
-  });
-
   it('should set dataSource filter and not reset paginator if paginator is undefined', fakeAsync(() => {
-    component.dataSource = new MatTableDataSource<CredentialProcedure>([]);
-    
-    // Mock del paginator com null
+    // forcem paginator undefined
     jest.spyOn(component.dataSource, 'paginator', 'get').mockReturnValue(null);
-  
-    const searchValue = 'test search';
-    component['searchSubject'].next(searchValue);
-  
+    const paginator = component.dataSource.paginator;
+    component['searchSubject'].next('BAR');
     tick(500);
-  
-    // Comprova que el filtre es configura correctament
-    expect(component.dataSource.filter).toBe(searchValue.trim().toLowerCase());
-  
-    // Comprova que no es crida firstPage
-    const firstPageSpy = jest.fn();
-    expect(firstPageSpy).not.toHaveBeenCalled();
+
+    expect(component.dataSource.filter).toBe('bar');
+    // no ha de saltar cap error ni cridar firstPage
+    expect(paginator).toBeNull();
   }));
-  
-  
 
-it('should set dataSource filter and reset paginator if paginator is defined', fakeAsync(() => {
-  // Espiar el mètode firstPage del paginator
-  const paginatorSpy = jest.spyOn(component.dataSource['_paginator'], 'firstPage');
-
-  // Simular un valor de cerca
-  const searchValue = 'test search';
-  component['searchSubject'].next(searchValue);
-
-  // Esperar al debounceTime
-  tick(500);
-
-  // Comprovar que el filtre s'ha configurat correctament
-  expect(component.dataSource.filter).toBe(searchValue.trim().toLowerCase());
-
-  // Comprovar que s'ha cridat a firstPage
-  expect(paginatorSpy).toHaveBeenCalled();
-}));
-
-it('should assign paginator and sort to dataSource', () => {
-  // Mock del paginator i sort
-  const mockPaginator = {} as MatPaginator;
-  const mockSort = {} as MatSort;
-
-  // Assignar els mocks al component
-  component.paginator = mockPaginator;
-  component.sort = mockSort;
-
-  // Executar el mètode
-  component.ngAfterViewInit();
-
-  // Assert per comprovar que paginator i sort estan assignats correctament
-  expect(component.dataSource.paginator).toBe(mockPaginator);
-  expect(component.dataSource.sort).toBe(mockSort);
-});
-
-it('should configure sortingDataAccessor correctly', () => {
-  // Configurar un element de prova
-  const mockItem: CredentialProcedure = {
-    credential_procedure: {
-      procedure_id: 'id-proc',
-      status: 'WITHDRAWN',
-      subject: 'Subject Test',
-      updated: '2024-10-20',
-      credential_type: 'Type Test',
-    },
-  };
-
-  // Executar el mètode
-  component.ngAfterViewInit();
-
-  // Accedir al sortingDataAccessor i provar diferents propietats
-  expect(component.dataSource.sortingDataAccessor(mockItem, 'status')).toBe('draft');
-  expect(component.dataSource.sortingDataAccessor(mockItem, 'subject')).toBe('subject test');
-  expect(component.dataSource.sortingDataAccessor(mockItem, 'updated')).toBe('2024-10-20');
-  expect(component.dataSource.sortingDataAccessor(mockItem, 'credential_type')).toBe('type test');
-  expect(component.dataSource.sortingDataAccessor(mockItem, 'unknown')).toBe('');
-});
-
-it('should configure filterPredicate correctly', () => {
-  // Configurar un element de prova
-  const mockItem: CredentialProcedure = {
-    credential_procedure: {
-      procedure_id: 'id-proc',
-      status: 'ACTIVE',
-      subject: 'Test Subject',
-      updated: '2024-10-20',
-      credential_type: 'Type Test',
-    },
-  };
-
-  // Configurar el filtre de prova
-  const filter = 'test';
-
-  // Executar el mètode
-  component.ngAfterViewInit();
-
-  // Accedir al filterPredicate i comprovar si retorna true per un filtre que coincideix
-  expect(component.dataSource.filterPredicate(mockItem, filter)).toBe(true);
-
-  // Comprovar si retorna false per un filtre que no coincideix
-  expect(component.dataSource.filterPredicate(mockItem, 'nomatch')).toBe(false);
-});
-
-
-it('should call searchSubject.next with the correct filter value', () => {
-  // Mock del Event amb un valor d'entrada
-  const event = {
-    target: { value: 'search term' } as HTMLInputElement,
-  } as any;
-
-  // Mock del BehaviorSubject o Subject si s'ha d'espionatge
-  const searchSubjectSpy = jest.spyOn(component['searchSubject'], 'next');
-
-  // Executar el mètode
-  component.applyFilter(event);
-
-  // Assert per comprovar que s'ha cridat el next amb el valor correcte
-  expect(searchSubjectSpy).toHaveBeenCalledWith('search term');
-});
-
-it('should load credential data and update dataSource', () => {
-  // Mock de dades de resposta del servei
-  const mockResponse = {
-    credential_procedures: [credentialProcedureListMock],
-  } as any;
-
-  // Mock del servei perquè retorni la resposta simulada
-  const serviceSpy = jest
-    .spyOn(credentialProcedureService, 'getCredentialProcedures')
-    .mockReturnValue(of(mockResponse));
-
-  // Executar el mètode
-  component.loadCredentialData();
-
-  // Assert per comprovar que el servei ha estat cridat
-  expect(serviceSpy).toHaveBeenCalled();
-
-  // Assert per comprovar que el dataSource s'ha actualitzat correctament
-  expect(component.dataSource.data).toEqual(mockResponse.credential_procedures);
-});
-
-it('should log an error if getCredentialProcedures fails', () => {
-  // Mock de l'error
-  const mockError = new Error('Service Error');
-
-  // Mock del servei perquè retorni un error
-  const serviceSpy = jest
-    .spyOn(credentialProcedureService, 'getCredentialProcedures')
-    .mockReturnValue(throwError(() => mockError));
-
-  // Mock de console.error
-  const consoleSpy = jest.spyOn(console, 'error').mockImplementation(() => {});
-
-  // Executar el mètode
-  component.loadCredentialData();
-
-  // Assert per comprovar que el servei ha estat cridat
-  expect(serviceSpy).toHaveBeenCalled();
-
-  // Assert per comprovar que s'ha registrat l'error al console.error
-  expect(consoleSpy).toHaveBeenCalledWith('Error fetching credentials', mockError);
-
-  // Netejar el mock de console.error
-  consoleSpy.mockRestore();
-});
-
-
-it('should navigate to /organization/credentials/create in navigateToCreateCredential', () => {
-  component.navigateToCreateCredential();
-  expect(router.navigate).toHaveBeenCalledWith(['/organization/credentials/create']);
-});
-
-it('should navigate to /organization/credentials/create-as-signer if isValidOrganizationIdentifier is true', () => {
-  component.isValidOrganizationIdentifier = true;
-  component.navigateToCreateCredentialAsSigner();
-  expect(router.navigate).toHaveBeenCalledWith(['/organization/credentials/create-as-signer']);
-});
-
-it('should navigate to /organization/credentials/create if isValidOrganizationIdentifier is false', () => {
-  component.isValidOrganizationIdentifier = false;
-  component.navigateToCreateCredentialAsSigner();
-  expect(router.navigate).toHaveBeenCalledWith(['/organization/credentials/create']);
-});
-
-it('should call navigateToCredentialDetails on onRowClick', () => {
-  const row = { credential_procedure: { credential_type: 'LEAR_CREDENTIAL_EMPLOYEE', procedure_id: '123' } } as CredentialProcedure;
-  const goToCredentialDetailsSpy = jest.spyOn(component, 'navigateToCredentialDetails');
-  component.onRowClick(row);
-  expect(goToCredentialDetailsSpy).toHaveBeenCalledWith(row);
-});
-
-it('should navigate to /organization/credentials/details/:id if credential type is LEAR_CREDENTIAL_EMPLOYEE', () => {
-  const credentialProcedure = { 
-    credential_procedure: { 
-      credential_type: 'LEAR_CREDENTIAL_EMPLOYEE', 
-      procedure_id: '123' 
-    } 
-  } as CredentialProcedure;
-
-  component.navigateToCredentialDetails(credentialProcedure);
-  expect(router.navigate).toHaveBeenCalledWith(['/organization/credentials/details', '123']);
-});
-
-it('should toggle searchBar and reset filters when closed', () => {
-  component.dataSource.paginator = { firstPage: jest.fn() } as unknown as MatPaginator;
-  
-  component.searchInput = { nativeElement: { value: 'test' } } as ElementRef<HTMLInputElement>;
-
-  const searchSubjectSpy = jest.spyOn(component['searchSubject'], 'next');
-
-  component.hideSearchBar = true;
-  component.toggleSearchBar();
-  expect(component.hideSearchBar).toBe(false);
-
-  component.toggleSearchBar();
-  expect(component.hideSearchBar).toBe(true);
-
-  expect(component.searchInput.nativeElement.value).toBe('');
-
-  expect(searchSubjectSpy).toHaveBeenCalledWith('');
-
-  expect(component.dataSource.paginator.firstPage).toHaveBeenCalled();
-});
-
-
-  //TEMPLATE
-  it('should show the admin button when is valid organization id', async () => {
-    component.isValidOrganizationIdentifier = true;
-    fixture.detectChanges();
-
-    await fixture.whenStable(); // Esperar que el cicle de canvi estigui complet
-
-    const adminButton = fixture.debugElement.query(By.css("#admin-button"));
-    expect(adminButton).toBeTruthy();
-
+  it('should assign paginator and sort to dataSource', () => {
+    const mockPaginator = {} as any;
+    const mockSort = {} as any;
+    component.paginator = mockPaginator;
+    component.sort = mockSort;
+    component.ngAfterViewInit();
+    expect(component.dataSource.paginator).toBe(mockPaginator);
+    expect(component.dataSource.sort).toBe(mockSort);
   });
 
-  it('should not show the admin button when is not valid organization id', async () => {
-    component.isValidOrganizationIdentifier = false;
-    fixture.detectChanges();
-
-    await fixture.whenStable(); 
-
-    const adminButton = fixture.debugElement.query(By.css("#admin-button"));
-    expect(adminButton).toBeFalsy();
-
+  it('should configure sortingDataAccessor correctly', () => {
+    component.ngAfterViewInit();
+    const mockItem: any = {
+      credential_procedure: {
+        procedure_id: 'id-proc',
+        status: 'WITHDRAWN',
+        subject: 'Subject Test',
+        updated: '2024-10-20',
+        credential_type: 'Type Test',
+      },
+    };
+    expect(component.dataSource.sortingDataAccessor(mockItem, 'status')).toBe('draft');
+    expect(component.dataSource.sortingDataAccessor(mockItem, 'subject')).toBe('subject test');
+    expect(component.dataSource.sortingDataAccessor(mockItem, 'updated')).toBe('2024-10-20');
+    expect(component.dataSource.sortingDataAccessor(mockItem, 'credential_type')).toBe('type test');
+    expect(component.dataSource.sortingDataAccessor(mockItem, 'unknown')).toBe('');
   });
 
+  it('should configure filterPredicate correctly', () => {
+    component.ngAfterViewInit();
+    const mockItem: any = {
+      credential_procedure: { subject: 'My Fancy Subject' }
+    };
+    // coincideix
+    expect(component.dataSource.filterPredicate!(mockItem, 'fancy')).toBe(true);
+    // no coincideix
+    expect(component.dataSource.filterPredicate!(mockItem, 'xyz')).toBe(false);
+  });
+
+  it('should call searchSubject.next with the correct filter value', () => {
+    const event = { target: { value: 'searchTerm'} } as any;
+    const nextSpy = jest.spyOn(component['searchSubject'], 'next');
+    component.applyFilter(event);
+    expect(nextSpy).toHaveBeenCalledWith('searchTerm');
+  });
+
+ it('should focus and select input when opening the search bar', () => {
+    component.hideSearchBar = true;
+
+    const { el, focusSpy, selectSpy } = createMockInput();
+    component.searchInput = new ElementRef<HTMLInputElement>(el);
+
+    component.toggleSearchBar();
+
+    expect(component.hideSearchBar).toBe(false);
+    expect(focusSpy).toHaveBeenCalled();
+    expect(selectSpy).toHaveBeenCalled();
+  });
+
+  it('should clear value, push empty filter, and go to first page when closing the search bar', () => {
+    component.hideSearchBar = false;
+
+    const { el } = createMockInput('lorem');
+    component.searchInput = new ElementRef<HTMLInputElement>(el);
+
+    component.dataSource['_paginator'] = { firstPage: jest.fn() } as any;
+    const firstPageSpy = jest.spyOn(component.dataSource.paginator!, 'firstPage');
+
+
+    const nextSpy = jest.spyOn(component['searchSubject'], 'next');
+    component.toggleSearchBar();
+
+    expect(component.hideSearchBar).toBe(true);
+    expect(el.value).toBe('');
+    expect(nextSpy).toHaveBeenCalledWith('');
+    expect(firstPageSpy).toHaveBeenCalled(); 
+  });
+
+  it('should toggle searchbar', () => {
+    component.hideSearchBar = true;
+
+    component.toggleSearchBar();
+    expect(component.hideSearchBar).toBeFalsy();
+
+    component.toggleSearchBar();
+    expect(component.hideSearchBar).toBeTruthy(); // <-- arreglat
+  });
+
+  it('should load credential data and update dataSource', fakeAsync(() => {
+    const mockProc: CredentialProcedure = {
+      credential_procedure: {
+        procedure_id: 'id1',
+        subject: 'S1',
+        status: 'DRAFT',
+        updated: '2025-07-01',
+        credential_type: 'LEAR_CREDENTIAL_EMPLOYEE',
+      }
+    };
+    const mockResponse = { credential_procedures: [ mockProc ] } as CredentialProceduresResponse;
+    credentialProcedureSpy.mockReturnValue(of(mockResponse));
+    const withClass: CredentialProcedureWithClass[] = [
+      { ...mockProc, statusClass: 'status-active' }
+    ];
+    const statusSpy = jest.spyOn(statusService, 'addStatusClass').mockReturnValue(withClass);
+
+    component.loadCredentialData();
+    tick();
+    expect(credentialProcedureSpy).toHaveBeenCalled();
+    expect(statusSpy).toHaveBeenCalledWith(mockResponse.credential_procedures);
+    expect(component.dataSource.data).toEqual(withClass);
+  }));
+
+  it('should log an error if getCredentialProcedures fails', fakeAsync(() => {
+    const error = new Error('oops');
+    credentialProcedureSpy.mockReturnValue(throwError(() => error));
+    const consoleSpy = jest.spyOn(console, 'error').mockImplementation(() => {});
+
+    component.loadCredentialData();
+    tick();
+
+    expect(consoleSpy).toHaveBeenCalledWith('Error fetching credentials for table', error);
+    consoleSpy.mockRestore();
+  }));
 });

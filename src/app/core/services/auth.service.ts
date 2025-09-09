@@ -5,9 +5,9 @@ import { catchError, filter, take, tap } from 'rxjs/operators';
 import { UserDataAuthenticationResponse } from "../models/dto/user-data-authentication-response.dto";
 import { Power, EmployeeMandator, LEARCredentialEmployee } from "../models/entity/lear-credential";
 import { RoleType } from '../models/enums/auth-rol-type.enum';
-import { LEARCredentialDataNormalizer } from '../models/entity/lear-credential-employee-data-normalizer';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { Router } from '@angular/router';
+import { LEARCredentialDataNormalizer } from 'src/app/features/credential-details/utils/lear-credential-data-normalizer';
 
 @Injectable({
   providedIn: 'root'
@@ -97,8 +97,8 @@ export class AuthService{
 
           case EventTypes.IdTokenExpired:
           case EventTypes.TokenExpired:
-            console.error('Session expired:', event);
-            console.error('At: ' + Date.now());
+            console.warn('Session expired:', event);
+            console.warn('At: ' + Date.now());
             break;
         }
       });
@@ -224,6 +224,9 @@ export class AuthService{
 
   public getMandator(): Observable<EmployeeMandator | null> {
     return this.mandatorSubject.asObservable();
+  }
+  public getRawMandator(): EmployeeMandator | null {
+    return this.mandatorSubject.getValue();
   }
 
   public login(): void {

@@ -1,0 +1,31 @@
+// POWERS
+.powers-container{
+  display:grid;
+  grid-template-columns: auto 1fr;
+  grid-template-rows: auto;
+  grid-auto-rows: auto;
+  row-gap: 16px;
+  column-gap: 12px;
+  max-width: 100%;
+
+    p {
+      margin-top: 0;
+      padding-right: 1rem;
+      margin-bottom: 0;
+    }
+    .functions-container{
+      display:flex;
+      gap: 16px;
+      max-width:100%;
+    }
+    .toggles-container{
+      display:flex;
+      flex-wrap:wrap;
+      row-gap: 12px;
+
+
+      mat-slide-toggle {
+        margin-left: 01rem;
+      }
+    }
+  }

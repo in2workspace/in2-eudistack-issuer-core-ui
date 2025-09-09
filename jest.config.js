@@ -26,11 +26,17 @@ module.exports = {
     testPathIgnorePatterns: [
       '/node_modules/',
       '/dist/',
-      // '/src/app/core/mocks/',
+      '/src/app/core/mocks/',
       // '/src/app/app',
-      // '/src/app/core/',
-      // '/src/app/core/services/(?!auth.service)',
+      // '/src/app/core/(?!models)',
+      // '/src/app/core/services/',
+      // // '/src/app/features/',
       // '/src/app/features/(?!credential-details)',
+      // '/src/app/features/credential-details/',
+      // '/src/app/features/credential-details/helpers',
+      // // '/src/app/features/credential-details/',
+      // '/src/app/features/credential-details/credential-details.routes',
+      // '/src/app/features/credential-details/credential-details.component',
       // '/src/app/shared/',
     ]
    };

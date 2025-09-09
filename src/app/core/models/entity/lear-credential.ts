@@ -1,10 +1,23 @@
-export interface LEARCredentialDataDetails {
+//normalized version of CredentialProcedureDetailsResponse
+export interface CredentialProcedureDetails {
   procedure_id: string;
-  credential_status: CredentialStatus;
-  credential: LEARCredentialJwtPayload;
+  lifeCycleStatus: LifeCycleStatus;
+  credential: LEARCredentialJwtPayload; 
 }
 
-export type CredentialStatus = 'WITHDRAWN' | 'VALID' | 'EXPIRED' | 'PEND_DOWNLOAD' | 'PEND_SIGNATURE' | 'DRAFT' | 'ISSUED';
+export type LifeCycleStatus = 'WITHDRAWN' | 'VALID' | 'EXPIRED' | 'PEND_DOWNLOAD' | 'PEND_SIGNATURE' | 'DRAFT' | 'ISSUED' | 'REVOKED';
+
+export interface CredentialStatus {   
+  "id": string,
+  "type": CredentialStatusType,   
+  "statusPurpose": CredentialStatusPurpose,   
+  "statusListIndex": CredentialStatusListIndex,
+  "statusListCredential": string;
+} 
+export type CredentialStatusType = 'PlainListEntity';
+export type CredentialStatusPurpose = 'revocation';
+export type CredentialStatusListIndex = '<nonce>';
+
 
 export interface LEARCredentialJwtPayload {
   sub: string | null;
@@ -16,13 +29,15 @@ export interface LEARCredentialJwtPayload {
   jti: string;
 }
 
-export type CredentialType =   'LEARCredentialEmployee' | 'LEARCredentialMachine' | 'VerifiableCertification';
-export type ExtendedCredentialType =  'VerifiableCredential' | 'LEARCredentialEmployee' | 'LEARCredentialMachine' | 'VerifiableCertification';
+export const CREDENTIAL_TYPES_ARRAY = ['LEARCredentialEmployee', 'LEARCredentialMachine', 'VerifiableCertification', 'gx:LabelCredential'] as const;
+export type CredentialType = typeof CREDENTIAL_TYPES_ARRAY[number];
+export type ExtendedCredentialType =  'VerifiableCredential' | CredentialType;
 
 export type LEARCredential =
   | LEARCredentialEmployee
   | LEARCredentialMachine
-  | VerifiableCertification;
+  | VerifiableCertification
+  | GxLabelCredential;
 
 // --- Common Types ---
 export interface LifeSpan {
@@ -30,10 +45,9 @@ export interface LifeSpan {
   end: string;
 }
 
-export interface CommonMandator {
+export interface CommonMandatorFields {
   commonName: string;
   country: string;
-  emailAddress: string;
   organization: string;
   organizationIdentifier: string;
   serialNumber: string;
@@ -95,11 +109,12 @@ export interface LEARCredentialEmployee {
       signer: EmployeeSigner;
     };
   };
-  issuer: EmployeeIssuer;
+  issuer?: EmployeeIssuer;
   validFrom: string;
   validUntil: string;
   issuanceDate?: string;
   expirationDate?: string;
+  credentialStatus: CredentialStatus;
 }
 
 export interface EmployeeMandatee {
@@ -109,8 +124,10 @@ export interface EmployeeMandatee {
   lastName: string;
   mobile_phone?: string;
   nationality: string;
-};
-export interface EmployeeMandator extends CommonMandator {}
+}
+export interface EmployeeMandator extends CommonMandatorFields {
+  emailAddress: string;
+}
 export interface EmployeeSigner extends CommonSigner {}
 export interface EmployeeIssuer extends CommonIssuer {}
 
@@ -129,25 +146,23 @@ export interface LEARCredentialMachine {
       signer: MachineSigner;
     };
   };
-  issuer: MachineIssuer;
+  issuer?: MachineIssuer;
   validFrom: string;
   validUntil: string;
+  credentialStatus: CredentialStatus;
 }
 
 export interface MachineMandatee {
-  id: string;
-  serviceName: string;
-  serviceType: string;
-  version: string;
+  id: string; // did:key:...
   domain: string;
   ipAddress: string;
-  description: string;
-  contact: {
-    email: string;
-    phone: string;
-  };
-};
-export interface MachineMandator extends CommonMandator {}
+}
+
+
+export interface MachineMandator extends CommonMandatorFields {
+  id: string // did:elsi:...
+  email: string,
+}
 export interface MachineSigner extends CommonSigner {}
 export interface MachineIssuer extends CommonIssuer {}
 
@@ -155,7 +170,7 @@ export interface MachineIssuer extends CommonIssuer {}
 export interface VerifiableCertification {
   id: string;
   type: ExtendedCredentialType[];
-  issuer: CertificationIssuer;
+  issuer?: CertificationIssuer;
   credentialSubject: {
     company: {
       address: string;
@@ -165,12 +180,7 @@ export interface VerifiableCertification {
       id: string;
       organization: string;
     };
-    compliance: {
-      id: string;
-      hash: string;
-      scope: string;
-      standard: string;
-    }[];
+    compliance: ComplianceEntry[];
     product: {
       productId: string;
       productName: string;
@@ -181,6 +191,7 @@ export interface VerifiableCertification {
   attester: Attester;
   validUntil: string;
   signer: CertificationSigner;
+  credentialStatus: CredentialStatus;
 }
 
 export interface CertificationIssuer {
@@ -208,31 +219,32 @@ export interface Attester {
   country: string;
 }
 
-export type LearCredentialEmployeeFormData = {
-  issuer: EmployeeIssuer;
-  mandatee: LEARCredentialEmployee['credentialSubject']['mandate']['mandatee'];
-  mandator: EmployeeMandator;
-  power: Power[];
-};
+export interface ComplianceEntry {
+      id: string;
+      hash: string;
+      scope: string;
+      standard: string;
+    }
 
-export type LearCredentialMachineFormData = {
-  issuer: MachineIssuer;
-  mandatee: LEARCredentialMachine['credentialSubject']['mandate']['mandatee'];
-  mandator: MachineMandator;
-  power: Power[];
-};
+export interface GxLabelCredential {
+  id: string;
+  type: ExtendedCredentialType[];
+  issuer?: string; //did:elsi:VAT...
+  validFrom: string;
+  validUntil: string;
+  credentialStatus: CredentialStatus;
+  credentialSubject: {
+    id: string, //urn...
+    "gx:labelLevel": string,
+    "gx:engineVersion": string,
+    "gx:rulesVersion": string,
+    "gx:compliantCredentials": CompliantCredential[],
+    "gx:validatedCriteria": string[]
+  };
+}
 
-export type VerifiableCertificationFormData = {
-  issuer: CertificationIssuer;
-  company: VerifiableCertification['credentialSubject']['company'];
-  product: VerifiableCertification['credentialSubject']['product'];
-  attester: VerifiableCertification['attester'];
-};
-
-export type CredentialFormDataByType = {
-  LEARCredentialEmployee: LearCredentialEmployeeFormData;
-  LEARCredentialMachine: LearCredentialMachineFormData;
-  VerifiableCertification: VerifiableCertificationFormData;
-};
-
-export type CredentialFormData<T extends CredentialType = CredentialType> = CredentialFormDataByType[T];
+export interface CompliantCredential{
+  id: string, //urn:...
+  type: string, 
+  "gx:digestSRI": string
+}

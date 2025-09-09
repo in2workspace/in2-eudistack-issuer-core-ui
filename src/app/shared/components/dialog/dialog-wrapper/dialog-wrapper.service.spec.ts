@@ -2,8 +2,9 @@ import { TestBed } from '@angular/core/testing';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { of, throwError, Subject } from 'rxjs';
 import { DialogWrapperService } from './dialog-wrapper.service';
-import { DialogComponent, DialogData } from '../dialog.component';
-import { LoaderService } from 'src/app/core/services/loader.service';
+import { LoaderService } from 'src/app/shared/services/loader.service';
+import { DialogComponent } from '../dialog-component/dialog.component';
+import { DialogData } from '../dialog-data';
 
 jest.mock('@angular/material/dialog');
 
@@ -48,7 +49,7 @@ describe('DialogWrapperService', () => {
 
     matDialogMock.open.mockReturnValue(mockDialogRef);
 
-    const result = service.openDialog(dialogData);
+    const result = service.openDialog(DialogComponent, dialogData);
 
     expect(matDialogMock.open).toHaveBeenCalledWith(DialogComponent, {
       data: {
@@ -76,7 +77,7 @@ describe('DialogWrapperService', () => {
 
     matDialogMock.open.mockReturnValue(dialogRefMock);
 
-    service.openDialogWithCallback(dialogData, callback);
+    service.openDialogWithCallback(DialogComponent, dialogData, callback);
 
     afterClosedSubject.next(true);
     afterClosedSubject.complete();
@@ -110,7 +111,7 @@ describe('DialogWrapperService', () => {
 
     matDialogMock.open.mockReturnValue(dialogRefMock);
 
-    service.openDialogWithCallback(dialogData, callback);
+    service.openDialogWithCallback(DialogComponent, dialogData, callback);
 
     afterConfirmSubject.next(true);
     afterConfirmSubject.complete();
@@ -120,7 +121,7 @@ describe('DialogWrapperService', () => {
       autoFocus:false,
       disableClose: false
     });
-    expect(dialogRefMock.componentInstance.updateData).toHaveBeenCalledWith(dialogData.loadingData);
+    expect(dialogRefMock.componentInstance.updateData).toHaveBeenCalledWith({ loadingData: dialogData.loadingData});
     expect(loaderServiceMock.updateIsLoading).toHaveBeenCalledWith(true);
     expect(callback).toHaveBeenCalled();
     expect(dialogRefMock.close).toHaveBeenCalled();
@@ -142,7 +143,7 @@ describe('DialogWrapperService', () => {
 
     matDialogMock.open.mockReturnValue(dialogRefMock);
 
-    service.openDialogWithCallback(dialogData, callback);
+    service.openDialogWithCallback(DialogComponent, dialogData, callback);
 
     afterClosedSubject.next(true);
     afterClosedSubject.complete();
@@ -174,7 +175,7 @@ describe('DialogWrapperService', () => {
   
     matDialogMock.open.mockReturnValue(dialogRefMock);
   
-    service.openDialogWithCallback(dialogData, callback, undefined, 'DISABLE_CLOSE');
+    service.openDialogWithCallback(DialogComponent, dialogData, callback, undefined, 'DISABLE_CLOSE');
   
     expect(matDialogMock.open).toHaveBeenCalledWith(DialogComponent, {
       data: { ...dialogData },
@@ -204,7 +205,7 @@ describe('DialogWrapperService', () => {
   
     matDialogMock.open.mockReturnValue(dialogRefMock);
   
-    service.openDialogWithCallback(dialogData, callback);
+    service.openDialogWithCallback(DialogComponent, dialogData, callback);
   
     afterConfirmSubject.next(true);
     afterConfirmSubject.complete();
@@ -234,7 +235,7 @@ describe('DialogWrapperService', () => {
   
     matDialogMock.open.mockReturnValue(dialogRefMock);
   
-    service.openDialogWithCallback(dialogData, callback);
+    service.openDialogWithCallback(DialogComponent, dialogData, callback);
   
     afterConfirmSubject.next(true);
     afterConfirmSubject.complete();
@@ -269,7 +270,7 @@ describe('DialogWrapperService', () => {
 
     matDialogMock.open.mockReturnValue(dialogRefMock);
 
-    service.openDialogWithCallback(dialogData, callback, cancelCallback);
+    service.openDialogWithCallback(DialogComponent, dialogData, callback, cancelCallback);
 
     afterClosedSubject.next(false);
     afterClosedSubject.complete();
@@ -302,7 +303,7 @@ describe('DialogWrapperService', () => {
 
     matDialogMock.open.mockReturnValue(dialogRefMock);
 
-    service.openDialogWithCallback(dialogData, callback, cancelCallback);
+    service.openDialogWithCallback(DialogComponent, dialogData, callback, cancelCallback);
 
     afterClosedSubject.next(false);
     afterClosedSubject.complete();
@@ -314,26 +315,6 @@ describe('DialogWrapperService', () => {
     });
 
     expect(cancelCallback).toHaveBeenCalled();
-  });
-
-  it('should execute callback on true condition', () => {
-    const callback = jest.fn(() => of('executed'));
-    const result = service['executeCallbackOnCondition'](callback, true);
-  
-    return result.toPromise().then((value) => {
-      expect(callback).toHaveBeenCalled();
-      expect(value).toBe('executed');
-    });
-  });
-  
-  it('should return EMPTY on false condition', () => {
-    const callback = jest.fn(() => of('executed'));
-    const result = service['executeCallbackOnCondition'](callback, false);
-  
-    return result.toPromise().then((value) => {
-      expect(callback).not.toHaveBeenCalled();
-      expect(value).toBeUndefined(); // EMPTY no emet cap valor
-    });
   });
 
   it('should open a dialog and return dialogRef', () => {
@@ -352,7 +333,7 @@ describe('DialogWrapperService', () => {
   
     matDialogMock.open.mockReturnValue(dialogRefMock);
   
-    const result = service.openDialogWithCallback(dialogData, callback);
+    const result = service.openDialogWithCallback(DialogComponent, dialogData, callback);
   
     expect(matDialogMock.open).toHaveBeenCalledWith(DialogComponent, {
       data: { ...dialogData },
@@ -393,7 +374,7 @@ describe('DialogWrapperService', () => {
       status: 'default',
     };
   
-    const resultRef = service.openDialogWithForm(
+    const resultRef = service.openDialogWithForm(DialogComponent, 
       dialogData,
       validateForm,
       getFormValue,
@@ -446,7 +427,7 @@ describe('DialogWrapperService', () => {
       status: 'default',
     };
   
-    service.openDialogWithForm(dialogData, validateForm, getFormValue, asyncOperation);
+    service.openDialogWithForm(DialogComponent, dialogData, validateForm, getFormValue, asyncOperation);
   
     afterConfirmSubject.next();
     afterConfirmSubject.complete();
