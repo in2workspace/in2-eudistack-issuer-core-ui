@@ -87,6 +87,10 @@ jobs:
         id: get_version
         run: echo "VERSION=$(jq -r '.version' package.json)" >> $GITHUB_ENV
 
+      - name: Get Project Name
+        id: project_name
+        run: echo "PROJECT_NAME=$(jq -r '.name' package.json)" >> $GITHUB_ENV
+
       - name: Check for existing release tag (only on PR)
         if: github.event_name == 'pull_request'
         env:
