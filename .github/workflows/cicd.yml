@@ -1,29 +1,27 @@
-# GitHub Actions workflow for deploying DOME Issuer UI to AWS Amplify
+# GitHub Actions workflow for deploying EUDIStack Issuer UI to AWS Amplify
 # This workflow builds the Angular application and deploys it to AWS Amplify
-# Triggered on pushes to the features/cicd-aws branch
-name: Release
+# Triggered on pushes to the main branch
+name: Deploy to AWS Amplify
 on:
   pull_request:
     branches:
       - main
-    types: [opened, synchronize, reopened]
+    types: [ opened, synchronize, reopened ]
 
 # Required permissions for the workflow
 permissions:
   contents: write
 
 jobs:
-
-  release:
-    name: Release
+  deploy:
+    name: Deploy to AWS Amplify
     runs-on: ubuntu-latest
-    environment: local
+    environment: stg
     # Environment variables used throughout the workflow
     # These are available to all steps in the job
     env:
       AMPLIFY_APP_NAME: issuer-ui  # Name of the AWS Amplify app to deploy to
       BRANCH_NAME: main            # Target branch for deployment
-
     steps:
       # Step 1: Checkout the repository code
       # This action downloads the repository content to the runner
@@ -49,6 +47,28 @@ jobs:
       - name: Npm Build
         run: npm run build -- --output-path=./dist/out --configuration "production"
 
+      # Step 4.1: Generate runtime-config.json to inject runtime variables
+      # Creates a JSON file with environment-specific settings for the app
+      - name: Generate runtime-config.json
+        run: |
+          mkdir -p dist/out/assets
+          cat > dist/out/assets/runtime-config.json << 'EOF'
+          {
+            "BASE_URL": "${{ vars.BASE_URL }}",
+            "FAVICON_SRC": "${{ vars.FAVICON_SRC }}",
+            "IAM_URL": "${{ vars.IAM_URL }}",
+            "KNOWLEDGE_BASE_URL": "${{ vars.KNOWLEDGE_BASE_URL }}",
+            "LOGO_SRC": "${{ vars.LOGO_SRC }}",
+            "PRIMARY": "${{ vars.PRIMARY }}",
+            "PRIMARY_CONTRAST": "${{ vars.PRIMARY_CONTRAST }}",
+            "SECONDARY": "${{ vars.SECONDARY }}",
+            "SECONDARY_CONTRAST": "${{ vars.SECONDARY_CONTRAST }}",
+            "WALLET_URL": "${{ vars.WALLET_URL }}",
+            "SHOW_WALLET_URL_TEST": "${{ vars.SHOW_WALLET_URL_TEST }}",
+            "WALLET_URL_TEST": "${{ vars.WALLET_URL_TEST }}"
+          }
+          EOF
+
       # Step 5: Create deployment zip file
       # Creates a zip archive of the built application for AWS Amplify deployment
       # The zip contains all the compiled static files
@@ -65,7 +85,7 @@ jobs:
         with:
           aws-access-key-id:     ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-region:            'eu-west-1'
+          aws-region:            ${{ secrets.AWS_REGION }}
 
       # Step 7: Dynamically extract Amplify App ID
       # Queries AWS Amplify to find the app ID based on the app name
@@ -75,7 +95,6 @@ jobs:
           AMPLIFY_APP_ID=$(aws amplify list-apps --query "apps[?name=='${{ env.AMPLIFY_APP_NAME }}'].appId" --output text)
           echo "AMPLIFY_APP_ID=$AMPLIFY_APP_ID" >> $GITHUB_ENV
           echo "Found App ID: $AMPLIFY_APP_ID for app: ${{ env.AMPLIFY_APP_NAME }}"
-          aws amplify list-apps
 
       # Step 8: Create AWS Amplify Deployment
       # Initiates a new deployment and extracts the upload URL and job ID
@@ -101,5 +120,3 @@ jobs:
         run: |
           echo "Starting deployment for Job ID: ${{ env.JOB_ID }}"
           aws amplify start-deployment --app-id ${{ env.AMPLIFY_APP_ID }} --branch-name ${{ env.BRANCH_NAME }} --job-id ${{ env.JOB_ID }}
-
-
