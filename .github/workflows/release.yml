@@ -37,7 +37,7 @@ jobs:
         if: github.event_name == 'pull_request'
         run: echo "SNAPSHOT_SUFFIX=-pr-${{ github.event.number }}" >> $GITHUB_ENV
 
-      # disable temporarily 
+      # todo: restore; this is temporarily disabled
       # - name: Check for existing release tag (only on PR)
       #   if: github.event_name == 'pull_request'
       #   env:
