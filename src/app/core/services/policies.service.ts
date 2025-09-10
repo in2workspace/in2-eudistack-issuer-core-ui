@@ -20,7 +20,7 @@ export class PoliciesService {
     if (this.authService.hasPower(tmfFunction, action)) {
       return of(true); 
     } else {
-      console.error("User with");
+      console.error("User with required powers was not found.");
       const errorTitle = this.translate.instant(`error.policy.title`);
       const errorMessage = this.translate.instant(`error.policy.message`);
       
@@ -39,7 +39,6 @@ export class PoliciesService {
   }
 
   public checkSettingsPolicy(): Observable<boolean> {
-    
     return this.executePolicy('CredentialIssuer', 'Configure', '/organization/credentials');
   }
 }
