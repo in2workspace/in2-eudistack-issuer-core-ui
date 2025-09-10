@@ -131,7 +131,7 @@ export class CredentialProcedureService {
       const errorMessage = this.translate.instant('error.serverMailError.message');
       const errorTitle = this.translate.instant('error.serverMailError.title');
 
-      this.dialog.openErrorInfoDialog(errorMessage, errorTitle);
+      this.dialog.openErrorInfoDialog(DialogComponent, errorMessage, errorTitle);
       this.redirectToDashboard();
       return throwError(() => error);
     } else if (error.error instanceof ErrorEvent) {
