@@ -5,6 +5,7 @@ import { TranslateService } from '@ngx-translate/core';
 import { DialogWrapperService } from 'src/app/shared/components/dialog/dialog-wrapper/dialog-wrapper.service';
 import { Observable, of, switchMap, take, map } from 'rxjs';
 import { TmfAction, TmfFunction } from '../models/entity/lear-credential';
+import { DialogComponent } from 'src/app/shared/components/dialog/dialog-component/dialog.component';
 
 @Injectable({
   providedIn: 'root'
@@ -19,10 +20,11 @@ export class PoliciesService {
     if (this.authService.hasPower(tmfFunction, action)) {
       return of(true); 
     } else {
+      console.error("User with");
       const errorTitle = this.translate.instant(`error.policy.title`);
       const errorMessage = this.translate.instant(`error.policy.message`);
       
-      const dialogRef = this.dialog.openErrorInfoDialog(errorMessage, errorTitle);
+      const dialogRef = this.dialog.openErrorInfoDialog(DialogComponent, errorMessage, errorTitle);
       return dialogRef.afterClosed().pipe(
         take(1),
         switchMap(() => authFlag ? this.authService.logout() : of(null)),

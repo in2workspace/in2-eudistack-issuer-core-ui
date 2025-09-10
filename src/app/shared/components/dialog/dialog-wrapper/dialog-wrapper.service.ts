@@ -31,6 +31,7 @@ export class DialogWrapperService {
   public openErrorInfoDialog<
   T extends AbstractDialogComponent<BaseDialogData>
 >(
+  // todo consider using DialogComponent as default
     component: Type<T>,
     message: string,
     title?: string
