@@ -22,7 +22,15 @@ describe('GxLabelCredentialDetailsViewModelSchema', () => {
         'https://w3id.org/gaia-x/specs/cd25.01/criterion/P1.2.3'
       ],
     },
-    issuer: 'ISSUER1',
+    issuer: {
+      id: 'did-elsi:test',
+      emailAddress: 'aaa@email.test',
+      commonName: 'IssuerCo',
+      serialNumber: 'ISBN-456',
+      organization: 'IssuerOrg',
+      organizationIdentifier: 'ISS-002',
+      country: 'DE',
+    } as any,
     id: '',
     issuanceDate: '',
     credentialSubjectFormat: '',
@@ -99,11 +107,38 @@ describe('GxLabelCredentialDetailsViewModelSchema', () => {
   });
 
   describe('side section', () => {
-    it('extracts issuer field correctly', () => {
-      const issuerGroup = side.find((g: any) => g.key === 'issuer')! as any;
-      const field = issuerGroup.value[0] as any;
-      expect(field.key).toBe('id');
-      expect((field.value as any)(sampleLabel)).toBe('ISSUER1');
+    const issuerGroup = side.find(g => g.key === 'issuer')!  as any;
+    it('extracts issuer fields correctly when issuer is present', () => {
+      const values = issuerGroup.value.map((f: any) => (f.value as any)(sampleLabel));
+      expect(values).toEqual([
+        'did-elsi:test',
+        'IssuerCo',
+        'aaa@email.test',
+        'ISBN-456',
+        'IssuerOrg',
+        'ISS-002',
+        'DE',
+      ]);
+    });
+
+    it('returns undefined for all issuer fields when issuer is missing', () => {
+      const noIssuer = { ...sampleLabel, issuer: undefined } as any as GxLabelCredential;
+      const values = issuerGroup.value.map((f: any) => (f.value as any)(noIssuer));
+      expect(values).toEqual([undefined, undefined, undefined, undefined, undefined, undefined]);
+    });
+
+    it('handles issuer when it is a string', () => {
+      const stringIssuer = { ...sampleLabel, issuer: 'simple-issuer-id' } as any as GxLabelCredential;
+      const values = (issuerGroup.value as any[]).map((f: any) => (f.value as any)(stringIssuer));
+      expect(values).toEqual([
+        'simple-issuer-id',
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+      ]);
     });
   });
 });

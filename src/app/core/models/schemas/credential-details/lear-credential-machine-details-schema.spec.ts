@@ -27,6 +27,8 @@ describe('LearCredentialMachineDetailsViewModelSchema', () => {
       },
     } as any,
     issuer: {
+      id: 'did-elsi:test',
+      emailAddress: 'aaa@email.test',
       commonName: 'IssuerCo',
       serialNumber: 'ISBN-456',
       organization: 'IssuerOrg',
@@ -78,12 +80,13 @@ describe('LearCredentialMachineDetailsViewModelSchema', () => {
   });
 
   describe('side section', () => {
+    const issuerGroup = side.find(g => g.key === 'issuer')!  as any;
     it('extracts issuer fields correctly when issuer is present', () => {
-      const issuerGroup = side.find(g => g.key === 'issuer')!  as any;
       const values = issuerGroup.value.map((f: any) => (f.value as any)(sample));
       expect(values).toEqual([
+        'did-elsi:test',
         'IssuerCo',
-        'IssuerCo', 
+        'aaa@email.test',
         'ISBN-456',
         'IssuerOrg',
         'ISS-002',
@@ -93,9 +96,22 @@ describe('LearCredentialMachineDetailsViewModelSchema', () => {
 
     it('returns undefined for all issuer fields when issuer is missing', () => {
       const noIssuer = { ...sample, issuer: undefined } as any as LEARCredentialMachine;
-      const issuerGroup = side.find(g => g.key === 'issuer')!  as any;
       const values = issuerGroup.value.map((f: any) => (f.value as any)(noIssuer));
       expect(values).toEqual([undefined, undefined, undefined, undefined, undefined, undefined]);
+    });
+
+    it('handles issuer when it is a string', () => {
+      const stringIssuer = { ...sample, issuer: 'simple-issuer-id' } as any as LEARCredentialMachine;
+      const values = (issuerGroup.value as any[]).map((f: any) => (f.value as any)(stringIssuer));
+      expect(values).toEqual([
+        'simple-issuer-id',
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+      ]);
     });
   });
 });
