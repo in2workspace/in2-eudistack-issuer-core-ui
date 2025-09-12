@@ -2,7 +2,7 @@ import { groupActionsByFunction } from "src/app/features/credential-details/help
 import { LEARCredentialEmployee } from "../../entity/lear-credential";
 import { ViewModelSchema } from "../../entity/lear-credential-details";
 import { DetailsPowerComponent, detailsPowerToken } from "src/app/features/credential-details/components/details-power/details-power.component";
-import { commonIssuerDetailsField } from "./issuer-details-field";
+import { commonIssuerDetailsField } from "./common-issuer-details-field";
 
 
 export const LearCredentialEmployeeDetailsViewModelSchema: ViewModelSchema = {

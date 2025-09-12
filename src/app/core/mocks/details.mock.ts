@@ -168,7 +168,10 @@ export const mockCredentialCertification: CredentialProcedureDetails = {
         id: 'issuer-cert',
         commonName: 'Cert Issuer',
         country: 'FR',
-        organization: 'Org CERT'
+        organization: 'Org CERT',
+        emailAddress: 'aa@email.test',
+        organizationIdentifier: 'org-id',
+        serialNumber: 'aaa',
       },
       credentialSubject: {
         company: {

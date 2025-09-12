@@ -2,6 +2,7 @@ import { isVerifiable, mapComplianceEntries } from 'src/app/features/credential-
 import { LEARCredential, VerifiableCertification, ComplianceEntry } from 'src/app/core/models/entity/lear-credential';
 import { ViewModelSchema } from '../../entity/lear-credential-details';
 import { VerifiableCertificationDetailsViewModelSchema } from './verifiable-certification-details-schema';
+import { commonIssuerDetailsField } from './common-issuer-details-field';
 
 describe('VerifiableCertificationDetailsViewModelSchema', () => {
   const sample: VerifiableCertification = {
@@ -112,21 +113,12 @@ describe('VerifiableCertificationDetailsViewModelSchema', () => {
       ]);
     });
 
-    it('extracts issuer fields correctly when issuer present', () => {
-      const issuerGroup = side.find(g => g.key === 'issuer')! as any;
-      const values = issuerGroup.value.map((f:any)  => (f.value as any)(sample));
-      expect(values).toEqual([
-        'IssCo',
-        'IssOrg',
-        'DE',
-      ]);
+    it('uses common issuer', () => {
+      expect(side[1]).toBe(commonIssuerDetailsField);
+      expect(side[1].key).toBe('issuer');
+      expect(side[1].type).toBe('group');
     });
 
-    it('returns undefined for issuer fields when issuer missing', () => {
-      const noIssuer = { ...sample, issuer: undefined } as any as VerifiableCertification;
-      const issuerGroup = side.find(g => g.key === 'issuer')!  as any;
-      const values = issuerGroup.value.map((f:any)  => (f.value as any)(noIssuer));
-      expect(values).toEqual([undefined, undefined, undefined]);
-    });
+    
   });
 });

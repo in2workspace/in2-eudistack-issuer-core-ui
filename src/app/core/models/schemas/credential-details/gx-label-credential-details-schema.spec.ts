@@ -3,6 +3,7 @@ import { GxLabelCredential, LEARCredential, CompliantCredential } from 'src/app/
 import { CompliantCredentialsComponent, compliantCredentialsToken } from 'src/app/features/credential-details/components/compliant-credentials/compliant-credentials.component';
 import { DetailsKeyValueField } from '../../entity/lear-credential-details';
 import { GxLabelCredentialDetailsViewModelSchema } from './gx-label-credential-details-schema';
+import { commonIssuerDetailsField } from './common-issuer-details-field';
 
 describe('GxLabelCredentialDetailsViewModelSchema', () => {
   const sampleLabel: GxLabelCredential = {
@@ -107,38 +108,11 @@ describe('GxLabelCredentialDetailsViewModelSchema', () => {
   });
 
   describe('side section', () => {
-    const issuerGroup = side.find(g => g.key === 'issuer')!  as any;
-    it('extracts issuer fields correctly when issuer is present', () => {
-      const values = issuerGroup.value.map((f: any) => (f.value as any)(sampleLabel));
-      expect(values).toEqual([
-        'did-elsi:test',
-        'IssuerCo',
-        'aaa@email.test',
-        'ISBN-456',
-        'IssuerOrg',
-        'ISS-002',
-        'DE',
-      ]);
-    });
-
-    it('returns undefined for all issuer fields when issuer is missing', () => {
-      const noIssuer = { ...sampleLabel, issuer: undefined } as any as GxLabelCredential;
-      const values = issuerGroup.value.map((f: any) => (f.value as any)(noIssuer));
-      expect(values).toEqual([undefined, undefined, undefined, undefined, undefined, undefined]);
-    });
-
-    it('handles issuer when it is a string', () => {
-      const stringIssuer = { ...sampleLabel, issuer: 'simple-issuer-id' } as any as GxLabelCredential;
-      const values = (issuerGroup.value as any[]).map((f: any) => (f.value as any)(stringIssuer));
-      expect(values).toEqual([
-        'simple-issuer-id',
-        undefined,
-        undefined,
-        undefined,
-        undefined,
-        undefined,
-        undefined,
-      ]);
+    it('uses common issuer', () => {
+      expect(side).toHaveLength(1);
+      expect(side[0]).toBe(commonIssuerDetailsField);
+      expect(side[0].key).toBe('issuer');
+      expect(side[0].type).toBe('group');
     });
   });
 });

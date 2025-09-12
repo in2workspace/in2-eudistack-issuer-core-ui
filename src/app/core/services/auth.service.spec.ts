@@ -56,6 +56,7 @@ const mockCredentialEmployee: LEARCredentialEmployee = {
     }
   },
   issuer: {
+    id: 'id-issuer',
     organizationIdentifier: 'ORG123',
     organization: 'Test Organization',
     commonName: 'Mandator Name',

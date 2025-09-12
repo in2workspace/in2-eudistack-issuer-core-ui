@@ -2,7 +2,7 @@ import { CompliantCredentialsComponent, compliantCredentialsToken } from "src/ap
 import { isGxLabel } from "src/app/features/credential-details/helpers/credential-details-helpers";
 import { GxLabelCredential, LEARCredential } from "../../entity/lear-credential";
 import { DetailsField, ViewModelSchema } from "../../entity/lear-credential-details";
-import { commonIssuerDetailsField } from "./issuer-details-field";
+import { commonIssuerDetailsField } from "./common-issuer-details-field";
 
 export const GxLabelCredentialDetailsViewModelSchema: ViewModelSchema = {
   main: [

@@ -1,4 +1,4 @@
-import { LEARCredential, LEARCredentialMachine } from "../../entity/lear-credential";
+import { LEARCredential } from "../../entity/lear-credential";
 import { DetailsGroupField } from "../../entity/lear-credential-details";
 
 //expected to be a json or a string (in this case, the value is set as "id")

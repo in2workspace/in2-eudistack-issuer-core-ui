@@ -2,6 +2,7 @@ import { groupActionsByFunction } from 'src/app/features/credential-details/help
 import { LEARCredentialEmployee } from 'src/app/core/models/entity/lear-credential';
 import { FunctionActions } from 'src/app/features/credential-details/helpers/credential-details-helpers';
 import { LearCredentialEmployeeDetailsViewModelSchema } from './lear-credential-employee-details-schema';
+import { commonIssuerDetailsField } from './common-issuer-details-field';
 
 describe('LearCredentialEmployeeDetailsViewModelSchema', () => {
   const sample: LEARCredentialEmployee = {
@@ -82,40 +83,11 @@ describe('LearCredentialEmployeeDetailsViewModelSchema', () => {
   });
 
   describe('side section', () => {
-    const issuerGroup = side.find(g => g.key === 'issuer')!;
-
-    it('extracts issuer fields correctly when issuer is json', () => {
-      const values = (issuerGroup.value as any[]).map((f: any) => (f.value as any)(sample));
-      expect(values).toEqual([
-        'did-elsi:test',
-        'IssuerCo',
-        'aaa@email.test',
-        'ISBN-456',
-        'IssuerOrg',
-        'ISS-002',
-        'DE',
-      ]);
+    it('uses common issuer', () => {
+      expect(side).toHaveLength(1);
+      expect(side[0]).toBe(commonIssuerDetailsField);
+      expect(side[0].key).toBe('issuer');
+      expect(side[0].type).toBe('group');
     });
-
-    it('returns undefined for issuer fields when issuer is missing', () => {
-      const noIssuer = { ...sample, issuer: undefined } as any as LEARCredentialEmployee;
-      const values = (issuerGroup.value as any[]).map((f: any) => (f.value as any)(noIssuer));
-      expect(values).toEqual([undefined, undefined, undefined, undefined, undefined]);
-    });
-
-    it('handles issuer when it is a string', () => {
-      const stringIssuer = { ...sample, issuer: 'simple-issuer-id' } as any as LEARCredentialEmployee;
-      const values = (issuerGroup.value as any[]).map((f: any) => (f.value as any)(stringIssuer));
-      expect(values).toEqual([
-        'simple-issuer-id',
-        undefined,
-        undefined,
-        undefined,
-        undefined,
-        undefined,
-        undefined,
-      ]);
-    });
-
   });
 });
