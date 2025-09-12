@@ -84,8 +84,8 @@ export interface CommonSigner {
   serialNumber: string;
 }
 
-export interface CommonIssuer {
-  id?: string;
+export type CommonIssuer = string | {
+  id: string;
   organizationIdentifier: string;
   organization: string;
   country: string;
@@ -129,7 +129,7 @@ export interface EmployeeMandator extends CommonMandatorFields {
   emailAddress: string;
 }
 export interface EmployeeSigner extends CommonSigner {}
-export interface EmployeeIssuer extends CommonIssuer {}
+export type EmployeeIssuer = CommonIssuer;
 
 // --- Machine ---
 export interface LEARCredentialMachine {
@@ -164,7 +164,7 @@ export interface MachineMandator extends CommonMandatorFields {
   email: string,
 }
 export interface MachineSigner extends CommonSigner {}
-export interface MachineIssuer extends CommonIssuer {}
+export type MachineIssuer = CommonIssuer;
 
 // --- Certification ---
 export interface VerifiableCertification {
@@ -194,12 +194,7 @@ export interface VerifiableCertification {
   credentialStatus: CredentialStatus;
 }
 
-export interface CertificationIssuer {
-  commonName: string;
-  country: string;
-  id: string;
-  organization: string;
-}
+export type CertificationIssuer = CommonIssuer;
 
 export interface CertificationSigner {
   commonName: string;
@@ -229,7 +224,7 @@ export interface ComplianceEntry {
 export interface GxLabelCredential {
   id: string;
   type: ExtendedCredentialType[];
-  issuer?: string; //did:elsi:VAT...
+  issuer?: LabelIssuer;
   validFrom: string;
   validUntil: string;
   credentialStatus: CredentialStatus;
@@ -242,6 +237,8 @@ export interface GxLabelCredential {
     "gx:validatedCriteria": string[]
   };
 }
+
+export type LabelIssuer = CommonIssuer;
 
 export interface CompliantCredential{
   id: string, //urn:...

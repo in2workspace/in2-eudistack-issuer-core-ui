@@ -2,7 +2,7 @@ import { groupActionsByFunction } from "src/app/features/credential-details/help
 import { LEARCredentialMachine } from "../../entity/lear-credential";
 import { ViewModelSchema } from "../../entity/lear-credential-details";
 import { DetailsPowerComponent, detailsPowerToken } from "src/app/features/credential-details/components/details-power/details-power.component";
-import { issuerDetailsField } from "./issuer-details-field";
+import { commonIssuerDetailsField } from "./issuer-details-field";
 
 export const LearCredentialMachineDetailsViewModelSchema: ViewModelSchema = {
   main: [
@@ -40,6 +40,6 @@ export const LearCredentialMachineDetailsViewModelSchema: ViewModelSchema = {
     }
   ],
   side: [
-    issuerDetailsField
+    commonIssuerDetailsField
   ]
 };
