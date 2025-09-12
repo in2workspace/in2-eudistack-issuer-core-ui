@@ -2,6 +2,7 @@ import { CompliantCredentialsComponent, compliantCredentialsToken } from "src/ap
 import { isGxLabel } from "src/app/features/credential-details/helpers/credential-details-helpers";
 import { GxLabelCredential, LEARCredential } from "../../entity/lear-credential";
 import { DetailsField, ViewModelSchema } from "../../entity/lear-credential-details";
+import { issuerDetailsField } from "./issuer-details-field";
 
 export const GxLabelCredentialDetailsViewModelSchema: ViewModelSchema = {
   main: [
@@ -81,16 +82,6 @@ export const GxLabelCredentialDetailsViewModelSchema: ViewModelSchema = {
     }
   ],
   side: [
-    {
-      key: 'issuer',
-      type: 'group',
-      value: [
-        {
-          key: 'id',
-          type: 'key-value',
-          value: (c: GxLabelCredential) => c.issuer
-        }
-      ]
-    }
+    issuerDetailsField
   ]
 };
