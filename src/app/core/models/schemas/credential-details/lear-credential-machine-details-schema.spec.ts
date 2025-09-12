@@ -1,6 +1,7 @@
 import { groupActionsByFunction, FunctionActions } from 'src/app/features/credential-details/helpers/credential-details-helpers';
 import { LEARCredentialMachine } from 'src/app/core/models/entity/lear-credential';
 import { LearCredentialMachineDetailsViewModelSchema } from './lear-credential-machine-details-schema';
+import { commonIssuerDetailsField } from './common-issuer-details-field';
 
 describe('LearCredentialMachineDetailsViewModelSchema', () => {
   const sample: LEARCredentialMachine = {
@@ -27,6 +28,8 @@ describe('LearCredentialMachineDetailsViewModelSchema', () => {
       },
     } as any,
     issuer: {
+      id: 'did-elsi:test',
+      emailAddress: 'aaa@email.test',
       commonName: 'IssuerCo',
       serialNumber: 'ISBN-456',
       organization: 'IssuerOrg',
@@ -78,24 +81,11 @@ describe('LearCredentialMachineDetailsViewModelSchema', () => {
   });
 
   describe('side section', () => {
-    it('extracts issuer fields correctly when issuer is present', () => {
-      const issuerGroup = side.find(g => g.key === 'issuer')!  as any;
-      const values = issuerGroup.value.map((f: any) => (f.value as any)(sample));
-      expect(values).toEqual([
-        'IssuerCo',
-        'IssuerCo', 
-        'ISBN-456',
-        'IssuerOrg',
-        'ISS-002',
-        'DE',
-      ]);
-    });
-
-    it('returns undefined for all issuer fields when issuer is missing', () => {
-      const noIssuer = { ...sample, issuer: undefined } as any as LEARCredentialMachine;
-      const issuerGroup = side.find(g => g.key === 'issuer')!  as any;
-      const values = issuerGroup.value.map((f: any) => (f.value as any)(noIssuer));
-      expect(values).toEqual([undefined, undefined, undefined, undefined, undefined, undefined]);
+    it('uses common issuer', () => {
+      expect(side).toHaveLength(1);
+      expect(side[0]).toBe(commonIssuerDetailsField);
+      expect(side[0].key).toBe('issuer');
+      expect(side[0].type).toBe('group');
     });
   });
 });

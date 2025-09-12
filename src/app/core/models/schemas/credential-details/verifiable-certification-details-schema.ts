@@ -1,6 +1,7 @@
 import { isVerifiable, mapComplianceEntries } from "src/app/features/credential-details/helpers/credential-details-helpers";
 import { VerifiableCertification, LEARCredential } from "../../entity/lear-credential";
 import { ViewModelSchema } from "../../entity/lear-credential-details";
+import { commonIssuerDetailsField } from "./common-issuer-details-field";
 
 export const VerifiableCertificationDetailsViewModelSchema: ViewModelSchema = {
   main: [
@@ -107,26 +108,6 @@ export const VerifiableCertificationDetailsViewModelSchema: ViewModelSchema = {
         }
       ]
     },
-    {
-      key: 'issuer',
-      type: 'group',
-      value: [
-        {
-          key: 'commonName',
-          type: 'key-value',
-          value: (c: VerifiableCertification) => c.issuer?.commonName
-        },
-        {
-          key: 'organization',
-          type: 'key-value',
-          value: (c: VerifiableCertification) => c.issuer?.organization
-        },
-        {
-          key: 'country',
-          type: 'key-value',
-          value: (c: VerifiableCertification) => c.issuer?.country
-        }
-      ]
-    }
+    commonIssuerDetailsField
   ]
 };

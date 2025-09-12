@@ -3,6 +3,7 @@ import { GxLabelCredential, LEARCredential, CompliantCredential } from 'src/app/
 import { CompliantCredentialsComponent, compliantCredentialsToken } from 'src/app/features/credential-details/components/compliant-credentials/compliant-credentials.component';
 import { DetailsKeyValueField } from '../../entity/lear-credential-details';
 import { GxLabelCredentialDetailsViewModelSchema } from './gx-label-credential-details-schema';
+import { commonIssuerDetailsField } from './common-issuer-details-field';
 
 describe('GxLabelCredentialDetailsViewModelSchema', () => {
   const sampleLabel: GxLabelCredential = {
@@ -22,7 +23,15 @@ describe('GxLabelCredentialDetailsViewModelSchema', () => {
         'https://w3id.org/gaia-x/specs/cd25.01/criterion/P1.2.3'
       ],
     },
-    issuer: 'ISSUER1',
+    issuer: {
+      id: 'did-elsi:test',
+      emailAddress: 'aaa@email.test',
+      commonName: 'IssuerCo',
+      serialNumber: 'ISBN-456',
+      organization: 'IssuerOrg',
+      organizationIdentifier: 'ISS-002',
+      country: 'DE',
+    } as any,
     id: '',
     issuanceDate: '',
     credentialSubjectFormat: '',
@@ -99,11 +108,11 @@ describe('GxLabelCredentialDetailsViewModelSchema', () => {
   });
 
   describe('side section', () => {
-    it('extracts issuer field correctly', () => {
-      const issuerGroup = side.find((g: any) => g.key === 'issuer')! as any;
-      const field = issuerGroup.value[0] as any;
-      expect(field.key).toBe('id');
-      expect((field.value as any)(sampleLabel)).toBe('ISSUER1');
+    it('uses common issuer', () => {
+      expect(side).toHaveLength(1);
+      expect(side[0]).toBe(commonIssuerDetailsField);
+      expect(side[0].key).toBe('issuer');
+      expect(side[0].type).toBe('group');
     });
   });
 });

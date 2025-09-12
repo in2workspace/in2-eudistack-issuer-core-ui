@@ -235,7 +235,7 @@ private evaluateSchemaValues(
   };
 }
 
-  private evaluateField(
+private evaluateField(
   field: DetailsField,
   credential: LEARCredential
 ): EvaluatedDetailsField {

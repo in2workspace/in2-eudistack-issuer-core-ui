@@ -84,8 +84,8 @@ export interface CommonSigner {
   serialNumber: string;
 }
 
-export interface CommonIssuer {
-  id?: string;
+export type CommonIssuer = string | {
+  id: string;
   organizationIdentifier: string;
   organization: string;
   country: string;
@@ -109,7 +109,7 @@ export interface LEARCredentialEmployee {
       signer: EmployeeSigner;
     };
   };
-  issuer?: EmployeeIssuer;
+  issuer?: CommonIssuer;
   validFrom: string;
   validUntil: string;
   issuanceDate?: string;
@@ -129,7 +129,6 @@ export interface EmployeeMandator extends CommonMandatorFields {
   emailAddress: string;
 }
 export interface EmployeeSigner extends CommonSigner {}
-export interface EmployeeIssuer extends CommonIssuer {}
 
 // --- Machine ---
 export interface LEARCredentialMachine {
@@ -146,7 +145,7 @@ export interface LEARCredentialMachine {
       signer: MachineSigner;
     };
   };
-  issuer?: MachineIssuer;
+  issuer?: CommonIssuer;
   validFrom: string;
   validUntil: string;
   credentialStatus: CredentialStatus;
@@ -164,13 +163,12 @@ export interface MachineMandator extends CommonMandatorFields {
   email: string,
 }
 export interface MachineSigner extends CommonSigner {}
-export interface MachineIssuer extends CommonIssuer {}
 
 // --- Certification ---
 export interface VerifiableCertification {
   id: string;
   type: ExtendedCredentialType[];
-  issuer?: CertificationIssuer;
+  issuer?: CommonIssuer;
   credentialSubject: {
     company: {
       address: string;
@@ -192,13 +190,6 @@ export interface VerifiableCertification {
   validUntil: string;
   signer: CertificationSigner;
   credentialStatus: CredentialStatus;
-}
-
-export interface CertificationIssuer {
-  commonName: string;
-  country: string;
-  id: string;
-  organization: string;
 }
 
 export interface CertificationSigner {
@@ -229,7 +220,7 @@ export interface ComplianceEntry {
 export interface GxLabelCredential {
   id: string;
   type: ExtendedCredentialType[];
-  issuer?: string; //did:elsi:VAT...
+  issuer?: CommonIssuer;
   validFrom: string;
   validUntil: string;
   credentialStatus: CredentialStatus;
