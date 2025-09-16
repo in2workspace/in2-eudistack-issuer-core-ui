@@ -1,6 +1,7 @@
 import { LEARCredentialEmployee } from "../entity/lear-credential";
 import {RoleType } from '../enums/auth-rol-type.enum'
 export interface UserDataAuthenticationResponse {
+  id: string;
   sub: string;
   commonName: string;
   country: string;

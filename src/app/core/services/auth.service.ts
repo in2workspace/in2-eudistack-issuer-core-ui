@@ -174,6 +174,7 @@ export class AuthService{
 
   private extractDataFromCertificate(userData: UserDataAuthenticationResponse): EmployeeMandator {
     return {
+        id: userData.id,
         organizationIdentifier: userData.organizationIdentifier,
         organization: userData.organization,
         commonName: userData.name,
@@ -185,6 +186,7 @@ export class AuthService{
 
   private handleVCLogin(learCredential: LEARCredentialEmployee): void {
     const mandator = {
+      id: learCredential.credentialSubject.mandate.mandator.id,
       organizationIdentifier: learCredential.credentialSubject.mandate.mandator.organizationIdentifier,
       organization: learCredential.credentialSubject.mandate.mandator.organization,
       commonName: learCredential.credentialSubject.mandate.mandator.commonName,

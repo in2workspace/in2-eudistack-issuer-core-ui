@@ -34,20 +34,22 @@ export class IssuanceRequestFactoryService {
       return {} as IssuanceLEARCredentialEmployeePayload;
     }
     const country = mandator['country'];
-    const orgId = mandator['organizationIdentifier'];
-    const vatNumber = this.buildOrganizationId(country, orgId);
+    const orgIdSuffix = mandator['organizationIdentifier'];
+    const orgId = this.buildOrganizationId(country, orgIdSuffix);
+    const mandatorId = this.buildDidElsi(orgId);
     const mandatorCommonName = mandator['commonName'] ?? this.buildCommonName(mandator['firstName'], mandator['lastName']);
     
     // Payload
     const payload: IssuanceLEARCredentialEmployeePayload =    
       {
       mandator: {
+            id: mandatorId,
             emailAddress: mandator['emailAddress'],
             organization: mandator['organization'],
             country:  country,
             commonName:  mandatorCommonName,
             serialNumber:  mandator['serialNumber'],
-            organizationIdentifier: vatNumber
+            organizationIdentifier: orgId
         },
         mandatee: {
             ...mandatee
@@ -73,8 +75,6 @@ export class IssuanceRequestFactoryService {
     const country = mandator['country'];
     const orgIdSuffix = mandator['organizationIdentifier'];
     const orgId = this.buildOrganizationId(country, orgIdSuffix);
-    console.log("orgId");
-    console.log(orgId);
     const mandatorId = this.buildDidElsi(orgId);
     const mandatorCommonName = mandator['commonName'] ?? this.buildCommonName(mandator['firstName'], mandator['lastName']);
     const mandatorEmail = mandator['email'] ?? mandator['emailAddress'];
@@ -104,6 +104,7 @@ export class IssuanceRequestFactoryService {
   }
 
   private buildDidElsi(orgId: string): string{
+    //todo remove
     console.log("buildDidElsi: orgId");
     console.log(orgId);
     return "did:elsi:" + orgId;

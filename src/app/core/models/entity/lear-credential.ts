@@ -126,6 +126,7 @@ export interface EmployeeMandatee {
   nationality: string;
 }
 export interface EmployeeMandator extends CommonMandatorFields {
+  id: string;
   emailAddress: string;
 }
 export interface EmployeeSigner extends CommonSigner {}
