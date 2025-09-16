@@ -7,6 +7,7 @@ interface RawEmployeeMandatee {
   lastName?: string;
   last_name?: string;
   email?: string;
+  emailAddress?: string
 }
 
 interface RawPower {
@@ -75,7 +76,7 @@ export class LEARCredentialDataNormalizer {
 private normalizeEmployeeMandatee(data: RawEmployeeMandatee): EmployeeMandatee {
   const firstName = data.firstName ?? data.first_name ?? "";
   const lastName  = data.lastName ?? data.last_name ?? "";
-  const email     = data.email ?? "";
+  const email = data.email ?? data.emailAddress ?? "";
 
   return { firstName, lastName, email };
 }

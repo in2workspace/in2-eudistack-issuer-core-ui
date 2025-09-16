@@ -44,7 +44,7 @@ export class IssuanceRequestFactoryService {
       {
       mandator: {
             id: mandatorId,
-            emailAddress: mandator['emailAddress'],
+            email: mandator['email'],
             organization: mandator['organization'],
             country:  country,
             commonName:  mandatorCommonName,

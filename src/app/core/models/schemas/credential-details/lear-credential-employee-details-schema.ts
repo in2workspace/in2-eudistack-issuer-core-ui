@@ -12,7 +12,7 @@ export const LearCredentialEmployeeDetailsViewModelSchema: ViewModelSchema = {
       type: 'group',
       value: [
         { key: 'name', type: 'key-value', value: (c: LEARCredentialEmployee) => c.credentialSubject.mandate.mandator.commonName},
-        { key: 'email', type: 'key-value', value: (c: LEARCredentialEmployee) => c.credentialSubject.mandate.mandator.emailAddress },
+        { key: 'email', type: 'key-value', value: (c: LEARCredentialEmployee) => c.credentialSubject.mandate.mandator.email },
         { key: 'serialNumber', type: 'key-value', value: (c: LEARCredentialEmployee) => c.credentialSubject.mandate.mandator.serialNumber},
         { key: 'organization', type: 'key-value', value: (c: LEARCredentialEmployee) => c.credentialSubject.mandate.mandator.organization },
         { key: 'organizationId', type: 'key-value', value: (c: LEARCredentialEmployee) => c.credentialSubject.mandate.mandator.organizationIdentifier },

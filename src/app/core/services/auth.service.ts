@@ -178,7 +178,7 @@ export class AuthService{
         organizationIdentifier: userData.organizationIdentifier,
         organization: userData.organization,
         commonName: userData.name,
-        emailAddress: userData?.email ?? '',
+        email: userData?.email ?? '',
         serialNumber: userData?.serial_number ?? '',
         country: userData.country
       }
@@ -190,14 +190,14 @@ export class AuthService{
       organizationIdentifier: learCredential.credentialSubject.mandate.mandator.organizationIdentifier,
       organization: learCredential.credentialSubject.mandate.mandator.organization,
       commonName: learCredential.credentialSubject.mandate.mandator.commonName,
-      emailAddress: learCredential.credentialSubject.mandate.mandator.emailAddress,
+      email: learCredential.credentialSubject.mandate.mandator.email,
       serialNumber: learCredential.credentialSubject.mandate.mandator.serialNumber,
       country: learCredential.credentialSubject.mandate.mandator.country
     };
     
     this.mandatorSubject.next(mandator);
   
-    const emailName = learCredential.credentialSubject.mandate.mandator.emailAddress.split('@')[0];
+    const emailName = learCredential.credentialSubject.mandate.mandator.email.split('@')[0];
     const name = learCredential.credentialSubject.mandate.mandatee.firstName + ' ' + learCredential.credentialSubject.mandate.mandatee.lastName;
   
     this.emailSubject.next(emailName);

@@ -90,7 +90,6 @@ export type CommonIssuer = string | {
   organization: string;
   country: string;
   commonName: string;
-  emailAddress: string;
   serialNumber: string;
 }
 
@@ -127,7 +126,7 @@ export interface EmployeeMandatee {
 }
 export interface EmployeeMandator extends CommonMandatorFields {
   id: string;
-  emailAddress: string;
+  email: string;
 }
 export interface EmployeeSigner extends CommonSigner {}
 
