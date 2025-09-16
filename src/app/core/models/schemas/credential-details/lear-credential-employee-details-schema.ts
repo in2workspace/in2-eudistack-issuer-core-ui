@@ -4,7 +4,7 @@ import { ViewModelSchema } from "../../entity/lear-credential-details";
 import { DetailsPowerComponent, detailsPowerToken } from "src/app/features/credential-details/components/details-power/details-power.component";
 import { commonIssuerDetailsField } from "./common-issuer-details-field";
 
-
+// todo
 export const LearCredentialEmployeeDetailsViewModelSchema: ViewModelSchema = {
   main: [
     {
