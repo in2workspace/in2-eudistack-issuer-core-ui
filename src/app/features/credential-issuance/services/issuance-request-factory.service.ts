@@ -21,6 +21,8 @@ export class IssuanceRequestFactoryService {
     }
 
   private createLearCredentialEmployeeRequest(credentialData: IssuanceRawCredentialPayload): IssuanceLEARCredentialEmployeePayload{
+    console.log("Employee request payload: ");
+    console.log(credentialData);
     // Power
     const parsedPower = this.parsePower(credentialData.formData['power'], 'LEARCredentialEmployee');
     
