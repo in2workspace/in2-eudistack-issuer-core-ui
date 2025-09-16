@@ -123,7 +123,6 @@ export interface EmployeeMandatee {
   firstName: string;
   lastName: string;
   mobile_phone?: string;
-  nationality: string;
 }
 export interface EmployeeMandator extends CommonMandatorFields {
   id: string;

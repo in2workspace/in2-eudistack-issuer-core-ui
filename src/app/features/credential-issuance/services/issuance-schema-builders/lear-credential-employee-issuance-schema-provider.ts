@@ -31,13 +31,6 @@ export class LearCredentialEmployeeSchemaProvider implements CredentialIssuanceS
             { ...firstNameField },
             { ...lastNameField },
             { ...emailField },
-            {
-              key:'nationality', 
-              type: 'control',
-              controlType: 'selector',
-              multiOptions: countriesSelectorOptions,
-              validators: [{ name: 'required' }]
-            },
           ],
         },
         // MANDATOR

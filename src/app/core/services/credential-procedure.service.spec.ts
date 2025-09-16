@@ -131,9 +131,9 @@ describe('CredentialProcedureService', () => {
         mandatee: {
           firstName: '',
           lastName: '',
-          email: '',
-          nationality: ''
+          email: ''
         }, mandator: {
+          id: '',
           organizationIdentifier: '',
           organization: '',
           commonName: '',
@@ -162,8 +162,8 @@ describe('CredentialProcedureService', () => {
           firstName: '',
           lastName: '',
           email: '',
-          nationality: ''
         }, mandator: {
+          id: '',
           organizationIdentifier: '',
           organization: '',
           commonName: '',

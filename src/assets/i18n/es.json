@@ -57,8 +57,7 @@
   "mandatee": {
     "firstnameid": "ID del nombre",
     "last_name": "Apellidos",
-    "email": "Dirección de correo",
-    "nationality": "Nacionalidad"
+    "email": "Dirección de correo"
   },
 "credentialDetails": {
     "title": "Detalles de la credencial",
@@ -93,7 +92,6 @@
     "firstName": "nombre",
     "lastName": "apellido",
     "mobile_phone": "teléfono móvil",
-    "nationality": "nacionalidad",
     "domain": "dominio",
     "ipAddress": "dirección IP",
     "address": "dirección",
@@ -237,7 +235,6 @@
       "commonName": "Nombre común",
       "email": "Correo electrónico",
       "emailAddress": "Correo electrónico",
-      "nationality": "Nacionalidad",
       "serialNumber": "Número de documento de identidad",
       "organization": "Nombre de la empresa",
       "organizationIdentifier": "NIF de la empresa",

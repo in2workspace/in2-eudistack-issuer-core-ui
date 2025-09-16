@@ -70,12 +70,6 @@ describe('LearCredentialEmployeeSchemaProvider', () => {
       expect(fn).toEqual(firstNameField);
       expect(ln).toEqual(lastNameField);
       expect(email).toEqual(emailField);
-      expect(nat).toMatchObject({
-        key: 'nationality',
-        controlType: 'selector',
-        multiOptions: fakeCountries,
-        validators: [{ name: 'required' }],
-      });
     });
 
     it('should include mandator group with staticValueGetter and ordered fields', () => {

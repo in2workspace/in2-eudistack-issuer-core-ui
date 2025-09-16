@@ -24,9 +24,7 @@ export const LearCredentialEmployeeDetailsViewModelSchema: ViewModelSchema = {
       type: 'group',
       value: [
         { key: 'name', type: 'key-value', value: (c: LEARCredentialEmployee) => c.credentialSubject.mandate.mandatee.firstName + ' ' +c.credentialSubject.mandate.mandatee.lastName },
-        { key: 'email', type: 'key-value', value: (c: LEARCredentialEmployee) => c.credentialSubject.mandate.mandatee.email },
-        { key: 'nationality', type: 'key-value', value: (c: LEARCredentialEmployee) => c.credentialSubject.mandate.mandatee.nationality }
-      ]
+        { key: 'email', type: 'key-value', value: (c: LEARCredentialEmployee) => c.credentialSubject.mandate.mandatee.email }      ]
     },
     {
       key: 'power',

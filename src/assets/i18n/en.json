@@ -59,8 +59,7 @@
   "mandatee": {
     "firstnameid": "First name",
     "last_name": "Last name",
-    "email": "Email",
-    "nationality": "Nationality"
+    "email": "Email"
   },
   "credentialDetails": {
     "title": "Credential details",
@@ -96,7 +95,6 @@
     "firstName": "first name",
     "lastName": "last name",
     "mobile_phone": "mobile phone",
-    "nationality": "nationality",
     "domain": "domain",
     "ipAddress": "IP Address",
     "address": "address",
@@ -238,7 +236,6 @@
     "commonName": "Name",
     "email": "Email",
     "emailAddress": "Email",
-    "nationality": "Nationality",
     "serialNumber": "ID card number",
     "organization": "Company name",
     "organizationIdentifier": "Company VAT number",
