@@ -119,6 +119,7 @@ export interface LEARCredentialEmployee {
 
 export interface EmployeeMandatee {
   id?: string;
+  employeeId?: string;
   email: string;
   firstName: string;
   lastName: string;
