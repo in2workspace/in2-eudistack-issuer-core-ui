@@ -240,6 +240,8 @@
     "organization": "Company name",
     "organizationIdentifier": "Company VAT number",
     "country": "Country",
+    "employeeId": "Employee ID",
+    "id": "ID",
     "domain": "Domain",
     "ipAddress": "IP Address",
     "selectA": "Select a ",

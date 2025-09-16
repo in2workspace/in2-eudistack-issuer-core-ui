@@ -239,6 +239,8 @@
       "organization": "Nombre de la empresa",
       "organizationIdentifier": "NIF de la empresa",
       "country": "País",
+      "id": "ID",
+      "employeeId": "ID de empleado",
       "domain": "Dominio",
       "ipAddress": "Dirección IP",
       "selectA": "Selecciona un ",
