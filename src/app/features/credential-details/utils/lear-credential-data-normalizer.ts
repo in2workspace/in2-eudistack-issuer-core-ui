@@ -84,14 +84,21 @@ export class LEARCredentialDataNormalizer {
   }
 
 private normalizeEmployeeMandatee(data: RawEmployeeMandatee): EmployeeMandatee {
+
   const firstName = data.firstName ?? data.first_name ?? "";
   const lastName  = data.lastName ?? data.last_name ?? "";
   const email = data.email ?? data.emailAddress ?? "";
 
+  const copy = { ...data, firstName, lastName, email };
+  delete copy.first_name;
+  delete copy.last_name;
+  delete copy.emailAddress;
+
+  //todo remove
   console.log("Nomalized employee mandatee");
   console.log({ firstName, lastName, email });
 
-  return { firstName, lastName, email };
+  return copy;
 }
 
 private normalizeEmployeeMandator(mandator: RawEmployeeMandator): EmployeeMandator {
