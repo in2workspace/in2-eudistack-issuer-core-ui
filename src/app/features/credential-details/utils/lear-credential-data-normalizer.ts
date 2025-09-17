@@ -10,6 +10,11 @@ interface RawEmployeeMandatee {
   emailAddress?: string
 }
 
+interface RawEmployeeMandator {
+  email?: string;
+  emailAddress?: string
+}
+
 interface RawPower {
   action?: string | string[];
   tmf_action?: string | string[];
@@ -39,6 +44,7 @@ export class LEARCredentialDataNormalizer {
     const isVerCert  = types.includes('VerifiableCertification');
 
     this.normalizeMandateIfNeeded(normalized, isEmployee, isMachine);
+    this.normalizeMandatorIfNeeded(normalized, isEmployee, isMachine);
     this.normalizeCertificationIfNeeded(normalized, isVerCert);
 
     return normalized;
@@ -82,6 +88,36 @@ private normalizeEmployeeMandatee(data: RawEmployeeMandatee): EmployeeMandatee {
   console.log({ firstName, lastName, email });
 
   return { firstName, lastName, email };
+}
+
+private normalizeMandatorIfNeeded(
+  data: any,
+  isEmployee: boolean,
+  isMachine: boolean
+) {
+  if (!(isEmployee || isMachine)) return;
+
+  const sub = data.credentialSubject;
+  if (!sub || sub.mandator == null) return;
+
+  const mtr = sub.mandator;
+
+  if (Array.isArray(mtr)) {
+    sub.mandator = mtr.map((x: RawEmployeeMandator) => this.normalizeMandatorEmail(x));
+  } else if (typeof mtr === 'object') {
+    sub.mandator = this.normalizeMandatorEmail(mtr as RawEmployeeMandator);
+  }
+}
+
+private normalizeMandatorEmail(m: RawEmployeeMandator): RawEmployeeMandator {
+  const copy: any = { ...m };
+
+  if (copy.email == null && typeof copy.emailAddress === 'string') {
+    copy.email = copy.emailAddress;
+  }
+  delete copy.emailAddress;
+
+  return copy;
 }
 
 private normalizePower(data: RawPower): Power {
