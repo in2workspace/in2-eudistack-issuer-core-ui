@@ -1,9 +1,13 @@
 import { ValidatorEntryUnion } from "./all-validators";
 
-const baseNameValidatorEntries: ValidatorEntryUnion[] = [
-    { name: 'required' },
+export const baseNameLengthValidatorEntries: ValidatorEntryUnion[] = [
     { name: 'minLength', args: [2] },
     { name: 'maxLength', args: [50] }
+];
+
+const baseNameValidatorEntries: ValidatorEntryUnion[] = [
+    ...baseNameLengthValidatorEntries,
+    { name: 'required' }
 ];
 
 export const nameValidatorEntries: ValidatorEntryUnion[] = [
