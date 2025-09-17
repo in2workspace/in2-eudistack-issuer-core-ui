@@ -229,6 +229,8 @@ export class AuthService{
   public getMandator(): Observable<EmployeeMandator | null> {
     return this.mandatorSubject.asObservable();
   }
+
+  //todo maybe rename (i.e. getPlainMandator), since "Raw" is being used for unnormalized VC/fields
   public getRawMandator(): EmployeeMandator | null {
     return this.mandatorSubject.getValue();
   }
