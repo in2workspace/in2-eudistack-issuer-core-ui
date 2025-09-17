@@ -96,6 +96,7 @@
     "lastName": "last name",
     "mobile_phone": "mobile phone",
     "domain": "domain",
+    "employeeId": "Employee ID",
     "ipAddress": "IP Address",
     "address": "address",
     "productId": "product id",

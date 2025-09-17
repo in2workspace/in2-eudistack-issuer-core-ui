@@ -239,6 +239,7 @@
     "organizationIdentifier": "NIF de l’empresa",
     "country": "País",
     "domain": "Domini",
+    "employeeId": "ID d'empleat",
     "ipAddress": "Adreça IP",
     "selectA": "Selecciona un/una ",
     "hint": {
