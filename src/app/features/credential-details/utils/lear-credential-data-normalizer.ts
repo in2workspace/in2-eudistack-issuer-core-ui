@@ -47,6 +47,8 @@ export class LEARCredentialDataNormalizer {
     this.normalizeMandatorIfNeeded(normalized, isEmployee, isMachine);
     this.normalizeCertificationIfNeeded(normalized, isVerCert);
 
+    console.log("normalized")
+    console.log(normalized)
     return normalized;
   }
 
@@ -107,6 +109,8 @@ private normalizeMandatorIfNeeded(
   } else if (typeof mtr === 'object') {
     sub.mandator = this.normalizeMandatorEmail(mtr as RawEmployeeMandator);
   }
+  console.log("normalized after mandator");
+  console.log(data);
 }
 
 private normalizeMandatorEmail(m: RawEmployeeMandator): RawEmployeeMandator {
