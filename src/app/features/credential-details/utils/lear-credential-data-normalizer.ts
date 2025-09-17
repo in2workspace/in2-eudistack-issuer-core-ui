@@ -78,6 +78,9 @@ private normalizeEmployeeMandatee(data: RawEmployeeMandatee): EmployeeMandatee {
   const lastName  = data.lastName ?? data.last_name ?? "";
   const email = data.email ?? data.emailAddress ?? "";
 
+  console.log("Nomalized employee mandatee");
+  console.log({ firstName, lastName, email });
+
   return { firstName, lastName, email };
 }
 

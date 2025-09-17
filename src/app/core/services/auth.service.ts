@@ -185,6 +185,8 @@ export class AuthService{
   }
 
   private handleVCLogin(learCredential: LEARCredentialEmployee): void {
+    console.log("handleVCLogin");
+    console.log(learCredential);
     const mandator = {
       id: learCredential.credentialSubject.mandate.mandator.id,
       organizationIdentifier: learCredential.credentialSubject.mandate.mandator.organizationIdentifier,
