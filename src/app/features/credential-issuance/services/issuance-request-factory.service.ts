@@ -79,7 +79,7 @@ export class IssuanceRequestFactoryService {
     const orgId = this.buildOrganizationId(country, orgIdSuffix);
     const mandatorId = this.buildDidElsi(orgId);
     const mandatorCommonName = mandator['commonName'] ?? this.buildCommonName(mandator['firstName'], mandator['lastName']);
-    const mandatorEmail = mandator['email'] ?? mandator['emailAddress'];
+    const mandatorEmail = mandator['email'];
 
     const didKey = credentialData.formData['keys']['didKey'];
 

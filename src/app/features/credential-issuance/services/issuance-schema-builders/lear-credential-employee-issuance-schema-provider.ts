@@ -51,7 +51,9 @@ export class LearCredentialEmployeeSchemaProvider implements CredentialIssuanceS
             {
               ...lastNameField
             },
-            { ...emailField, key: 'emailAddress' },
+            { ...emailField 
+              
+            },
             {
               ...serialNumberField
             },
