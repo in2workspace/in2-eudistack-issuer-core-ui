@@ -17,7 +17,6 @@ export const commonIssuerDetailsField: DetailsGroupField = {
     return [
       { key: 'id',             type: 'key-value', value: () => i?.id },
       { key: 'name',           type: 'key-value', value: () => i?.commonName },
-      { key: 'email',          type: 'key-value', value: () => i?.emailAddress },
       { key: 'serialNumber',   type: 'key-value', value: () => i?.serialNumber },
       { key: 'organization',   type: 'key-value', value: () => i?.organization },
       { key: 'organizationId', type: 'key-value', value: () => i?.organizationIdentifier },

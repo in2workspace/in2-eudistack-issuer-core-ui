@@ -1,9 +1,13 @@
 import { ValidatorEntryUnion } from "./all-validators";
 
-const baseNameValidatorEntries: ValidatorEntryUnion[] = [
-    { name: 'required' },
+export const baseNameLengthValidatorEntries: ValidatorEntryUnion[] = [
     { name: 'minLength', args: [2] },
     { name: 'maxLength', args: [50] }
+];
+
+const baseNameValidatorEntries: ValidatorEntryUnion[] = [
+    ...baseNameLengthValidatorEntries,
+    { name: 'required' }
 ];
 
 export const nameValidatorEntries: ValidatorEntryUnion[] = [
@@ -29,6 +33,7 @@ export const orgIdValidatorEntries: ValidatorEntryUnion[] = [
 ];
 
 export const serialNumberValidatorEntries: ValidatorEntryUnion[] = [
+  { name: 'required' },
   { name: 'minLength', args: [7] },
   { name: 'maxLength', args: [15] },
   { name: 'pattern', args: ["^[a-zA-Z0-9-]+$"] }

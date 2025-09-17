@@ -7,7 +7,6 @@ interface RawEmployeeMandatee {
   lastName?: string;
   last_name?: string;
   email?: string;
-  nationality?: string;
 }
 
 interface RawPower {
@@ -72,8 +71,7 @@ private normalizeEmployeeMandatee(data: RawEmployeeMandatee): EmployeeMandatee {
   return <EmployeeMandatee>{
     firstName: data.firstName ?? data.first_name,
     lastName: data.lastName ?? data.last_name,
-    email: data.email,
-    nationality: data.nationality
+    email: data.email
   };
 }
 

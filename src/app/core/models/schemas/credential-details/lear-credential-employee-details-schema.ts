@@ -4,15 +4,16 @@ import { ViewModelSchema } from "../../entity/lear-credential-details";
 import { DetailsPowerComponent, detailsPowerToken } from "src/app/features/credential-details/components/details-power/details-power.component";
 import { commonIssuerDetailsField } from "./common-issuer-details-field";
 
-
+// todo
 export const LearCredentialEmployeeDetailsViewModelSchema: ViewModelSchema = {
   main: [
     {
       key: 'mandator',
       type: 'group',
       value: [
+        { key: 'id', type: 'key-value', value: (c: LEARCredentialEmployee) => c.credentialSubject.mandate.mandator.id},
         { key: 'name', type: 'key-value', value: (c: LEARCredentialEmployee) => c.credentialSubject.mandate.mandator.commonName},
-        { key: 'email', type: 'key-value', value: (c: LEARCredentialEmployee) => c.credentialSubject.mandate.mandator.emailAddress },
+        { key: 'email', type: 'key-value', value: (c: LEARCredentialEmployee) => c.credentialSubject.mandate.mandator.email },
         { key: 'serialNumber', type: 'key-value', value: (c: LEARCredentialEmployee) => c.credentialSubject.mandate.mandator.serialNumber},
         { key: 'organization', type: 'key-value', value: (c: LEARCredentialEmployee) => c.credentialSubject.mandate.mandator.organization },
         { key: 'organizationId', type: 'key-value', value: (c: LEARCredentialEmployee) => c.credentialSubject.mandate.mandator.organizationIdentifier },
@@ -23,10 +24,9 @@ export const LearCredentialEmployeeDetailsViewModelSchema: ViewModelSchema = {
       key: 'mandatee',
       type: 'group',
       value: [
-        { key: 'name', type: 'key-value', value: (c: LEARCredentialEmployee) => c.credentialSubject.mandate.mandatee.firstName + ' ' +c.credentialSubject.mandate.mandatee.lastName },
-        { key: 'email', type: 'key-value', value: (c: LEARCredentialEmployee) => c.credentialSubject.mandate.mandatee.email },
-        { key: 'nationality', type: 'key-value', value: (c: LEARCredentialEmployee) => c.credentialSubject.mandate.mandatee.nationality }
-      ]
+        { key: 'name', type: 'key-value', value: (c: LEARCredentialEmployee) => c.credentialSubject.mandate.mandatee.firstName + ' ' + c.credentialSubject.mandate.mandatee.lastName },
+        { key: 'employeeId', type: 'key-value', value: (c: LEARCredentialEmployee) => c.credentialSubject.mandate.mandatee.employeeId },
+        { key: 'email', type: 'key-value', value: (c: LEARCredentialEmployee) => c.credentialSubject.mandate.mandatee.email }      ]
     },
     {
       key: 'power',

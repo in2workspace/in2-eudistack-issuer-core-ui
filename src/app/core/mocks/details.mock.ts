@@ -1,9 +1,10 @@
 import { CredentialProcedureDetails, CredentialStatus, EmployeeMandator } from "../models/entity/lear-credential";
 
 export const mandatorMock: EmployeeMandator = {
+  id: 'id',
   commonName: "name surname",
   country: "FR",
-  emailAddress: "email@domain.com",
+  email: "email@domain.com",
   organization: "Org Name",
   organizationIdentifier: "ORG_ID",
   serialNumber: "SERIAL-NUMBER-01",

@@ -19,8 +19,7 @@ describe('LearCredentialEmployeeDetailsViewModelSchema', () => {
         mandatee: {
           firstName: 'Bob',
           lastName: 'Builder',
-          email: 'bob@builder.com',
-          nationality: 'ES',
+          email: 'bob@builder.com'
         },
         power: [
           { function: 'f1', action: 'a1', domain: 'd', type: 't' },

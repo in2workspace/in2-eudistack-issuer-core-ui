@@ -32,6 +32,7 @@ const mockCredentialEmployee: LEARCredentialEmployee = {
         country: 'Signerland'
       },
       mandator: {
+        id: 'idddd',
         organizationIdentifier: 'ORG123',
         organization: 'Test Organization',
         commonName: 'Mandator Name',
@@ -42,8 +43,7 @@ const mockCredentialEmployee: LEARCredentialEmployee = {
       mandatee: {
         firstName: 'John',
         lastName: 'Doe',
-        email: 'jhonDoe@example.com',
-        nationality: ''
+        email: 'jhonDoe@example.com'
       },
       power: [
         {

@@ -21,6 +21,8 @@ export class IssuanceRequestFactoryService {
     }
 
   private createLearCredentialEmployeeRequest(credentialData: IssuanceRawCredentialPayload): IssuanceLEARCredentialEmployeePayload{
+    console.log("Employee request payload: ");
+    console.log(credentialData);
     // Power
     const parsedPower = this.parsePower(credentialData.formData['power'], 'LEARCredentialEmployee');
     
@@ -34,20 +36,22 @@ export class IssuanceRequestFactoryService {
       return {} as IssuanceLEARCredentialEmployeePayload;
     }
     const country = mandator['country'];
-    const orgId = mandator['organizationIdentifier'];
-    const vatNumber = this.buildOrganizationId(country, orgId);
+    const orgIdSuffix = mandator['organizationIdentifier'];
+    const orgId = this.buildOrganizationId(country, orgIdSuffix);
+    const mandatorId = this.buildDidElsi(orgId);
     const mandatorCommonName = mandator['commonName'] ?? this.buildCommonName(mandator['firstName'], mandator['lastName']);
     
     // Payload
     const payload: IssuanceLEARCredentialEmployeePayload =    
       {
       mandator: {
-            emailAddress: mandator['emailAddress'],
+            id: mandatorId,
+            email: mandator['email'],
             organization: mandator['organization'],
             country:  country,
             commonName:  mandatorCommonName,
             serialNumber:  mandator['serialNumber'],
-            organizationIdentifier: vatNumber
+            organizationIdentifier: orgId
         },
         mandatee: {
             ...mandatee
@@ -73,11 +77,9 @@ export class IssuanceRequestFactoryService {
     const country = mandator['country'];
     const orgIdSuffix = mandator['organizationIdentifier'];
     const orgId = this.buildOrganizationId(country, orgIdSuffix);
-    console.log("orgId");
-    console.log(orgId);
     const mandatorId = this.buildDidElsi(orgId);
     const mandatorCommonName = mandator['commonName'] ?? this.buildCommonName(mandator['firstName'], mandator['lastName']);
-    const mandatorEmail = mandator['email'] ?? mandator['emailAddress'];
+    const mandatorEmail = mandator['email'];
 
     const didKey = credentialData.formData['keys']['didKey'];
 
@@ -104,6 +106,7 @@ export class IssuanceRequestFactoryService {
   }
 
   private buildDidElsi(orgId: string): string{
+    //todo remove
     console.log("buildDidElsi: orgId");
     console.log(orgId);
     return "did:elsi:" + orgId;
