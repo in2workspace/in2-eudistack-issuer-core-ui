@@ -1,4 +1,4 @@
-import { LEARCredential, EmployeeMandatee, Power, VerifiableCertification, Attester } from './../../../core/models/entity/lear-credential';
+import { LEARCredential, EmployeeMandatee, Power, VerifiableCertification, Attester, EmployeeMandator } from './../../../core/models/entity/lear-credential';
 
 // Interfaces for the raw JSON of Mandatee and Power
 interface RawEmployeeMandatee {
@@ -44,7 +44,6 @@ export class LEARCredentialDataNormalizer {
     const isVerCert  = types.includes('VerifiableCertification');
 
     this.normalizeMandateIfNeeded(normalized, isEmployee, isMachine);
-    this.normalizeMandatorIfNeeded(normalized, isEmployee, isMachine);
     this.normalizeCertificationIfNeeded(normalized, isVerCert);
 
     console.log("normalized")
@@ -64,6 +63,9 @@ export class LEARCredentialDataNormalizer {
     sub.mandate = { ...sub.mandate };
     if (isEmployee && sub.mandate.mandatee) {
       sub.mandate.mandatee = this.normalizeEmployeeMandatee(sub.mandate.mandatee);
+    }
+    if(isEmployee && sub.mandate.mandator){
+      sub.mandate.mandator = this.normalizeEmployeeMandator(sub.mandate.mandator);
     }
     if (Array.isArray(sub.mandate.power)) {
       sub.mandate.power = sub.mandate.power.map((p: RawPower) => this.normalizePower(p));
@@ -92,26 +94,13 @@ private normalizeEmployeeMandatee(data: RawEmployeeMandatee): EmployeeMandatee {
   return { firstName, lastName, email };
 }
 
-private normalizeMandatorIfNeeded(
-  data: any,
-  isEmployee: boolean,
-  isMachine: boolean
-) {
-  if (!(isEmployee || isMachine)) return;
-
-  const sub = data.credentialSubject;
-  if (!sub || sub.mandator == null) return;
-
-  const mtr = sub.mandator;
-
-  if (Array.isArray(mtr)) {
-    sub.mandator = mtr.map((x: RawEmployeeMandator) => this.normalizeMandatorEmail(x));
-  } else if (typeof mtr === 'object') {
-    sub.mandator = this.normalizeMandatorEmail(mtr as RawEmployeeMandator);
-  }
-  console.log("normalized after mandator");
-  console.log(data);
+private normalizeEmployeeMandator(mandator: RawEmployeeMandator): EmployeeMandator {
+  const copy: RawEmployeeMandator = { ...mandator };
+  copy.email = mandator.email ?? mandator.emailAddress ?? "";
+  delete copy.emailAddress;
+  return copy as EmployeeMandator;
 }
+
 
 private normalizeMandatorEmail(m: RawEmployeeMandator): RawEmployeeMandator {
   const copy: any = { ...m };
