@@ -1,4 +1,5 @@
 //normalized version of CredentialProcedureDetailsResponse
+// todo: use generics
 export interface CredentialProcedureDetails {
   procedure_id: string;
   lifeCycleStatus: LifeCycleStatus;
@@ -18,7 +19,7 @@ export type CredentialStatusType = 'PlainListEntity';
 export type CredentialStatusPurpose = 'revocation';
 export type CredentialStatusListIndex = '<nonce>';
 
-
+// todo: use generics
 export interface LEARCredentialJwtPayload {
   sub: string | null;
   nbf: string;
@@ -33,6 +34,7 @@ export const CREDENTIAL_TYPES_ARRAY = ['LEARCredentialEmployee', 'LEARCredential
 export type CredentialType = typeof CREDENTIAL_TYPES_ARRAY[number];
 export type ExtendedCredentialType =  'VerifiableCredential' | CredentialType;
 
+// todo: use generics
 export type LEARCredential =
   | LEARCredentialEmployee
   | LEARCredentialMachine
