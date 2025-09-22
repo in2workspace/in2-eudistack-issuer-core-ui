@@ -54,7 +54,7 @@ export class CredentialActionsService {
 
   // REVOKE CREDENTIAL
 
-  public openRevokeCredentialDialog(credentialId: string, credentialList: string): void {
+  public openRevokeCredentialDialog(procedureId: string, credentialList: string): void {
 
     const dialogData: DialogData = {
       title: this.translate.instant("credentialDetails.revokeCredentialConfirm.title"),
@@ -63,8 +63,10 @@ export class CredentialActionsService {
       status: 'error'
     };
 
+
+
     const revokeCredentialAfterConfirm = (): Observable<boolean> => {
-      return this.revokeCredential(credentialId, credentialList);
+      return this.revokeCredential(procedureId, credentialList);
     }
     
     this.dialog.openDialogWithCallback(DialogComponent, dialogData, revokeCredentialAfterConfirm);
@@ -111,18 +113,18 @@ export class CredentialActionsService {
     return this.executeCredentialBackendAction(procedureId, action, titleKey, messageKey);
   }
 
-  private executeActionByCredentialId(
-    credentialId: string,
-    action: (credentialId: string) => Observable<void>,
+  private executeActionByCredentialProcedureId(
+    procedureId: string,
+    action: (procedureId: string) => Observable<void>,
     titleKey: string,
     messageKey: string
   ): Observable<boolean> {
-    if(!credentialId){
+    if(!procedureId){
       console.error("Couldn't get credential list from credential.");
       return EMPTY;
     }
   
-    return this.executeCredentialBackendAction(credentialId, action, titleKey, messageKey);
+    return this.executeCredentialBackendAction(procedureId, action, titleKey, messageKey);
   }
 
   private sendReminder(procedureId: string): Observable<boolean> {
@@ -143,11 +145,11 @@ export class CredentialActionsService {
     );
   }
 
-  private revokeCredential(credentialId: string, credentialList: string): Observable<boolean> {
+  private revokeCredential(procedureId: string, credentialList: string): Observable<boolean> {
    
-    return this.executeActionByCredentialId(
-      credentialId,
-      (credentialId) => this.credentialProcedureService.revokeCredential(credentialId, credentialList),
+    return this.executeActionByCredentialProcedureId(
+      procedureId,
+      (procedureId) => this.credentialProcedureService.revokeCredential(procedureId, credentialList),
       "credentialDetails.revokeCredentialSuccess.title",
       "credentialDetails.revokeCredentialSuccess.message"
     );

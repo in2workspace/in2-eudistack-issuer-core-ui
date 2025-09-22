@@ -86,8 +86,8 @@ export class CredentialProcedureService {
     );
   }
 
-  public revokeCredential(credentialId: string, listId: string): Observable<void>{
-    const body: CredentialRevokeRequestDto = { credentialId, listId };
+  public revokeCredential(procedureId: string, listId: string): Observable<void>{
+    const body: CredentialRevokeRequestDto = { procedureId, listId };
     return this.http.post<void>(this.revokeCredentialUrl, body).pipe(
       catchError(this.handleError)
     );
