@@ -1,4 +1,4 @@
-import { LEARCredential, EmployeeMandatee, Power, VerifiableCertification, Attester } from './../../../core/models/entity/lear-credential';
+import { LEARCredential, EmployeeMandatee, Power, VerifiableCertification, Attester, EmployeeMandator } from './../../../core/models/entity/lear-credential';
 
 // Interfaces for the raw JSON of Mandatee and Power
 interface RawEmployeeMandatee {
@@ -7,7 +7,12 @@ interface RawEmployeeMandatee {
   lastName?: string;
   last_name?: string;
   email?: string;
-  nationality?: string;
+  emailAddress?: string
+}
+
+interface RawEmployeeMandator {
+  email?: string;
+  emailAddress?: string
 }
 
 interface RawPower {
@@ -41,6 +46,8 @@ export class LEARCredentialDataNormalizer {
     this.normalizeMandateIfNeeded(normalized, isEmployee, isMachine);
     this.normalizeCertificationIfNeeded(normalized, isVerCert);
 
+    console.log("normalized")
+    console.log(normalized)
     return normalized;
   }
 
@@ -56,6 +63,9 @@ export class LEARCredentialDataNormalizer {
     sub.mandate = { ...sub.mandate };
     if (isEmployee && sub.mandate.mandatee) {
       sub.mandate.mandatee = this.normalizeEmployeeMandatee(sub.mandate.mandatee);
+    }
+    if(isEmployee && sub.mandate.mandator){
+      sub.mandate.mandator = this.normalizeEmployeeMandator(sub.mandate.mandator);
     }
     if (Array.isArray(sub.mandate.power)) {
       sub.mandate.power = sub.mandate.power.map((p: RawPower) => this.normalizePower(p));
@@ -74,12 +84,40 @@ export class LEARCredentialDataNormalizer {
   }
 
 private normalizeEmployeeMandatee(data: RawEmployeeMandatee): EmployeeMandatee {
+
   const firstName = data.firstName ?? data.first_name ?? "";
   const lastName  = data.lastName ?? data.last_name ?? "";
-  const email     = data.email ?? "";
-  const nationality = data.nationality ?? "";
+  const email = data.email ?? data.emailAddress ?? "";
 
-  return { firstName, lastName, email, nationality };
+  const copy = { ...data, firstName, lastName, email };
+  delete copy.first_name;
+  delete copy.last_name;
+  delete copy.emailAddress;
+
+  //todo remove
+  console.log("Nomalized employee mandatee");
+  console.log({ firstName, lastName, email });
+
+  return copy;
+}
+
+private normalizeEmployeeMandator(mandator: RawEmployeeMandator): EmployeeMandator {
+  const copy: RawEmployeeMandator = { ...mandator };
+  copy.email = mandator.email ?? mandator.emailAddress ?? "";
+  delete copy.emailAddress;
+  return copy as EmployeeMandator;
+}
+
+
+private normalizeMandatorEmail(m: RawEmployeeMandator): RawEmployeeMandator {
+  const copy: any = { ...m };
+
+  if (copy.email == null && typeof copy.emailAddress === 'string') {
+    copy.email = copy.emailAddress;
+  }
+  delete copy.emailAddress;
+
+  return copy;
 }
 
 private normalizePower(data: RawPower): Power {

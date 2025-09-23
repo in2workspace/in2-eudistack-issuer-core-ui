@@ -2,8 +2,9 @@ import { EmployeeMandator } from "src/app/core/models/entity/lear-credential";
 
 
 export const employeeMandatorFieldsOrder: Array<keyof EmployeeMandator> = [
+  "id",
   "commonName",
-  "emailAddress",
+  "email",
   "serialNumber",
   "organization",
   "organizationIdentifier",

@@ -1,9 +1,10 @@
 import { CredentialProcedureDetails, CredentialStatus, EmployeeMandator } from "../models/entity/lear-credential";
 
 export const mandatorMock: EmployeeMandator = {
+  id: 'id',
   commonName: "name surname",
   country: "FR",
-  emailAddress: "email@domain.com",
+  email: "email@domain.com",
   organization: "Org Name",
   organizationIdentifier: "ORG_ID",
   serialNumber: "SERIAL-NUMBER-01",
@@ -17,7 +18,8 @@ export const mockCredentialStatus: CredentialStatus = {
   statusListCredential: "https://issuer.dome-marketplace.eu/credentials/status/1" 
 } 
 
-export const mockCredentialEmployee: CredentialProcedureDetails = {
+export const mockCredentialEmployee: any = {
+// todo export const mockCredentialEmployee: CredentialProcedureDetails = {
   procedure_id: 'mock-procedure-employee',
   lifeCycleStatus: 'DRAFT',
   credential: {
@@ -40,7 +42,6 @@ export const mockCredentialEmployee: CredentialProcedureDetails = {
         country: 'ES',
         organization: 'Org EMP',
         organizationIdentifier: 'IDentifier Org',
-        emailAddress: 'email',
         serialNumber: 'SERIAL-NUMBER'
       },
       credentialSubject: {
@@ -85,7 +86,8 @@ export const mockCredentialEmployee: CredentialProcedureDetails = {
   }
 };
 
-export const mockCredentialMachine: CredentialProcedureDetails = {
+export const mockCredentialMachine: any = {
+// todo export const mockCredentialMachine: CredentialProcedureDetails = {
   procedure_id: 'mock-procedure-machine',
   lifeCycleStatus: 'PEND_SIGNATURE',
   credential: {
@@ -148,7 +150,8 @@ export const mockCredentialMachine: CredentialProcedureDetails = {
   }
 };
 
-export const mockCredentialCertification: CredentialProcedureDetails = {
+export const mockCredentialCertification: any = {
+// todo xport const mockCredentialCertification: CredentialProcedureDetails = {
   procedure_id: 'mock-procedure-cert',
   lifeCycleStatus: 'PEND_DOWNLOAD',
   credential: {

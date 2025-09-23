@@ -5,6 +5,7 @@ import { CredentialIssuanceTypedViewModelSchema, CredentialIssuanceSchemaProvide
 import { convertToOrderedArray, employeeMandatorFieldsOrder } from "../../helpers/fields-order-helpers";
 import { emailField, firstNameField, lastNameField, organizationField, organizationIdentifierField, serialNumberField } from "./common-issuance-schema-fields";
 import { IssuancePowerComponent } from "../../components/power/issuance-power.component";
+import { baseNameLengthValidatorEntries, nameValidatorEntries } from "src/app/shared/validators/credential-issuance/validators-entries";
 
 @Injectable({ providedIn: 'root' })
 export class LearCredentialEmployeeSchemaProvider implements CredentialIssuanceSchemaProvider<'LEARCredentialEmployee'> {
@@ -31,13 +32,7 @@ export class LearCredentialEmployeeSchemaProvider implements CredentialIssuanceS
             { ...firstNameField },
             { ...lastNameField },
             { ...emailField },
-            {
-              key:'nationality', 
-              type: 'control',
-              controlType: 'selector',
-              multiOptions: countriesSelectorOptions,
-              validators: [{ name: 'required' }]
-            },
+            { key: 'employeeId', type: 'control', controlType: 'text', validators: [...baseNameLengthValidatorEntries] }
           ],
         },
         // MANDATOR
@@ -56,7 +51,9 @@ export class LearCredentialEmployeeSchemaProvider implements CredentialIssuanceS
             {
               ...lastNameField
             },
-            { ...emailField, key: 'emailAddress' },
+            { ...emailField 
+              
+            },
             {
               ...serialNumberField
             },

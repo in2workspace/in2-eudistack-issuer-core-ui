@@ -9,6 +9,7 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { Router } from '@angular/router';
 import { LEARCredentialDataNormalizer } from 'src/app/features/credential-details/utils/lear-credential-data-normalizer';
 
+// todo restore auth.service.spec.ts
 @Injectable({
   providedIn: 'root'
 })
@@ -174,28 +175,32 @@ export class AuthService{
 
   private extractDataFromCertificate(userData: UserDataAuthenticationResponse): EmployeeMandator {
     return {
+        id: userData.id,
         organizationIdentifier: userData.organizationIdentifier,
         organization: userData.organization,
         commonName: userData.name,
-        emailAddress: userData?.email ?? '',
+        email: userData?.email ?? '',
         serialNumber: userData?.serial_number ?? '',
         country: userData.country
       }
   }
 
   private handleVCLogin(learCredential: LEARCredentialEmployee): void {
+    console.log("handleVCLogin");
+    console.log(learCredential);
     const mandator = {
+      id: learCredential.credentialSubject.mandate.mandator.id,
       organizationIdentifier: learCredential.credentialSubject.mandate.mandator.organizationIdentifier,
       organization: learCredential.credentialSubject.mandate.mandator.organization,
       commonName: learCredential.credentialSubject.mandate.mandator.commonName,
-      emailAddress: learCredential.credentialSubject.mandate.mandator.emailAddress,
+      email: learCredential.credentialSubject.mandate.mandator.email,
       serialNumber: learCredential.credentialSubject.mandate.mandator.serialNumber,
       country: learCredential.credentialSubject.mandate.mandator.country
     };
     
     this.mandatorSubject.next(mandator);
   
-    const emailName = learCredential.credentialSubject.mandate.mandator.emailAddress.split('@')[0];
+    const emailName = learCredential.credentialSubject.mandate.mandator.email.split('@')[0];
     const name = learCredential.credentialSubject.mandate.mandatee.firstName + ' ' + learCredential.credentialSubject.mandate.mandatee.lastName;
   
     this.emailSubject.next(emailName);
@@ -225,6 +230,8 @@ export class AuthService{
   public getMandator(): Observable<EmployeeMandator | null> {
     return this.mandatorSubject.asObservable();
   }
+
+  //todo maybe rename (i.e. getPlainMandator), since "Raw" is being used for unnormalized VC/fields
   public getRawMandator(): EmployeeMandator | null {
     return this.mandatorSubject.getValue();
   }

@@ -162,9 +162,10 @@ export class CredentialDetailsService {
       this.dialog.openErrorInfoDialog(DialogComponent, 'error.unknown_error');
       return;
     }
-    const credentialId = this.getCredentialId();
-    if(!credentialId){
-      console.error("Couldn't get credential id from vc.");
+
+    const procedureId = this.credentialProcedureDetails$()?.procedure_id;
+    if(!procedureId){
+      console.error("Couldn't get procedure id from vc.");
       this.dialog.openErrorInfoDialog(DialogComponent, 'error.unknown_error');
       return;
     }
@@ -174,7 +175,7 @@ export class CredentialDetailsService {
       this.dialog.openErrorInfoDialog(DialogComponent, 'error.unknown_error');
       return;
     }
-    return this.actionsService.openRevokeCredentialDialog(credentialId, listId);
+    return this.actionsService.openRevokeCredentialDialog(procedureId, listId);
   }
 
   private getProcedureId(): string{
@@ -183,10 +184,6 @@ export class CredentialDetailsService {
 
   private getCredential(): LEARCredential | undefined{
     return this.credentialProcedureDetails$()?.credential?.vc;
-  }
-
-  private getCredentialId(): string | undefined {
-    return this.getCredential()?.id;
   }
 
   private getCredentialListId(): string {

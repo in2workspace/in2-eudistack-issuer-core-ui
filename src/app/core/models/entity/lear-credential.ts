@@ -1,4 +1,5 @@
 //normalized version of CredentialProcedureDetailsResponse
+// todo: use generics
 export interface CredentialProcedureDetails {
   procedure_id: string;
   lifeCycleStatus: LifeCycleStatus;
@@ -18,7 +19,7 @@ export type CredentialStatusType = 'PlainListEntity';
 export type CredentialStatusPurpose = 'revocation';
 export type CredentialStatusListIndex = '<nonce>';
 
-
+// todo: use generics
 export interface LEARCredentialJwtPayload {
   sub: string | null;
   nbf: string;
@@ -33,6 +34,7 @@ export const CREDENTIAL_TYPES_ARRAY = ['LEARCredentialEmployee', 'LEARCredential
 export type CredentialType = typeof CREDENTIAL_TYPES_ARRAY[number];
 export type ExtendedCredentialType =  'VerifiableCredential' | CredentialType;
 
+// todo: use generics
 export type LEARCredential =
   | LEARCredentialEmployee
   | LEARCredentialMachine
@@ -90,7 +92,6 @@ export type CommonIssuer = string | {
   organization: string;
   country: string;
   commonName: string;
-  emailAddress: string;
   serialNumber: string;
 }
 
@@ -119,14 +120,15 @@ export interface LEARCredentialEmployee {
 
 export interface EmployeeMandatee {
   id?: string;
+  employeeId?: string;
   email: string;
   firstName: string;
   lastName: string;
   mobile_phone?: string;
-  nationality: string;
 }
 export interface EmployeeMandator extends CommonMandatorFields {
-  emailAddress: string;
+  id: string;
+  email: string;
 }
 export interface EmployeeSigner extends CommonSigner {}
 

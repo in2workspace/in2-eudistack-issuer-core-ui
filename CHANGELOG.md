@@ -22,8 +22,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - When opening credentials search bar, automatically select input box so user can write directly in it.
 
 ### Changed
+- LEARCredentialEmployee model (mandator, mandatee, power).
 - Normalize displayed texts from "LEARCredentialX" to "LEAR Credential X" across UI labels.
-- Update api-path-constants endpoints
+- Update api-path-constants endpoints.
+- Issuer field can be string or object.
 
 ## [1.13.1](https://github.com/in2workspace/in2-issuer-ui/releases/tag/v1.13.1)
 ### Fixed

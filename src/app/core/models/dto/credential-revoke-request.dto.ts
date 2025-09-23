@@ -1,4 +1,4 @@
 export interface CredentialRevokeRequestDto {
-    credentialId: string,
+    procedureId: string,
     listId: string
 }
