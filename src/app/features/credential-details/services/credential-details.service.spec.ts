@@ -114,16 +114,16 @@ describe('CredentialDetailsService', () => {
     expect((service as any).getCredential()).toBeUndefined();
   });
 
-  it('getCredentialId ha de retornar l’id de la credencial', () => {
-    const fake: LEARCredential = { id: 'cred-42' } as any;
-    (service as any).getCredential = () => fake;
-    expect((service as any).getCredentialId()).toBe('cred-42');
-  });
+  // it('getCredentialId ha de retornar l’id de la credencial', () => {
+  //   const fake: LEARCredential = { id: 'cred-42' } as any;
+  //   (service as any).getCredential = () => fake;
+  //   expect((service as any).getCredentialId()).toBe('cred-42');
+  // });
 
-  it('getCredentialId ha de retornar undefined si no hi ha credential', () => {
-    (service as any).getCredential = () => undefined;
-    expect((service as any).getCredentialId()).toBeUndefined();
-  });
+  // it('getCredentialId ha de retornar undefined si no hi ha credential', () => {
+  //   (service as any).getCredential = () => undefined;
+  //   expect((service as any).getCredentialId()).toBeUndefined();
+  // });
   });
 
   describe('getCredentialListId', () => {

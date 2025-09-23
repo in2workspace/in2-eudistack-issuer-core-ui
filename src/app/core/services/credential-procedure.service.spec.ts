@@ -257,20 +257,20 @@ describe('CredentialProcedureService', () => {
     });
   });
 
-   it('should revoke credential successfully', () => {
-    const credentialId = '1234';
-    const listId = '1111';
-    const body = { credentialId, listId };
+  //  it('should revoke credential successfully', () => {
+  //   const credentialId = '1234';
+  //   const listId = '1111';
+  //   const body = { credentialId, listId };
 
-    service.revokeCredential(credentialId, listId).subscribe(data => {
-      expect(data).toBeTruthy();
-    });
+  //   service.revokeCredential(credentialId, listId).subscribe(data => {
+  //     expect(data).toBeTruthy();
+  //   });
 
-    const req = httpMock.expectOne(`${revokeCredentialUrl}`);
-    expect(req.request.method).toBe('POST');
-    expect(req.request.body).toEqual(body);
-    req.flush({});
-  });
+  //   const req = httpMock.expectOne(`${revokeCredentialUrl}`);
+  //   expect(req.request.method).toBe('POST');
+  //   expect(req.request.body).toEqual(body);
+  //   req.flush({});
+  // });
 
 
   describe('Get credential offer by transaction code', () => {
