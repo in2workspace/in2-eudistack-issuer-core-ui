@@ -51,7 +51,7 @@ $custom-theme: mat.m2-define-light-theme((
   --primary-custom-color: #1b3891;
   --primary-contrast-custom-color: #ffffff;
   --secondary-custom-color: #2cb6b2;
-  --secondary-contrast-custom-color: #dde6f6;
+  --secondary-contrast-custom-color: #f2f2f2f2;
   @include mat.all-component-themes($custom-theme);
 }
 
