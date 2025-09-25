@@ -4,21 +4,21 @@
   "copy": "Copy",
   "copied": "Copied",
   "verifiable-credential": "Verifiable Credential",
-  "dome-wallet": "DOME Wallet",
+  "dome-wallet": "Wallet",
   "home": {
-    "title": "Welcome to the DOME Issuer for LEAR Credentials",
+    "title": "Welcome to the Issuer for LEAR Credentials",
     "learn-more": "Learn more",
     "scroll": "Scroll to see more",
     "intro-main": "This site is intended for Legal Representatives of companies who want to issue one or more LEAR Credentials to one or more employees of the company. A LEAR Credential is a type of Verifiable Credential which enables an employee, nominated by a legal representative, to act on behalf of an organisation with restricted power with respect to third-parties.",
     "intro-first": "The issuer of the LEAR Credential <strong>must be a legal representative</strong> of the company. The legal representative will sign the LEAR Credential with an eIDAS digital certificate, which can be either a personal one or a certificate of representation.",
     "intro-second": "The receiver of the LEARC redential (both the subject and holder of the credential) <strong>can be any employee (or contractor)</strong> of the company. The legal representative will delegate a restricted set of power to that person. Those restricted power are included inside the credential and can be verified by any Relying party to whom the holder presents the LEAR Credential.",
-    "legal-first": "You must be a legal representative of the company, to be able to delegate the restricted power required for DOME.",
+    "legal-first": "You must be a legal representative of the company, to be able to delegate the restricted power.",
     "legal-second": "You need an eIDAS certificate to be able to use the system. In additionyou will have to register your company email.",
     "legal-third": "Note: if you are reading this in your mobile, most probably the button will not work, unless you have installed your eIDAS certificate in the mobile. You typically need to use a PC, with the certificate installed in the browser.",
     "login-btn": "Login as Legal Representative",
     "obtain-wallet-title": "Obtain your wallet",
-    "obtain-wallet-intro": "You need a wallet to store your LEAR Credentials and present them to Relaying parties like DOME Marketplace.",
-    "obtain-wallet-detail": "DOME provides a simple wallet enough for authenticating to the DOME Marketplace and performing all needed processes.",
+    "obtain-wallet-intro": "You need a wallet to store your LEAR Credentials and present them to Relaying parties like the Catalog.",
+    "obtain-wallet-detail": "We provide a simple wallet enough for authenticating to the Marketplace and performing all needed processes.",
     "wallet-instructions": "Scan this QR code or go in your mobile to",
     "footer-license": "CC BY 4.0",
     "footer-privacy": "Privacy Policy"
@@ -157,7 +157,7 @@
     "ask-refresh": "Credential offer is about to expire. Would you like to refresh it or leave? If it expires, you will need to request a new one from your legal representative.",
     "remaining-time": "Time remaining:",
     "first-step": {
-      "title": "Scan the QR code to log in and access the DOME Wallet.",
+      "title": "Scan the QR code to log in and access the Wallet.",
       "test-purposes": "For tests purposes, access the "
     },
     "second-step": {
