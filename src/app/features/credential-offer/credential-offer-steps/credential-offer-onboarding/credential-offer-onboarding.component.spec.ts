@@ -51,7 +51,7 @@ describe('CredentialOfferOnboardingComponent', () => {
     expect(component.walletUsersGuideUrl).toBe(expectedGuideUrl);
   });
 
-  it('should set the QR color to "#2d58a7"', () => {
-    expect(component.qrColor).toBe('#2d58a7');
+  it('should set the QR color to "#1b3891"', () => {
+    expect(component.qrColor).toBe('#1b3891');
   });
 });
