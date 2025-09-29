@@ -13,7 +13,7 @@ import { KNOWLEDGEBASE_PATH } from 'src/app/core/constants/knowledge.constants';
 })
 export class CredentialOfferComponent{
   @Output() public refreshCredential = new EventEmitter<void>();
-  public qrColor = "#1b3891";
+  public qrColor = "#B88EFF";
   public walletUsersGuideUrl = environment.knowledge_base_url + KNOWLEDGEBASE_PATH.WALLET;
   public credentialOfferUri$ = input.required<string>();
 

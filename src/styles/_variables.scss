@@ -1,8 +1,8 @@
 //DOME colors
-$Blue: #1b3891;
-$Light-Blue-Primary: #40a2d0;
-$Dark-Blue: #444444;
-$Light-Blue-Secondary: #f2f2f2f2;
+$Blue: #B88EFF;
+$Light-Blue-Primary: #76F276;
+$Dark-Blue: #000000; //main footer
+$Light-Blue-Secondary: #F9F3E7;
 $White: #ffffff;
 
 //App colors
@@ -11,15 +11,15 @@ $cancel: rgba(0, 0, 0, 0.12);
 //Palette with DOME blue, used as primary palette in Angular Material components
 $custom-palette: (
   50: #e5edf9,
-  100: #cad9f3,
-  200: #9cb8eb,
-  300: #7097e2,
-  400: #4a75d3,
-  500: #1b3891,
-  600: #25468b,
-  700: #1d3673,
-  800: #162a5b,
-  900: #0f1d40,
+  100: #d2bafd,
+  200: #cdb1fd,
+  300: #c09efc,
+  400: #B88EFF,
+  500: #bd9bf9,
+  600: #ae80fc,
+  700: #a06bfd,
+  800: #9a5fff,
+  900: #9050ff,
   A100: #cad9f3,
   A200: #9cb8eb,
   A400: #4a75d3,

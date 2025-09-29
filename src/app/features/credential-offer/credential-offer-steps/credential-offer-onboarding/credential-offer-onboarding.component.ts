@@ -12,7 +12,7 @@ import { KNOWLEDGEBASE_PATH } from 'src/app/core/constants/knowledge.constants';
   styleUrl: './credential-offer-onboarding.component.scss'
 })
 export class CredentialOfferOnboardingComponent{
-  public qrColor = "#1b3891";
+  public qrColor = "#B88EFF";
   public walletUsersGuideUrl = environment.knowledge_base_url + KNOWLEDGEBASE_PATH.WALLET;
 
   public walletUrl = environment.wallet_url || 'https://wallet.dome-marketplace.eu/';

@@ -48,10 +48,10 @@ $custom-theme: mat.m2-define-light-theme((
   --Dark-Blue: #{$Dark-Blue};
   --Light-Blue-Secondary: #{$Light-Blue-Secondary};
   --white: #{$White};
-  --primary-custom-color: #1b3891;
-  --primary-contrast-custom-color: #ffffff;
-  --secondary-custom-color: #2cb6b2;
-  --secondary-contrast-custom-color: #f2f2f2f2;
+  --primary-custom-color: #B88EFF;
+  --primary-contrast-custom-color: #000000
+  --secondary-custom-color: #76F276;
+  --secondary-contrast-custom-color: #F9F3E7;
   @include mat.all-component-themes($custom-theme);
 }
 
