@@ -7,7 +7,7 @@ import { DynamicFieldComponent } from '../dynamic-field/dynamic-field.component'
 import { FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { TitleCasePipe, KeyValuePipe, CommonModule } from '@angular/common';
 import { TranslatePipe } from '@ngx-translate/core';
-import { ActivatedRoute, CanDeactivate } from '@angular/router';
+import { ActivatedRoute, CanDeactivate, RouterLink } from '@angular/router';
 import { MatCard, MatCardContent } from '@angular/material/card';
 import { CanComponentDeactivate, CanDeactivateType } from 'src/app/core/guards/can-component-deactivate.guard';
 import { CredentialIssuanceService } from '../../services/credential-issuance.service';
@@ -22,7 +22,7 @@ import { CredentialIssuanceViewModelSchemaWithId, IssuanceCredentialType, Issuan
   selector: 'app-credential-issuance',
   standalone: true,
   providers: [CredentialIssuanceService],
-  imports: [CommonModule, KeyValuePipe, ReactiveFormsModule, DynamicFieldComponent, MatButton, MatCard, MatCardContent, MatFormField, MatLabel, MatOption, MatSelect, TitleCasePipe, TranslatePipe],
+  imports: [CommonModule, KeyValuePipe, ReactiveFormsModule, DynamicFieldComponent, MatButton, MatCard, MatCardContent, MatFormField, MatLabel, MatOption, MatSelect, RouterLink, TitleCasePipe, TranslatePipe],
   templateUrl: './credential-issuance.component.html',
   styleUrl: './credential-issuance.component.scss'
 })
