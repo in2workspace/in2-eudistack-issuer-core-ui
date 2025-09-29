@@ -87,7 +87,7 @@
 
       .btn-primary {
         background-color: $Light-Blue-Primary;
-        color: #fff;
+        color: $Dark-Blue;
         padding: 0.5rem 1rem;
         font-size: 1rem;
         border-radius: 0.375rem;
@@ -173,8 +173,8 @@
           align-items: center;
           justify-content: center;
           text-align: center;
-          background-color: #ffa630;
-          color: black;
+          background-color: $Light-Blue-Primary;
+          color: $Dark-Blue;
           padding: 0.5rem 1rem;
           border-radius: 0.375rem;
           text-decoration: none;
