@@ -46,8 +46,6 @@ export class LEARCredentialDataNormalizer {
     this.normalizeMandateIfNeeded(normalized, isEmployee, isMachine);
     this.normalizeCertificationIfNeeded(normalized, isVerCert);
 
-    console.log("normalized")
-    console.log(normalized)
     return normalized;
   }
 
@@ -93,10 +91,6 @@ private normalizeEmployeeMandatee(data: RawEmployeeMandatee): EmployeeMandatee {
   delete copy.first_name;
   delete copy.last_name;
   delete copy.emailAddress;
-
-  //todo remove
-  console.log("Nomalized employee mandatee");
-  console.log({ firstName, lastName, email });
 
   return copy;
 }
