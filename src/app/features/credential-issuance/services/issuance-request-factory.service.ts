@@ -20,6 +20,8 @@ export class IssuanceRequestFactoryService {
       credentialType: IssuanceCredentialType): IssuanceLEARCredentialRequestDto{
         const payload = this.createCredentialRequestPayload(credentialData, credentialType);
         const credentialOwnerEmail = this.getCredentialOwnerEmail(credentialData, credentialType);
+        console.log("credentialOwnerEmail");
+        console.log(credentialOwnerEmail);
         return this.buildRequestDto(credentialType, payload, credentialOwnerEmail);
       }
 

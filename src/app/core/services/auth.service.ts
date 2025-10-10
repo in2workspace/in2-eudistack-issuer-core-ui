@@ -279,6 +279,8 @@ export class AuthService{
   }
 
   public getMandateeEmail(): string {
+    console.log('getMandateeEmail');
+    console.log(this.mandateeEmailSubject.getValue());
     return this.mandateeEmailSubject.getValue();
   }
 
