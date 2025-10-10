@@ -35,7 +35,6 @@ describe('CredentialManagementComponent', () => {
   beforeEach(async () => {
     authService = {
       getMandator: () => of(null),
-      getEmailName: () => of('User Name'),
       getName: () => of('Name'),
       getToken: () => of('token'),
       logout: () => of(void 0),

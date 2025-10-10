@@ -258,9 +258,8 @@ export class CredentialIssuanceService {
     credentialType: IssuanceCredentialType,
   ): IssuanceLEARCredentialRequestDto{
    
-    const payload: IssuanceLEARCredentialPayload = this.buildRequestPayload(credentialData, credentialType);
-    const request: IssuanceLEARCredentialRequestDto = this.buildRequestDto(credentialType, payload);
-    return request;
+    return this.buildRequestDto(credentialData, credentialType);
+    
   }
 
 
@@ -269,17 +268,8 @@ export class CredentialIssuanceService {
     return factory ? factory(...(entry.args ?? [])) : null;
   }
 
-  private buildRequestPayload(credentialData: IssuanceRawCredentialPayload, credentialType: IssuanceCredentialType): IssuanceLEARCredentialPayload{
+  private buildRequestDto(credentialData: IssuanceRawCredentialPayload, credentialType: IssuanceCredentialType): IssuanceLEARCredentialRequestDto{
     return this.credentialRequestFactory.createCredentialRequest(credentialData, credentialType);
-  }
-
-  private buildRequestDto(credType:IssuanceCredentialType, payload: IssuanceLEARCredentialPayload): IssuanceLEARCredentialRequestDto{
-    return {
-      schema: credType,
-      format: "jwt_vc_json",
-      payload: payload,
-      operation_mode: "S"
-    }
   }
 
   private sendCredentialRequest(credentialPayload: IssuanceLEARCredentialRequestDto): Observable<void>{

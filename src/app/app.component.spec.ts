@@ -15,9 +15,6 @@ describe('AppComponent', () => {
 
   mockAuthService = {
     getMandator: () => of(null),
-    getEmailName() {
-      return of('User Name');
-    },
     getName() {
       return of('Name');
     },
