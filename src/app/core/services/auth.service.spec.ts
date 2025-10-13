@@ -172,7 +172,7 @@ describe('AuthService', () => {
   });
 
   // --------------------------------------------------------------------------
-  // creació / login / logout bàsic
+  // creation / login / basic logout
   // --------------------------------------------------------------------------
   it('hauria de crear-se', () => {
     expect(service).toBeTruthy();
@@ -189,7 +189,7 @@ describe('AuthService', () => {
   });
 
   // --------------------------------------------------------------------------
-  // observables inicials
+  // initial observables
   // --------------------------------------------------------------------------
   it('isLoggedIn() inicialment false', (done) => {
     service.isLoggedIn().subscribe(v => {
@@ -611,7 +611,7 @@ it('omple el correu del mandatee després de handleUserAuthentication()', () => 
   });
 
   // --------------------------------------------------------------------------
-  // helpers privats
+  // private helpers
   // --------------------------------------------------------------------------
   it('extractVCFromUserData retorna vc si present', () => {
     const result = (service as any).extractVCFromUserData(mockUserDataWithVC);

@@ -2,7 +2,7 @@ import { toObservable, toSignal } from '@angular/core/rxjs-interop';
 import { computed, inject, Injectable, Signal, signal, WritableSignal } from '@angular/core';
 import { AbstractControl, FormControl, FormGroup } from '@angular/forms';
 import { CredentialProcedureService } from 'src/app/core/services/credential-procedure.service';
-import { IssuanceLEARCredentialPayload, IssuanceLEARCredentialRequestDto } from 'src/app/core/models/dto/lear-credential-issuance-request.dto';
+import { IssuanceLEARCredentialRequestDto } from 'src/app/core/models/dto/lear-credential-issuance-request.dto';
 import { IssuanceRequestFactoryService } from './issuance-request-factory.service';
 import { EMPTY, from, map, Observable, of, startWith, switchMap, tap } from 'rxjs';
 import { IssuanceSchemaBuilder } from './issuance-schema-builders/issuance-schema-builder';

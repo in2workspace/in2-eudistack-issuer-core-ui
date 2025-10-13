@@ -20,18 +20,8 @@ export class IssuanceRequestFactoryService {
       credentialType: IssuanceCredentialType): IssuanceLEARCredentialRequestDto{
         const payload = this.createCredentialRequestPayload(credentialData, credentialType);
         const credentialOwnerEmail = this.getCredentialOwnerEmail(credentialData, credentialType);
-        console.log("credentialOwnerEmail");
-        console.log(credentialOwnerEmail);
         return this.buildRequestDto(credentialType, payload, credentialOwnerEmail);
       }
-
-    private getCredentialOwnerEmail(credentialData: IssuanceRawCredentialPayload, 
-    credentialType: IssuanceCredentialType): string | undefined{
-      if(credentialType === 'LEARCredentialMachine' && !credentialData.asSigner){
-        return this.authService.getMandateeEmail();
-      }
-      return undefined;
-    }
 
   public createCredentialRequestPayload(
       credentialData: IssuanceRawCredentialPayload, 
@@ -103,8 +93,7 @@ export class IssuanceRequestFactoryService {
     const mandatorEmail = mandator['email'];
 
     const didKey = credentialData.formData['keys']['didKey'];
-    const credentialEmailOwner = credentialData.asSigner ? undefined : this.authService.getMandateeEmail();
-
+    
     // Payload
     const payload: IssuanceLEARCredentialMachinePayload =    
       {
@@ -125,6 +114,14 @@ export class IssuanceRequestFactoryService {
       power: parsedPower
     }
     return payload;
+  }
+
+  private getCredentialOwnerEmail(credentialData: IssuanceRawCredentialPayload, 
+    credentialType: IssuanceCredentialType): string | undefined{
+      if(credentialType === 'LEARCredentialMachine' && !credentialData.asSigner){
+        return this.authService.getMandateeEmail();
+      }
+      return undefined;
   }
 
   private buildDidElsi(orgId: string): string{
