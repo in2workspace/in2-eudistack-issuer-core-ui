@@ -5,19 +5,32 @@ import {
   IssuanceLEARCredentialMachinePayload
 } from '../../../core/models/dto/lear-credential-issuance-request.dto';
 import { IssuanceRawCredentialPayload, IssuanceRawPowerForm } from 'src/app/core/models/entity/lear-credential-issuance';
+import { AuthService } from 'src/app/core/services/auth.service';
 
 describe('IssuanceRequestFactoryService', () => {
   let service: IssuanceRequestFactoryService;
 
+  const authServiceMock = {
+    getMandateeEmail: jest.fn(() => 'mandatee@example.com')
+  };
+
   beforeEach(() => {
     TestBed.configureTestingModule({
-      providers: [IssuanceRequestFactoryService]
+      providers: [
+        IssuanceRequestFactoryService,
+        { provide: AuthService, useValue: authServiceMock }
+      ]
     });
+
     service = TestBed.inject(IssuanceRequestFactoryService);
 
     jest.spyOn(console, 'error').mockImplementation(() => {});
     jest.spyOn(console, 'log').mockImplementation(() => {});
+  });
+
+  afterEach(() => {
     jest.clearAllMocks();
+    jest.restoreAllMocks();
   });
 
   it('should be created', () => {
@@ -34,49 +47,6 @@ describe('IssuanceRequestFactoryService', () => {
     expect(() => service.createCredentialRequest(payload, 'UNKNOWN' as any))
       .toThrow(TypeError);
   });
-
-  //todo test
-  //  it('should create employee request with fallback commonName and VAT prefix', () => {
-  //   const credentialData: any = {
-  //     asSigner: true,
-  //     formData: {
-  //       power: { Onboarding: { Execute: true } },
-  //       mandator: {
-  //         emailAddress: 'alice@example.com',
-  //         organization: 'ACME Corp',
-  //         country: 'ES',
-  //         firstName: 'Alice',
-  //         lastName: 'Smith',
-  //         serialNumber: 'SN123',
-  //         organizationIdentifier: '12345'
-  //       },
-  //       mandatee: { id: 'M1', domain: 'example.com' }
-  //     }
-  //   };
-
-  //   const result = service.createCredentialRequest(credentialData, 'LEARCredentialEmployee');
-  //   const emp = result as IssuanceLEARCredentialEmployeePayload;
-
-  //   expect(emp).toEqual({
-  //     mandator: {
-  //       emailAddress: 'alice@example.com',
-  //       organization: 'ACME Corp',
-  //       country: 'ES',
-  //       commonName: 'Alice Smith',
-  //       serialNumber: 'SN123',
-  //       organizationIdentifier: 'VATES-12345'
-  //     },
-  //     mandatee: { id: 'M1', domain: 'example.com' },
-  //     power: [
-  //       {
-  //         type: 'domain',
-  //         domain: 'DOME',
-  //         function: 'Onboarding',
-  //         action: ['Execute']
-  //       }
-  //     ]
-  //   });
-  // });
 
   it('should use provided commonName and keep VAT prefix for employee', () => {
     const credentialData: any = {
@@ -96,7 +66,7 @@ describe('IssuanceRequestFactoryService', () => {
     };
 
     const result = service.createCredentialRequest(credentialData, 'LEARCredentialEmployee');
-    const emp = result as IssuanceLEARCredentialEmployeePayload;
+    const emp = result.payload as IssuanceLEARCredentialEmployeePayload;
 
     expect(emp.mandator.commonName).toBe('Beta Common');
     expect(emp.mandator.organizationIdentifier).toBe('VATFR-999');
@@ -121,9 +91,10 @@ describe('IssuanceRequestFactoryService', () => {
     };
 
     const result = service.createCredentialRequest(credentialData, 'LEARCredentialMachine');
-    const mach = result as IssuanceLEARCredentialMachinePayload;
+    const mach = result.payload as IssuanceLEARCredentialMachinePayload;
 
-    expect(mach).toEqual({
+    // Acceptem camps extra (p. ex. email: undefined) amb toMatchObject
+    expect(mach).toMatchObject({
       mandator: {
         commonName: 'Eve Doe',
         serialNumber: 'S246',
@@ -166,7 +137,7 @@ describe('IssuanceRequestFactoryService', () => {
     };
 
     const result = service.createCredentialRequest(credentialData, 'LEARCredentialMachine');
-    const mach = result as IssuanceLEARCredentialMachinePayload;
+    const mach = result.payload as IssuanceLEARCredentialMachinePayload;
 
     expect(mach.mandator.commonName).toBe('MachineCo');
     expect(mach.mandator.id).toBe('did:elsi:VATDE-555');
