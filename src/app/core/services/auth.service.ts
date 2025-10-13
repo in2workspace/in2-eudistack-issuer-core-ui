@@ -198,7 +198,7 @@ export class AuthService{
     
     this.mandatorSubject.next(mandator);
   
-    const email = learCredential.credentialSubject.mandate.mandatee.email.split('@')[0];
+    const email = learCredential.credentialSubject.mandate.mandatee.email;
     const name = learCredential.credentialSubject.mandate.mandatee.firstName + ' ' + learCredential.credentialSubject.mandate.mandatee.lastName;
   
     this.mandateeEmailSubject.next(email);
