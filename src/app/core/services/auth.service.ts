@@ -19,7 +19,7 @@ export class AuthService{
   private readonly userDataSubject = new BehaviorSubject<UserDataAuthenticationResponse |null>(null);
   private readonly tokenSubject = new BehaviorSubject<string>('');
   private readonly mandatorSubject = new BehaviorSubject<EmployeeMandator | null>(null);
-  private readonly emailSubject = new BehaviorSubject<string>('');
+  private readonly mandateeEmailSubject = new BehaviorSubject<string>('');
   private readonly nameSubject = new BehaviorSubject<string>('');
   private readonly normalizer = new LEARCredentialDataNormalizer();
   public readonly roleType: WritableSignal<RoleType> = signal(RoleType.LEAR);
@@ -198,10 +198,10 @@ export class AuthService{
     
     this.mandatorSubject.next(mandator);
   
-    const emailName = learCredential.credentialSubject.mandate.mandator.email.split('@')[0];
+    const email = learCredential.credentialSubject.mandate.mandatee.email;
     const name = learCredential.credentialSubject.mandate.mandatee.firstName + ' ' + learCredential.credentialSubject.mandate.mandatee.lastName;
   
-    this.emailSubject.next(emailName);
+    this.mandateeEmailSubject.next(email);
     this.nameSubject.next(name);
     this.userPowers = this.extractUserPowers(learCredential);
   }
@@ -278,8 +278,8 @@ export class AuthService{
     return this.userDataSubject.asObservable();
   }
 
-  public getEmailName(): Observable<string> {
-    return this.emailSubject.asObservable();
+  public getMandateeEmail(): string {
+    return this.mandateeEmailSubject.getValue();
   }
 
   public getToken(): Observable<string> {

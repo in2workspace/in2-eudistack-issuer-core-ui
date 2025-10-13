@@ -2,7 +2,7 @@ import { toObservable, toSignal } from '@angular/core/rxjs-interop';
 import { computed, inject, Injectable, Signal, signal, WritableSignal } from '@angular/core';
 import { AbstractControl, FormControl, FormGroup } from '@angular/forms';
 import { CredentialProcedureService } from 'src/app/core/services/credential-procedure.service';
-import { IssuanceLEARCredentialPayload, IssuanceLEARCredentialRequestDto } from 'src/app/core/models/dto/lear-credential-issuance-request.dto';
+import { IssuanceLEARCredentialRequestDto } from 'src/app/core/models/dto/lear-credential-issuance-request.dto';
 import { IssuanceRequestFactoryService } from './issuance-request-factory.service';
 import { EMPTY, from, map, Observable, of, startWith, switchMap, tap } from 'rxjs';
 import { IssuanceSchemaBuilder } from './issuance-schema-builders/issuance-schema-builder';
@@ -258,9 +258,8 @@ export class CredentialIssuanceService {
     credentialType: IssuanceCredentialType,
   ): IssuanceLEARCredentialRequestDto{
    
-    const payload: IssuanceLEARCredentialPayload = this.buildRequestPayload(credentialData, credentialType);
-    const request: IssuanceLEARCredentialRequestDto = this.buildRequestDto(credentialType, payload);
-    return request;
+    return this.buildRequestDto(credentialData, credentialType);
+    
   }
 
 
@@ -269,17 +268,8 @@ export class CredentialIssuanceService {
     return factory ? factory(...(entry.args ?? [])) : null;
   }
 
-  private buildRequestPayload(credentialData: IssuanceRawCredentialPayload, credentialType: IssuanceCredentialType): IssuanceLEARCredentialPayload{
+  private buildRequestDto(credentialData: IssuanceRawCredentialPayload, credentialType: IssuanceCredentialType): IssuanceLEARCredentialRequestDto{
     return this.credentialRequestFactory.createCredentialRequest(credentialData, credentialType);
-  }
-
-  private buildRequestDto(credType:IssuanceCredentialType, payload: IssuanceLEARCredentialPayload): IssuanceLEARCredentialRequestDto{
-    return {
-      schema: credType,
-      format: "jwt_vc_json",
-      payload: payload,
-      operation_mode: "S"
-    }
   }
 
   private sendCredentialRequest(credentialPayload: IssuanceLEARCredentialRequestDto): Observable<void>{
