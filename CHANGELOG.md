@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 - When issuing LEARCredentialMachine as not-signer, set credential_owner_email with the mandatee email of the vc in the access token.
+- Change "as Signer" for "(on behalf)" in Management page button.
 
 ### Fixed
 - Label "engineVersion" in credential details page.
