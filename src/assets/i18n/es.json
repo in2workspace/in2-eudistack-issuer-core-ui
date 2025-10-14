@@ -179,7 +179,7 @@
     "updated": "Actualizado",
     "cancel": "Cancelar",
     "create" : "Crear Credencial",
-    "buttonAdmin":"Nueva Credencial como Signer",
+    "buttonAdmin":"Nueva Credencial (en nombre de)",
     "search": "Busca por Sujeto",
     "searchPlaceholder": "Joe Doe"
   },
