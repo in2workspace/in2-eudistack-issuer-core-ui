@@ -26,15 +26,16 @@ public readonly showNavbar$ = toSignal(this.router.events.pipe(
 ));
 
 public constructor(){
-    this.setLanguage();
+    this.setLanguages();
     this.setCustomColors();
     this.setFavicon();
  }
 
- private setLanguage(){
-  const lang = 'en';
-  this.translate.setDefaultLang(lang);
-  this.translate.use(lang);
+ private setLanguages(){
+  const defaultLanguage = 'en';
+  this.translate.addLangs(['en', 'es', 'ca']);
+  this.translate.setDefaultLang(defaultLanguage);
+  this.translate.use(defaultLanguage);
  }
 
  private setCustomColors(){

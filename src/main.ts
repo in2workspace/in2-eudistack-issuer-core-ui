@@ -9,7 +9,7 @@ import { AuthInterceptor, AuthModule } from 'angular-auth-oidc-client';
 import { HTTP_INTERCEPTORS, HttpClient } from '@angular/common/http';
 import { RouterModule } from "@angular/router";
 import { routes } from "./app/app-routing";
-import { HttpLoaderFactory } from "./app/core/services/translate-http-loader.factory";
+import { httpTranslateLoader } from "./app/core/services/translate-http-loader.factory";
 import { overrideDefaultValueAccessor } from './app/core/overrides/value-accessor.overrides';
 import { IAM_PARAMS, IAM_POST_LOGIN_ROUTE, IAM_POST_LOGOUT_URI, IAM_REDIRECT_URI } from './app/core/constants/iam.constants';
 import { CREDENTIAL_SCHEMA_PROVIDERS } from './app/features/credential-issuance/services/issuance-schema-builders/issuance-schema-builder';
@@ -33,7 +33,7 @@ bootstrapApplication(AppComponent, {
         importProvidersFrom(BrowserModule, RouterModule.forRoot(routes), TranslateModule.forRoot({
             loader: {
                 provide: TranslateLoader,
-                useFactory: HttpLoaderFactory,
+                useFactory: httpTranslateLoader,
                 deps: [HttpClient]
             }
         }), AuthModule.forRoot({
