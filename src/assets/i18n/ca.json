@@ -180,7 +180,7 @@
     "updated": "Actualitzat",
     "cancel": "Cancel·lar",
     "create" : "Crear Credencial",
-    "buttonAdmin": "Nova Credencial com a Signer",
+    "buttonAdmin": "Nova Credencial (en nom de)",
     "search": "Busca per Subjecte",
     "searchPlaceholder": "Joe Doe"
   },
