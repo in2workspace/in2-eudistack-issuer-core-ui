@@ -1,6 +1,5 @@
 import {Component, inject} from '@angular/core';
 import {NavigationEnd, Router, RouterOutlet} from '@angular/router';
-import {TranslateService} from '@ngx-translate/core';
 import {environment} from 'src/environments/environment';
 import {NavbarComponent} from '../app/shared/components/navbar/navbar.component';
 import {DOCUMENT} from '@angular/common';
@@ -26,10 +25,10 @@ public readonly showNavbar$ = toSignal(this.router.events.pipe(
   startWith(!this.router.url.startsWith('/home'))
 ));
 
-public constructor(){
-    this.languageService.setLanguage();
-    this.setCustomColors();
-    this.setFavicon();
+ ngOnInit(){
+  this.languageService.setLanguage();
+  this.setCustomColors();
+  this.setFavicon();
  }
 
  private setCustomColors(){
