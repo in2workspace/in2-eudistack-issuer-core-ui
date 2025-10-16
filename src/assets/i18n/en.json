@@ -222,7 +222,8 @@
       "title": "Create credential",
       "message": "Are you sure you want to create this credential?",
       "checkboxLabel": "I confirm that I have copied and safely stored the private key.",
-      "belowText": "Without the private key, you will not be able to use this credential later."
+      "belowText": "Without the private key, you will not be able to use this credential later.",
+      "defaultLoadingTitle": "Please wait while the process is completed..."
     },
     "create-success-dialog": {
       "title": "Credential created",

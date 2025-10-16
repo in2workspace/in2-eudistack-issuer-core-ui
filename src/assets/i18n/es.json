@@ -221,7 +221,8 @@
         "title": "Crear credencial",
         "message": "¿Estás seguro de que quieres crear esta credencial?",
         "checkboxLabel": "Confirmo que he copiado y guardado de forma segura la clave privada.",
-        "belowText": "Sin la clave privada, no podrás usar esta credencial más adelante."
+        "belowText": "Sin la clave privada, no podrás usar esta credencial más adelante.",
+        "defaultLoadingTitle": "Espere mientras se completa el proceso..."
       },
       "create-success-dialog": {
         "title": "Credencial creada",

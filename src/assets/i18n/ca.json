@@ -223,7 +223,8 @@
       "title": "Crear credencial",
       "message": "Segur que vols crear aquesta credencial?",
       "checkboxLabel": "Confirmo que he copiat i desat de manera segura la clau privada.",
-      "belowText": "Sense la clau privada no podràs utilitzar aquesta credencial més endavant."
+      "belowText": "Sense la clau privada no podràs utilitzar aquesta credencial més endavant.",
+      "defaultLoadingTitle": "Esperi mentre es completa el procés..."
     },
     "create-success-dialog": {
       "title": "Credencial creada",
