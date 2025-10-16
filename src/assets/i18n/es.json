@@ -55,7 +55,6 @@
     "country": "País"
   },
   "mandatee": {
-    "firstnameid": "ID del nombre",
     "last_name": "Apellidos",
     "email": "Dirección de correo"
   },
@@ -84,6 +83,7 @@
     "organizationIdentifier": "número de NIF de la empresa",
     "country": "país",
     "organization": "nombre de la empresa",
+    "organizationId": "número de NIF de la empresa",
     "commonName": "nombre",
     "email": "correo electrónico",
     "serialNumber": "número del documento de identidad",
@@ -109,9 +109,10 @@
 	  "gx:labelLevel": "Label Level",
     "gx:rulesVersion": "Rules Version",
     "gx:engineVersion": "Engine Version",
-    "gx:compliantCredentials": "Compliant Credentials",
+    "gx:compliantCredentials": "Credenciales conformes",
     "gx:validatedCriteria": "Validated Criteria",
-    "gx:validatedCriteriaReference": "Validated Criteria Reference",
+    "gx:validatedCriteriaReference": "Referencia de Criterios Validados",
+    "digestSri": "Huella SRI",
     "revoke": "revocar",
     "revokeTooltip": "Esta credencial no puede ser revocada porque es de tipo legacy. Para consultar cómo revocar este tipo de credencial, consulte nuestra <a href='{{url}}' style='color: white; font-weight:700' target='_blank' rel='noopener noreferrer'>guía</a>.",
     "sendReminderConfirm": {
@@ -164,12 +165,7 @@
       "refresh-text": "¿Tienes problemas para obtener la credencial con el Wallet?",
       "refresh-link": "Obtén una nueva oferta de credencial"
     }
-  }
-  ,
-  "scaner": {
-    "textinformation": "Escaneo de la organización con su cartera para descargar la credencial"
   },
-
   "credentialManagement": {
     "title": "Lista de credenciales emitidas",
     "button": "Nueva credencial",
@@ -181,7 +177,15 @@
     "create" : "Crear Credencial",
     "buttonAdmin":"Nueva Credencial como Signer",
     "search": "Busca por Sujeto",
-    "searchPlaceholder": "Joe Doe"
+    "searchPlaceholder": "Juan García",
+      "paginator": {
+      "items-per-page": "Ítems por página",
+      "next-page": "Siguiente",
+      "previous-page": "Anterior",
+      "first-page": "1a pág.",
+      "last-page": "Última pág.",
+      "of": "de"
+    }
   },
     "power": {
       "power": "Powers",
@@ -201,7 +205,7 @@
       "attest": "Attest",
       "select": "Selecciona un poder",
       "invalid_power_title": "Acceso Denegado",
-      "invalid_power": "No tienes la política necesaria para acceder",
+      "invalid_power_message": "No tienes la política necesaria para acceder",
       "remove-dialog": {
         "title":"Eliminar power",
         "message": "Seguro que quieres eliminar este power? "
@@ -238,8 +242,8 @@
       "organization": "Nombre de la empresa",
       "organizationIdentifier": "NIF de la empresa",
       "country": "País",
-      "id": "ID",
       "employeeId": "ID de empleado",
+      "id": "ID",
       "domain": "Dominio",
       "ipAddress": "Dirección IP",
       "selectA": "Selecciona un ",
@@ -254,9 +258,9 @@
       "unauthorized": "No estás autorizado para realizar esta acción.",
       "forbidden": "No tienes permiso para acceder a este recurso.",
       "internal_server": "Se produjo un error en el servidor. Por favor, inténtalo de nuevo más tarde.",
-      "unknown_error": "Se produjo un error desconocido. Por favor, inténtalo de nuevo.",
       "credential_submission": "Ha ocurrido un error al crear la credencial.",
       "one_power_min":"Se requiere por lo menos un poder, y cada power requiere por los menos una acción.",
+      "unknown_error": "Se produjo un error desconocido. Por favor, inténtalo de nuevo.",
       "policy": {
           "title": "Acceso Denegado",
           "message": "No tienes los poderes necesarios para acceder."
@@ -273,6 +277,13 @@
       },
       "form":{
         "required": "Campo obligatorio.",
+        "min": "El mínimo es {{0}}",
+        "max": "El màximo es {{0}}",
+        "minLength": "Mínimo de caracteres: {{0}}",
+        "maxLength": "Màximo de caracteres: {{0}}",
+        "pattern": "Patró invàlid",
+        "ip": "IP invàlida. Introdueixi una adreça IPv4 o IPv6.",
+        "domain": "Domini invàlid",
         "invalid_character": "Caracteres inválidos",
         "only_letters_and_numbers": "Solo letras y cifras",
         "only_letters_numbers_hyphens": "Solo letras, cifras y guiones",
@@ -290,6 +301,8 @@
           "main_domain_part_min": "La parte entre '@' y '.' debe tener un mínimo de 2 caracteres.",
           "top_level_domain_part_min": "La parte entre el último punto y el final debe tener un mínimo de 2 caracteres."
         },
+        "org_id_startsWithVAT": "Introduzca el ID sin el prefijo VAT- ni el de país",
+        "no_key": "Tiene que generar una llave privada.",
         "no_power": "Añade por lo menos un poder",
         "no_function": "Cada poder debe tener por lo menos una acción"
       }
@@ -340,6 +353,12 @@
           "rationale": "Motivo"
         }      
       }
+    },
+    "keys": {
+      "title": "Llave privada",
+      "buttonText": "Generar llave",
+      "alert": "Assegúrese de guardar esa llave.",
+      "tooltip": "La clave privada es un secreto que te permite firmar y demostrar la propiedad de la credencial. Sin ella, no puedes usar la credencial. Guárdala de manera segura y no la compartas."
     }
 
 }

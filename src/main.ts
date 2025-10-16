@@ -15,6 +15,8 @@ import { IAM_PARAMS, IAM_POST_LOGIN_ROUTE, IAM_POST_LOGOUT_URI, IAM_REDIRECT_URI
 import { CREDENTIAL_SCHEMA_PROVIDERS } from './app/features/credential-issuance/services/issuance-schema-builders/issuance-schema-builder';
 import { LearCredentialEmployeeSchemaProvider } from './app/features/credential-issuance/services/issuance-schema-builders/lear-credential-employee-issuance-schema-provider';
 import { LearCredentialMachineIssuanceSchemaProvider } from './app/features/credential-issuance/services/issuance-schema-builders/lear-credential-machine-issuance-schema-provider';
+import { MatPaginatorIntl } from '@angular/material/paginator';
+import { MatPaginatorIntlService } from './app/shared/services/mat-paginator-intl.service';
 
 overrideDefaultValueAccessor();
 
@@ -29,6 +31,10 @@ bootstrapApplication(AppComponent, {
             provide: CREDENTIAL_SCHEMA_PROVIDERS,
             useClass: LearCredentialMachineIssuanceSchemaProvider,
             multi: true
+        },
+        {
+            provide: MatPaginatorIntl,
+            useClass: MatPaginatorIntlService
         },
         importProvidersFrom(BrowserModule, RouterModule.forRoot(routes), TranslateModule.forRoot({
             loader: {

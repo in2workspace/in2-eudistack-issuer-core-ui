@@ -55,7 +55,6 @@
     "country": "País"
   },
   "mandatee": {
-    "firstnameid": "ID del nom",
     "last_name": "Cognoms",
     "email": "Adreça de correu"
   },
@@ -85,6 +84,7 @@
     "id": "ID",
     "employeeId": "ID d'empleat",
     "organizationIdentifier": "número de NIF de l'empresa",
+    "organizationId": "número de NIF de l'empresa",
     "country": "país",
     "organization": "nom de l'empresa",
     "commonName": "nom",
@@ -111,9 +111,10 @@
 	  "gx:labelLevel": "Label Level",
     "gx:rulesVersion": "Rules Version",
     "gx:engineVersion": "Engine Version",
-    "gx:compliantCredentials": "Compliant Credentials",
+    "gx:compliantCredentials": "Credencials conformes",
     "gx:validatedCriteria": "Validated Criteria",
-    "gx:validatedCriteriaReference": "Validated Criteria Reference",
+    "gx:validatedCriteriaReference": "Referència de Criteris Validats",
+    "digestSri": "Empremta SRI",
     "revoke": "revocar",
         "revokeTooltip": "Aquesta credencial no pot ser revocada perquè és de tipus legacy. Per consultar com revocar aquest tipus de credencial, consulti la nostra <a href='{{url}}' style='color: white; font-weight:700' target='_blank' rel='noopener noreferrer'>guia</a>.",
     "sendReminderConfirm": {
@@ -167,10 +168,6 @@
       "refresh-link": "Obtingues una nova oferta de credencial"
     }
   },
-  "scaner": {
-    "textinformation": "Escaneig de l'organització amb la seva cartera per descarregar la credencial"
-  },
-
   "credentialManagement": {
     "title": "Llista de credencials emeses",
     "button": "Nova credencial",
@@ -182,7 +179,15 @@
     "create" : "Crear Credencial",
     "buttonAdmin": "Nova Credencial com a Signer",
     "search": "Busca per Subjecte",
-    "searchPlaceholder": "Joe Doe"
+    "searchPlaceholder": "Joan Garcia",
+      "paginator": {
+      "items-per-page": "Ítems per pàg.",
+      "next-page": "Següent",
+      "previous-page": "Anterior",
+      "first-page": "1a pàg.",
+      "last-page": "Última pàg.",
+      "of": "de"
+    }
   },
     "power": {
       "power": "Powers",
@@ -202,7 +207,7 @@
       "attest": "Attest",
       "select": "Selecciona un poder",
       "invalid_power_title": "Accés Denegat",
-      "invalid_power": "No teniu la política necessaria per accedir",
+      "invalid_power_message": "No teniu la política necessaria per accedir",
       "remove-dialog": {
         "title":"Eliminar power",
         "message": "Segur que vols eliminar aquest power? "
@@ -211,6 +216,9 @@
    "credentialIssuance": {
     "title": "Emissió de LEAR Credential",
     "learCredentialEmployee": "LEAR Credential Employee",
+    "LEARCredentialEmployee":"LEAR Credential Employee",
+    "learCredentialMachine": "LEAR Credential Machine",
+    "LEARCredentialMachine":"LEAR Credential Machine",
     "create-confirm-dialog": {
       "title": "Crear credencial",
       "message": "Segur que vols crear aquesta credencial?",
@@ -236,8 +244,9 @@
     "organization": "Nom de l’empresa",
     "organizationIdentifier": "NIF de l’empresa",
     "country": "País",
-    "domain": "Domini",
     "employeeId": "ID d'empleat",
+    "id": "ID",
+    "domain": "Domini",
     "ipAddress": "Adreça IP",
     "selectA": "Selecciona un/una ",
     "hint": {
@@ -251,9 +260,9 @@
     "unauthorized": "No estàs autoritzat per realitzar aquesta acció.",
     "forbidden": "No tens permís per accedir a aquest recurs.",
     "internal_server": "S'ha produït un error al servidor. Si us plau, torna-ho a intentar més tard.",
-    "unknown_error": "S'ha produït un error desconegut. Si us plau, torna-ho a intentar.",
     "credential_submission": "S'ha produït un error en crear la credencial.",
     "one_power_min":"Hi ha d'haver almenys un poder seleccionat, i cada poder requereix almenys una acció.",
+    "unknown_error": "S'ha produït un error desconegut. Si us plau, torna-ho a intentar.",
     "policy": {
         "title": "Accés Denegat",
         "message": "No tens els poders necessaris per accedir-hi."
@@ -270,6 +279,13 @@
     },
     "form":{
       "required": "Camp obligatori.",
+      "min": "El mínim és {{0}}",
+      "max": "El màxim és {{0}}",
+      "minLength": "Mínim de caràcters: {{0}}",
+      "maxLength": "Màxim de caràcters: {{0}}",
+      "pattern": "Patró invàlid",
+      "ip": "IP invàlida. Introdueixi una adreça IPv4 o IPv6.",
+      "domain": "Domini invàlid",
       "invalid_character": "Caràcter/s invàlid/s",
       "only_letters_and_numbers": "Només lletres i xifres",
       "only_letters_numbers_hyphens": "Només lletres, xifres i guions",
@@ -277,6 +293,7 @@
       "max_50": "50 caràcters com a màxim",
       "max_15": "15 caràcters com a màxim",
       "max_9": "9 caràcters com a màxim",
+      "min_9": "Minimum 9 characters",
       "min_7": "27 caràcters com a mínim",
       "min_2": "2 caràcters com a mínim",
       "email":{
@@ -286,6 +303,8 @@
         "main_domain_part_min": "La part entre '@' i '.' ha de tenir almenys 2 caràcters.",
         "top_level_domain_part_min": "La part entre l'últim punt i el final ha de tenir almenys 2 caràcters."
       },
+      "org_id_startsWithVAT": "Introdueix l'ID sense el prefix VAT- ni el de país",
+      "no_key": "Cal generar una clau privada.",
       "no_power": "Afegeix almenys un poder",
       "no_function": "Cada poder ha de tenir almenys una funció"
     }
@@ -295,8 +314,8 @@
     "close": "Tancar",
     "cancel": "Cancel·lar",
     "accept": "Acceptar",
-      "delete" : "Eliminar",
-      "save" : "Desar"
+    "delete" : "Eliminar",
+    "save" : "Desar"
   },
   "signature": {
       "settings": {
@@ -336,5 +355,11 @@
         "rationale": "Motiu"
       }
     }
+  },
+  "keys": {
+    "title": "Clau privada",
+    "buttonText": "Generar clau",
+    "alert": "Asseguri's de guardar aquesta clau.",
+    "tooltip": "La clau privada és un secret que et permet signar i demostrar la propietat de la credencial. Sense ella, no pots usar la credencial. Guarda-la de manera segura i no la comparteixis."
   }
 }

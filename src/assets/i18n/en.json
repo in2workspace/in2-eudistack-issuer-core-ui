@@ -2,7 +2,6 @@
   "next": "Next",
   "back": "Back",
   "copy": "Copy",
-  "copied": "Copied",
   "verifiable-credential": "Verifiable Credential",
   "dome-wallet": "DOME Wallet",
   "home": {
@@ -57,7 +56,6 @@
     "country": "Country"
   },
   "mandatee": {
-    "firstnameid": "First name",
     "last_name": "Last name",
     "email": "Email"
   },
@@ -115,6 +113,7 @@
     "gx:compliantCredentials": "Compliant Credentials",
     "gx:validatedCriteria": "Validated Criteria",
     "gx:validatedCriteriaReference": "Validated Criteria Reference",
+    "digestSri": "digest SRI",
     "revoke": "revoke",
     "revokeTooltip": "This credential cannot be revoked because it was issued using a legacy type. To learn how to revoke this type of credential, please check our <a href='{{url}}' style='color: white; font-weight:700' target='_blank' rel='noopener noreferrer'>guide</a>.",
     "sendReminderConfirm": {
@@ -168,9 +167,6 @@
       "refresh-link": "Get a new credential offer"
     }
   },
-  "scaner": {
-    "textinformation": "OrganizationScan with your wallet to download the credential"
-  },
   "credentialManagement": {
     "title": "List of issued credentials",
     "button": "New credential",
@@ -182,7 +178,15 @@
     "create": "Create Credential",
     "buttonAdmin": "New credential as Signer",
     "search": "Search by Subject",
-    "searchPlaceholder": "Joe Doe"
+    "searchPlaceholder": "Joe Doe",
+    "paginator": {
+      "items-per-page": "Items per paggg",
+      "next-page": "Nextt",
+      "previous-page": "Prevvv",
+      "first-page": "First page",
+      "last-page": "Last page",
+      "of": "of"
+    }
   },
   "power": {
     "power": "Powers",
