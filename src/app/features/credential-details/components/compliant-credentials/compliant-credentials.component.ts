@@ -3,6 +3,7 @@ import { MatSort, MatSortModule } from '@angular/material/sort';
 import { MatTableDataSource, MatTableModule } from '@angular/material/table';
 import { CompliantCredential } from './../../../../core/models/entity/lear-credential';
 import { AfterViewInit, Component, inject, InjectionToken, ViewChild } from '@angular/core';
+import { TranslateService } from '@ngx-translate/core';
 
 export const compliantCredentialsToken = new InjectionToken<CompliantCredential[] | null>('COMPLIANT_CREDENTIALS_DATA');
 
@@ -20,9 +21,18 @@ export class CompliantCredentialsComponent implements AfterViewInit {
   @ViewChild(MatPaginator) public paginator?: MatPaginator;
   @ViewChild(MatSort) public sort?: MatSort;
 
+  private readonly translate = inject(TranslateService);
+
   public data: CompliantCredential[] | null = inject(compliantCredentialsToken);
   public dataSource: MatTableDataSource<CompliantCredential> | null = this.data ? new MatTableDataSource(this.data) : null;
-  public displayedColumns: string[] = ['id', 'type', "gx:digestSRI"];
+  public displayedColumns: string[];
+
+  constructor(){
+    const id = this.translate.instant("credentialDetails.id");
+    const type = this.translate.instant("credentialDetails.type");
+    const digestSri = this.translate.instant("credentialDetails.type");
+    this.displayedColumns = [id, type, digestSri]
+  }
 
   public ngAfterViewInit(): void {
     if(!this.dataSource) return;
