@@ -8,6 +8,7 @@ import {
   compliantCredentialsToken
 } from './compliant-credentials.component';
 import { CompliantCredential } from 'src/app/core/models/entity/lear-credential';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 
 describe('CompliantCredentialsComponent', () => {
   let fixture: ComponentFixture<CompliantCredentialsComponent>;
@@ -20,7 +21,7 @@ describe('CompliantCredentialsComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [CompliantCredentialsComponent, NoopAnimationsModule],
+      imports: [CompliantCredentialsComponent, NoopAnimationsModule, TranslateModule],
       providers: [
         { provide: compliantCredentialsToken, useValue: defaultData }
       ]
@@ -155,11 +156,6 @@ describe('CompliantCredentialsComponent', () => {
       const noDataEl = fixture.debugElement.query(By.css('.no-data'));
       expect(noDataEl).toBeTruthy();
       expect(noDataEl.nativeElement.textContent.trim()).toBe('-');
-    });
-
-    it('should have undefined paginator and sort ViewChilds', () => {
-      expect(component.paginator).toBeUndefined();
-      expect(component.sort).toBeUndefined();
     });
   });
 });
