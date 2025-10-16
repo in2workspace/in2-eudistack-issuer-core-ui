@@ -13,6 +13,7 @@ import { TranslateModule, TranslateService } from '@ngx-translate/core';
 describe('CompliantCredentialsComponent', () => {
   let fixture: ComponentFixture<CompliantCredentialsComponent>;
   let component: CompliantCredentialsComponent;
+  let translateMock: any;
 
   const defaultData: CompliantCredential[] = [
     { id: '1', type: 't1', 'gx:digestSRI': 's1' } as any,
@@ -20,8 +21,12 @@ describe('CompliantCredentialsComponent', () => {
   ];
 
   beforeEach(async () => {
+    translateMock = {
+      instant: jest.fn().mockImplementation((key: string) => key),
+    }
+
     await TestBed.configureTestingModule({
-      imports: [CompliantCredentialsComponent, NoopAnimationsModule, TranslateModule],
+      imports: [CompliantCredentialsComponent, NoopAnimationsModule, TranslateModule.forRoot()],
       providers: [
         { provide: compliantCredentialsToken, useValue: defaultData }
       ]
@@ -43,7 +48,7 @@ describe('CompliantCredentialsComponent', () => {
   });
 
   it('should have the correct displayedColumns', () => {
-    expect(component.displayedColumns).toEqual(['id', 'type', 'gx:digestSRI']);
+    expect(component.displayedColumns).toEqual(['credentialDetails.id', 'credentialDetails.type', 'credentialDetails.digestSRI']);
   });
 
   it('should set paginator and sort on the dataSource after view init', () => {

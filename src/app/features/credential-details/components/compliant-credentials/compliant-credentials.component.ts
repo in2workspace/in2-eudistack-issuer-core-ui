@@ -30,7 +30,7 @@ export class CompliantCredentialsComponent implements AfterViewInit {
   constructor(){
     const id = this.translate.instant("credentialDetails.id");
     const type = this.translate.instant("credentialDetails.type");
-    const digestSri = this.translate.instant("credentialDetails.type");
+    const digestSri = this.translate.instant("credentialDetails.digestSri");
     this.displayedColumns = [id, type, digestSri]
   }
 
