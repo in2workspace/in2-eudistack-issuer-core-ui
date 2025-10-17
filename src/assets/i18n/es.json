@@ -314,7 +314,8 @@
       "cancel": "Cancelar",
       "accept": "Aceptar",
       "delete": "Eliminar",
-      "save": "Guardar"
+      "save": "Guardar",
+      "loading-default-title": "Espere mientras se completa el proceso..."
     },
     "signature": {
       "settings": {

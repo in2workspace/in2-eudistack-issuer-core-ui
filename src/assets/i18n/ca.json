@@ -316,7 +316,8 @@
     "cancel": "Cancel·lar",
     "accept": "Acceptar",
     "delete" : "Eliminar",
-    "save" : "Desar"
+    "save" : "Desar",
+    "loading-default-title": "Esperi mentre es completa el procés..."
   },
   "signature": {
       "settings": {

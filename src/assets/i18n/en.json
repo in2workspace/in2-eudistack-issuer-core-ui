@@ -315,7 +315,8 @@
     "cancel": "Cancel",
     "accept": "Accept",
     "delete": "Delete",
-    "save": "Save"
+    "save": "Save",
+    "loading-default-title": "Please wait while the process is completed..."
   },
   "signature": {
     "settings": {
