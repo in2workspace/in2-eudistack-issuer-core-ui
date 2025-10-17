@@ -176,7 +176,7 @@
     "updated": "Updated",
     "cancel": "Cancel",
     "create": "Create Credential",
-    "buttonAdmin": "New credential as Signer",
+    "buttonAdmin": "New credential (on behalf)",
     "search": "Search by Subject",
     "searchPlaceholder": "Joe Doe",
     "paginator": {
