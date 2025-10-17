@@ -1,4 +1,4 @@
-import {Component, inject} from '@angular/core';
+import {Component, inject, OnInit} from '@angular/core';
 import {NavigationEnd, Router, RouterOutlet} from '@angular/router';
 import {environment} from 'src/environments/environment';
 import {NavbarComponent} from '../app/shared/components/navbar/navbar.component';
@@ -14,7 +14,7 @@ import { LanguageService } from './core/services/language.service';
     standalone: true,
     imports: [RouterOutlet, NavbarComponent]
 })
-export class AppComponent{
+export class AppComponent implements OnInit{
 public title = 'Credential-issuer-ui';
 private readonly document = inject(DOCUMENT);
 private readonly languageService = inject(LanguageService);
