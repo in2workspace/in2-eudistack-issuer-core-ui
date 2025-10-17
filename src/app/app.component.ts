@@ -1,11 +1,11 @@
-import {Component, inject} from '@angular/core';
+import {Component, inject, OnInit} from '@angular/core';
 import {NavigationEnd, Router, RouterOutlet} from '@angular/router';
-import {TranslateService} from '@ngx-translate/core';
 import {environment} from 'src/environments/environment';
 import {NavbarComponent} from '../app/shared/components/navbar/navbar.component';
 import {DOCUMENT} from '@angular/common';
 import {toSignal} from '@angular/core/rxjs-interop';
 import {filter, map, startWith} from 'rxjs';
+import { LanguageService } from './core/services/language.service';
 
 @Component({
     selector: 'app-root',
@@ -14,27 +14,21 @@ import {filter, map, startWith} from 'rxjs';
     standalone: true,
     imports: [RouterOutlet, NavbarComponent]
 })
-export class AppComponent{
+export class AppComponent implements OnInit{
 public title = 'Credential-issuer-ui';
-private readonly translate = inject(TranslateService);
-private readonly router= inject(Router);
 private readonly document = inject(DOCUMENT);
+private readonly languageService = inject(LanguageService);
+private readonly router= inject(Router);
 public readonly showNavbar$ = toSignal(this.router.events.pipe(
   filter((event): event is NavigationEnd => event instanceof NavigationEnd),
   map((event: NavigationEnd) => !event.urlAfterRedirects.startsWith('/home')),
   startWith(!this.router.url.startsWith('/home'))
 ));
 
-public constructor(){
-    this.setLanguage();
-    this.setCustomColors();
-    this.setFavicon();
- }
-
- private setLanguage(){
-  const lang = 'en';
-  this.translate.setDefaultLang(lang);
-  this.translate.use(lang);
+ ngOnInit(){
+  this.languageService.setLanguage();
+  this.setCustomColors();
+  this.setFavicon();
  }
 
  private setCustomColors(){

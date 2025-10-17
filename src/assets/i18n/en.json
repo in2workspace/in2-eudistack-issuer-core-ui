@@ -2,7 +2,6 @@
   "next": "Next",
   "back": "Back",
   "copy": "Copy",
-  "copied": "Copied",
   "verifiable-credential": "Verifiable Credential",
   "dome-wallet": "DOME Wallet",
   "home": {
@@ -57,7 +56,6 @@
     "country": "Country"
   },
   "mandatee": {
-    "firstnameid": "First name",
     "last_name": "Last name",
     "email": "Email"
   },
@@ -71,6 +69,7 @@
     "PEND_SIGNATURE": "PEND_SIGNATURE",
     "WITHDRAWN": "WITHDRAWN",
     "VALID": "VALID",
+    "REVOKED": "REVOKED",
     "EXPIRED": "EXPIRED",
     "PEND_DOWNLOAD": "PEND_DOWNLOAD",
     "ISSUED": "ISSUED",
@@ -115,6 +114,7 @@
     "gx:compliantCredentials": "Compliant Credentials",
     "gx:validatedCriteria": "Validated Criteria",
     "gx:validatedCriteriaReference": "Validated Criteria Reference",
+    "digestSri": "digest SRI",
     "revoke": "revoke",
     "revokeTooltip": "This credential cannot be revoked because it was issued using a legacy type. To learn how to revoke this type of credential, please check our <a href='{{url}}' style='color: white; font-weight:700' target='_blank' rel='noopener noreferrer'>guide</a>.",
     "sendReminderConfirm": {
@@ -168,9 +168,6 @@
       "refresh-link": "Get a new credential offer"
     }
   },
-  "scaner": {
-    "textinformation": "OrganizationScan with your wallet to download the credential"
-  },
   "credentialManagement": {
     "title": "List of issued credentials",
     "button": "New credential",
@@ -182,7 +179,15 @@
     "create": "Create Credential",
     "buttonAdmin": "New credential (on behalf)",
     "search": "Search by Subject",
-    "searchPlaceholder": "Joe Doe"
+    "searchPlaceholder": "Joe Doe",
+    "paginator": {
+      "items-per-page": "Items per paggg",
+      "next-page": "Nextt",
+      "previous-page": "Prevvv",
+      "first-page": "First page",
+      "last-page": "Last page",
+      "of": "of"
+    }
   },
   "power": {
     "power": "Powers",
@@ -218,7 +223,8 @@
       "title": "Create credential",
       "message": "Are you sure you want to create this credential?",
       "checkboxLabel": "I confirm that I have copied and safely stored the private key.",
-      "belowText": "Without the private key, you will not be able to use this credential later."
+      "belowText": "Without the private key, you will not be able to use this credential later.",
+      "defaultLoadingTitle": "Please wait while the process is completed..."
     },
     "create-success-dialog": {
       "title": "Credential created",
@@ -310,7 +316,8 @@
     "cancel": "Cancel",
     "accept": "Accept",
     "delete": "Delete",
-    "save": "Save"
+    "save": "Save",
+    "loading-default-title": "Please wait while the process is completed..."
   },
   "signature": {
     "settings": {
