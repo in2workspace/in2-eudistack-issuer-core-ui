@@ -4,6 +4,7 @@ import { inject, Injectable } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { take } from 'rxjs';
 
+// This service is necessary to translate the auto-generated texts by MatPaginator
 const PAGINATOR_TRANSLATION_LABEL = "credentialManagement.paginator";
 const ITEMS_PER_PAGE = PAGINATOR_TRANSLATION_LABEL + '.items-per-page';
 const NEXT_PAGE      = PAGINATOR_TRANSLATION_LABEL + '.next-page';
