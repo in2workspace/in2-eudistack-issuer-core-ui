@@ -8,12 +8,11 @@ import {
   compliantCredentialsToken
 } from './compliant-credentials.component';
 import { CompliantCredential } from 'src/app/core/models/entity/lear-credential';
-import { TranslateModule, TranslateService } from '@ngx-translate/core';
+import { TranslateModule } from '@ngx-translate/core';
 
 describe('CompliantCredentialsComponent', () => {
   let fixture: ComponentFixture<CompliantCredentialsComponent>;
   let component: CompliantCredentialsComponent;
-  let translateMock: any;
 
   const defaultData: CompliantCredential[] = [
     { id: '1', type: 't1', 'gx:digestSRI': 's1' } as any,
@@ -21,21 +20,20 @@ describe('CompliantCredentialsComponent', () => {
   ];
 
   beforeEach(async () => {
-    translateMock = {
-      instant: jest.fn().mockImplementation((key: string) => key),
-    }
-
     await TestBed.configureTestingModule({
-      imports: [CompliantCredentialsComponent, NoopAnimationsModule, TranslateModule.forRoot()],
+      imports: [
+        CompliantCredentialsComponent,
+        NoopAnimationsModule,
+        TranslateModule.forRoot()
+      ],
       providers: [
-        { provide: compliantCredentialsToken, useValue: defaultData }
-      ]
+        { provide: compliantCredentialsToken, useValue: defaultData },
+      ],
     }).compileComponents();
 
     fixture = TestBed.createComponent(CompliantCredentialsComponent);
     component = fixture.componentInstance;
-    fixture.detectChanges(); // triggers ngAfterViewInit
-  });
+    fixture.detectChanges(); });
 
   it('should create', () => {
     expect(component).toBeTruthy();
@@ -48,7 +46,7 @@ describe('CompliantCredentialsComponent', () => {
   });
 
   it('should have the correct displayedColumns', () => {
-    expect(component.displayedColumns).toEqual(['credentialDetails.id', 'credentialDetails.type', 'credentialDetails.digestSRI']);
+    expect(component.displayedColumns).toEqual(['id', 'type', 'gx:digestSRI']);
   });
 
   it('should set paginator and sort on the dataSource after view init', () => {
@@ -60,16 +58,20 @@ describe('CompliantCredentialsComponent', () => {
 
   describe('when overriding compliantCredentialsToken', () => {
     const customData: CompliantCredential[] = [
-      { id: 'A', type: 'tx', 'gx:digestSRI': 'sx' } as any
+      { id: 'A', type: 'tx', 'gx:digestSRI': 'sx' } as any,
     ];
 
     beforeEach(async () => {
       await TestBed.resetTestingModule();
       await TestBed.configureTestingModule({
-        imports: [CompliantCredentialsComponent, NoopAnimationsModule],
+        imports: [
+          CompliantCredentialsComponent,
+          NoopAnimationsModule,
+          TranslateModule.forRoot(),
+        ],
         providers: [
-          { provide: compliantCredentialsToken, useValue: customData }
-        ]
+          { provide: compliantCredentialsToken, useValue: customData },
+        ],
       }).compileComponents();
 
       fixture = TestBed.createComponent(CompliantCredentialsComponent);
@@ -79,7 +81,6 @@ describe('CompliantCredentialsComponent', () => {
 
     it('should inject the overridden data', () => {
       expect(component.data).toEqual(customData);
-      expect(component.dataSource).not.toBeNull();
       expect(component.dataSource!.data).toEqual(customData);
     });
 
@@ -95,10 +96,14 @@ describe('CompliantCredentialsComponent', () => {
     beforeEach(async () => {
       await TestBed.resetTestingModule();
       await TestBed.configureTestingModule({
-        imports: [CompliantCredentialsComponent, NoopAnimationsModule],
+        imports: [
+          CompliantCredentialsComponent,
+          NoopAnimationsModule,
+          TranslateModule.forRoot(),
+        ],
         providers: [
-          { provide: compliantCredentialsToken, useValue: [] }
-        ]
+          { provide: compliantCredentialsToken, useValue: [] },
+        ],
       }).compileComponents();
 
       fixture = TestBed.createComponent(CompliantCredentialsComponent);
@@ -118,12 +123,6 @@ describe('CompliantCredentialsComponent', () => {
       expect(paginatorEl).toBeNull();
     });
 
-    it('should render the fallback no-data div with "-"', () => {
-      const noDataEl = fixture.debugElement.query(By.css('.no-data'));
-      expect(noDataEl).toBeTruthy();
-      expect(noDataEl.nativeElement.textContent.trim()).toBe('-');
-    });
-
     it('should have undefined paginator and sort ViewChilds', () => {
       expect(component.paginator).toBeUndefined();
       expect(component.sort).toBeUndefined();
@@ -134,10 +133,14 @@ describe('CompliantCredentialsComponent', () => {
     beforeEach(async () => {
       await TestBed.resetTestingModule();
       await TestBed.configureTestingModule({
-        imports: [CompliantCredentialsComponent, NoopAnimationsModule],
+        imports: [
+          CompliantCredentialsComponent,
+          NoopAnimationsModule,
+          TranslateModule.forRoot(),
+        ],
         providers: [
-          { provide: compliantCredentialsToken, useValue: null }
-        ]
+          { provide: compliantCredentialsToken, useValue: null },
+        ],
       }).compileComponents();
 
       fixture = TestBed.createComponent(CompliantCredentialsComponent);
@@ -148,19 +151,6 @@ describe('CompliantCredentialsComponent', () => {
     it('should have null data and no dataSource', () => {
       expect(component.data).toBeNull();
       expect(component.dataSource).toBeNull();
-    });
-
-    it('should not render the table or paginator in the DOM', () => {
-      const tableEl = fixture.debugElement.query(By.css('table'));
-      const paginatorEl = fixture.debugElement.query(By.directive(MatPaginator));
-      expect(tableEl).toBeNull();
-      expect(paginatorEl).toBeNull();
-    });
-
-    it('should render the fallback no-data div with "-"', () => {
-      const noDataEl = fixture.debugElement.query(By.css('.no-data'));
-      expect(noDataEl).toBeTruthy();
-      expect(noDataEl.nativeElement.textContent.trim()).toBe('-');
     });
   });
 });

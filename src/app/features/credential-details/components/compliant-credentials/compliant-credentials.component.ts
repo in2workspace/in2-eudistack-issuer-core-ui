@@ -3,7 +3,7 @@ import { MatSort, MatSortModule } from '@angular/material/sort';
 import { MatTableDataSource, MatTableModule } from '@angular/material/table';
 import { CompliantCredential } from './../../../../core/models/entity/lear-credential';
 import { AfterViewInit, Component, inject, InjectionToken, ViewChild } from '@angular/core';
-import { TranslateService } from '@ngx-translate/core';
+import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 
 export const compliantCredentialsToken = new InjectionToken<CompliantCredential[] | null>('COMPLIANT_CREDENTIALS_DATA');
 
@@ -13,7 +13,9 @@ export const compliantCredentialsToken = new InjectionToken<CompliantCredential[
   imports: [
     MatTableModule,
     MatPaginatorModule,
-    MatSortModule],
+    MatSortModule,
+    TranslatePipe
+  ],
   templateUrl: './compliant-credentials.component.html',
   styleUrl: './compliant-credentials.component.scss'
 })
@@ -28,10 +30,7 @@ export class CompliantCredentialsComponent implements AfterViewInit {
   public displayedColumns: string[];
 
   constructor(){
-    const id = this.translate.instant("credentialDetails.id");
-    const type = this.translate.instant("credentialDetails.type");
-    const digestSri = this.translate.instant("credentialDetails.digestSri");
-    this.displayedColumns = [id, type, digestSri]
+    this.displayedColumns = ['id', 'type', 'gx:digestSRI']
   }
 
   public ngAfterViewInit(): void {
