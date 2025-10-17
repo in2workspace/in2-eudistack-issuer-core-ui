@@ -27,14 +27,14 @@ export class LanguageService {
 
   private setDefaultLanguage(){
     const defaultLang = this.getDefaultLang();
-    console.log("setDefaultLanguage: " + defaultLang);
+
     this.translate.setDefaultLang(defaultLang);
     this.translate.use(defaultLang);
   }
 
   private getDefaultLang(): string{
     const defaultLangFromEnv = environment.customizations.default_lang;
-    console.log("default language from env: " + defaultLangFromEnv);
+
     if(this.availableLanguages.includes(defaultLangFromEnv)){
       return defaultLangFromEnv;
     }else{
@@ -49,9 +49,6 @@ private setBrowserLanguage(): string | undefined {
   const browserLanguages = navigator.languages?.length
     ? navigator.languages
     : [navigator.language];
-  
-  console.log("Languages from browser: ");
-  console.log(browserLanguages);
 
   for (const lang of browserLanguages) {
     const shortLang = lang.split('-')[0];

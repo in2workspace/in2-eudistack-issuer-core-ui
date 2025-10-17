@@ -31,7 +31,7 @@ export class MatPaginatorIntlService extends MatPaginatorIntl {
     const KEYS = [ITEMS_PER_PAGE, NEXT_PAGE, PREV_PAGE, FIRST_PAGE, LAST_PAGE];
 
     this.translate.get(KEYS).pipe(take(1)).subscribe((t: any) => {
-      console.log(t)
+      
       this.itemsPerPageLabel = t[ITEMS_PER_PAGE];
       this.nextPageLabel     = t[NEXT_PAGE];
       this.previousPageLabel = t[PREV_PAGE];
