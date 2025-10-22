@@ -172,6 +172,7 @@
     "title": "List of issued credentials",
     "button": "New credential",
     "status": "Status",
+    "organization": "Organization",
     "subject": "Subject",
     "credentialType": "Credential Type",
     "updated": "Updated",

@@ -77,7 +77,7 @@ export class CredentialManagementComponent implements OnInit, AfterViewInit {
   @ViewChild('searchInput') public searchInput!: ElementRef<HTMLInputElement>;
   public displayedColumns: string[] = ['subject', 'credential_type', 'updated','status'];
   public dataSource = new MatTableDataSource<CredentialProcedureWithClass>();
-  public isValidOrganizationIdentifier = false;
+  public isAdminOrganizationIdentifier = false;
 
   public hideSearchBar: boolean = true;
 
@@ -91,24 +91,27 @@ export class CredentialManagementComponent implements OnInit, AfterViewInit {
   private readonly searchSubject = new Subject<string>();
 
   public ngOnInit() {
-    this.isValidOrganizationIdentifier = this.authService.hasIn2OrganizationIdentifier();
+    this.isAdminOrganizationIdentifier = this.authService.hasIn2OrganizationIdentifier();
+    this.initializeAdminFeatures(); //todo ngAfterViewInit?
     this.loadCredentialData();
-
-    this.searchSubject.pipe(debounceTime(500))
-      .pipe(takeUntilDestroyed(this.destroyRef))
-      .subscribe((searchValue) => {
-        this.dataSource.filter = searchValue.trim().toLowerCase();
-
-        if (this.dataSource.paginator) {
-          this.dataSource.paginator.firstPage();
-        }
-      });
   }
 
   public ngAfterViewInit(): void {
     this.dataSource.paginator = this.paginator;
     this.dataSource.sort = this.sort;
 
+    this.setDataSortingAccessor();
+    this.setFilterPredicate();
+    this.setSubjectSearch();
+  }
+
+  private initializeAdminFeatures(): void{
+    if(this.isAdminOrganizationIdentifier){
+      this.displayedColumns.push('organization');
+    }
+  }
+
+  private setDataSortingAccessor(): void{
     this.dataSource.sortingDataAccessor = (item: CredentialProcedure, property: string) => {
       switch (property) {
         case 'status': {
@@ -128,11 +131,25 @@ export class CredentialManagementComponent implements OnInit, AfterViewInit {
           return '';
       }
     };
+  }
 
-    this.dataSource.filterPredicate = (data: CredentialProcedure, filter: string) => {
+  private setFilterPredicate(): void{
+        this.dataSource.filterPredicate = (data: CredentialProcedure, filter: string) => {
       const searchString = filter.trim().toLowerCase();
       return data.credential_procedure.subject.toLowerCase().includes(searchString);
     };
+  }
+
+  private setSubjectSearch(): void{
+    this.searchSubject.pipe(debounceTime(500))
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe((searchValue) => {
+        this.dataSource.filter = searchValue.trim().toLowerCase();
+
+        if (this.dataSource.paginator) {
+          this.dataSource.paginator.firstPage();
+        }
+    });
   }
 
   public applyFilter(event: Event): void {
@@ -141,7 +158,7 @@ export class CredentialManagementComponent implements OnInit, AfterViewInit {
     this.searchSubject.next(filterValue);
   }
 
-  public loadCredentialData(): void {
+  private loadCredentialData(): void {
     this.credentialProcedureService.getCredentialProcedures()
     .pipe(take(1))
     .subscribe({
@@ -158,8 +175,9 @@ export class CredentialManagementComponent implements OnInit, AfterViewInit {
     this.router.navigate(['/organization/credentials/create']);
   }
 
+  //todo change "signer" for "admin" here and in all app
   public navigateToCreateCredentialAsSigner(): void {
-    const route = this.isValidOrganizationIdentifier
+    const route = this.isAdminOrganizationIdentifier
       ? ['/organization/credentials/create-as-signer']
       : ['/organization/credentials/create'];
   

@@ -11,6 +11,7 @@ export interface CredentialProcedure {
     credential_type: CredentialProcedureType;
     status: LifeCycleStatus;
     updated: string;
+    owner_email: string;
   }
 }
 

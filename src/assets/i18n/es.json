@@ -171,6 +171,7 @@
     "title": "Lista de credenciales emitidas",
     "button": "Nueva credencial",
     "status": "Estatus",
+    "organization": "Organización",
     "subject": "Sujeto",
     "credentialType": "Tipo de credencial",
     "updated": "Actualizado",

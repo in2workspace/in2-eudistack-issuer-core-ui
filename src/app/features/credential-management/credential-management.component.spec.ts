@@ -92,7 +92,7 @@ describe('CredentialManagementComponent', () => {
   it('should call hasIn2OrganizationIdentifier on ngOnInit', () => {
     component.ngOnInit();
     expect(authService.hasIn2OrganizationIdentifier).toHaveBeenCalled();
-    expect(component.isValidOrganizationIdentifier).toBe(true);
+    expect(component.isAdminOrganizationIdentifier).toBe(true);
   });
 
   it('should call loadCredentialData on ngOnInit', () => {
@@ -221,6 +221,7 @@ describe('CredentialManagementComponent', () => {
         status: 'DRAFT',
         updated: '2025-07-01',
         credential_type: 'LEAR_CREDENTIAL_EMPLOYEE',
+        owner_email: 'email'
       }
     };
     const mockResponse = { credential_procedures: [ mockProc ] } as CredentialProceduresResponse;
@@ -230,7 +231,7 @@ describe('CredentialManagementComponent', () => {
     ];
     const statusSpy = jest.spyOn(statusService, 'addStatusClass').mockReturnValue(withClass);
 
-    component.loadCredentialData();
+    component['loadCredentialData']();
     tick();
     expect(credentialProcedureSpy).toHaveBeenCalled();
     expect(statusSpy).toHaveBeenCalledWith(mockResponse.credential_procedures);
@@ -242,7 +243,7 @@ describe('CredentialManagementComponent', () => {
     credentialProcedureSpy.mockReturnValue(throwError(() => error));
     const consoleSpy = jest.spyOn(console, 'error').mockImplementation(() => {});
 
-    component.loadCredentialData();
+    component['loadCredentialData']();
     tick();
 
     expect(consoleSpy).toHaveBeenCalledWith('Error fetching credentials for table', error);

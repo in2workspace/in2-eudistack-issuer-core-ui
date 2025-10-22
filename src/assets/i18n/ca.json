@@ -173,6 +173,7 @@
     "title": "Llista de credencials emeses",
     "button": "Nova credencial",
     "status": "Estatus",
+    "organization": "Organització",
     "subject": "Subjecte",
     "credentialType": "Tipus de credencial",
     "updated": "Actualitzat",
