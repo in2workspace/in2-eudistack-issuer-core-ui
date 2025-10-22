@@ -1,3 +1,4 @@
+import { CREDENTIAL_MANAGEMENT_ORGANIZATION, CREDENTIAL_MANAGEMENT_SUBJECT } from "../../constants/translations.constants";
 import { CredentialProcedure } from "../dto/credential-procedures-response.dto";
 
 
@@ -23,3 +24,6 @@ export type ToSlug<S extends string> =
 export type StatusClassFromDefined = `status-${ToSlug<DefinedStatusClass>}`;
 
 export type StatusClass = StatusClassFromDefined | 'status-default';
+
+const filters = ["subject", "organization"] as const;
+export type Filter =typeof filters[number];

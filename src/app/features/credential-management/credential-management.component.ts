@@ -1,3 +1,4 @@
+import { CREDENTIAL_MANAGEMENT_ORGANIZATION } from './../../core/constants/translations.constants';
 import { AfterViewInit, Component, OnInit, inject, ViewChild, DestroyRef, ElementRef } from '@angular/core';
 import { MatTableDataSource, MatTable, MatColumnDef, MatHeaderCellDef, MatHeaderCell, MatCellDef, MatCell, MatHeaderRowDef, MatHeaderRow, MatRowDef, MatRow } from '@angular/material/table';
 import { MatPaginator } from '@angular/material/paginator';
@@ -15,10 +16,16 @@ import { debounceTime, Subject, take } from 'rxjs';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { animate, state, style, transition, trigger } from '@angular/animations';
 import { MatIcon } from '@angular/material/icon';
-import { CredentialProcedureWithClass } from 'src/app/core/models/entity/lear-credential-management';
+import { CredentialProcedureWithClass, Filter } from 'src/app/core/models/entity/lear-credential-management';
 import { LifeCycleStatusService } from 'src/app/shared/services/life-cycle-status.service';
 
 import { SubjectComponent } from './components/subject-component/subject-component.component';
+import { MatRadioButton } from "@angular/material/radio";
+import { MatCheckbox } from '@angular/material/checkbox';
+import { FormsModule } from '@angular/forms';
+import { CREDENTIAL_MANAGEMENT_SUBJECT } from 'src/app/core/constants/translations.constants';
+
+
 
 @Component({
     selector: 'app-credential-management',
@@ -26,30 +33,33 @@ import { SubjectComponent } from './components/subject-component/subject-compone
     styleUrls: ['./credential-management.component.scss'],
     standalone: true,
     imports: [
-        MatButton,
-        MatButtonModule,
-        MatTable,
-        MatSort,
-        MatColumnDef,
-        MatFormField,
-        MatHeaderCellDef,
-        MatHeaderCell,
-        MatIcon,
-        MatInputModule,
-        MatLabel,
-        MatSortHeader,
-        MatCellDef,
-        MatCell,
-        MatHeaderRowDef,
-        MatHeaderRow,
-        MatRowDef,
-        MatRow,
-        NgClass,
-        MatPaginator,
-        DatePipe,
-        SubjectComponent,
-        TranslatePipe,
-    ],
+    FormsModule,
+    MatButton,
+    MatButtonModule,
+    MatCheckbox,
+    MatTable,
+    MatSort,
+    MatColumnDef,
+    MatFormField,
+    MatHeaderCellDef,
+    MatHeaderCell,
+    MatIcon,
+    MatInputModule,
+    MatLabel,
+    MatSortHeader,
+    MatCellDef,
+    MatCell,
+    MatHeaderRowDef,
+    MatHeaderRow,
+    MatRowDef,
+    MatRow,
+    NgClass,
+    MatPaginator,
+    DatePipe,
+    SubjectComponent,
+    TranslatePipe,
+    MatRadioButton
+],
     animations: [
       trigger('openClose', [
         state(
@@ -78,6 +88,8 @@ export class CredentialManagementComponent implements OnInit, AfterViewInit {
   public displayedColumns: string[] = ['subject', 'credential_type', 'updated','status'];
   public dataSource = new MatTableDataSource<CredentialProcedureWithClass>();
   public isAdminOrganizationIdentifier = false;
+  public isSearchByOrganizationFilterChecked = false;
+  public searchLabel = CREDENTIAL_MANAGEMENT_SUBJECT;
 
   public hideSearchBar: boolean = true;
 
@@ -87,8 +99,15 @@ export class CredentialManagementComponent implements OnInit, AfterViewInit {
   private readonly destroyRef = inject(DestroyRef);
   private readonly router = inject(Router);
   private readonly statusService = inject(LifeCycleStatusService);
-
   private readonly searchSubject = new Subject<string>();
+
+  public onFilterByOrgChange(isChecked: boolean): void{
+    if(isChecked){
+      this.searchLabel = CREDENTIAL_MANAGEMENT_ORGANIZATION;
+    }else{
+      this.searchLabel = CREDENTIAL_MANAGEMENT_SUBJECT;
+    }
+  }
 
   public ngOnInit() {
     this.isAdminOrganizationIdentifier = this.authService.hasIn2OrganizationIdentifier();
@@ -101,7 +120,7 @@ export class CredentialManagementComponent implements OnInit, AfterViewInit {
     this.dataSource.sort = this.sort;
 
     this.setDataSortingAccessor();
-    this.setFilterPredicate();
+    this.setFilterPredicate("subject");
     this.setSubjectSearch();
   }
 
@@ -133,10 +152,11 @@ export class CredentialManagementComponent implements OnInit, AfterViewInit {
     };
   }
 
-  private setFilterPredicate(): void{
-        this.dataSource.filterPredicate = (data: CredentialProcedure, filter: string) => {
-      const searchString = filter.trim().toLowerCase();
-      return data.credential_procedure.subject.toLowerCase().includes(searchString);
+  private setFilterPredicate(filter: Filter): void{
+    //todo
+      this.dataSource.filterPredicate = (data: CredentialProcedure, filter: string) => {
+        const searchString = filter.trim().toLowerCase();
+        return data.credential_procedure.subject.toLowerCase().includes(searchString);
     };
   }
 

@@ -12,6 +12,7 @@ export interface CredentialProcedure {
     status: LifeCycleStatus;
     updated: string;
     owner_email: string;
+    organization: string;
   }
 }
 

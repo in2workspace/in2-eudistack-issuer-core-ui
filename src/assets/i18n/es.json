@@ -172,6 +172,7 @@
     "button": "Nueva credencial",
     "status": "Estatus",
     "organization": "Organización",
+    "filter-by-org": "Filtra por org.",
     "subject": "Sujeto",
     "credentialType": "Tipo de credencial",
     "updated": "Actualizado",

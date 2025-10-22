@@ -173,6 +173,7 @@
     "button": "New credential",
     "status": "Status",
     "organization": "Organization",
+    "filter-by-org": "Filter by org.",
     "subject": "Subject",
     "credentialType": "Credential Type",
     "updated": "Updated",
