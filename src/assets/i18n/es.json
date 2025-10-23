@@ -172,6 +172,7 @@
     "button": "Nueva credencial",
     "status": "Estatus",
     "organization": "Organización",
+    "organizationIdentifier": "ID de Organización",
     "filter-by-org": "Filtra por org.",
     "subject": "Sujeto",
     "credentialType": "Tipo de credencial",
@@ -179,7 +180,9 @@
     "cancel": "Cancelar",
     "create" : "Crear Credencial",
     "buttonAdmin":"Nueva Credencial (en nombre de)",
-    "search": "Busca por Sujeto",
+    "search": "Buscar por",
+    "searchPlaceholderSubject": "Juan García",
+    "searchPlaceholderOrg": "Mi org.",
     "searchPlaceholder": "Juan García",
       "paginator": {
       "items-per-page": "Ítems por página",

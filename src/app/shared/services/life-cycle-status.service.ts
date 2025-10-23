@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { CredentialProcedure } from 'src/app/core/models/dto/credential-procedures-response.dto';
+import { CredentialProcedureBasicInfo } from 'src/app/core/models/dto/credential-procedures-response.dto';
 import { LifeCycleStatus } from 'src/app/core/models/entity/lear-credential';
 import { CredentialProcedureWithClass, StatusClass, DefinedStatusClass, StatusClassFromDefined, STATUSES_WITH_DEFINED_CLASS } from 'src/app/core/models/entity/lear-credential-management';
 
@@ -10,7 +10,7 @@ export class LifeCycleStatusService {
 
   private readonly statusesWithDefinedClass = STATUSES_WITH_DEFINED_CLASS;
 
-    public addStatusClass(credentialProcedure: CredentialProcedure[]): CredentialProcedureWithClass[]{
+    public addStatusClass(credentialProcedure: CredentialProcedureBasicInfo[]): CredentialProcedureWithClass[]{
       const procedureWithStatus: CredentialProcedureWithClass[] = credentialProcedure.map(cred => {
         const credStatus: string = this.mapStatusToClass(cred.credential_procedure.status);
         return { ...cred, statusClass: credStatus };

@@ -1,4 +1,4 @@
-import { CREDENTIAL_MANAGEMENT_ORGANIZATION } from './../../core/constants/translations.constants';
+import { CREDENTIAL_MANAGEMENT_ORGANIZATION_ID, CREDENTIAL_MANAGEMENT_SEARCH_PLACEHOLDER_SUBJECT, CREDENTIAL_MANAGEMENT_SEARCH_PLACEHOLDER_ORG } from './../../core/constants/translations.constants';
 import { AfterViewInit, Component, OnInit, inject, ViewChild, DestroyRef, ElementRef } from '@angular/core';
 import { MatTableDataSource, MatTable, MatColumnDef, MatHeaderCellDef, MatHeaderCell, MatCellDef, MatCell, MatHeaderRowDef, MatHeaderRow, MatRowDef, MatRow } from '@angular/material/table';
 import { MatPaginator } from '@angular/material/paginator';
@@ -6,7 +6,7 @@ import { Router } from '@angular/router';
 import { CredentialProcedureService } from 'src/app/core/services/credential-procedure.service';
 import { AuthService } from 'src/app/core/services/auth.service';
 import { MatSort, MatSortHeader } from '@angular/material/sort';
-import { CredentialProcedure, CredentialProceduresResponse } from "../../core/models/dto/credential-procedures-response.dto";
+import { CredentialProcedureBasicInfo, CredentialProceduresResponse } from "../../core/models/dto/credential-procedures-response.dto";
 import { TranslatePipe } from '@ngx-translate/core';
 import { NgClass, DatePipe } from '@angular/common';
 import { MatButton, MatButtonModule } from '@angular/material/button';
@@ -85,11 +85,12 @@ export class CredentialManagementComponent implements OnInit, AfterViewInit {
   @ViewChild(MatPaginator) public paginator!: MatPaginator;
   @ViewChild(MatSort) public sort!: MatSort;
   @ViewChild('searchInput') public searchInput!: ElementRef<HTMLInputElement>;
-  public displayedColumns: string[] = ['subject', 'credential_type', 'updated','status'];
+  public displayedColumns: string[] = ['subject', 'organizationIdentifier', 'credential_type', 'updated', 'status'];
   public dataSource = new MatTableDataSource<CredentialProcedureWithClass>();
   public isAdminOrganizationIdentifier = false;
   public isSearchByOrganizationFilterChecked = false;
   public searchLabel = CREDENTIAL_MANAGEMENT_SUBJECT;
+  public searchPlaceholder = CREDENTIAL_MANAGEMENT_SEARCH_PLACEHOLDER_SUBJECT;
 
   public hideSearchBar: boolean = true;
 
@@ -103,15 +104,16 @@ export class CredentialManagementComponent implements OnInit, AfterViewInit {
 
   public onFilterByOrgChange(isChecked: boolean): void{
     if(isChecked){
-      this.searchLabel = CREDENTIAL_MANAGEMENT_ORGANIZATION;
+      this.searchLabel = CREDENTIAL_MANAGEMENT_ORGANIZATION_ID;
+      this.setFilterPredicate("organizationIdentifier");
     }else{
       this.searchLabel = CREDENTIAL_MANAGEMENT_SUBJECT;
+      this.setFilterPredicate("subject");
     }
   }
 
   public ngOnInit() {
     this.isAdminOrganizationIdentifier = this.authService.hasIn2OrganizationIdentifier();
-    this.initializeAdminFeatures(); //todo ngAfterViewInit?
     this.loadCredentialData();
   }
 
@@ -121,17 +123,11 @@ export class CredentialManagementComponent implements OnInit, AfterViewInit {
 
     this.setDataSortingAccessor();
     this.setFilterPredicate("subject");
-    this.setSubjectSearch();
-  }
-
-  private initializeAdminFeatures(): void{
-    if(this.isAdminOrganizationIdentifier){
-      this.displayedColumns.push('organization');
-    }
+    this.setStringSearchSubscription();
   }
 
   private setDataSortingAccessor(): void{
-    this.dataSource.sortingDataAccessor = (item: CredentialProcedure, property: string) => {
+    this.dataSource.sortingDataAccessor = (item: CredentialProcedureBasicInfo, property: string) => {
       switch (property) {
         case 'status': {
           const status = item.credential_procedure.status.toLowerCase();
@@ -146,6 +142,9 @@ export class CredentialManagementComponent implements OnInit, AfterViewInit {
         case 'credential_type': {
           return item.credential_procedure.credential_type.toLowerCase();
         }
+        case 'organizationIdentifier': {
+          return item.credential_procedure.organizationIdentifier.toLowerCase();
+        }
         default:
           return '';
       }
@@ -153,14 +152,35 @@ export class CredentialManagementComponent implements OnInit, AfterViewInit {
   }
 
   private setFilterPredicate(filter: Filter): void{
-    //todo
-      this.dataSource.filterPredicate = (data: CredentialProcedure, filter: string) => {
-        const searchString = filter.trim().toLowerCase();
-        return data.credential_procedure.subject.toLowerCase().includes(searchString);
+    this.setFilterLabelAndPlaceholder(filter);
+      this.dataSource.filterPredicate = (data: CredentialProcedureBasicInfo, filterString: string) => {
+        const searchString = filterString.trim().toLowerCase();
+        return data.credential_procedure[filter].toLowerCase().includes(searchString);
     };
   }
 
-  private setSubjectSearch(): void{
+  private setFilterLabelAndPlaceholder(filter: Filter): void{
+    let label;
+    let placeholder;
+
+    switch(filter){
+      case 'subject':
+        label = CREDENTIAL_MANAGEMENT_SUBJECT;
+        placeholder = CREDENTIAL_MANAGEMENT_SEARCH_PLACEHOLDER_SUBJECT
+        break;
+      case 'organizationIdentifier':
+        label = CREDENTIAL_MANAGEMENT_ORGANIZATION_ID;
+        placeholder = CREDENTIAL_MANAGEMENT_SEARCH_PLACEHOLDER_ORG;
+        break;
+      default:
+        label = CREDENTIAL_MANAGEMENT_SUBJECT;
+        placeholder = CREDENTIAL_MANAGEMENT_SEARCH_PLACEHOLDER_SUBJECT
+    }
+    this.searchLabel = label;
+    this.searchPlaceholder = placeholder;
+  }
+
+  private setStringSearchSubscription(): void{
     this.searchSubject.pipe(debounceTime(500))
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe((searchValue) => {
@@ -205,11 +225,11 @@ export class CredentialManagementComponent implements OnInit, AfterViewInit {
   }
   
 
-  public onRowClick(row: CredentialProcedure): void {
+  public onRowClick(row: CredentialProcedureBasicInfo): void {
     this.navigateToCredentialDetails(row);
   }
 
-  public navigateToCredentialDetails(credential_procedures: CredentialProcedure): void {
+  public navigateToCredentialDetails(credential_procedures: CredentialProcedureBasicInfo): void {
     this.router.navigate([
       '/organization/credentials/details',
       credential_procedures.credential_procedure?.procedure_id

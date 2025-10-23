@@ -1,10 +1,10 @@
 import { LifeCycleStatus } from "../entity/lear-credential";
 
 export interface CredentialProceduresResponse {
-  credential_procedures: CredentialProcedure[];
+  credential_procedures: CredentialProcedureBasicInfo[];
 }
 
-export interface CredentialProcedure {
+export interface CredentialProcedureBasicInfo {
   credential_procedure: {
     procedure_id: string;
     subject: string;
@@ -12,7 +12,7 @@ export interface CredentialProcedure {
     status: LifeCycleStatus;
     updated: string;
     owner_email: string;
-    organization: string;
+    organizationIdentifier: string;
   }
 }
 
