@@ -39,6 +39,7 @@ export class CredentialDetailsComponent implements OnInit {
   public credentialType$: Signal<CredentialType | undefined>;
   public lifeCycleStatus$: Signal<LifeCycleStatus | undefined>;
   public lifeCycleStatusClass$: Signal<StatusClass | undefined>;
+  public ownerEmail$: Signal<string | undefined>;
   public credentialStatus$: Signal<CredentialStatus | undefined>;
   //Models
   public mainViewModel$: WritableSignal<EvaluatedExtendedDetailsField[] | undefined>; // credentialSubject data
@@ -58,10 +59,10 @@ export class CredentialDetailsComponent implements OnInit {
   public tooltipText: string = "credentialDetails.revokeTooltip";
   public knowledgeBaseUrl = environment.knowledge_base_url + KNOWLEDGEBASE_PATH.ISSUER + KNOWLEDGEBASE_PATH.ISSUER_REVOKATION;
 
+  private readonly route = inject(ActivatedRoute);
   private readonly detailsService = inject(CredentialDetailsService);
   private readonly injector = inject(Injector);
   private readonly loader = inject(LoaderService);
-  private readonly route = inject(ActivatedRoute);
 
   public constructor(){
     this.isLoading$ = this.loader.isLoading$;
@@ -70,6 +71,7 @@ export class CredentialDetailsComponent implements OnInit {
     this.credentialType$ = this.detailsService.credentialType$;
     this.lifeCycleStatus$ = this.detailsService.lifeCycleStatus$;
     this.lifeCycleStatusClass$ = this.detailsService.lifeCycleStatusClass$;
+    this.ownerEmail$ = this.detailsService.ownerEmail$;
     this.credentialStatus$ = this.detailsService.credentialStatus$;
     this.mainViewModel$ = this.detailsService.mainViewModel$;
     this.sideViewModel$ = this.detailsService.sideViewModel$;

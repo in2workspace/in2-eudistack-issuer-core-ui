@@ -4,6 +4,7 @@ export interface CredentialProcedureDetails {
   procedure_id: string;
   lifeCycleStatus: LifeCycleStatus;
   credential: LEARCredentialJwtPayload; 
+  ownerEmail: string;
 }
 
 export type LifeCycleStatus = 'WITHDRAWN' | 'VALID' | 'EXPIRED' | 'PEND_DOWNLOAD' | 'PEND_SIGNATURE' | 'DRAFT' | 'ISSUED' | 'REVOKED';
