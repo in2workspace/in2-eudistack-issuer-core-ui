@@ -39,7 +39,7 @@ export class CredentialDetailsComponent implements OnInit {
   public credentialType$: Signal<CredentialType | undefined>;
   public lifeCycleStatus$: Signal<LifeCycleStatus | undefined>;
   public lifeCycleStatusClass$: Signal<StatusClass | undefined>;
-  public ownerEmail$: Signal<string | undefined>;
+  public subjectEmail$: Signal<string | undefined>;
   public credentialStatus$: Signal<CredentialStatus | undefined>;
   //Models
   public mainViewModel$: WritableSignal<EvaluatedExtendedDetailsField[] | undefined>; // credentialSubject data
@@ -71,7 +71,7 @@ export class CredentialDetailsComponent implements OnInit {
     this.credentialType$ = this.detailsService.credentialType$;
     this.lifeCycleStatus$ = this.detailsService.lifeCycleStatus$;
     this.lifeCycleStatusClass$ = this.detailsService.lifeCycleStatusClass$;
-    this.ownerEmail$ = this.detailsService.ownerEmail$;
+    this.subjectEmail$ = this.detailsService.subjectEmail$;
     this.credentialStatus$ = this.detailsService.credentialStatus$;
     this.mainViewModel$ = this.detailsService.mainViewModel$;
     this.sideViewModel$ = this.detailsService.sideViewModel$;

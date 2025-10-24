@@ -221,7 +221,7 @@ describe('CredentialManagementComponent', () => {
         status: 'DRAFT',
         updated: '2025-07-01',
         credential_type: 'LEAR_CREDENTIAL_EMPLOYEE',
-        owner_email: 'email'
+        subject_email: 'email'
       }
     };
     const mockResponse = { credential_procedures: [ mockProc ] } as CredentialProceduresResponse;

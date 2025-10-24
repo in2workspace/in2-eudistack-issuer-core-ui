@@ -76,7 +76,7 @@
     "ISSUED": "EMÈS",
     "type" : "tipus",
     "status": "estatus",
-    "ownerEmail": "Email del propietario",
+    "subjectEmail": "Email del sujeto",
     "valid_from": "vàlid des de",
     "valid_until": "vàlid fins",
     "issuer": "emissor",

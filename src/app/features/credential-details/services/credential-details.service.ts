@@ -24,8 +24,8 @@ export class CredentialDetailsService {
   public lifeCycleStatus$ = computed<LifeCycleStatus | undefined>(() => {
     return this.credentialProcedureDetails$()?.lifeCycleStatus;
   });
-  public ownerEmail$ = computed<string | undefined>(() => {
-    return this.credentialProcedureDetails$()?.ownerEmail;
+  public subjectEmail$ = computed<string | undefined>(() => {
+    return this.credentialProcedureDetails$()?.subjectEmail;
   });
   public credential$ = computed<LEARCredential | undefined>(() => {
     const credentialProcedureData = this.credentialProcedureDetails$();
