@@ -12,7 +12,7 @@ import { NgClass, DatePipe } from '@angular/common';
 import { MatButton, MatButtonModule } from '@angular/material/button';
 import { MatFormField, MatLabel } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
-import { debounceTime, Subject, take, filter } from 'rxjs';
+import { debounceTime, Subject, take } from 'rxjs';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { animate, state, style, transition, trigger } from '@angular/animations';
 import { MatIcon } from '@angular/material/icon';
@@ -20,7 +20,6 @@ import { CredentialProcedureWithClass, Filter, FilterConfig } from 'src/app/core
 import { LifeCycleStatusService } from 'src/app/shared/services/life-cycle-status.service';
 
 import { SubjectComponent } from './components/subject-component/subject-component.component';
-import { MatRadioButton } from "@angular/material/radio";
 import { MatCheckbox } from '@angular/material/checkbox';
 import { FormsModule } from '@angular/forms';
 import { CREDENTIAL_MANAGEMENT_SUBJECT } from 'src/app/core/constants/translations.constants';
@@ -57,8 +56,7 @@ import { CREDENTIAL_MANAGEMENT_SUBJECT } from 'src/app/core/constants/translatio
     MatPaginator,
     DatePipe,
     SubjectComponent,
-    TranslatePipe,
-    MatRadioButton
+    TranslatePipe
 ],
     animations: [
       trigger('openClose', [
@@ -129,14 +127,13 @@ export class CredentialManagementComponent implements OnInit, AfterViewInit {
     this.setStringSearchSubscription();
   }
 
-    public navigateToCreateCredential(): void {
+  public navigateToCreateCredential(): void {
     this.router.navigate(['/organization/credentials/create']);
   }
 
-  //todo change "signer" for "admin" here and in all app
-  public navigateToCreateCredentialAsSigner(): void {
+  public navigateToCreateCredentialOnBehalf(): void {
     const route = this.isAdminOrganizationIdentifier
-      ? ['/organization/credentials/create-as-signer']
+      ? ['/organization/credentials/create-on-behalf']
       : ['/organization/credentials/create'];
   
     this.router.navigate(route);
@@ -188,7 +185,7 @@ export class CredentialManagementComponent implements OnInit, AfterViewInit {
     this.searchSubject.next(filterValue);
   }
 
-    private loadCredentialData(): void {
+  private loadCredentialData(): void {
     this.credentialProcedureService.getCredentialProcedures()
     .pipe(take(1))
     .subscribe({

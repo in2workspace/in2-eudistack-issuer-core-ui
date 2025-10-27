@@ -53,7 +53,7 @@ export class CredentialIssuanceComponent implements CanDeactivate<CanComponentDe
     const asSigner = this.route.snapshot.pathFromRoot
         .flatMap(r => r.url)
         .map(seg => seg.path)
-        .includes('create-as-signer');
+        .includes('create-on-behalf');
     this.issuanceService.asSigner$.set(asSigner);
     this.asSigner$ = this.issuanceService.asSigner$;
     this.hasSubmitted$ = this.issuanceService.hasSubmitted$;

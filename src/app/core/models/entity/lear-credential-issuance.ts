@@ -62,7 +62,7 @@ export type IssuanceViewModelsTuple = [CredentialIssuanceViewModelSchemaWithId, 
 export interface IssuanceRawCredentialPayload {
   formData: Record<string, any>, 
   staticData: IssuanceStaticViewModel | null,
-  asSigner: boolean
+  asSigner: boolean //todo rename "onBehalf" here and across all the app
 }
 
 // Power component types
