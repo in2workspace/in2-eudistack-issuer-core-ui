@@ -15,13 +15,13 @@ import { CredentialProcedureBasicInfo, CredentialProceduresResponse } from 'src/
 import { ElementRef } from '@angular/core';
 
 // helper to mock search input
- function createMockInput(initialValue = '') {
-    const el = document.createElement('input');
-    el.value = initialValue;
-    const focusSpy = jest.spyOn(el, 'focus').mockImplementation(() => {});
-    const selectSpy = jest.spyOn(el, 'select').mockImplementation(() => {});
-    return { el, focusSpy, selectSpy };
-  }
+function createMockInput(initialValue = '') {
+  const el = document.createElement('input');
+  el.value = initialValue;
+  const focusSpy = jest.spyOn(el, 'focus').mockImplementation(() => {});
+  const selectSpy = jest.spyOn(el, 'select').mockImplementation(() => {});
+  return { el, focusSpy, selectSpy };
+}
 
 describe('CredentialManagementComponent', () => {
   let component: CredentialManagementComponent;
@@ -49,7 +49,7 @@ describe('CredentialManagementComponent', () => {
         MatPaginatorModule,
         RouterModule.forRoot([]),
         TranslateModule.forRoot({}),
-        CredentialManagementComponent,
+        CredentialManagementComponent, // standalone
       ],
       providers: [
         CredentialProcedureService,
@@ -61,7 +61,7 @@ describe('CredentialManagementComponent', () => {
             snapshot: { paramMap: { get: () => '1' } },
           },
         },
-        provideHttpClient()
+        provideHttpClient(),
       ],
     }).compileComponents();
 
@@ -75,7 +75,7 @@ describe('CredentialManagementComponent', () => {
   beforeEach(() => {
     fixture = TestBed.createComponent(CredentialManagementComponent);
     component = fixture.componentInstance;
-    // perquè no dongui error en ngOnInit
+    // avoid error in ngOnInit
     credentialProcedureSpy.mockReturnValue(of({ credential_procedures: [] } as CredentialProceduresResponse));
     fixture.detectChanges();
   });
@@ -95,42 +95,61 @@ describe('CredentialManagementComponent', () => {
     expect(component.isAdminOrganizationIdentifier).toBe(true);
   });
 
+  it('should call loadCredentialData on ngOnInit', () => {
+    // Spy on the private method
+    const loadSpy = jest.spyOn(component as any, 'loadCredentialData');
+    component.ngOnInit();
+    expect(loadSpy).toHaveBeenCalledTimes(1);
+  });
 
   it('should set dataSource filter and reset paginator on search', fakeAsync(() => {
-    // assignem un paginator real per a que firstPage existeixi
+    // attach a real-ish paginator so firstPage exists
     component.dataSource['_paginator'] = { firstPage: jest.fn() } as any;
     const paginatorSpy = jest.spyOn(component.dataSource.paginator!, 'firstPage');
 
     component['searchSubject'].next('FOO');
-    tick(500);
+    tick(500); // debounce
 
     expect(component.dataSource.filter).toBe('foo');
     expect(paginatorSpy).toHaveBeenCalled();
   }));
 
   it('should set dataSource filter and not reset paginator if paginator is undefined', fakeAsync(() => {
-    // forcem paginator undefined
+    // force paginator undefined
     jest.spyOn(component.dataSource, 'paginator', 'get').mockReturnValue(null);
     const paginator = component.dataSource.paginator;
     component['searchSubject'].next('BAR');
-    tick(500);
+    tick(500); // debounce
 
     expect(component.dataSource.filter).toBe('bar');
-    // no ha de saltar cap error ni cridar firstPage
-    expect(paginator).toBeNull();
+    expect(paginator).toBeNull(); // no error nor firstPage call expected
   }));
 
-  it('should assign paginator and sort to dataSource', () => {
+  it('should run all setup functions inside ngAfterViewInit', () => {
+    // Provide dummy paginator and sort so assignments work
     const mockPaginator = {} as any;
     const mockSort = {} as any;
     component.paginator = mockPaginator;
     component.sort = mockSort;
+
+    // Spies on the private setup methods called inside ngAfterViewInit
+    const sortAccessorSpy = jest.spyOn(component as any, 'setDataSortingAccessor');
+    const filterPredicateSpy = jest.spyOn(component as any, 'setFilterPredicate');
+    const searchSubSpy = jest.spyOn(component as any, 'setStringSearchSubscription');
+
     component.ngAfterViewInit();
+
+    // Assignments done
     expect(component.dataSource.paginator).toBe(mockPaginator);
     expect(component.dataSource.sort).toBe(mockSort);
+
+    // Methods executed with the right arguments
+    expect(sortAccessorSpy).toHaveBeenCalledTimes(1);
+    expect(filterPredicateSpy).toHaveBeenCalledWith('subject');
+    expect(searchSubSpy).toHaveBeenCalledTimes(1);
   });
 
-  it('should configure sortingDataAccessor correctly', () => {
+  it('should configure sortingDataAccessor correctly (status, subject, updated, credential_type, organizationIdentifier)', () => {
     component.ngAfterViewInit();
     const mockItem: any = {
       credential_procedure: {
@@ -139,25 +158,77 @@ describe('CredentialManagementComponent', () => {
         subject: 'Subject Test',
         updated: '2024-10-20',
         credential_type: 'Type Test',
+        organizationIdentifier: 'ORG-ABC-123'
       },
     };
     expect(component.dataSource.sortingDataAccessor(mockItem, 'status')).toBe('draft');
     expect(component.dataSource.sortingDataAccessor(mockItem, 'subject')).toBe('subject test');
     expect(component.dataSource.sortingDataAccessor(mockItem, 'updated')).toBe('2024-10-20');
     expect(component.dataSource.sortingDataAccessor(mockItem, 'credential_type')).toBe('type test');
+    expect(component.dataSource.sortingDataAccessor(mockItem, 'organizationIdentifier')).toBe('org-abc-123');
     expect(component.dataSource.sortingDataAccessor(mockItem, 'unknown')).toBe('');
   });
 
-  it('should configure filterPredicate correctly', () => {
-    component.ngAfterViewInit();
+  it('should configure filterPredicate for subject by default (ngAfterViewInit)', () => {
+    component.ngAfterViewInit(); // sets filter to "subject"
     const mockItem: any = {
       credential_procedure: { subject: 'My Fancy Subject' }
     };
-    // coincideix
-    expect(component.dataSource.filterPredicate!(mockItem, 'fancy')).toBe(true);
-    // no coincideix
-    expect(component.dataSource.filterPredicate!(mockItem, 'xyz')).toBe(false);
+    expect(component.dataSource.filterPredicate!(mockItem, 'fancy')).toBe(true); // match
+    expect(component.dataSource.filterPredicate!(mockItem, 'xyz')).toBe(false);  // no match
   });
+
+  it('should switch filterPredicate to organizationIdentifier when onFilterChange(true)', () => {
+    component.ngAfterViewInit(); // start with "subject"
+    component.onFilterChange(true); // switch to "organizationIdentifier"
+
+    const mockItem: any = {
+      credential_procedure: {
+        subject: 'Irrelevant',
+        organizationIdentifier: 'VATES-000999'
+      }
+    };
+    expect(component.dataSource.filterPredicate!(mockItem, 'vates')).toBe(true);
+    expect(component.dataSource.filterPredicate!(mockItem, '000999')).toBe(true);
+    expect(component.dataSource.filterPredicate!(mockItem, 'other')).toBe(false);
+  });
+
+  it('should revert filterPredicate back to subject when onFilterChange(false)', () => {
+    component.ngAfterViewInit();
+    component.onFilterChange(true);  // to organizationIdentifier
+    component.onFilterChange(false); // back to subject
+
+    const mockItem: any = {
+      credential_procedure: {
+        subject: 'Alice Wonderland',
+        organizationIdentifier: 'VATES-000111'
+      }
+    };
+    expect(component.dataSource.filterPredicate!(mockItem, 'alice')).toBe(true);
+    expect(component.dataSource.filterPredicate!(mockItem, 'vates')).toBe(false);
+  });
+
+  it('should call setFilter("organizationIdentifier") when onFilterChange(true)', () => {
+  const setFilterSpy = jest.spyOn(component as any, 'setFilter');
+  component.onFilterChange(true);
+  expect(setFilterSpy).toHaveBeenCalledWith('organizationIdentifier');
+  });
+
+  it('should call setFilter("subject") when onFilterChange(false)', () => {
+    const setFilterSpy = jest.spyOn(component as any, 'setFilter');
+    component.onFilterChange(false);
+    expect(setFilterSpy).toHaveBeenCalledWith('subject');
+  });
+
+  it('should call searchSubject.next with input value when onSearchStringChange is triggered', () => {
+    const nextSpy = jest.spyOn(component['searchSubject'], 'next');
+    const event = { target: { value: 'searchTerm' } } as unknown as Event;
+
+    component.onSearchStringChange(event);
+
+    expect(nextSpy).toHaveBeenCalledWith('searchTerm');
+  });
+
 
   it('should call searchSubject.next with the correct filter value', () => {
     const event = { target: { value: 'searchTerm'} } as any;
@@ -166,7 +237,7 @@ describe('CredentialManagementComponent', () => {
     expect(nextSpy).toHaveBeenCalledWith('searchTerm');
   });
 
- it('should focus and select input when opening the search bar', () => {
+  it('should focus and select input when opening the search bar', () => {
     component.hideSearchBar = true;
 
     const { el, focusSpy, selectSpy } = createMockInput();
@@ -188,24 +259,23 @@ describe('CredentialManagementComponent', () => {
     component.dataSource['_paginator'] = { firstPage: jest.fn() } as any;
     const firstPageSpy = jest.spyOn(component.dataSource.paginator!, 'firstPage');
 
-
     const nextSpy = jest.spyOn(component['searchSubject'], 'next');
     component.toggleSearchBar();
 
     expect(component.hideSearchBar).toBe(true);
     expect(el.value).toBe('');
     expect(nextSpy).toHaveBeenCalledWith('');
-    expect(firstPageSpy).toHaveBeenCalled(); 
+    expect(firstPageSpy).toHaveBeenCalled();
   });
 
-  it('should toggle searchbar', () => {
+  it('should toggle searchbar open/close consistently', () => {
     component.hideSearchBar = true;
 
     component.toggleSearchBar();
     expect(component.hideSearchBar).toBeFalsy();
 
     component.toggleSearchBar();
-    expect(component.hideSearchBar).toBeTruthy(); // <-- arreglat
+    expect(component.hideSearchBar).toBeTruthy();
   });
 
   it('should load credential data and update dataSource', fakeAsync(() => {
@@ -217,18 +287,17 @@ describe('CredentialManagementComponent', () => {
         updated: '2025-07-01',
         credential_type: 'LEAR_CREDENTIAL_EMPLOYEE',
         subject_email: 'email',
-        organizationIdentifier: "VATES-000000"
-      }
+        organizationIdentifier: 'VATES-000000',
+      },
     };
-    const mockResponse = { credential_procedures: [ mockProc ] } as CredentialProceduresResponse;
+    const mockResponse = { credential_procedures: [mockProc] } as CredentialProceduresResponse;
     credentialProcedureSpy.mockReturnValue(of(mockResponse));
-    const withClass: CredentialProcedureWithClass[] = [
-      { ...mockProc, statusClass: 'status-active' }
-    ];
+    const withClass: CredentialProcedureWithClass[] = [{ ...mockProc, statusClass: 'status-active' }];
     const statusSpy = jest.spyOn(statusService, 'addStatusClass').mockReturnValue(withClass);
 
     component['loadCredentialData']();
     tick();
+
     expect(credentialProcedureSpy).toHaveBeenCalled();
     expect(statusSpy).toHaveBeenCalledWith(mockResponse.credential_procedures);
     expect(component.dataSource.data).toEqual(withClass);
@@ -245,4 +314,46 @@ describe('CredentialManagementComponent', () => {
     expect(consoleSpy).toHaveBeenCalledWith('Error fetching credentials for table', error);
     consoleSpy.mockRestore();
   }));
+
+  it('should set searchLabel and searchPlaceholder according to filter config', () => {
+  // Call private method with "subject"
+  (component as any).setFilterLabelAndPlaceholder('subject');
+  expect(component.searchLabel).toBe(component['filtersMap'].subject.translationLabel);
+  expect(component.searchPlaceholder).toBe(component['filtersMap'].subject.placeholderTranslationLabel);
+
+  // Call again with "organizationIdentifier"
+  (component as any).setFilterLabelAndPlaceholder('organizationIdentifier');
+  expect(component.searchLabel).toBe(component['filtersMap'].organizationIdentifier.translationLabel);
+  expect(component.searchPlaceholder).toBe(component['filtersMap'].organizationIdentifier.placeholderTranslationLabel);
+});
+
+it('should subscribe to searchSubject and update dataSource.filter (and call firstPage if paginator exists)', fakeAsync(() => {
+  // Attach paginator mock with firstPage spy
+  component.dataSource['_paginator'] = { firstPage: jest.fn() } as any;
+  const firstPageSpy = jest.spyOn(component.dataSource.paginator!, 'firstPage');
+
+  // Manually call the private subscription setup
+  (component as any).setStringSearchSubscription();
+
+  // Emit value into searchSubject
+  component['searchSubject'].next('  Foo  ');
+  tick(500); // simulate debounceTime(500)
+
+  expect(component.dataSource.filter).toBe('foo'); // trimmed + lowercased
+  expect(firstPageSpy).toHaveBeenCalled();
+}));
+
+it('should update filter even if paginator is undefined', fakeAsync(() => {
+  // Ensure paginator is undefined
+  jest.spyOn(component.dataSource, 'paginator', 'get').mockReturnValue(null);
+
+  (component as any).setStringSearchSubscription();
+
+  component['searchSubject'].next('Bar');
+  tick(500);
+
+  expect(component.dataSource.filter).toBe('bar');
+  // no error and no paginator call
+}));
+
 });

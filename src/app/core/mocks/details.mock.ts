@@ -22,6 +22,7 @@ export const mockCredentialEmployee: any = {
 // todo export const mockCredentialEmployee: CredentialProcedureDetails = {
   procedure_id: 'mock-procedure-employee',
   lifeCycleStatus: 'DRAFT',
+  subjectEmail: "mock@email.com",
   credential: {
     sub: null,
     nbf: '1714675200',
@@ -90,6 +91,7 @@ export const mockCredentialMachine: any = {
 // todo export const mockCredentialMachine: CredentialProcedureDetails = {
   procedure_id: 'mock-procedure-machine',
   lifeCycleStatus: 'PEND_SIGNATURE',
+  subjectEmail: "mock@email.com",
   credential: {
     sub: null,
     nbf: '1714675200',
@@ -154,6 +156,7 @@ export const mockCredentialCertification: any = {
 // todo xport const mockCredentialCertification: CredentialProcedureDetails = {
   procedure_id: 'mock-procedure-cert',
   lifeCycleStatus: 'PEND_DOWNLOAD',
+  subjectEmail: "mock@email.com",
   credential: {
     sub: null,
     nbf: '1714675200',
@@ -231,6 +234,7 @@ export const mockCredentialCertification: any = {
 export const mockGxLabel: CredentialProcedureDetails = {
   procedure_id: 'mock-procedure-gx-label',
   lifeCycleStatus: 'DRAFT',
+  subjectEmail: "mock@email.com",
   credential: {
     sub: null,
     nbf: '1714675200',

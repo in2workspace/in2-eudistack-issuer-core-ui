@@ -139,7 +139,6 @@ export class CredentialManagementComponent implements OnInit, AfterViewInit {
     this.router.navigate(route);
   }
   
-
   public onRowClick(row: CredentialProcedureBasicInfo): void {
     this.navigateToCredentialDetails(row);
   }
