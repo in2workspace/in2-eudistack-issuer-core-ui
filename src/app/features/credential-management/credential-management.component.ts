@@ -20,9 +20,9 @@ import { CredentialProcedureWithClass, Filter, FilterConfig } from 'src/app/core
 import { LifeCycleStatusService } from 'src/app/shared/services/life-cycle-status.service';
 
 import { SubjectComponent } from './components/subject-component/subject-component.component';
-import { MatCheckbox } from '@angular/material/checkbox';
 import { FormsModule } from '@angular/forms';
 import { CREDENTIAL_MANAGEMENT_SUBJECT } from 'src/app/core/constants/translations.constants';
+import { MatSlideToggle } from '@angular/material/slide-toggle';
 
 
 
@@ -35,7 +35,6 @@ import { CREDENTIAL_MANAGEMENT_SUBJECT } from 'src/app/core/constants/translatio
     FormsModule,
     MatButton,
     MatButtonModule,
-    MatCheckbox,
     MatTable,
     MatSort,
     MatColumnDef,
@@ -52,6 +51,7 @@ import { CREDENTIAL_MANAGEMENT_SUBJECT } from 'src/app/core/constants/translatio
     MatHeaderRow,
     MatRowDef,
     MatRow,
+    MatSlideToggle,
     NgClass,
     MatPaginator,
     DatePipe,
@@ -172,11 +172,8 @@ export class CredentialManagementComponent implements OnInit, AfterViewInit {
   }
 
   public onFilterChange(isChecked: boolean): void{
-    if(isChecked){
-      this.setFilter("organizationIdentifier");
-    }else{
-      this.setFilter("subject");
-    }
+    const filter: Filter = isChecked ? "organizationIdentifier" : "subject";
+    this.setFilter(filter);
   }
 
   public onSearchStringChange(event: Event): void {
