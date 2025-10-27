@@ -149,7 +149,7 @@ describe('CredentialManagementComponent', () => {
     expect(searchSubSpy).toHaveBeenCalledTimes(1);
   });
 
-  it('should configure sortingDataAccessor correctly (status, subject, updated, credential_type, organizationIdentifier)', () => {
+  it('should configure sortingDataAccessor correctly (status, subject, updated, credential_type, organization_identifier)', () => {
     component.ngAfterViewInit();
     const mockItem: any = {
       credential_procedure: {
@@ -158,14 +158,14 @@ describe('CredentialManagementComponent', () => {
         subject: 'Subject Test',
         updated: '2024-10-20',
         credential_type: 'Type Test',
-        organizationIdentifier: 'ORG-ABC-123'
+        organization_identifier: 'ORG-ABC-123'
       },
     };
     expect(component.dataSource.sortingDataAccessor(mockItem, 'status')).toBe('draft');
     expect(component.dataSource.sortingDataAccessor(mockItem, 'subject')).toBe('subject test');
     expect(component.dataSource.sortingDataAccessor(mockItem, 'updated')).toBe('2024-10-20');
     expect(component.dataSource.sortingDataAccessor(mockItem, 'credential_type')).toBe('type test');
-    expect(component.dataSource.sortingDataAccessor(mockItem, 'organizationIdentifier')).toBe('org-abc-123');
+    expect(component.dataSource.sortingDataAccessor(mockItem, 'organization_identifier')).toBe('org-abc-123');
     expect(component.dataSource.sortingDataAccessor(mockItem, 'unknown')).toBe('');
   });
 
@@ -178,14 +178,14 @@ describe('CredentialManagementComponent', () => {
     expect(component.dataSource.filterPredicate!(mockItem, 'xyz')).toBe(false);  // no match
   });
 
-  it('should switch filterPredicate to organizationIdentifier when onFilterChange(true)', () => {
+  it('should switch filterPredicate to organization_identifier when onFilterChange(true)', () => {
     component.ngAfterViewInit(); // start with "subject"
-    component.onFilterChange(true); // switch to "organizationIdentifier"
+    component.onFilterChange(true); // switch to "organization_identifier"
 
     const mockItem: any = {
       credential_procedure: {
         subject: 'Irrelevant',
-        organizationIdentifier: 'VATES-000999'
+        organization_identifier: 'VATES-000999'
       }
     };
     expect(component.dataSource.filterPredicate!(mockItem, 'vates')).toBe(true);
@@ -195,23 +195,23 @@ describe('CredentialManagementComponent', () => {
 
   it('should revert filterPredicate back to subject when onFilterChange(false)', () => {
     component.ngAfterViewInit();
-    component.onFilterChange(true);  // to organizationIdentifier
+    component.onFilterChange(true);  // to organization identifier
     component.onFilterChange(false); // back to subject
 
     const mockItem: any = {
       credential_procedure: {
         subject: 'Alice Wonderland',
-        organizationIdentifier: 'VATES-000111'
+        organization_identifier: 'VATES-000111'
       }
     };
     expect(component.dataSource.filterPredicate!(mockItem, 'alice')).toBe(true);
     expect(component.dataSource.filterPredicate!(mockItem, 'vates')).toBe(false);
   });
 
-  it('should call setFilter("organizationIdentifier") when onFilterChange(true)', () => {
+  it('should call setFilter("organization_identifier") when onFilterChange(true)', () => {
   const setFilterSpy = jest.spyOn(component as any, 'setFilter');
   component.onFilterChange(true);
-  expect(setFilterSpy).toHaveBeenCalledWith('organizationIdentifier');
+  expect(setFilterSpy).toHaveBeenCalledWith('organization_identifier');
   });
 
   it('should call setFilter("subject") when onFilterChange(false)', () => {
@@ -287,7 +287,7 @@ describe('CredentialManagementComponent', () => {
         updated: '2025-07-01',
         credential_type: 'LEAR_CREDENTIAL_EMPLOYEE',
         subject_email: 'email',
-        organizationIdentifier: 'VATES-000000',
+        organization_identifier: 'VATES-000000',
       },
     };
     const mockResponse = { credential_procedures: [mockProc] } as CredentialProceduresResponse;
@@ -321,10 +321,10 @@ describe('CredentialManagementComponent', () => {
   expect(component.searchLabel).toBe(component['filtersMap'].subject.translationLabel);
   expect(component.searchPlaceholder).toBe(component['filtersMap'].subject.placeholderTranslationLabel);
 
-  // Call again with "organizationIdentifier"
-  (component as any).setFilterLabelAndPlaceholder('organizationIdentifier');
-  expect(component.searchLabel).toBe(component['filtersMap'].organizationIdentifier.translationLabel);
-  expect(component.searchPlaceholder).toBe(component['filtersMap'].organizationIdentifier.placeholderTranslationLabel);
+  // Call again with "organization_identifier"
+  (component as any).setFilterLabelAndPlaceholder('organization_identifier');
+  expect(component.searchLabel).toBe(component['filtersMap'].organization_identifier.translationLabel);
+  expect(component.searchPlaceholder).toBe(component['filtersMap'].organization_identifier.placeholderTranslationLabel);
 });
 
 it('should subscribe to searchSubject and update dataSource.filter (and call firstPage if paginator exists)', fakeAsync(() => {

@@ -83,7 +83,7 @@ export class CredentialManagementComponent implements OnInit, AfterViewInit {
   @ViewChild(MatPaginator) public paginator!: MatPaginator;
   @ViewChild(MatSort) public sort!: MatSort;
   @ViewChild('searchInput') public searchInput!: ElementRef<HTMLInputElement>;
-  public displayedColumns: string[] = ['subject', 'organizationIdentifier', 'credential_type', 'updated', 'status'];
+  public displayedColumns: string[] = ['subject', 'organization_identifier', 'credential_type', 'updated', 'status'];
   public dataSource = new MatTableDataSource<CredentialProcedureWithClass>();
   public isAdminOrganizationIdentifier = false;
   public isSearchByOrganizationFilterChecked = false;
@@ -106,8 +106,8 @@ export class CredentialManagementComponent implements OnInit, AfterViewInit {
       translationLabel: CREDENTIAL_MANAGEMENT_SUBJECT,
       placeholderTranslationLabel: CREDENTIAL_MANAGEMENT_SEARCH_PLACEHOLDER_SUBJECT
     },
-    organizationIdentifier: {
-      filterName: "organizationIdentifier",
+    organization_identifier: {
+      filterName: "organization_identifier",
       translationLabel: CREDENTIAL_MANAGEMENT_ORGANIZATION_ID,
       placeholderTranslationLabel: CREDENTIAL_MANAGEMENT_SEARCH_PLACEHOLDER_ORG_ID
     }
@@ -172,7 +172,7 @@ export class CredentialManagementComponent implements OnInit, AfterViewInit {
   }
 
   public onFilterChange(isChecked: boolean): void{
-    const filter: Filter = isChecked ? "organizationIdentifier" : "subject";
+    const filter: Filter = isChecked ? "organization_identifier" : "subject";
     this.setFilter(filter);
   }
 
@@ -210,8 +210,8 @@ export class CredentialManagementComponent implements OnInit, AfterViewInit {
         case 'credential_type': {
           return item.credential_procedure.credential_type.toLowerCase();
         }
-        case 'organizationIdentifier': {
-          return item.credential_procedure.organizationIdentifier.toLowerCase();
+        case 'organization_identifier': {
+          return item.credential_procedure.organization_identifier.toLowerCase();
         }
         default:
           return '';

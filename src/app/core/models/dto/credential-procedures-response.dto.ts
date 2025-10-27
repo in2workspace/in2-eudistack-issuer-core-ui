@@ -12,7 +12,7 @@ export interface CredentialProcedureBasicInfo {
     status: LifeCycleStatus;
     updated: string;
     subject_email: string;
-    organizationIdentifier: string;
+    organization_identifier: string;
   }
 }
 
