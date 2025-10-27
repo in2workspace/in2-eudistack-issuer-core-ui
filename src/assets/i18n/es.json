@@ -183,7 +183,7 @@
     "buttonAdmin":"Nueva Credencial (en nombre de)",
     "search": "Buscar por",
     "searchPlaceholderSubject": "Juan García",
-    "searchPlaceholderOrg": "Mi org.",
+    "searchPlaceholderOrgID": "VATES-000000",
     "searchPlaceholder": "Juan García",
       "paginator": {
       "items-per-page": "Ítems por página",

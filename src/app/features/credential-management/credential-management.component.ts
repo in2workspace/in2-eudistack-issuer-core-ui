@@ -1,4 +1,4 @@
-import { CREDENTIAL_MANAGEMENT_ORGANIZATION_ID, CREDENTIAL_MANAGEMENT_SEARCH_PLACEHOLDER_SUBJECT, CREDENTIAL_MANAGEMENT_SEARCH_PLACEHOLDER_ORG } from './../../core/constants/translations.constants';
+import { CREDENTIAL_MANAGEMENT_ORGANIZATION_ID, CREDENTIAL_MANAGEMENT_SEARCH_PLACEHOLDER_SUBJECT, CREDENTIAL_MANAGEMENT_SEARCH_PLACEHOLDER_ORG_ID } from './../../core/constants/translations.constants';
 import { AfterViewInit, Component, OnInit, inject, ViewChild, DestroyRef, ElementRef } from '@angular/core';
 import { MatTableDataSource, MatTable, MatColumnDef, MatHeaderCellDef, MatHeaderCell, MatCellDef, MatCell, MatHeaderRowDef, MatHeaderRow, MatRowDef, MatRow } from '@angular/material/table';
 import { MatPaginator } from '@angular/material/paginator';
@@ -12,11 +12,11 @@ import { NgClass, DatePipe } from '@angular/common';
 import { MatButton, MatButtonModule } from '@angular/material/button';
 import { MatFormField, MatLabel } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
-import { debounceTime, Subject, take } from 'rxjs';
+import { debounceTime, Subject, take, filter } from 'rxjs';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { animate, state, style, transition, trigger } from '@angular/animations';
 import { MatIcon } from '@angular/material/icon';
-import { CredentialProcedureWithClass, Filter } from 'src/app/core/models/entity/lear-credential-management';
+import { CredentialProcedureWithClass, Filter, FilterConfig } from 'src/app/core/models/entity/lear-credential-management';
 import { LifeCycleStatusService } from 'src/app/shared/services/life-cycle-status.service';
 
 import { SubjectComponent } from './components/subject-component/subject-component.component';
@@ -102,19 +102,22 @@ export class CredentialManagementComponent implements OnInit, AfterViewInit {
   private readonly statusService = inject(LifeCycleStatusService);
   private readonly searchSubject = new Subject<string>();
 
-  public onFilterByOrgChange(isChecked: boolean): void{
-    if(isChecked){
-      this.searchLabel = CREDENTIAL_MANAGEMENT_ORGANIZATION_ID;
-      this.setFilterPredicate("organizationIdentifier");
-    }else{
-      this.searchLabel = CREDENTIAL_MANAGEMENT_SUBJECT;
-      this.setFilterPredicate("subject");
+  private readonly filtersMap: Record<Filter, FilterConfig> = {
+    subject: {
+      filterName: "subject",
+      translationLabel: CREDENTIAL_MANAGEMENT_SUBJECT,
+      placeholderTranslationLabel: CREDENTIAL_MANAGEMENT_SEARCH_PLACEHOLDER_SUBJECT
+    },
+    organizationIdentifier: {
+      filterName: "organizationIdentifier",
+      translationLabel: CREDENTIAL_MANAGEMENT_ORGANIZATION_ID,
+      placeholderTranslationLabel: CREDENTIAL_MANAGEMENT_SEARCH_PLACEHOLDER_ORG_ID
     }
-  }
+   } as const;
 
   public ngOnInit() {
-    this.isAdminOrganizationIdentifier = this.authService.hasIn2OrganizationIdentifier();
     this.loadCredentialData();
+    this.isAdminOrganizationIdentifier = this.authService.hasIn2OrganizationIdentifier();
   }
 
   public ngAfterViewInit(): void {
@@ -126,92 +129,7 @@ export class CredentialManagementComponent implements OnInit, AfterViewInit {
     this.setStringSearchSubscription();
   }
 
-  private setDataSortingAccessor(): void{
-    this.dataSource.sortingDataAccessor = (item: CredentialProcedureBasicInfo, property: string) => {
-      switch (property) {
-        case 'status': {
-          const status = item.credential_procedure.status.toLowerCase();
-          return status === 'withdrawn' ? 'draft' : status;
-        }
-        case 'subject': {
-          return item.credential_procedure.subject.toLowerCase();
-        }
-        case 'updated': {
-          return item.credential_procedure.updated.toLowerCase();
-        }
-        case 'credential_type': {
-          return item.credential_procedure.credential_type.toLowerCase();
-        }
-        case 'organizationIdentifier': {
-          return item.credential_procedure.organizationIdentifier.toLowerCase();
-        }
-        default:
-          return '';
-      }
-    };
-  }
-
-  private setFilterPredicate(filter: Filter): void{
-    this.setFilterLabelAndPlaceholder(filter);
-      this.dataSource.filterPredicate = (data: CredentialProcedureBasicInfo, filterString: string) => {
-        const searchString = filterString.trim().toLowerCase();
-        return data.credential_procedure[filter].toLowerCase().includes(searchString);
-    };
-  }
-
-  private setFilterLabelAndPlaceholder(filter: Filter): void{
-    let label;
-    let placeholder;
-
-    switch(filter){
-      case 'subject':
-        label = CREDENTIAL_MANAGEMENT_SUBJECT;
-        placeholder = CREDENTIAL_MANAGEMENT_SEARCH_PLACEHOLDER_SUBJECT
-        break;
-      case 'organizationIdentifier':
-        label = CREDENTIAL_MANAGEMENT_ORGANIZATION_ID;
-        placeholder = CREDENTIAL_MANAGEMENT_SEARCH_PLACEHOLDER_ORG;
-        break;
-      default:
-        label = CREDENTIAL_MANAGEMENT_SUBJECT;
-        placeholder = CREDENTIAL_MANAGEMENT_SEARCH_PLACEHOLDER_SUBJECT
-    }
-    this.searchLabel = label;
-    this.searchPlaceholder = placeholder;
-  }
-
-  private setStringSearchSubscription(): void{
-    this.searchSubject.pipe(debounceTime(500))
-      .pipe(takeUntilDestroyed(this.destroyRef))
-      .subscribe((searchValue) => {
-        this.dataSource.filter = searchValue.trim().toLowerCase();
-
-        if (this.dataSource.paginator) {
-          this.dataSource.paginator.firstPage();
-        }
-    });
-  }
-
-  public applyFilter(event: Event): void {
-    const filterValue = (event.target as HTMLInputElement).value;
-
-    this.searchSubject.next(filterValue);
-  }
-
-  private loadCredentialData(): void {
-    this.credentialProcedureService.getCredentialProcedures()
-    .pipe(take(1))
-    .subscribe({
-      next: (data: CredentialProceduresResponse) => {
-        this.dataSource.data = this.statusService.addStatusClass(data.credential_procedures);
-      },
-      error: (error) => {
-        console.error('Error fetching credentials for table', error);
-      }
-    });
-  }
-
-  public navigateToCreateCredential(): void {
+    public navigateToCreateCredential(): void {
     this.router.navigate(['/organization/credentials/create']);
   }
 
@@ -255,6 +173,87 @@ export class CredentialManagementComponent implements OnInit, AfterViewInit {
       searchInputNativeEl.focus();
       searchInputNativeEl.select();
     }
+  }
+
+  public onFilterChange(isChecked: boolean): void{
+    if(isChecked){
+      this.setFilter("organizationIdentifier");
+    }else{
+      this.setFilter("subject");
+    }
+  }
+
+  public onSearchStringChange(event: Event): void {
+    const filterValue = (event.target as HTMLInputElement).value;
+    this.searchSubject.next(filterValue);
+  }
+
+    private loadCredentialData(): void {
+    this.credentialProcedureService.getCredentialProcedures()
+    .pipe(take(1))
+    .subscribe({
+      next: (data: CredentialProceduresResponse) => {
+        this.dataSource.data = this.statusService.addStatusClass(data.credential_procedures);
+      },
+      error: (error) => {
+        console.error('Error fetching credentials for table', error);
+      }
+    });
+  }
+
+  private setDataSortingAccessor(): void{
+    this.dataSource.sortingDataAccessor = (item: CredentialProcedureBasicInfo, property: string) => {
+      switch (property) {
+        case 'status': {
+          const status = item.credential_procedure.status.toLowerCase();
+          return status === 'withdrawn' ? 'draft' : status;
+        }
+        case 'subject': {
+          return item.credential_procedure.subject.toLowerCase();
+        }
+        case 'updated': {
+          return item.credential_procedure.updated.toLowerCase();
+        }
+        case 'credential_type': {
+          return item.credential_procedure.credential_type.toLowerCase();
+        }
+        case 'organizationIdentifier': {
+          return item.credential_procedure.organizationIdentifier.toLowerCase();
+        }
+        default:
+          return '';
+      }
+    };
+  }
+
+  private setFilter(filter: Filter): void{
+    this.setFilterLabelAndPlaceholder(filter);
+    this.setFilterPredicate(filter);
+  }
+
+  private setFilterPredicate(filter: Filter): void{
+    this.dataSource.filterPredicate = (data: CredentialProcedureBasicInfo, filterString: string) => {
+      const searchString = filterString.trim().toLowerCase();
+      return data.credential_procedure[filter].toLowerCase().includes(searchString);
+    };
+  }
+
+  private setFilterLabelAndPlaceholder(filter: Filter): void{
+    const filterConfig: FilterConfig = this.filtersMap[filter];
+    this.searchLabel = filterConfig.translationLabel;
+    this.searchPlaceholder = filterConfig.placeholderTranslationLabel;
+  }
+
+  private setStringSearchSubscription(): void{
+    this.searchSubject.pipe(debounceTime(500))
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe((searchValue) => {
+        this.dataSource.filter = searchValue.trim().toLowerCase();
+
+        if (this.dataSource.paginator) {
+          this.dataSource.paginator.firstPage();
+        }
+    });
   }
 
 }

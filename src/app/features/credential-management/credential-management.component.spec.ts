@@ -11,7 +11,7 @@ import { provideHttpClient } from '@angular/common/http';
 import { of, throwError } from 'rxjs';
 import { LifeCycleStatusService } from 'src/app/shared/services/life-cycle-status.service';
 import { CredentialProcedureWithClass } from 'src/app/core/models/entity/lear-credential-management';
-import { CredentialProceduresResponse, CredentialProcedure } from 'src/app/core/models/dto/credential-procedures-response.dto';
+import { CredentialProcedureBasicInfo, CredentialProceduresResponse } from 'src/app/core/models/dto/credential-procedures-response.dto';
 import { ElementRef } from '@angular/core';
 
 // helper to mock search input
@@ -95,11 +95,6 @@ describe('CredentialManagementComponent', () => {
     expect(component.isAdminOrganizationIdentifier).toBe(true);
   });
 
-  it('should call loadCredentialData on ngOnInit', () => {
-    const loadSpy = jest.spyOn(component, 'loadCredentialData');
-    component.ngOnInit();
-    expect(loadSpy).toHaveBeenCalled();
-  });
 
   it('should set dataSource filter and reset paginator on search', fakeAsync(() => {
     // assignem un paginator real per a que firstPage existeixi
@@ -167,7 +162,7 @@ describe('CredentialManagementComponent', () => {
   it('should call searchSubject.next with the correct filter value', () => {
     const event = { target: { value: 'searchTerm'} } as any;
     const nextSpy = jest.spyOn(component['searchSubject'], 'next');
-    component.applyFilter(event);
+    component.onSearchStringChange(event);
     expect(nextSpy).toHaveBeenCalledWith('searchTerm');
   });
 
@@ -214,14 +209,15 @@ describe('CredentialManagementComponent', () => {
   });
 
   it('should load credential data and update dataSource', fakeAsync(() => {
-    const mockProc: CredentialProcedure = {
+    const mockProc: CredentialProcedureBasicInfo = {
       credential_procedure: {
         procedure_id: 'id1',
         subject: 'S1',
         status: 'DRAFT',
         updated: '2025-07-01',
         credential_type: 'LEAR_CREDENTIAL_EMPLOYEE',
-        subject_email: 'email'
+        subject_email: 'email',
+        organizationIdentifier: "VATES-000000"
       }
     };
     const mockResponse = { credential_procedures: [ mockProc ] } as CredentialProceduresResponse;

@@ -184,7 +184,7 @@
     "buttonAdmin": "New credential (on behalf)",
     "search": "Search by",
     "searchPlaceholderSubject": "Joe Doe",
-    "searchPlaceholderOrg": "MY ORG",
+    "searchPlaceholderOrgID": "VATES-000000",
     "paginator": {
       "items-per-page": "Items per paggg",
       "next-page": "Nextt",

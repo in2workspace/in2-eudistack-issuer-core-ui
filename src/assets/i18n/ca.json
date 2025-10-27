@@ -185,7 +185,7 @@
     "buttonAdmin": "Nova Credencial (en nom de)",
     "search": "Buscar per",
     "searchPlaceholderSubject": "Joan Garcia",
-    "searchPlaceholderOrg": "La meva org.",
+    "searchPlaceholderOrgID": "VATES-000000",
     "searchPlaceholder": "Joan Garcia",
       "paginator": {
       "items-per-page": "Ítems per pàg.",
