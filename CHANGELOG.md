@@ -4,6 +4,19 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.1.2](https://github.com/in2workspace/in2-issuer-ui/releases/tag/v2.1.2)
+### Added
+- Get and display subject email in credential details page.
+- Get and display organization identifier in management page.
+- Add organization identifier filter in managament page.
+
+### Changed 
+- Changed "create-as-signer" route for "create-on-behalf".
+
+### Fixed
+- TranslaAdd missing translations in powers component.
+
+
 ## [2.1.1](https://github.com/in2workspace/in2-issuer-ui/releases/tag/v2.1.1)
 ### Added 
 - Set language from browser or using the default from environment.
