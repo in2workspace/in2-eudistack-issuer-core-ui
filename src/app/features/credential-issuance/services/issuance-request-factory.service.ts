@@ -195,7 +195,7 @@ private getMandateeFromCredentialData(credentialData: IssuanceRawCredentialPaylo
       format: "jwt_vc_json",
       payload: payload,
       operation_mode: "S",
-      credential_email: credentialEmail
+      email: credentialEmail
     }
   }
 }
