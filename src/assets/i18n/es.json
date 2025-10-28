@@ -74,7 +74,7 @@
     "PEND_DOWNLOAD": "PEND_DESC.",
     "ISSUED": "EMITIDO",
     "status": "estatus",
-    "email": "Correo electrónico del sujeto",
+    "email": "Correo electrónico",
     "valid_from": "válido desde",
     "valid_until": "válido hasta",
     "issuer": "emisor",
