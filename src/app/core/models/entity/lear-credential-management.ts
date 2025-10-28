@@ -24,7 +24,7 @@ export type StatusClassFromDefined = `status-${ToSlug<DefinedStatusClass>}`;
 
 export type StatusClass = StatusClassFromDefined | 'status-default';
 
-const filters = ["subject", "organization_identifier"] as const;
+const filters = ["subject"] as const;
 export type Filter = typeof filters[number];
 
 export type FilterConfig = {

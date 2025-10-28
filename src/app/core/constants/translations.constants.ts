@@ -1,4 +1,2 @@
 export const CREDENTIAL_MANAGEMENT_SUBJECT = "credentialManagement.subject";
-export const CREDENTIAL_MANAGEMENT_ORGANIZATION_ID = "credentialManagement.organizationIdentifier";
 export const CREDENTIAL_MANAGEMENT_SEARCH_PLACEHOLDER_SUBJECT = "credentialManagement.searchPlaceholderSubject";
-export const CREDENTIAL_MANAGEMENT_SEARCH_PLACEHOLDER_ORG_ID = "credentialManagement.searchPlaceholderOrgID";

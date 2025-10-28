@@ -1,4 +1,4 @@
-import { CREDENTIAL_MANAGEMENT_ORGANIZATION_ID, CREDENTIAL_MANAGEMENT_SEARCH_PLACEHOLDER_SUBJECT, CREDENTIAL_MANAGEMENT_SEARCH_PLACEHOLDER_ORG_ID } from './../../core/constants/translations.constants';
+import { CREDENTIAL_MANAGEMENT_SEARCH_PLACEHOLDER_SUBJECT } from './../../core/constants/translations.constants';
 import { AfterViewInit, Component, OnInit, inject, ViewChild, DestroyRef, ElementRef } from '@angular/core';
 import { MatTableDataSource, MatTable, MatColumnDef, MatHeaderCellDef, MatHeaderCell, MatCellDef, MatCell, MatHeaderRowDef, MatHeaderRow, MatRowDef, MatRow } from '@angular/material/table';
 import { MatPaginator } from '@angular/material/paginator';
@@ -22,7 +22,6 @@ import { LifeCycleStatusService } from 'src/app/shared/services/life-cycle-statu
 import { SubjectComponent } from './components/subject-component/subject-component.component';
 import { FormsModule } from '@angular/forms';
 import { CREDENTIAL_MANAGEMENT_SUBJECT } from 'src/app/core/constants/translations.constants';
-import { MatSlideToggle } from '@angular/material/slide-toggle';
 
 
 
@@ -51,7 +50,6 @@ import { MatSlideToggle } from '@angular/material/slide-toggle';
     MatHeaderRow,
     MatRowDef,
     MatRow,
-    MatSlideToggle,
     NgClass,
     MatPaginator,
     DatePipe,
@@ -105,11 +103,6 @@ export class CredentialManagementComponent implements OnInit, AfterViewInit {
       filterName: "subject",
       translationLabel: CREDENTIAL_MANAGEMENT_SUBJECT,
       placeholderTranslationLabel: CREDENTIAL_MANAGEMENT_SEARCH_PLACEHOLDER_SUBJECT
-    },
-    organization_identifier: {
-      filterName: "organization_identifier",
-      translationLabel: CREDENTIAL_MANAGEMENT_ORGANIZATION_ID,
-      placeholderTranslationLabel: CREDENTIAL_MANAGEMENT_SEARCH_PLACEHOLDER_ORG_ID
     }
    } as const;
 
@@ -123,7 +116,7 @@ export class CredentialManagementComponent implements OnInit, AfterViewInit {
     this.dataSource.sort = this.sort;
 
     this.setDataSortingAccessor();
-    this.setFilterPredicate("subject");
+    this.setFilter("subject");
     this.setStringSearchSubscription();
   }
 
@@ -169,11 +162,6 @@ export class CredentialManagementComponent implements OnInit, AfterViewInit {
       searchInputNativeEl.focus();
       searchInputNativeEl.select();
     }
-  }
-
-  public onFilterChange(isChecked: boolean): void{
-    const filter: Filter = isChecked ? "organization_identifier" : "subject";
-    this.setFilter(filter);
   }
 
   public onSearchStringChange(event: Event): void {

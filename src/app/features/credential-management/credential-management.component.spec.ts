@@ -178,48 +178,6 @@ describe('CredentialManagementComponent', () => {
     expect(component.dataSource.filterPredicate!(mockItem, 'xyz')).toBe(false);  // no match
   });
 
-  it('should switch filterPredicate to organization_identifier when onFilterChange(true)', () => {
-    component.ngAfterViewInit(); // start with "subject"
-    component.onFilterChange(true); // switch to "organization_identifier"
-
-    const mockItem: any = {
-      credential_procedure: {
-        subject: 'Irrelevant',
-        organization_identifier: 'VATES-000999'
-      }
-    };
-    expect(component.dataSource.filterPredicate!(mockItem, 'vates')).toBe(true);
-    expect(component.dataSource.filterPredicate!(mockItem, '000999')).toBe(true);
-    expect(component.dataSource.filterPredicate!(mockItem, 'other')).toBe(false);
-  });
-
-  it('should revert filterPredicate back to subject when onFilterChange(false)', () => {
-    component.ngAfterViewInit();
-    component.onFilterChange(true);  // to organization identifier
-    component.onFilterChange(false); // back to subject
-
-    const mockItem: any = {
-      credential_procedure: {
-        subject: 'Alice Wonderland',
-        organization_identifier: 'VATES-000111'
-      }
-    };
-    expect(component.dataSource.filterPredicate!(mockItem, 'alice')).toBe(true);
-    expect(component.dataSource.filterPredicate!(mockItem, 'vates')).toBe(false);
-  });
-
-  it('should call setFilter("organization_identifier") when onFilterChange(true)', () => {
-  const setFilterSpy = jest.spyOn(component as any, 'setFilter');
-  component.onFilterChange(true);
-  expect(setFilterSpy).toHaveBeenCalledWith('organization_identifier');
-  });
-
-  it('should call setFilter("subject") when onFilterChange(false)', () => {
-    const setFilterSpy = jest.spyOn(component as any, 'setFilter');
-    component.onFilterChange(false);
-    expect(setFilterSpy).toHaveBeenCalledWith('subject');
-  });
-
   it('should call searchSubject.next with input value when onSearchStringChange is triggered', () => {
     const nextSpy = jest.spyOn(component['searchSubject'], 'next');
     const event = { target: { value: 'searchTerm' } } as unknown as Event;
@@ -320,11 +278,6 @@ describe('CredentialManagementComponent', () => {
   (component as any).setFilterLabelAndPlaceholder('subject');
   expect(component.searchLabel).toBe(component['filtersMap'].subject.translationLabel);
   expect(component.searchPlaceholder).toBe(component['filtersMap'].subject.placeholderTranslationLabel);
-
-  // Call again with "organization_identifier"
-  (component as any).setFilterLabelAndPlaceholder('organization_identifier');
-  expect(component.searchLabel).toBe(component['filtersMap'].organization_identifier.translationLabel);
-  expect(component.searchPlaceholder).toBe(component['filtersMap'].organization_identifier.placeholderTranslationLabel);
 });
 
 it('should subscribe to searchSubject and update dataSource.filter (and call firstPage if paginator exists)', fakeAsync(() => {
