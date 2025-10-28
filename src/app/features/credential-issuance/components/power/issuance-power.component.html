@@ -17,14 +17,14 @@
         <mat-select [(value)]="selectedPower">
           <mat-select-trigger>
             @if (selectedPower) {
-              <span>{{ selectedPower.function }}</span>
+              <span>{{ ("power." + selectedPower.function.toLocaleLowerCase()) | translate }}</span>
             }
           </mat-select-trigger>
           @for (power of selectorPowers; track power.function) {
             <mat-option 
               [value]="power"
               [disabled]="power.isDisabled">
-              {{ power.function }}
+              {{ ("power." + power.function.toLocaleLowerCase() | translate) }}
             </mat-option>
           }
         </mat-select>
@@ -47,7 +47,7 @@
     <div class="added-powers-section">     
       <form [formGroup]="form()" class="powers-form" novalidate>
         @for (powerControl of form().controls | keyvalue: keepOrder; track powerControl.key) {
-            <p>{{ ( "power." + powerControl.key | translate) }}</p>
+            <p>{{ ( "power." + powerControl.key.toLocaleLowerCase()| translate) }}</p>
             <div class="functions-container" [formGroupName]="powerControl.key">
               <!-- Actions Toggle Section -->
                 <div class="toggles-container">
@@ -55,7 +55,7 @@
                       <mat-slide-toggle 
                         [formControlName]="actionControl.key"
                         color="primary">
-                        {{ ( "power." +  actionControl.key | translate )}}
+                        {{ ( "power." +  actionControl.key.toLocaleLowerCase() | translate )}}
                       </mat-slide-toggle>
                   }
                 </div>

@@ -39,7 +39,7 @@
     "name": "Nom",
     "first-name": "Nom",
     "last-name": "Cognoms",
-    "email": "Adreça electrònica",
+    "email": "Correu electrònic",
     "serialNumber": "Número de targeta ID",
     "country": "País",
     "select-country": "Selecciona un país",
@@ -50,13 +50,13 @@
     "organizationid": "Número VAT de l'empresa",
     "organization": "Nom de l'empresa",
     "name": "Nom",
-    "email": "Adreça electrònica",
+    "email": "Correu electrònic",
     "serialNumber": "Número de targeta ID",
     "country": "País"
   },
   "mandatee": {
     "last_name": "Cognoms",
-    "email": "Adreça de correu"
+    "email": "Correu electrònic"
   },
   "credentialDetails": {
     "title": "Detalls de la credencial",
@@ -76,7 +76,7 @@
     "ISSUED": "EMÈS",
     "type" : "tipus",
     "status": "estatus",
-    "subjectEmail": "Email del sujeto",
+    "subjectEmail": "correu electrònic del subjecte",
     "valid_from": "vàlid des de",
     "valid_until": "vàlid fins",
     "issuer": "emissor",
@@ -203,7 +203,7 @@
       "function": "Funció",
       "onboarding": "Alta",
       "marketplace": "Marketplace",
-      "productOffering": "Oferta de producte",
+      "productoffering": "Oferta de producte",
       "certification": "Certificació",
       "add": "Afegir",
       "execute": "Executar",
@@ -305,9 +305,9 @@
       "min_7": "27 caràcters com a mínim",
       "min_2": "2 caràcters com a mínim",
       "email":{
-        "invalid": "Adreça electrònica invàlida. Pot ser que contingui un caràcter invàlid o en una posició invàlida.",
-        "local_part_max": "La part local de l'adreça el. no pot superar els 64 caràcters.",
-        "domain_part_max": "El domini de l'adreça el. no pot superar els 189 caràcters.",
+        "invalid": "Correu electrònic invàlid. Pot ser que contingui un caràcter invàlid o en una posició invàlida.",
+        "local_part_max": "La part local del correu electrònic no pot superar els 64 caràcters.",
+        "domain_part_max": "El domini del correu electrònic no pot superar els 189 caràcters.",
         "main_domain_part_min": "La part entre '@' i '.' ha de tenir almenys 2 caràcters.",
         "top_level_domain_part_min": "La part entre l'últim punt i el final ha de tenir almenys 2 caràcters."
       },

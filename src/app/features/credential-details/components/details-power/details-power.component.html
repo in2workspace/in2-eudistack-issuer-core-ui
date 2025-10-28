@@ -1,10 +1,10 @@
 <div class="powers-container">
     @for(power of powers; track $index){
-        <p>{{ ("power." + power.function | translate ) | capitalize  }}</p>
+        <p>{{ ("power." + power.function.toLocaleLowerCase() | translate ) | capitalize  }}</p>
         <div class="functions-container">
             <div class="toggles-container">
                 @for(action of power.actions; track $index){
-                    <mat-slide-toggle checked disabled>{{ ("power." + action | translate ) | capitalize}}</mat-slide-toggle>
+                    <mat-slide-toggle checked disabled>{{ ("power." + action.toLocaleLowerCase() | translate ) | capitalize}}</mat-slide-toggle>
                 }
             </div>
         </div>
