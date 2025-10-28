@@ -286,7 +286,7 @@ describe('CredentialManagementComponent', () => {
         status: 'DRAFT',
         updated: '2025-07-01',
         credential_type: 'LEAR_CREDENTIAL_EMPLOYEE',
-        subject_email: 'email',
+        email: 'email',
         organization_identifier: 'VATES-000000',
       },
     };

@@ -77,7 +77,6 @@
     "status": "status",
     "valid_from": "valid from",
     "valid_until": "valid until",
-    "subjectEmail": "Subject Email",
     "issuer": "issuer",
     "mandatee": "mandatee",
     "mandator": "mandator",

@@ -19,8 +19,8 @@ export class IssuanceRequestFactoryService {
   public createCredentialRequest(credentialData: IssuanceRawCredentialPayload, 
       credentialType: IssuanceCredentialType): IssuanceLEARCredentialRequestDto{
         const payload = this.createCredentialRequestPayload(credentialData, credentialType);
-        const credentialSubjectEmail = this.getCredentialSubjectEmail(credentialData, credentialType);
-        return this.buildRequestDto(credentialType, payload, credentialSubjectEmail);
+        const credentialEmail = this.getCredentialEmail(credentialData, credentialType);
+        return this.buildRequestDto(credentialType, payload, credentialEmail);
       }
 
   public createCredentialRequestPayload(
@@ -116,7 +116,7 @@ export class IssuanceRequestFactoryService {
     return payload;
   }
 
-  private getCredentialSubjectEmail(credentialData: IssuanceRawCredentialPayload, 
+  private getCredentialEmail(credentialData: IssuanceRawCredentialPayload, 
     credentialType: IssuanceCredentialType): string | undefined{
       if(credentialType === 'LEARCredentialMachine' && !credentialData.asSigner){
         return this.authService.getMandateeEmail();
@@ -189,13 +189,13 @@ private getMandateeFromCredentialData(credentialData: IssuanceRawCredentialPaylo
   return credentialData.formData['mandatee'];
 }
 
-  private buildRequestDto(credType:IssuanceCredentialType, payload: IssuanceLEARCredentialPayload, credentialSubjectEmail?: string): IssuanceLEARCredentialRequestDto{
+  private buildRequestDto(credType:IssuanceCredentialType, payload: IssuanceLEARCredentialPayload, credentialEmail?: string): IssuanceLEARCredentialRequestDto{
     return {
       schema: credType,
       format: "jwt_vc_json",
       payload: payload,
       operation_mode: "S",
-      credential_subject_email: credentialSubjectEmail
+      credential_email: credentialEmail
     }
   }
 }

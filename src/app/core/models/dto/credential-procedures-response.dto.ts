@@ -11,7 +11,7 @@ export interface CredentialProcedureBasicInfo {
     credential_type: CredentialProcedureType;
     status: LifeCycleStatus;
     updated: string;
-    subject_email: string;
+    email: string;
     organization_identifier: string;
   }
 }
