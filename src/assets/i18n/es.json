@@ -288,9 +288,9 @@
       "max": "El màximo es {{0}}",
       "minLength": "Mínimo de caracteres: {{0}}",
       "maxLength": "Màximo de caracteres: {{0}}",
-      "pattern": "Patró invàlid",
-      "ip": "IP invàlida. Introdueixi una adreça IPv4 o IPv6.",
-      "domain": "Domini invàlid",
+      "pattern": "Patrón inválido",
+      "ip": "IP inválida. Introduzca una dirección IPv4 o IPv6.",
+      "domain": "Dominio inválido",
       "invalid_character": "Caracteres inválidos",
       "only_letters_and_numbers": "Solo letras y cifras",
       "only_letters_numbers_hyphens": "Solo letras, cifras y guiones",
@@ -365,7 +365,7 @@
   "keys": {
     "title": "Llave privada",
     "buttonText": "Generar llave",
-    "alert": "Assegúrese de guardar esa llave.",
+    "alert": "Asegúrese de guardar esa llave.",
     "tooltip": "La clave privada es un secreto que te permite firmar y demostrar la propiedad de la credencial. Sin ella, no puedes usar la credencial. Guárdala de manera segura y no la compartas."
   }
 
