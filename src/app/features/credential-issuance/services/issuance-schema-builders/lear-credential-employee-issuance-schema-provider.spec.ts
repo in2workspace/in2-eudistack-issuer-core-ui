@@ -121,17 +121,17 @@ describe('LearCredentialEmployeeSchemaProvider', () => {
           {
             action: ['Execute'],
             function: 'Onboarding',
-            isIn2Required: true,
+            isAdminRequired: true,
           },
           {
             action: ['Create', 'Update', 'Delete'],
             function: 'ProductOffering',
-            isIn2Required: false,
+            isAdminRequired: false,
           },
           {
             action: ['Upload', 'Attest'],
             function: 'Certification',
-            isIn2Required: true,
+            isAdminRequired: true,
           },
         ],
       });

@@ -253,25 +253,25 @@ describe('AuthService', () => {
   });
 
   // --------------------------------------------------------------------------
-  // hasIn2OrganizationIdentifier()
+  // hasAdminOrganizationIdentifier()
   // --------------------------------------------------------------------------
   it('true si organizationIdentifier és "VATES-B60645900"', () => {
     (service as any).mandatorSubject.next({
       organizationIdentifier: 'VATES-B60645900'
     });
-    expect(service.hasIn2OrganizationIdentifier()).toBe(true);
+    expect(service.hasAdminOrganizationIdentifier()).toBe(true);
   });
 
   it('false si organizationIdentifier és diferent', () => {
     (service as any).mandatorSubject.next({
       organizationIdentifier: 'OTHER'
     });
-    expect(service.hasIn2OrganizationIdentifier()).toBe(false);
+    expect(service.hasAdminOrganizationIdentifier()).toBe(false);
   });
 
   it('false si mandator és null', () => {
     (service as any).mandatorSubject.next(null);
-    expect(service.hasIn2OrganizationIdentifier()).toBe(false);
+    expect(service.hasAdminOrganizationIdentifier()).toBe(false);
   });
 
   // --------------------------------------------------------------------------

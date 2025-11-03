@@ -2,6 +2,8 @@
 
 export const environment = {
   production: true,
+  // Admin organization identifier
+  admin_organization_id: window["env"]["admin_organization_id"],
   // Keycloak URL (REQUIRED)
   iam_url: window["env"]["iam_url"],
   // Issuer API base URL (REQUIRED)
@@ -30,5 +32,5 @@ export const environment = {
     // App favicon. Points to "assets/icons/" (OPTIONAL with fallback)
     favicon_src: window["env"]["favicon_src"] ?? "dome-favicon.png",
     default_lang: window["env"]["default_lang"] ?? "en"
-  }
+  },
 };

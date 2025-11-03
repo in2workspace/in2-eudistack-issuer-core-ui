@@ -8,6 +8,7 @@ import { RoleType } from '../models/enums/auth-rol-type.enum';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { Router } from '@angular/router';
 import { LEARCredentialDataNormalizer } from 'src/app/features/credential-details/utils/lear-credential-data-normalizer';
+import { environment } from 'src/environments/environment';
 
 // todo restore auth.service.spec.ts
 @Injectable({
@@ -217,10 +218,14 @@ export class AuthService{
   }
 
   // POLICY: user_powers_restriction_policy
-  public hasIn2OrganizationIdentifier() : boolean {
-    const mandatorData = this.mandatorSubject.getValue()
+  public hasAdminOrganizationIdentifier() : boolean {
+    const mandatorData = this.mandatorSubject.getValue();
+    console.log("Mandator del Subject: ");
+    console.log(mandatorData?.organizationIdentifier);
     if (mandatorData != null){
-      return "VATES-B60645900" === mandatorData.organizationIdentifier;
+      console.log("Mandator env: ");
+      console.log(environment.admin_organization_id);
+      return environment.admin_organization_id === mandatorData.organizationIdentifier;
     }
     return false
   }

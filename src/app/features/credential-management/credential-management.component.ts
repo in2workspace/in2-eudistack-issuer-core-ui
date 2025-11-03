@@ -108,7 +108,9 @@ export class CredentialManagementComponent implements OnInit, AfterViewInit {
 
   public ngOnInit() {
     this.loadCredentialData();
-    this.isAdminOrganizationIdentifier = this.authService.hasIn2OrganizationIdentifier();
+    this.isAdminOrganizationIdentifier = this.authService.hasAdminOrganizationIdentifier();
+    console.log("Management: isAdminOrganizationIdentifier");
+    console.log(this.isAdminOrganizationIdentifier);
   }
 
   public ngAfterViewInit(): void {

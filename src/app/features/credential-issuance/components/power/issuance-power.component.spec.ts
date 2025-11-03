@@ -26,7 +26,7 @@ describe('IssuancePowerComponent', () => {
     proto.mapToTempPowerSchema = function(powers: IssuanceFormPowerSchema[]) {
       return (powers || [])
         .map(p => ({ ...p, isDisabled: false }))
-        .filter(p => this.organizationIdentifierIsIn2 || !p.isIn2Required);
+        .filter(p => this.organizationIdentifierIsAdmin || !p.isAdminRequired);
     };
     Object.defineProperty(proto, 'powersInput', {
       configurable: true,
@@ -42,7 +42,7 @@ describe('IssuancePowerComponent', () => {
       updateAlertMessages: jest.fn()
     };
 
-    authService = { hasIn2OrganizationIdentifier: jest.fn() };
+    authService = { hasAdminOrganizationIdentifier: jest.fn() };
     dialog = { openDialogWithCallback: jest.fn() };
     translate = { instant: jest.fn((key: string) => `t:${key}`), get: jest.fn().mockReturnValue(of(undefined)) };
 
@@ -60,7 +60,7 @@ describe('IssuancePowerComponent', () => {
   });
 
   it('should create the component', () => {
-    (authService.hasIn2OrganizationIdentifier as jest.Mock).mockReturnValue(true);
+    (authService.hasAdminOrganizationIdentifier as jest.Mock).mockReturnValue(true);
     Object.defineProperty(component, 'form', {
       value: () => new FormGroup({}),
       configurable: true
@@ -70,28 +70,28 @@ describe('IssuancePowerComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  it('organizationIdentifierIsIn2 is truthy if the service indicates so', () => {
-    (authService.hasIn2OrganizationIdentifier as jest.Mock).mockReturnValue(true);
+  it('organizationIdentifierIsAdmin is truthy if the service indicates so', () => {
+    (authService.hasAdminOrganizationIdentifier as jest.Mock).mockReturnValue(true);
     Object.defineProperty(component, 'form', {
       value: () => new FormGroup({}),
       configurable: true
     });
-    component.organizationIdentifierIsIn2 = true;
+    component.organizationIdentifierIsAdmin = true;
     component.powersInput = [];
     fixture.detectChanges();
-    expect(component.organizationIdentifierIsIn2).toBeTruthy();
+    expect(component.organizationIdentifierIsAdmin).toBeTruthy();
 
-    (authService.hasIn2OrganizationIdentifier as jest.Mock).mockReturnValue(false);
+    (authService.hasAdminOrganizationIdentifier as jest.Mock).mockReturnValue(false);
     const f2 = TestBed.createComponent(IssuancePowerComponent);
     const cmp2 = f2.componentInstance;
     Object.defineProperty(cmp2, 'form', {
       value: () => new FormGroup({}),
       configurable: true
     });
-    cmp2.organizationIdentifierIsIn2 = false;
+    cmp2.organizationIdentifierIsAdmin = false;
     cmp2.powersInput = [];
     f2.detectChanges();
-    expect(cmp2.organizationIdentifierIsIn2).toBeFalsy();
+    expect(cmp2.organizationIdentifierIsAdmin).toBeFalsy();
   });
 
   it('keepOrder always returns 0', () => {
@@ -99,11 +99,11 @@ describe('IssuancePowerComponent', () => {
   });
 
   it('addPower adds a control and disables the selector', () => {
-    (authService.hasIn2OrganizationIdentifier as jest.Mock).mockReturnValue(true);
+    (authService.hasAdminOrganizationIdentifier as jest.Mock).mockReturnValue(true);
     const schema: TempIssuanceFormPowerSchema = {
       function: 'power1',
       action: ['act1','act2'],
-      isIn2Required: false,
+      isAdminRequired: false,
       isDisabled: false
     };
     component.powersInput = [schema];
@@ -125,11 +125,11 @@ describe('IssuancePowerComponent', () => {
 
   it('addPower with undefined actions logs an error and does not modify the form', () => {
     console.error = jest.fn();
-    (authService.hasIn2OrganizationIdentifier as jest.Mock).mockReturnValue(true);
+    (authService.hasAdminOrganizationIdentifier as jest.Mock).mockReturnValue(true);
     const schema: IssuanceFormPowerSchema = {
       function: 'p2',
       action: undefined as any,
-      isIn2Required: false
+      isAdminRequired: false
     };
     component.powersInput = [schema];
     const fg = new FormGroup({});
@@ -141,11 +141,11 @@ describe('IssuancePowerComponent', () => {
   });
 
   it('removePower opens the dialog then removes the control and enables the selector', fakeAsync(() => {
-    (authService.hasIn2OrganizationIdentifier as jest.Mock).mockReturnValue(true);
+    (authService.hasAdminOrganizationIdentifier as jest.Mock).mockReturnValue(true);
     const schema: IssuanceFormPowerSchema = {
       function: 'pw',
       action: ['a'],
-      isIn2Required: false
+      isAdminRequired: false
     };
     component.powersInput = [schema];
     const fg = new FormGroup({});
@@ -167,9 +167,9 @@ describe('IssuancePowerComponent', () => {
   }));
 
   it('ngOnInit initializes data() and subscribes to valueChanges', fakeAsync(() => {
-    (authService.hasIn2OrganizationIdentifier as jest.Mock).mockReturnValue(true);
+    (authService.hasAdminOrganizationIdentifier as jest.Mock).mockReturnValue(true);
     const initial: IssuanceFormPowerSchema[] = [
-      { function: 'f', action: ['x'], isIn2Required: false }
+      { function: 'f', action: ['x'], isAdminRequired: false }
     ];
     (component as any).data = () => initial;
     const fg = new FormGroup({});
@@ -187,7 +187,7 @@ describe('IssuancePowerComponent', () => {
 
   it('getPowerByFunction returns the correct element', () => {
     component.selectorPowers = [
-      { function: 'a', action: [], isIn2Required: false, isDisabled: false }
+      { function: 'a', action: [], isAdminRequired: false, isDisabled: false }
     ];
     expect(component.getPowerByFunction('a')).toEqual(component.selectorPowers[0]);
     expect(component.getPowerByFunction('nope')).toBeUndefined();

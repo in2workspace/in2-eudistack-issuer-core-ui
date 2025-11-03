@@ -72,7 +72,7 @@ export interface IssuanceFormPowerSchema{
   //todo: in the future, if there are multiple domains, add a "domain" field (currently there is only "DOME")
   function: string,
   action: string[],
-  isIn2Required: boolean
+  isAdminRequired: boolean
 }
 
 // Key component and service types

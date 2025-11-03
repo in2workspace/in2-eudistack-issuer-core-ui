@@ -39,7 +39,7 @@ describe('CredentialManagementComponent', () => {
       getToken: () => of('token'),
       logout: () => of(void 0),
       hasPower: () => true,
-      hasIn2OrganizationIdentifier: jest.fn().mockReturnValue(true),
+      hasAdminOrganizationIdentifier: jest.fn().mockReturnValue(true),
     } as jest.Mocked<any>;
 
     await TestBed.configureTestingModule({
@@ -89,9 +89,9 @@ describe('CredentialManagementComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should call hasIn2OrganizationIdentifier on ngOnInit', () => {
+  it('should call hasAdminOrganizationIdentifier on ngOnInit', () => {
     component.ngOnInit();
-    expect(authService.hasIn2OrganizationIdentifier).toHaveBeenCalled();
+    expect(authService.hasAdminOrganizationIdentifier).toHaveBeenCalled();
     expect(component.isAdminOrganizationIdentifier).toBe(true);
   });
 
