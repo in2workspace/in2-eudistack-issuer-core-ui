@@ -66,7 +66,7 @@
     "LEARCredentialMachine": "LEAR Credential Machine",
     "VerifiableCertification": "Verifiable Certification",
     "DRAFT": "BORRADOR",
-    "PEND_SIGNATURE": "PEND_SIGNAR",
+    "PEND_SIGNATURE": "PEND_FIRMAR",
     "WITHDRAWN": "WITHDRAWN",
     "VALID": "VALIDO",
     "REVOKED": "REVOCADO",
