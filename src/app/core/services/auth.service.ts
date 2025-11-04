@@ -220,11 +220,7 @@ export class AuthService{
   // POLICY: user_powers_restriction_policy
   public hasAdminOrganizationIdentifier() : boolean {
     const mandatorData = this.mandatorSubject.getValue();
-    console.log("Mandator del Subject: ");
-    console.log(mandatorData?.organizationIdentifier);
     if (mandatorData != null){
-      console.log("Mandator env: ");
-      console.log(environment.admin_organization_id);
       return environment.admin_organization_id === mandatorData.organizationIdentifier;
     }
     return false
