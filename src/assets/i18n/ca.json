@@ -77,6 +77,7 @@
     "type" : "tipus",
     "status": "estatus",
     "email": "correu electrònic",
+    "contact-email": "Email de contacte",
     "valid_from": "vàlid des de",
     "valid_until": "vàlid fins",
     "issuer": "emissor",
