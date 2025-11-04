@@ -62,7 +62,7 @@ export class LearCredentialMachineIssuanceSchemaProvider implements CredentialIs
           }
         ]
       },
-      // MANDATOR (static when asSigner)
+      // MANDATOR (static when onBehalf)
       {
         key: 'mandator',
         type: 'group',

@@ -20,7 +20,7 @@ describe('CredentialIssuanceComponent', () => {
 
     mockService = {
       // Signals
-      asSigner$: signal(false) as WritableSignal<boolean>,
+      onBehalf$: signal(false) as WritableSignal<boolean>,
       hasSubmitted$: signal(false) as WritableSignal<boolean>,
       credentialTypesArr: ['type1', 'LEARCredentialMachine'] as any,
       selectedCredentialType$: signal(undefined) as WritableSignal<any>,
@@ -67,8 +67,8 @@ describe('CredentialIssuanceComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should initialize asSigner$ based on route', () => {
-    expect(mockService.asSigner$!()).toBeFalsy();
+  it('should initialize onBehalf$ based on route', () => {
+    expect(mockService.onBehalf$!()).toBeFalsy();
   });
 
   describe('onTypeSelectionChange', () => {

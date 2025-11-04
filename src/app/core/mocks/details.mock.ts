@@ -18,8 +18,8 @@ export const mockCredentialStatus: CredentialStatus = {
   statusListCredential: "https://issuer.dome-marketplace.eu/credentials/status/1" 
 } 
 
+// todo update to more recent models
 export const mockCredentialEmployee: any = {
-// todo export const mockCredentialEmployee: CredentialProcedureDetails = {
   procedure_id: 'mock-procedure-employee',
   lifeCycleStatus: 'DRAFT',
   email: "mock@email.com",

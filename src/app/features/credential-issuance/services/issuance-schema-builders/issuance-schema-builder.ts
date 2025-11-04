@@ -14,7 +14,7 @@ export class IssuanceSchemaBuilder {
 
   public formSchemasBuilder<T extends IssuanceCredentialType>(
     credType: T,
-    asSigner: boolean
+    onBehalf: boolean
   ): IssuanceViewModelsTuple {
     const rawSchema: CredentialIssuanceViewModelSchema  = this.getIssuanceFormSchema(credType).schema;
     const formViewModel: CredentialIssuanceViewModelSchemaWithId = [];
@@ -25,7 +25,7 @@ export class IssuanceSchemaBuilder {
       // we add NOSONAR since this id is sufficient for the number of fields we manage + the id is not sent to backend
       const fieldWithId: CredentialIssuanceViewModelGroupFieldWithId = { ...field, id: Math.random() * 1000 }; // NOSONAR
 
-      if (this.shouldExtractStatic(fieldWithId, asSigner)) {
+      if (this.shouldExtractStatic(fieldWithId, onBehalf)) {
         this.extractStatic(fieldWithId, staticSchema);
         continue;
       }
@@ -36,9 +36,9 @@ export class IssuanceSchemaBuilder {
     return [formViewModel, staticSchema];
   }
 
-  private shouldExtractStatic(field: CredentialIssuanceViewModelGroupField, asSigner: boolean): boolean {
+  private shouldExtractStatic(field: CredentialIssuanceViewModelGroupField, onBehalf: boolean): boolean {
     if (field.display === 'side') return true;
-    if (field.display === 'pref_side' && !asSigner) return true;
+    if (field.display === 'pref_side' && !onBehalf) return true;
     return false;
   }
 

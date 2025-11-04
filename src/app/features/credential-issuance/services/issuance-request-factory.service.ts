@@ -118,7 +118,7 @@ export class IssuanceRequestFactoryService {
 
   private getCredentialEmail(credentialData: IssuanceRawCredentialPayload, 
     credentialType: IssuanceCredentialType): string | undefined{
-      if(credentialType === 'LEARCredentialMachine' && !credentialData.asSigner){
+      if(credentialType === 'LEARCredentialMachine' && !credentialData.onBehalf){
         return this.authService.getMandateeEmail();
       }
       return undefined;
@@ -177,9 +177,9 @@ export class IssuanceRequestFactoryService {
   }
 
 private getMandatorFromCredentialData(credentialData: IssuanceRawCredentialPayload): Record<string, string>{
-  if(!credentialData.asSigner){
+  if(!credentialData.onBehalf){
     const unparsedMandator = credentialData.staticData?.mandator;
-    if(!unparsedMandator) throw Error('Could not get valid mandator as signer');
+    if(!unparsedMandator) throw Error('Could not get valid mandator on behalf');
     return Object.fromEntries(unparsedMandator.map(item => [item.key, item.value]));
   }
   return credentialData.formData['mandator'];
