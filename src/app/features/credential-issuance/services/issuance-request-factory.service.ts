@@ -3,6 +3,7 @@ import { IssuancePayloadPower, IssuanceLEARCredentialEmployeePayload, IssuanceLE
 import { EmployeeMandatee, TmfAction, TmfFunction } from 'src/app/core/models/entity/lear-credential';
 import { IssuanceCredentialType, IssuanceRawCredentialPayload, IssuanceRawPowerForm } from 'src/app/core/models/entity/lear-credential-issuance';
 import { AuthService } from 'src/app/core/services/auth.service';
+import { environment } from 'src/environments/environment';
 
 @Injectable({
   providedIn: 'root'
@@ -202,7 +203,7 @@ private getMandateeFromCredentialData(credentialData: IssuanceRawCredentialPaylo
 
 const domePowerBase = {
   type: "domain",
-  domain: "DOME"
+  domain: environment.sys_tenant
 }
 
 const powerMap: Record<IssuanceCredentialType, Partial<Record<TmfFunction, IssuancePayloadPower>>> = {
