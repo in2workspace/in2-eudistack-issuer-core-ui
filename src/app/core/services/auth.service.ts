@@ -57,7 +57,7 @@ export class AuthService{
 
         switch (event.type) {
           case EventTypes.SilentRenewStarted:
-            console.info('Silent renew started' + Date.now());
+            console.info('Silent renew started: ' + Date.now());
             break;
 
           // before this happens, the library cleans up the local auth data
@@ -107,7 +107,6 @@ export class AuthService{
   }
 
   public checkAuth$(): Observable<LoginResponse> {
-    console.info('Checking authentication.');
     return this.oidcSecurityService.checkAuth().pipe(
       take(1),
       tap(({ isAuthenticated, userData}) => {

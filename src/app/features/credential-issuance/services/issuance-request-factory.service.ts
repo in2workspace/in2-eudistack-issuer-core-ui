@@ -33,8 +33,6 @@ export class IssuanceRequestFactoryService {
     }
 
   private createLearCredentialEmployeeRequest(credentialData: IssuanceRawCredentialPayload): IssuanceLEARCredentialEmployeePayload{
-    console.log("Employee request payload: ");
-    console.log(credentialData);
     // Power
     const parsedPower = this.parsePower(credentialData.formData['power'], 'LEARCredentialEmployee');
     
@@ -126,9 +124,6 @@ export class IssuanceRequestFactoryService {
   }
 
   private buildDidElsi(orgId: string): string{
-    //todo remove
-    console.log("buildDidElsi: orgId");
-    console.log(orgId);
     return "did:elsi:" + orgId;
   }
 
