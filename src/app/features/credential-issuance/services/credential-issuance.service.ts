@@ -29,7 +29,7 @@ export class CredentialIssuanceService {
   // BUILD SCHEMAS FROM CREDENTIAL TYPE
   public credentialViewModels$ = computed<IssuanceViewModelsTuple | null>(() => 
     this.selectedCredentialType$() 
-    ? this.issuanceViewModelsBuilder(this.selectedCredentialType$()!, this.asSigner$())
+    ? this.issuanceViewModelsBuilder(this.selectedCredentialType$()!, this.onBehalf$())
     : null
   );
 
@@ -53,7 +53,7 @@ export class CredentialIssuanceService {
 
   public form$ = computed<FormGroup>(() => { 
     return this.credentialFormSchema$() 
-      ? this.formBuilder(this.credentialFormSchema$()!, this.asSigner$())
+      ? this.formBuilder(this.credentialFormSchema$()!, this.onBehalf$())
       : new FormGroup({})
   });
 
@@ -73,7 +73,7 @@ export class CredentialIssuanceService {
   );
 
   // OTHER STATES
-  public asSigner$ = signal<boolean>(false);
+  public onBehalf$ = signal<boolean>(false);
   // avoids "canLeave alert" after submitting and being redirected to home
   public hasSubmitted$ = signal<boolean>(false);
 
@@ -172,20 +172,20 @@ export class CredentialIssuanceService {
     this.dialog.openDialogWithCallback(ConditionalConfirmDialogComponent, dialogData, this.submitAsCallback);
   }
 
-  private issuanceViewModelsBuilder(credType: "LEARCredentialEmployee" | "LEARCredentialMachine", asSigner: boolean): IssuanceViewModelsTuple{
-    return this.schemaBuilder.formSchemasBuilder(credType, asSigner);
+  private issuanceViewModelsBuilder(credType: "LEARCredentialEmployee" | "LEARCredentialMachine", onBehalf: boolean): IssuanceViewModelsTuple{
+    return this.schemaBuilder.formSchemasBuilder(credType, onBehalf);
   }
 
   private formBuilder(
   schema: CredentialIssuanceViewModelField[],
-  asSigner: boolean
+  onBehalf: boolean
 ): FormGroup {
   const controls: Record<string, AbstractControl> = {};
 
   for (const field of schema) {
     if (
       field.type === 'group' &&
-      !asSigner &&
+      !onBehalf &&
       (field.display === 'pref_side' || field.display === 'side')
     ) {
       continue;
@@ -205,7 +205,7 @@ export class CredentialIssuanceService {
 
       case 'group': {
         const childSchema = field.groupFields ?? [];
-        controls[field.key] = this.formBuilder(childSchema, asSigner);
+        controls[field.key] = this.formBuilder(childSchema, onBehalf);
         break;
       }
 
@@ -235,7 +235,7 @@ export class CredentialIssuanceService {
       const rawCredentialPayload: IssuanceRawCredentialPayload = { 
         formData: formValue, 
         staticData: this.staticData$(),
-        asSigner: this.asSigner$()
+        onBehalf: this.onBehalf$()
       }
 
       const request = this.buildCredentialRequest(rawCredentialPayload, credentialType);

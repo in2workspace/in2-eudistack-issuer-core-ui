@@ -39,7 +39,7 @@ describe('IssuanceRequestFactoryService', () => {
 
   it('should throw TypeError for unknown credential type', () => {
     const payload = {
-      asSigner: false,
+      onBehalf: false,
       optional: { staticData: { mandator: {} } },
       formData: { mandatee: {} }
     } as unknown as IssuanceRawCredentialPayload;
@@ -50,7 +50,7 @@ describe('IssuanceRequestFactoryService', () => {
 
   it('should use provided commonName and keep VAT prefix for employee', () => {
     const credentialData: any = {
-      asSigner: true,
+      onBehalf: true,
       formData: {
         power: { Onboarding: { Execute: true } },
         mandator: {
@@ -74,7 +74,7 @@ describe('IssuanceRequestFactoryService', () => {
 
   it('should create machine request with did and mandatee fields', () => {
     const credentialData: any = {
-      asSigner: true,
+      onBehalf: true,
       formData: {
         power: { Onboarding: { Execute: true } },
         mandator: {
@@ -121,7 +121,7 @@ describe('IssuanceRequestFactoryService', () => {
 
   it('should use provided commonName and keep VAT prefix for machine', () => {
     const credentialData: any = {
-      asSigner: true,
+      onBehalf: true,
       formData: {
         power: { Onboarding: { Execute: true } },
         mandator: {

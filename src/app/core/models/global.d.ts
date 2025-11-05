@@ -20,5 +20,6 @@ interface Window {
         logo_src?: string;
         favicon_src?: string;
         default_lang?: string
+        admin_organization_id?: string;
     };
 }

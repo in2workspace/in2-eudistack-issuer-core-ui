@@ -26,6 +26,7 @@ describe('CredentialDetailsComponent', () => {
     credentialType$: ReturnType<typeof signal<CredentialType | undefined>>;
     credentialStatus$: ReturnType<typeof signal<any>>;
     lifeCycleStatusClass$: ReturnType<typeof signal<StatusClass | undefined>>;
+    email$: ReturnType<typeof signal<any>>;
 
     mainViewModel$: ReturnType<typeof signal<EvaluatedExtendedDetailsField[] | undefined>>;
     sideViewModel$: ReturnType<typeof signal<EvaluatedExtendedDetailsField[] | undefined>>;
@@ -61,6 +62,7 @@ describe('CredentialDetailsComponent', () => {
     const showActions$ = signal<boolean>(true);
     const credentialStatus$ = signal(mockCredentialStatus);
     const procedureId$ = signal<string>('the-id');
+    const email$ = signal<string>('subject@email.com');
 
     mockDetailsService = {
       procedureId$,
@@ -71,6 +73,7 @@ describe('CredentialDetailsComponent', () => {
       credentialType$: type$,
       credentialStatus$: credentialStatus$,
       lifeCycleStatusClass$: statusClass$,
+      email$: email$,
 
       mainViewModel$: mainModel$,
       sideViewModel$: sideModel$,
@@ -131,6 +134,7 @@ describe('CredentialDetailsComponent', () => {
     expect(component.credentialType$()).toBe('LEARCredentialEmployee');
     expect(component.lifeCycleStatus$()).toBe('EXPIRED');
     expect(component.credentialStatus$()).toEqual(mockCredentialStatus);
+    expect(component.email$()).toEqual('subject@email.com');
     expect(component.mainViewModel$()![0].key).toBe('foo');
     expect(component.sideViewModel$()).toEqual([]);
   });

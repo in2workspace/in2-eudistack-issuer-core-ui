@@ -21,7 +21,7 @@ describe('AppComponent', () => {
     logout() {
       return of(void 0);
     },
-    hasIn2OrganizationIdentifier() {
+    hasAdminOrganizationIdentifier() {
       return true;
     },
     hasPower: () => true,

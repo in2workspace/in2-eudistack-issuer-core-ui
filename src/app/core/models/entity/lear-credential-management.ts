@@ -1,7 +1,7 @@
-import { CredentialProcedure } from "../dto/credential-procedures-response.dto";
+import { CredentialProcedureBasicInfo } from "../dto/credential-procedures-response.dto";
 
 
-export interface CredentialProcedureWithClass extends CredentialProcedure {
+export interface CredentialProcedureWithClass extends CredentialProcedureBasicInfo {
   statusClass: string;
 }
 
@@ -23,3 +23,12 @@ export type ToSlug<S extends string> =
 export type StatusClassFromDefined = `status-${ToSlug<DefinedStatusClass>}`;
 
 export type StatusClass = StatusClassFromDefined | 'status-default';
+
+const filters = ["subject"] as const;
+export type Filter = typeof filters[number];
+
+export type FilterConfig = {
+  filterName: Filter;
+  translationLabel: string;
+  placeholderTranslationLabel: string;
+}

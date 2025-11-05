@@ -39,7 +39,7 @@
     "name": "Nombre",
     "first-name": "Nombre",
     "last-name": "Apellidos",
-    "email": "Dirección electrónica",
+    "email": "Correo electrónico",
     "serialNumber": "Número de tarjeta ID",
     "country": "País",
     "select-country": "Seleccione un país",
@@ -50,13 +50,13 @@
     "organizationid": "Número VAT de empresa",
     "organization": "Nombre de empresa",
     "name": "Nombre",
-    "email": "Dirección electrónica",
+    "email": "Correo electrónico",
     "serialNumber": "Número de tarjeta ID",
     "country": "País"
   },
   "mandatee": {
     "last_name": "Apellidos",
-    "email": "Dirección de correo"
+    "email": "Correo electrónico"
   },
 "credentialDetails": {
     "title": "Detalles de la credencial",
@@ -66,7 +66,7 @@
     "LEARCredentialMachine": "LEAR Credential Machine",
     "VerifiableCertification": "Verifiable Certification",
     "DRAFT": "BORRADOR",
-    "PEND_SIGNATURE": "PEND_SIGNAR",
+    "PEND_SIGNATURE": "PEND_FIRMA",
     "WITHDRAWN": "WITHDRAWN",
     "VALID": "VALIDO",
     "REVOKED": "REVOCADO",
@@ -74,10 +74,12 @@
     "PEND_DOWNLOAD": "PEND_DESC.",
     "ISSUED": "EMITIDO",
     "status": "estatus",
+    "email": "Correo electrónico",
+    "contact-email": "Email de contacto",
     "valid_from": "válido desde",
     "valid_until": "válido hasta",
     "issuer": "emisor",
-    "mandatee": "mandatario",
+    "mandatee": "persona mandatada",
     "mandator": "mandante",
     "power": "poder",
     "id": "ID",
@@ -86,7 +88,6 @@
     "organization": "nombre de la empresa",
     "organizationId": "número de NIF de la empresa",
     "commonName": "nombre",
-    "email": "correo electrónico",
     "serialNumber": "número del documento de identidad",
 	  "name": "nombre",
     "firstName": "nombre",
@@ -171,13 +172,18 @@
     "title": "Lista de credenciales emitidas",
     "button": "Nueva credencial",
     "status": "Estatus",
+    "organization": "Organización",
+    "organizationIdentifier": "ID de Organización",
+    "filter-by-org": "Filtra por org.",
     "subject": "Sujeto",
     "credentialType": "Tipo de credencial",
     "updated": "Actualizado",
     "cancel": "Cancelar",
     "create" : "Crear Credencial",
     "buttonAdmin":"Nueva Credencial (en nombre de)",
-    "search": "Busca por Sujeto",
+    "search": "Buscar por",
+    "searchPlaceholderSubject": "Juan García",
+    "searchPlaceholderOrgID": "VATES-000000",
     "searchPlaceholder": "Juan García",
       "paginator": {
       "items-per-page": "Ítems por página",
@@ -188,180 +194,180 @@
       "of": "de"
     }
   },
-    "power": {
-      "power": "Powers",
-      "domain": "Domain",
-      "dome": "DOME",
-      "function": "Function",
-      "onboarding": "Onboarding",
-      "marketplace": "Marketplace",
-      "productOffering": "ProductOffering",
-      "certification": "Certification",
-      "add": "Add",
-      "execute": "Execute",
-      "create": "Create",
-      "update": "Update",
-      "delete": "Delete",
-      "upload": "Upload",
-      "attest": "Attest",
-      "select": "Selecciona un poder",
-      "invalid_power_title": "Acceso Denegado",
-      "invalid_power_message": "No tienes la política necesaria para acceder",
-      "remove-dialog": {
-        "title":"Eliminar power",
-        "message": "Seguro que quieres eliminar este power? "
-      }
-    },
-    "credentialIssuance": {
-      "title": "Emisión de  redential",
-      "learCredentialEmployee": "LEAR Credential Employee",
-      "LEARCredentialEmployee":"LEAR Credential Employee",
-      "learCredentialMachine": "LEAR Credential Machine",
-      "LEARCredentialMachine":"LEAR Credential Machine",
-      "create-confirm-dialog": {
-        "title": "Crear credencial",
-        "message": "¿Estás seguro de que quieres crear esta credencial?",
-        "checkboxLabel": "Confirmo que he copiado y guardado de forma segura la clave privada.",
-        "belowText": "Sin la clave privada, no podrás usar esta credencial más adelante.",
-        "defaultLoadingTitle": "Espere mientras se completa el proceso..."
-      },
-      "create-success-dialog": {
-        "title": "Credencial creada",
-        "message": "La credencial se ha creado correctamente."
-      },
-      "creating-credential": "Creando credencial",
-      "create-credential": "Crear credencial",
-      "credentialType": "Tipo de credencial",
-      "cancel": "Cancelar",
-      "mandatee": "mandatario",
-      "mandator": "mandante",
-      "select-type": "Selecciona el tipo de credencial",
-      "firstName": "Nombre",
-      "lastName": "Apellido",
-      "commonName": "Nombre común",
-      "email": "Correo electrónico",
-      "serialNumber": "Número de documento de identidad",
-      "organization": "Nombre de la empresa",
-      "organizationIdentifier": "NIF de la empresa",
-      "country": "País",
-      "employeeId": "ID de empleado",
-      "id": "ID",
-      "domain": "Dominio",
-      "ipAddress": "Dirección IP",
-      "selectA": "Selecciona un ",
-      "hint": {
-        "organizationIdentifier": "Introduce solo los caracteres que van después de 'VAT...-'. Por ejemplo, si es 'VATEU-123ABC', introduce '123ABC'."
-      },
-      "changeCredentialAlert": "¿Estás seguro de que quieres cambiar el tipo de credencial? Se perderá el progreso.",
-      "unloadAlert": "¿Estás seguro de que deseas salir? Se perderá el progreso."
-    },
-    "error": {
-      "not_found": "El recurso solicitado no fue encontrado.",
-      "unauthorized": "No estás autorizado para realizar esta acción.",
-      "forbidden": "No tienes permiso para acceder a este recurso.",
-      "internal_server": "Se produjo un error en el servidor. Por favor, inténtalo de nuevo más tarde.",
-      "credential_submission": "Ha ocurrido un error al crear la credencial.",
-      "one_power_min":"Se requiere por lo menos un poder, y cada power requiere por los menos una acción.",
-      "unknown_error": "Se produjo un error desconocido. Por favor, inténtalo de nuevo.",
-      "policy": {
-          "title": "Acceso Denegado",
-          "message": "No tienes los poderes necesarios para acceder."
-      },
-      "credentialOffer": {
-        "invalid-url": "URL no válida. No se puede obtener la oferta de credencial.",
-        "unexpected": "Se produjo un error inesperado. Inténtalo de nuevo más tarde o contacta con el Representante Legal de tu empresa para obtener una nueva credencial.",
-        "not-found": "Esta oferta de credencial no es válida. Puede que ya se haya descargado, haya caducado o haya sido reemplazada por una nueva. Si has recibido una nueva oferta, revisa tu correo electrónico. Si ha caducado o no puedes encontrar una válida, contacta con el Representante Legal de tu empresa para solicitar una nueva.",
-        "conflict": "La oferta de credencial no es válida. Puede que ya se haya descargado o haya sido reemplazada por una nueva. Si has recibido una nueva oferta, revisa tu correo electrónico."
-      },
-      "server_mail_error": {
-        "title": "Error del Servidor de Correo",
-        "message": "Se produjo un error con el servidor de correo. Por favor, inténtalo de nuevo más tarde para enviar un recordatorio; si el problema persiste, contacta con nuestro equipo de soporte."
-      },
-      "form":{
-        "required": "Campo obligatorio.",
-        "min": "El mínimo es {{0}}",
-        "max": "El màximo es {{0}}",
-        "minLength": "Mínimo de caracteres: {{0}}",
-        "maxLength": "Màximo de caracteres: {{0}}",
-        "pattern": "Patró invàlid",
-        "ip": "IP invàlida. Introdueixi una adreça IPv4 o IPv6.",
-        "domain": "Domini invàlid",
-        "invalid_character": "Caracteres inválidos",
-        "only_letters_and_numbers": "Solo letras y cifras",
-        "only_letters_numbers_hyphens": "Solo letras, cifras y guiones",
-        "only_numbers": "Solo cifras",
-        "max_50": "50 caracteres como máximo",
-        "max_15": "15 caracteres como máximo",
-        "max_9": "9 caracteres como máximo",
-        "min_9": "9 caracteres como mínimo",
-        "min_7": "7 caracteres como mínimo",
-        "min_2": "2 caracteres como mínimo",
-        "email":{
-          "invalid": "Email inválido. Puede que contenga un carácter inválido o en una posición inválida.",
-          "local_part_max": "La parte local del email no puede superar los 64 caracteres.",
-          "domain_part_max": "El dominio del email no puede superar los 189 caracteres.",
-          "main_domain_part_min": "La parte entre '@' y '.' debe tener un mínimo de 2 caracteres.",
-          "top_level_domain_part_min": "La parte entre el último punto y el final debe tener un mínimo de 2 caracteres."
-        },
-        "org_id_startsWithVAT": "Introduzca el ID sin el prefijo VAT- ni el de país",
-        "no_key": "Tiene que generar una llave privada.",
-        "no_power": "Añade por lo menos un poder",
-        "no_function": "Cada poder debe tener por lo menos una acción"
-      }
-    },
-    "dialog": {
-      "ok": "De acuerdo",
-      "close": "Cerrar",
-      "cancel": "Cancelar",
-      "accept": "Aceptar",
-      "delete": "Eliminar",
-      "save": "Guardar",
-      "loading-default-title": "Espere mientras se completa el proceso..."
-    },
-    "signature": {
-      "settings": {
-        "title": "Configuración de firma",
-        "enableRemote": "Habilitar firma remota",
-        "save": "Guardar",
-        "mode": {
-          "CLOUD": "Nube",
-          "SERVER": "Servidor"
-        },
-        "table": {
-          "providerId": "Proveedor",
-          "credentialName": "Nombre de credencial",
-          "actions": "Acciones",
-          "addCredential": "Agregar credencial"
-        },
-        "modal":{
-          "delete":{
-            "title": "Eliminar credencial",
-            "message": "¿Está seguro de que desea eliminar esta credencial?"
-          },
-          "edit":{
-            "title": "Editar credencial"
-          },
-          "create":{
-            "title": "Agregar credencial"
-          }
-         },
-        "formCloudPrivider": {
-          "cloudProvider": "Proveedor en la Nube",
-          "credentialName": "Nombre de la Credencial",
-          "clientId": "ID del Cliente",
-          "clientSecret": "Secreto del Cliente",
-          "credentialId": "ID de la Credencial",
-          "credentialPassword": "Contraseña de la Credencial",
-          "secret": "Secreto (TOTP)",
-          "rationale": "Motivo"
-        }      
-      }
-    },
-    "keys": {
-      "title": "Llave privada",
-      "buttonText": "Generar llave",
-      "alert": "Assegúrese de guardar esa llave.",
-      "tooltip": "La clave privada es un secreto que te permite firmar y demostrar la propiedad de la credencial. Sin ella, no puedes usar la credencial. Guárdala de manera segura y no la compartas."
+  "power": {
+    "power": "Poderes",
+    "domain": "Dominio",
+    "dome": "DOME",
+    "function": "Función",
+    "marketplace": "Marketplace",
+    "add": "Añadir",
+    "onboarding": "Alta",
+    "productoffering": "Oferta de producto",
+    "certification": "Certificación",
+    "execute": "Ejecutar",
+    "create": "Crear",
+    "update": "Actualizar",
+    "delete": "Eliminar",
+    "upload": "Subir",
+    "attest": "Acreditar",
+    "select": "Selecciona un poder",
+    "invalid_power_title": "Acceso Denegado",
+    "invalid_power_message": "No tienes la política necesaria para acceder",
+    "remove-dialog": {
+      "title":"Eliminar power",
+      "message": "Seguro que quieres eliminar este power? "
     }
+  },
+  "credentialIssuance": {
+    "title": "Emisión de  redential",
+    "learCredentialEmployee": "LEAR Credential Employee",
+    "LEARCredentialEmployee":"LEAR Credential Employee",
+    "learCredentialMachine": "LEAR Credential Machine",
+    "LEARCredentialMachine":"LEAR Credential Machine",
+    "create-confirm-dialog": {
+      "title": "Crear credencial",
+      "message": "¿Estás seguro de que quieres crear esta credencial?",
+      "checkboxLabel": "Confirmo que he copiado y guardado de forma segura la clave privada.",
+      "belowText": "Sin la clave privada, no podrás usar esta credencial más adelante.",
+      "defaultLoadingTitle": "Espere mientras se completa el proceso..."
+    },
+    "create-success-dialog": {
+      "title": "Credencial creada",
+      "message": "La credencial se ha creado correctamente."
+    },
+    "creating-credential": "Creando credencial",
+    "create-credential": "Crear credencial",
+    "credentialType": "Tipo de credencial",
+    "cancel": "Cancelar",
+    "mandatee": "persona mandatada",
+    "mandator": "mandante",
+    "select-type": "Selecciona el tipo de credencial",
+    "firstName": "Nombre",
+    "lastName": "Apellido",
+    "commonName": "Nombre común",
+    "email": "Correo electrónico",
+    "serialNumber": "Número de documento de identidad",
+    "organization": "Nombre de la empresa",
+    "organizationIdentifier": "NIF de la empresa",
+    "country": "País",
+    "employeeId": "ID de empleado",
+    "id": "ID",
+    "domain": "Dominio",
+    "ipAddress": "Dirección IP",
+    "selectA": "Selecciona un ",
+    "hint": {
+      "organizationIdentifier": "Introduce solo los caracteres que van después de 'VAT...-'. Por ejemplo, si es 'VATEU-123ABC', introduce '123ABC'."
+    },
+    "changeCredentialAlert": "¿Estás seguro de que quieres cambiar el tipo de credencial? Se perderá el progreso.",
+    "unloadAlert": "¿Estás seguro de que deseas salir? Se perderá el progreso."
+  },
+  "error": {
+    "not_found": "El recurso solicitado no fue encontrado.",
+    "unauthorized": "No estás autorizado para realizar esta acción.",
+    "forbidden": "No tienes permiso para acceder a este recurso.",
+    "internal_server": "Se produjo un error en el servidor. Por favor, inténtalo de nuevo más tarde.",
+    "credential_submission": "Ha ocurrido un error al crear la credencial.",
+    "one_power_min":"Se requiere por lo menos un poder, y cada power requiere por los menos una acción.",
+    "unknown_error": "Se produjo un error desconocido. Por favor, inténtalo de nuevo.",
+    "policy": {
+        "title": "Acceso Denegado",
+        "message": "No tienes los poderes necesarios para acceder."
+    },
+    "credentialOffer": {
+      "invalid-url": "URL no válida. No se puede obtener la oferta de credencial.",
+      "unexpected": "Se produjo un error inesperado. Inténtalo de nuevo más tarde o contacta con el Representante Legal de tu empresa para obtener una nueva credencial.",
+      "not-found": "Esta oferta de credencial no es válida. Puede que ya se haya descargado, haya caducado o haya sido reemplazada por una nueva. Si has recibido una nueva oferta, revisa tu correo electrónico. Si ha caducado o no puedes encontrar una válida, contacta con el Representante Legal de tu empresa para solicitar una nueva.",
+      "conflict": "La oferta de credencial no es válida. Puede que ya se haya descargado o haya sido reemplazada por una nueva. Si has recibido una nueva oferta, revisa tu correo electrónico."
+    },
+    "server_mail_error": {
+      "title": "Error del Servidor de Correo",
+      "message": "Se produjo un error con el servidor de correo. Por favor, inténtalo de nuevo más tarde para enviar un recordatorio; si el problema persiste, contacta con nuestro equipo de soporte."
+    },
+    "form":{
+      "required": "Campo obligatorio.",
+      "min": "El mínimo es {{0}}",
+      "max": "El màximo es {{0}}",
+      "minLength": "Mínimo de caracteres: {{0}}",
+      "maxLength": "Màximo de caracteres: {{0}}",
+      "pattern": "Patrón inválido",
+      "ip": "IP inválida. Introduzca una dirección IPv4 o IPv6.",
+      "domain": "Dominio inválido",
+      "invalid_character": "Caracteres inválidos",
+      "only_letters_and_numbers": "Solo letras y cifras",
+      "only_letters_numbers_hyphens": "Solo letras, cifras y guiones",
+      "only_numbers": "Solo cifras",
+      "max_50": "50 caracteres como máximo",
+      "max_15": "15 caracteres como máximo",
+      "max_9": "9 caracteres como máximo",
+      "min_9": "9 caracteres como mínimo",
+      "min_7": "7 caracteres como mínimo",
+      "min_2": "2 caracteres como mínimo",
+      "email":{
+        "invalid": "Correo electrónico inválido. Puede que contenga un carácter inválido o en una posición inválida.",
+        "local_part_max": "La parte local del correo electrónico no puede superar los 64 caracteres.",
+        "domain_part_max": "El dominio del correo electrónico no puede superar los 189 caracteres.",
+        "main_domain_part_min": "La parte entre '@' y '.' debe tener un mínimo de 2 caracteres.",
+        "top_level_domain_part_min": "La parte entre el último punto y el final debe tener un mínimo de 2 caracteres."
+      },
+      "org_id_startsWithVAT": "Introduzca el ID sin el prefijo VAT- ni el de país",
+      "no_key": "Tiene que generar una llave privada.",
+      "no_power": "Añade por lo menos un poder",
+      "no_function": "Cada poder debe tener por lo menos una acción"
+    }
+  },
+  "dialog": {
+    "ok": "De acuerdo",
+    "close": "Cerrar",
+    "cancel": "Cancelar",
+    "accept": "Aceptar",
+    "delete": "Eliminar",
+    "save": "Guardar",
+    "loading-default-title": "Espere mientras se completa el proceso..."
+  },
+  "signature": {
+    "settings": {
+      "title": "Configuración de firma",
+      "enableRemote": "Habilitar firma remota",
+      "save": "Guardar",
+      "mode": {
+        "CLOUD": "Nube",
+        "SERVER": "Servidor"
+      },
+      "table": {
+        "providerId": "Proveedor",
+        "credentialName": "Nombre de credencial",
+        "actions": "Acciones",
+        "addCredential": "Agregar credencial"
+      },
+      "modal":{
+        "delete":{
+          "title": "Eliminar credencial",
+          "message": "¿Está seguro de que desea eliminar esta credencial?"
+        },
+        "edit":{
+          "title": "Editar credencial"
+        },
+        "create":{
+          "title": "Agregar credencial"
+        }
+        },
+      "formCloudPrivider": {
+        "cloudProvider": "Proveedor en la Nube",
+        "credentialName": "Nombre de la Credencial",
+        "clientId": "ID del Cliente",
+        "clientSecret": "Secreto del Cliente",
+        "credentialId": "ID de la Credencial",
+        "credentialPassword": "Contraseña de la Credencial",
+        "secret": "Secreto (TOTP)",
+        "rationale": "Motivo"
+      }      
+    }
+  },
+  "keys": {
+    "title": "Llave privada",
+    "buttonText": "Generar llave",
+    "alert": "Asegúrese de guardar esa llave.",
+    "tooltip": "La clave privada es un secreto que te permite firmar y demostrar la propiedad de la credencial. Sin ella, no puedes usar la credencial. Guárdala de manera segura y no la compartas."
+  }
 
 }

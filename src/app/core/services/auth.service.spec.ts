@@ -6,6 +6,7 @@ import { UserDataAuthenticationResponse } from '../models/dto/user-data-authenti
 import { CredentialStatus, LEARCredentialEmployee } from '../models/entity/lear-credential';
 import { RoleType } from '../models/enums/auth-rol-type.enum';
 import { LEARCredentialDataNormalizer } from 'src/app/features/credential-details/utils/lear-credential-data-normalizer';
+import { environment } from 'src/environments/environment';
 
 const mockCredentialEmployee: LEARCredentialEmployee = {
   id: 'some-id',
@@ -253,25 +254,34 @@ describe('AuthService', () => {
   });
 
   // --------------------------------------------------------------------------
-  // hasIn2OrganizationIdentifier()
+  // hasAdminOrganizationIdentifier()
   // --------------------------------------------------------------------------
-  it('true si organizationIdentifier és "VATES-B60645900"', () => {
-    (service as any).mandatorSubject.next({
-      organizationIdentifier: 'VATES-B60645900'
-    });
-    expect(service.hasIn2OrganizationIdentifier()).toBe(true);
-  });
+  describe('hasAdminOrganizationIdentifier', () => {
+    it('retorna true si organizationIdentifier coincideix amb environment.admin_organization_id', () => {
+      // comment: env-driven admin org id
+      (environment as any).admin_organization_id = 'VATES-B60645900';
 
-  it('false si organizationIdentifier és diferent', () => {
-    (service as any).mandatorSubject.next({
-      organizationIdentifier: 'OTHER'
+      (service as any).mandatorSubject.next({
+        organizationIdentifier: 'VATES-B60645900'
+      });
+
+      expect(service.hasAdminOrganizationIdentifier()).toBe(true);
     });
-    expect(service.hasIn2OrganizationIdentifier()).toBe(false);
+
+    it('retorna false si organizationIdentifier no coincideix amb environment.admin_organization_id', () => {
+      (environment as any).admin_organization_id = 'VATES-B60645900';
+
+      (service as any).mandatorSubject.next({
+        organizationIdentifier: 'OTHER-ORG'
+      });
+
+      expect(service.hasAdminOrganizationIdentifier()).toBe(false);
+    });
   });
 
   it('false si mandator és null', () => {
     (service as any).mandatorSubject.next(null);
-    expect(service.hasIn2OrganizationIdentifier()).toBe(false);
+    expect(service.hasAdminOrganizationIdentifier()).toBe(false);
   });
 
   // --------------------------------------------------------------------------

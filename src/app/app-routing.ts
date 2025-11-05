@@ -30,7 +30,7 @@ export const routes: Routes = [
         loadChildren: () => import('./features/credential-issuance/credential-issuance.routes').then(m => m.default)
       },
       {
-        path: 'create-as-signer',
+        path: 'create-on-behalf',
         loadChildren: () => import('./features/credential-issuance/credential-issuance.routes').then(m => m.default)
       },
     ],

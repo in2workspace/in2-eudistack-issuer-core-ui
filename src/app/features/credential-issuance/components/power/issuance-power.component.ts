@@ -35,7 +35,7 @@ export type NormalizedAction = { action: string; value: boolean };
 })
 export class IssuancePowerComponent extends BaseIssuanceCustomFormChild<UntypedFormGroup> implements OnInit{
 
-  public organizationIdentifierIsIn2: boolean;
+  public organizationIdentifierIsAdmin: boolean;
   public _powersInput: IssuanceFormPowerSchema[] = [];
   public selectorPowers: TempIssuanceFormPowerSchema[] = [];
   public selectedPower: TempIssuanceFormPowerSchema | undefined;
@@ -46,7 +46,7 @@ export class IssuancePowerComponent extends BaseIssuanceCustomFormChild<UntypedF
 
   public constructor(){
     super();
-    this.organizationIdentifierIsIn2 = this.authService.hasIn2OrganizationIdentifier();
+    this.organizationIdentifierIsAdmin = this.authService.hasAdminOrganizationIdentifier();
   }
   
   
@@ -124,7 +124,7 @@ public getFormGroup(control: any): FormGroup {
 private mapToTempPowerSchema(powers: IssuanceFormPowerSchema[]): TempIssuanceFormPowerSchema[]{
   return powers
     .map(p => ({...p, isDisabled: false}))
-    .filter(p => this.organizationIdentifierIsIn2 || !p.isIn2Required);
+    .filter(p => this.organizationIdentifierIsAdmin || !p.isAdminRequired);
 }
 
 private resetForm() {

@@ -40,7 +40,7 @@ export class CredentialIssuanceComponent implements CanDeactivate<CanComponentDe
   public formValue$: Signal<Record<string, any>>;
   public isFormValid$: Signal<boolean>;
 
-  public asSigner$: WritableSignal<boolean>;
+  public onBehalf$: WritableSignal<boolean>;
   public hasSubmitted$: WritableSignal<boolean>;
 
   public bottomAlertMessages$: WritableSignal<string[]>;
@@ -50,12 +50,12 @@ export class CredentialIssuanceComponent implements CanDeactivate<CanComponentDe
   private readonly route = inject(ActivatedRoute);
 
   public constructor(){
-    const asSigner = this.route.snapshot.pathFromRoot
+    const onBehalf = this.route.snapshot.pathFromRoot
         .flatMap(r => r.url)
         .map(seg => seg.path)
-        .includes('create-as-signer');
-    this.issuanceService.asSigner$.set(asSigner);
-    this.asSigner$ = this.issuanceService.asSigner$;
+        .includes('create-on-behalf');
+    this.issuanceService.onBehalf$.set(onBehalf);
+    this.onBehalf$ = this.issuanceService.onBehalf$;
     this.hasSubmitted$ = this.issuanceService.hasSubmitted$;
     this.credentialTypesArr = this.issuanceService.credentialTypesArr;
     this.selectedCredentialType$ = this.issuanceService.selectedCredentialType$;

@@ -19,8 +19,8 @@ export class IssuanceRequestFactoryService {
   public createCredentialRequest(credentialData: IssuanceRawCredentialPayload, 
       credentialType: IssuanceCredentialType): IssuanceLEARCredentialRequestDto{
         const payload = this.createCredentialRequestPayload(credentialData, credentialType);
-        const credentialOwnerEmail = this.getCredentialOwnerEmail(credentialData, credentialType);
-        return this.buildRequestDto(credentialType, payload, credentialOwnerEmail);
+        const credentialEmail = this.getCredentialEmail(credentialData, credentialType);
+        return this.buildRequestDto(credentialType, payload, credentialEmail);
       }
 
   public createCredentialRequestPayload(
@@ -116,9 +116,9 @@ export class IssuanceRequestFactoryService {
     return payload;
   }
 
-  private getCredentialOwnerEmail(credentialData: IssuanceRawCredentialPayload, 
+  private getCredentialEmail(credentialData: IssuanceRawCredentialPayload, 
     credentialType: IssuanceCredentialType): string | undefined{
-      if(credentialType === 'LEARCredentialMachine' && !credentialData.asSigner){
+      if(credentialType === 'LEARCredentialMachine' && !credentialData.onBehalf){
         return this.authService.getMandateeEmail();
       }
       return undefined;
@@ -177,9 +177,9 @@ export class IssuanceRequestFactoryService {
   }
 
 private getMandatorFromCredentialData(credentialData: IssuanceRawCredentialPayload): Record<string, string>{
-  if(!credentialData.asSigner){
+  if(!credentialData.onBehalf){
     const unparsedMandator = credentialData.staticData?.mandator;
-    if(!unparsedMandator) throw Error('Could not get valid mandator as signer');
+    if(!unparsedMandator) throw Error('Could not get valid mandator on behalf');
     return Object.fromEntries(unparsedMandator.map(item => [item.key, item.value]));
   }
   return credentialData.formData['mandator'];
@@ -189,13 +189,13 @@ private getMandateeFromCredentialData(credentialData: IssuanceRawCredentialPaylo
   return credentialData.formData['mandatee'];
 }
 
-  private buildRequestDto(credType:IssuanceCredentialType, payload: IssuanceLEARCredentialPayload, credentialOwnerEmail?: string): IssuanceLEARCredentialRequestDto{
+  private buildRequestDto(credType:IssuanceCredentialType, payload: IssuanceLEARCredentialPayload, credentialEmail?: string): IssuanceLEARCredentialRequestDto{
     return {
       schema: credType,
       format: "jwt_vc_json",
       payload: payload,
       operation_mode: "S",
-      credential_owner_email: credentialOwnerEmail
+      email: credentialEmail
     }
   }
 }
