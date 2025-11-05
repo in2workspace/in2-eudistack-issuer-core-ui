@@ -2,7 +2,7 @@
 
 export const environment = {
   production: true,
-  // Admin organization identifier
+  // Admin organization identifier (REQUIRED)
   admin_organization_id: window["env"]["admin_organization_id"],
   // System tenant; included as "Domain" in credential powers
   sys_tenant: window["env"]["sys_tenant"],
@@ -34,5 +34,5 @@ export const environment = {
     // App favicon. Points to "assets/icons/" (OPTIONAL with fallback)
     favicon_src: window["env"]["favicon_src"] ?? "dome-favicon.png",
     default_lang: window["env"]["default_lang"] ?? "en"
-  },
+  }
 };
