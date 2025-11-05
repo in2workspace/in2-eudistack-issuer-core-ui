@@ -15,6 +15,7 @@ import { DialogData } from 'src/app/shared/components/dialog/dialog-data';
 import { AuthService } from 'src/app/core/services/auth.service';
 import { IssuanceFormPowerSchema } from 'src/app/core/models/entity/lear-credential-issuance';
 import { BaseIssuanceCustomFormChild } from 'src/app/features/credential-details/components/base-issuance-custom-form-child';
+import { environment } from 'src/environments/environment';
 
 export interface TempIssuanceFormPowerSchema extends IssuanceFormPowerSchema{
   isDisabled: boolean;
@@ -39,6 +40,7 @@ export class IssuancePowerComponent extends BaseIssuanceCustomFormChild<UntypedF
   public _powersInput: IssuanceFormPowerSchema[] = [];
   public selectorPowers: TempIssuanceFormPowerSchema[] = [];
   public selectedPower: TempIssuanceFormPowerSchema | undefined;
+  public readonly sysTenant: string = environment.sys_tenant;
 
   private readonly authService = inject(AuthService);
   private readonly dialog = inject(DialogWrapperService);
@@ -47,6 +49,9 @@ export class IssuancePowerComponent extends BaseIssuanceCustomFormChild<UntypedF
   public constructor(){
     super();
     this.organizationIdentifierIsAdmin = this.authService.hasAdminOrganizationIdentifier();
+    //todo
+    console.log("Issuance Power component - sysTenant: ");
+    console.log(this.sysTenant);
   }
   
   

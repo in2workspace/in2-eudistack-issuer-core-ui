@@ -180,7 +180,7 @@ export class IssuanceRequestFactoryService {
 private getMandatorFromCredentialData(credentialData: IssuanceRawCredentialPayload): Record<string, string>{
   if(!credentialData.onBehalf){
     const unparsedMandator = credentialData.staticData?.mandator;
-    if(!unparsedMandator) throw Error('Could not get valid mandator on behalf');
+    if(!unparsedMandator) throw new Error('Could not get valid mandator on behalf');
     return Object.fromEntries(unparsedMandator.map(item => [item.key, item.value]));
   }
   return credentialData.formData['mandator'];
