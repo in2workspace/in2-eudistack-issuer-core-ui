@@ -172,7 +172,7 @@
   },
   "credentialManagement": {
     "title": "Llista de credencials emeses",
-    "button": "Nova credencial",
+    "button": "Nova Credencial",
     "status": "Estatus",
     "organization": "Organització",
     "organizationIdentifier": "ID d'Organització",

@@ -170,7 +170,7 @@
   },
   "credentialManagement": {
     "title": "Lista de credenciales emitidas",
-    "button": "Nueva credencial",
+    "button": "Nueva Credencial",
     "status": "Estatus",
     "organization": "Organización",
     "organizationIdentifier": "ID de Organización",
@@ -219,7 +219,7 @@
     }
   },
   "credentialIssuance": {
-    "title": "Emisión de  redential",
+    "title": "Emisión de  credencial",
     "learCredentialEmployee": "LEAR Credential Employee",
     "LEARCredentialEmployee":"LEAR Credential Employee",
     "learCredentialMachine": "LEAR Credential Machine",
