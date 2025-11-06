@@ -4,7 +4,7 @@ export const environment = {
   production: true,
   // Admin organization identifier (REQUIRED)
   admin_organization_id: window["env"]["admin_organization_id"],
-  // System tenant; included as "Domain" in credential powers
+  // System tenant name; included as "Domain" in credential powers
   sys_tenant: window["env"]["sys_tenant"],
   // Keycloak URL (REQUIRED)
   iam_url: window["env"]["iam_url"],

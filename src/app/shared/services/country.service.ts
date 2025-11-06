@@ -26,9 +26,6 @@ export class CountryService {
   }
 
   public getCountries(): Country[] {
-    //todo
-    console.log("getCountries: ");
-    console.log(this.countries);
     return this.countries;
   }
 

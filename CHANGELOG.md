@@ -6,10 +6,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [2.1.3](https://github.com/in2workspace/in2-issuer-ui/releases/tag/v2.1.3)
 ### Added
-- Added environment variable `sys_admin` to set credential powers "domain" field
+- Added environment variable `sys_admin` to set credential powers "domain" field and display it in issuance form and credential details page.
 
 ### Fixed
-- Added translations for the country selector
+- Added translations for the country selector.
 
 ## [2.1.2](https://github.com/in2workspace/in2-issuer-ui/releases/tag/v2.1.2)
 ### Added

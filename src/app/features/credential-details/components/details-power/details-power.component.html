@@ -1,4 +1,4 @@
-<h3>{{ "power.domain" | translate }}: <span class="domain-value">{{ sysTenant }}</span></h3>
+<h3>{{ "power.domain" | translate }}: <span class="domain-value">{{ domain }}</span></h3>
 <div class="powers-container">
     @for(power of powers; track $index){
         <p>{{ ("power." + power.function.toLocaleLowerCase() | translate ) | capitalize  }}</p>

@@ -49,9 +49,6 @@ export class IssuancePowerComponent extends BaseIssuanceCustomFormChild<UntypedF
   public constructor(){
     super();
     this.organizationIdentifierIsAdmin = this.authService.hasAdminOrganizationIdentifier();
-    //todo
-    console.log("Issuance Power component - sysTenant: ");
-    console.log(this.sysTenant);
   }
   
   

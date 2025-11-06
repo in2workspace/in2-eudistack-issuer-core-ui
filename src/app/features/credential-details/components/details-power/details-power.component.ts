@@ -16,6 +16,7 @@ export const detailsPowerToken = new InjectionToken<FunctionActions[]>('DETAILS_
 })
 export class DetailsPowerComponent {
   public powers: FunctionActions[] = inject(detailsPowerToken);
-  public sysTenant: string = environment.sys_tenant;
+  // if at some point more than one domain is possible, it should be extracted from each power
+  public domain: string = environment.sys_tenant;
 
 }
