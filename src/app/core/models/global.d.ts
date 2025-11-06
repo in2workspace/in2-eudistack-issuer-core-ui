@@ -21,5 +21,6 @@ interface Window {
         favicon_src?: string;
         default_lang?: string
         admin_organization_id?: string;
+        sys_tenant: string;
     };
 }

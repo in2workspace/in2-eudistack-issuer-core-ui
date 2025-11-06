@@ -17,167 +17,110 @@ describe('CountryService', () => {
     expect(service).toBeTruthy();
   });
 
-  it('should return the list of countries', () => {
-    expect(service.getCountries()).toEqual(countries);
+  it('should map countries to translation labels on construction', () => {
+    // Indirectly tests the private mapCountriesToTranslationLabel()
+    const countries = service.getCountries();
+
+    // Sanity: list should not be empty
+    expect(countries.length).toBeGreaterThan(0);
+
+    // Every country name should have the "countries." prefix
+    countries.forEach(c => {
+      expect(c.name.startsWith('countries.')).toBe(true);
+    });
+
+    // A couple of concrete examples derived from the provided COUNTRIES
+    expect(service.getCountryFromIsoCode('ES')?.name).toBe('countries.spain');
+    expect(service.getCountryFromIsoCode('GB')?.name).toBe('countries.unitedkingdom'); // original was "unitedKingdom"
   });
 
-  it('should return the sorted countries list', ()=>{
-    const sortedCountries = service.getSortedCountries();
-    expect(sortedCountries).toEqual(sortedCountries);
+  it('should return the list of countries (already mapped)', () => {
+    const list = service.getCountries();
+    // Pick a few to assert exact shape
+    expect(list).toEqual(
+      expect.arrayContaining<Country>([
+        { name: 'countries.spain', phoneCode: '34', isoCountryCode: 'ES' },
+        { name: 'countries.germany', phoneCode: '49', isoCountryCode: 'DE' },
+        { name: 'countries.france', phoneCode: '33', isoCountryCode: 'FR' },
+      ])
+    );
+  });
+
+  it('should return a new sorted list by name without mutating the original', () => {
+    const originalRef = service.getCountries(); // This is the internal array
+    const sorted = service.getSortedCountries();
+
+    // Should be a new array instance
+    expect(sorted).not.toBe(originalRef);
+
+    // Should be sorted ascending by name
+    const names = sorted.map(c => c.name);
+    const sortedNamesCopy = [...names].sort((a, b) => a.localeCompare(b));
+    expect(names).toEqual(sortedNamesCopy);
+
+    // Original reference should remain the same (no in-place mutation)
+    expect(service.getCountries()).toBe(originalRef);
   });
 
   it('should return the correct country for a given ISO country code', () => {
-    const isoCode = 'ES';
-    const expectedCountry: Country = { name: 'Spain', phoneCode: '34', isoCountryCode: 'ES' };
-    const result = service.getCountryFromIsoCode(isoCode);
-    expect(result).toEqual(expectedCountry);
+    const result = service.getCountryFromIsoCode('ES');
+    expect(result).toEqual<Country>({
+      name: 'countries.spain',
+      phoneCode: '34',
+      isoCountryCode: 'ES',
+    });
   });
-  
+
   it('should return undefined for an invalid ISO country code', () => {
-    const isoCode = 'INVALID';
-    const result = service.getCountryFromIsoCode(isoCode);
+    const result = service.getCountryFromIsoCode('INVALID');
     expect(result).toBeUndefined();
   });
 
-  it('should return the correct country name for a valid ISO country code', () => {
-    const isoCode = 'ES';
-    const expectedName = 'Spain';
-    const result = service.getCountryNameFromIsoCountryCode(isoCode);
-    expect(result).toBe(expectedName);
+  it('should find a country by its translation key name, case-insensitive', () => {
+    // The service now stores names as "countries.xxx"
+    const result = service.getCountryFromName('CoUnTrIeS.SpAiN');
+    expect(result).toEqual<Country>({
+      name: 'countries.spain',
+      phoneCode: '34',
+      isoCountryCode: 'ES',
+    });
   });
-  
-  // it('should return an empty string and log an error for an invalid ISO country code when fetching country name', () => {
-  //   const isoCode = 'INVALID';
-  //   const consoleSpy = jest.spyOn(console, 'error').mockImplementation();
-  //   const result = service.getCountryNameFromIsoCountryCode(isoCode);
-  //   expect(result).toBe('');
-  //   expect(consoleSpy).toHaveBeenCalledWith('Country not found. Country phone code: ' + isoCode);
-  //   consoleSpy.mockRestore();
-  // });
-  
+
+  it('should return the correct translation-key name for a valid ISO country code', () => {
+    const result = service.getCountryNameFromIsoCountryCode('ES');
+    expect(result).toBe('countries.spain');
+  });
+
+  it('should return an empty string for an invalid ISO country code when fetching name', () => {
+    const result = service.getCountryNameFromIsoCountryCode('INVALID');
+    expect(result).toBe('');
+  });
+
   it('should return the correct phone code for a valid ISO country code', () => {
-    const isoCode = 'ES';
-    const expectedPhoneCode = '34';
-    const result = service.getCountryPhoneFromIsoCountryCode(isoCode);
-    expect(result).toBe(expectedPhoneCode);
+    const result = service.getCountryPhoneFromIsoCountryCode('ES');
+    expect(result).toBe('34');
   });
-  
-  // it('should return an empty string and log an error for an invalid ISO country code when fetching phone code', () => {
-  //   const isoCode = 'INVALID';
-  //   const consoleSpy = jest.spyOn(console, 'error').mockImplementation();
-  //   const result = service.getCountryPhoneFromIsoCountryCode(isoCode);
-  //   expect(result).toBe('');
-  //   expect(consoleSpy).toHaveBeenCalledWith('Country not found. Country phone code: ' + isoCode);
-  //   consoleSpy.mockRestore();
-  // });
-  
 
+  it('should return an empty string for an invalid ISO country code when fetching phone code', () => {
+    const result = service.getCountryPhoneFromIsoCountryCode('INVALID');
+    expect(result).toBe('');
+  });
+
+  it('should return countries as selector options with translation-key labels', () => {
+    const options = service.getCountriesAsSelectorOptions();
+
+    // Each option should have a translation-key label and the ISO country code as value
+    options.forEach(opt => {
+      expect(opt.label.startsWith('countries.')).toBe(true);
+      expect(typeof opt.value).toBe('string');
+      expect(opt.value.length).toBeGreaterThan(0);
+    });
+
+    // A concrete example for ES
+    expect(options).toEqual(
+      expect.arrayContaining([
+        { label: 'countries.spain', value: 'ES' },
+      ])
+    );
+  });
 });
-
-const countries: Country[] = [
-    { name: 'Spain', phoneCode: '34', isoCountryCode: 'ES' },
-    { name: 'Germany', phoneCode: '49', isoCountryCode: 'DE' },
-    { name: 'France', phoneCode: '33', isoCountryCode: 'FR' },
-    { name: 'Italy', phoneCode: '39', isoCountryCode: 'IT' },
-    { name: 'United Kingdom', phoneCode: '44', isoCountryCode: 'GB' },
-    { name: 'Russia', phoneCode: '7', isoCountryCode: 'RU' },
-    { name: 'Ukraine', phoneCode: '380', isoCountryCode: 'UA' },
-    { name: 'Poland', phoneCode: '48', isoCountryCode: 'PL' },
-    { name: 'Romania', phoneCode: '40', isoCountryCode: 'RO' },
-    { name: 'Netherlands', phoneCode: '31', isoCountryCode: 'NL' },
-    { name: 'Belgium', phoneCode: '32', isoCountryCode: 'BE' },
-    { name: 'Greece', phoneCode: '30', isoCountryCode: 'GR' },
-    { name: 'Portugal', phoneCode: '351', isoCountryCode: 'PT' },
-    { name: 'Sweden', phoneCode: '46', isoCountryCode: 'SE' },
-    { name: 'Norway', phoneCode: '47', isoCountryCode: 'NO' },
-    { name: 'Albania', phoneCode: '355', isoCountryCode: 'AL' },
-    { name: 'Andorra', phoneCode: '376', isoCountryCode: 'AD' },
-    { name: 'Armenia', phoneCode: '374', isoCountryCode: 'AM' },
-    { name: 'Austria', phoneCode: '43', isoCountryCode: 'AT' },
-    { name: 'Azerbaijan', phoneCode: '994', isoCountryCode: 'AZ' },
-    { name: 'Belarus', phoneCode: '375', isoCountryCode: 'BY' },
-    { name: 'Bosnia and Herzegovina', phoneCode: '387', isoCountryCode: 'BA' },
-    { name: 'Bulgaria', phoneCode: '359', isoCountryCode: 'BG' },
-    { name: 'Croatia', phoneCode: '385', isoCountryCode: 'HR' },
-    { name: 'Cyprus', phoneCode: '357', isoCountryCode: 'CY' },
-    { name: 'Czech Republic', phoneCode: '420', isoCountryCode: 'CZ' },
-    { name: 'Denmark', phoneCode: '45', isoCountryCode: 'DK' },
-    { name: 'Estonia', phoneCode: '372', isoCountryCode: 'EE' },
-    { name: 'Finland', phoneCode: '358', isoCountryCode: 'FI' },
-    { name: 'Georgia', phoneCode: '995', isoCountryCode: 'GE' },
-    { name: 'Hungary', phoneCode: '36', isoCountryCode: 'HU' },
-    { name: 'Iceland', phoneCode: '354', isoCountryCode: 'IS' },
-    { name: 'Ireland', phoneCode: '353', isoCountryCode: 'IE' },
-    { name: 'Kazakhstan', phoneCode: '7', isoCountryCode: 'KZ' },
-    { name: 'Kosovo', phoneCode: '383', isoCountryCode: 'XK' },
-    { name: 'Latvia', phoneCode: '371', isoCountryCode: 'LV' },
-    { name: 'Liechtenstein', phoneCode: '423', isoCountryCode: 'LI' },
-    { name: 'Lithuania', phoneCode: '370', isoCountryCode: 'LT' },
-    { name: 'Luxembourg', phoneCode: '352', isoCountryCode: 'LU' },
-    { name: 'Malta', phoneCode: '356', isoCountryCode: 'MT' },
-    { name: 'Moldova', phoneCode: '373', isoCountryCode: 'MD' },
-    { name: 'Monaco', phoneCode: '377', isoCountryCode: 'MC' },
-    { name: 'Montenegro', phoneCode: '382', isoCountryCode: 'ME' },
-    { name: 'North Macedonia', phoneCode: '389', isoCountryCode: 'MK' },
-    { name: 'San Marino', phoneCode: '378', isoCountryCode: 'SM' },
-    { name: 'Serbia', phoneCode: '381', isoCountryCode: 'RS' },
-    { name: 'Slovakia', phoneCode: '421', isoCountryCode: 'SK' },
-    { name: 'Slovenia', phoneCode: '386', isoCountryCode: 'SI' },
-    { name: 'Switzerland', phoneCode: '41', isoCountryCode: 'CH' },
-    { name: 'Turkey', phoneCode: '90', isoCountryCode: 'TR' },
-    { name: 'Vatican City', phoneCode: '379', isoCountryCode: 'VA' }
-];
-
-const sortedList: Country[] = [
-  { name: 'Albania', phoneCode: '355', isoCountryCode: 'AL' },
-  { name: 'Andorra', phoneCode: '376', isoCountryCode: 'AD' },
-  { name: 'Armenia', phoneCode: '374', isoCountryCode: 'AM' },
-  { name: 'Austria', phoneCode: '43', isoCountryCode: 'AT' },
-  { name: 'Azerbaijan', phoneCode: '994', isoCountryCode: 'AZ' },
-  { name: 'Belarus', phoneCode: '375', isoCountryCode: 'BY' },
-  { name: 'Belgium', phoneCode: '32', isoCountryCode: 'BE' },
-  { name: 'Bosnia and Herzegovina', phoneCode: '387', isoCountryCode: 'BA' },
-  { name: 'Bulgaria', phoneCode: '359', isoCountryCode: 'BG' },
-  { name: 'Croatia', phoneCode: '385', isoCountryCode: 'HR' },
-  { name: 'Cyprus', phoneCode: '357', isoCountryCode: 'CY' },
-  { name: 'Czech Republic', phoneCode: '420', isoCountryCode: 'CZ' },
-  { name: 'Denmark', phoneCode: '45', isoCountryCode: 'DK' },
-  { name: 'Estonia', phoneCode: '372', isoCountryCode: 'EE' },
-  { name: 'Finland', phoneCode: '358', isoCountryCode: 'FI' },
-  { name: 'France', phoneCode: '33', isoCountryCode: 'FR' },
-  { name: 'Georgia', phoneCode: '995', isoCountryCode: 'GE' },
-  { name: 'Germany', phoneCode: '49', isoCountryCode: 'DE' },
-  { name: 'Greece', phoneCode: '30', isoCountryCode: 'GR' },
-  { name: 'Hungary', phoneCode: '36', isoCountryCode: 'HU' },
-  { name: 'Iceland', phoneCode: '354', isoCountryCode: 'IS' },
-  { name: 'Ireland', phoneCode: '353', isoCountryCode: 'IE' },
-  { name: 'Italy', phoneCode: '39', isoCountryCode: 'IT' },
-  { name: 'Kazakhstan', phoneCode: '7', isoCountryCode: 'KZ' },
-  { name: 'Kosovo', phoneCode: '383', isoCountryCode: 'XK' },
-  { name: 'Latvia', phoneCode: '371', isoCountryCode: 'LV' },
-  { name: 'Liechtenstein', phoneCode: '423', isoCountryCode: 'LI' },
-  { name: 'Lithuania', phoneCode: '370', isoCountryCode: 'LT' },
-  { name: 'Luxembourg', phoneCode: '352', isoCountryCode: 'LU' },
-  { name: 'Malta', phoneCode: '356', isoCountryCode: 'MT' },
-  { name: 'Moldova', phoneCode: '373', isoCountryCode: 'MD' },
-  { name: 'Monaco', phoneCode: '377', isoCountryCode: 'MC' },
-  { name: 'Montenegro', phoneCode: '382', isoCountryCode: 'ME' },
-  { name: 'Netherlands', phoneCode: '31', isoCountryCode: 'NL' },
-  { name: 'North Macedonia', phoneCode: '389', isoCountryCode: 'MK' },
-  { name: 'Norway', phoneCode: '47', isoCountryCode: 'NO' },
-  { name: 'Poland', phoneCode: '48', isoCountryCode: 'PL' },
-  { name: 'Portugal', phoneCode: '351', isoCountryCode: 'PT' },
-  { name: 'Romania', phoneCode: '40', isoCountryCode: 'RO' },
-  { name: 'Russia', phoneCode: '7', isoCountryCode: 'RU' },
-  { name: 'San Marino', phoneCode: '378', isoCountryCode: 'SM' },
-  { name: 'Serbia', phoneCode: '381', isoCountryCode: 'RS' },
-  { name: 'Slovakia', phoneCode: '421', isoCountryCode: 'SK' },
-  { name: 'Slovenia', phoneCode: '386', isoCountryCode: 'SI' },
-  { name: 'Spain', phoneCode: '34', isoCountryCode: 'ES' },
-  { name: 'Sweden', phoneCode: '46', isoCountryCode: 'SE' },
-  { name: 'Switzerland', phoneCode: '41', isoCountryCode: 'CH' },
-  { name: 'Turkey', phoneCode: '90', isoCountryCode: 'TR' },
-  { name: 'Ukraine', phoneCode: '380', isoCountryCode: 'UA' },
-  { name: 'United Kingdom', phoneCode: '44', isoCountryCode: 'GB' },
-  { name: 'Vatican City', phoneCode: '379', isoCountryCode: 'VA' }
-];

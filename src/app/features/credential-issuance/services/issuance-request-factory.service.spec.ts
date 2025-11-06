@@ -111,7 +111,7 @@ describe('IssuanceRequestFactoryService', () => {
       power: [
         {
           type: 'domain',
-          domain: 'DOME',
+          domain: 'TENANT',
           function: 'Onboarding',
           action: ['Execute']
         }
@@ -177,13 +177,13 @@ describe('IssuanceRequestFactoryService', () => {
     expect(parsed).toEqual([
       {
         type: 'domain',
-        domain: 'DOME',
+        domain: 'TENANT',
         function: 'Onboarding',
         action: ['Execute']
       },
       {
         type: 'domain',
-        domain: 'DOME',
+        domain: 'TENANT',
         function: 'ProductOffering',
         action: ['Create', 'Update']
       }

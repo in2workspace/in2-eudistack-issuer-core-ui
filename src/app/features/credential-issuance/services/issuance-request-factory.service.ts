@@ -3,6 +3,7 @@ import { IssuancePayloadPower, IssuanceLEARCredentialEmployeePayload, IssuanceLE
 import { EmployeeMandatee, TmfAction, TmfFunction } from 'src/app/core/models/entity/lear-credential';
 import { IssuanceCredentialType, IssuanceRawCredentialPayload, IssuanceRawPowerForm } from 'src/app/core/models/entity/lear-credential-issuance';
 import { AuthService } from 'src/app/core/services/auth.service';
+import { environment } from 'src/environments/environment';
 
 @Injectable({
   providedIn: 'root'
@@ -32,8 +33,6 @@ export class IssuanceRequestFactoryService {
     }
 
   private createLearCredentialEmployeeRequest(credentialData: IssuanceRawCredentialPayload): IssuanceLEARCredentialEmployeePayload{
-    console.log("Employee request payload: ");
-    console.log(credentialData);
     // Power
     const parsedPower = this.parsePower(credentialData.formData['power'], 'LEARCredentialEmployee');
     
@@ -125,9 +124,6 @@ export class IssuanceRequestFactoryService {
   }
 
   private buildDidElsi(orgId: string): string{
-    //todo remove
-    console.log("buildDidElsi: orgId");
-    console.log(orgId);
     return "did:elsi:" + orgId;
   }
 
@@ -179,7 +175,7 @@ export class IssuanceRequestFactoryService {
 private getMandatorFromCredentialData(credentialData: IssuanceRawCredentialPayload): Record<string, string>{
   if(!credentialData.onBehalf){
     const unparsedMandator = credentialData.staticData?.mandator;
-    if(!unparsedMandator) throw Error('Could not get valid mandator on behalf');
+    if(!unparsedMandator) throw new Error('Could not get valid mandator on behalf');
     return Object.fromEntries(unparsedMandator.map(item => [item.key, item.value]));
   }
   return credentialData.formData['mandator'];
@@ -202,7 +198,7 @@ private getMandateeFromCredentialData(credentialData: IssuanceRawCredentialPaylo
 
 const domePowerBase = {
   type: "domain",
-  domain: "DOME"
+  domain: environment.sys_tenant
 }
 
 const powerMap: Record<IssuanceCredentialType, Partial<Record<TmfFunction, IssuancePayloadPower>>> = {
