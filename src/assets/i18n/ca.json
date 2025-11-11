@@ -4,7 +4,7 @@
   "verifiable-credential": "Credencial Verificable",
   "digital-wallet": "Wallet Digital",
   "home": {
-    "title": "Benvingut a l'Issuer de Credenciales LEAR",
+    "title": "Benvingut a l'Issuer de LEAR Credentials ",
     "learn-more": "Més informació",
     "scroll": "Desplaça't per veure més",
     "intro-main": "Aquest lloc està destinat als Representants Legals d'empreses que vulguin emetre una o més LEAR Credentials per a un o més empleats de l'empresa. Una LEAR Credential és un tipus de Credencial Verificable que permet a un empleat, designat per un representant legal, actuar en nom d'una organització amb un poder restringit envers tercers.",
