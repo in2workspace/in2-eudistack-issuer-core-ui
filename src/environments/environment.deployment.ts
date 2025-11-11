@@ -31,8 +31,9 @@ export const environment = {
     },
     // Main app logo name, shown in the navbar. Points to "assets/logos/" (REQUIRED)
     logo_src: window["env"]["logo_src"],
-    // App favicon. Points to "assets/icons/" (OPTIONAL with fallback)
-    favicon_src: window["env"]["favicon_src"] ?? "dome-favicon.png",
+    // App favicon. Points to "assets/icons/" (REQUIRED)
+    favicon_src: window["env"]["favicon_src"] ?? "",
+    // Default app language (OPTIONAL)
     default_lang: window["env"]["default_lang"] ?? "en"
   }
 };

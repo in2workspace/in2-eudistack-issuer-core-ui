@@ -196,7 +196,7 @@ private getMandateeFromCredentialData(credentialData: IssuanceRawCredentialPaylo
   }
 }
 
-const domePowerBase = {
+const powerBase = {
   type: "domain",
   domain: environment.sys_tenant
 }
@@ -204,24 +204,24 @@ const domePowerBase = {
 const powerMap: Record<IssuanceCredentialType, Partial<Record<TmfFunction, IssuancePayloadPower>>> = {
       'LEARCredentialEmployee': {
         'Onboarding': {
-          ...domePowerBase,
+          ...powerBase,
           function: 'Onboarding',
           action: ['Execute']
         },
         'ProductOffering': {
-          ...domePowerBase,
+          ...powerBase,
           function: 'ProductOffering',
           action: ['Create', 'Update', 'Upload']
         },
         'Certification': {
-          ...domePowerBase,
+          ...powerBase,
           function: 'Certification',
           action: ['Attest', 'Upload']
         }
       },
       'LEARCredentialMachine': {
           'Onboarding': {
-            ...domePowerBase,
+            ...powerBase,
             function: 'Onboarding',
             action: ['Execute']
           }
