@@ -15,8 +15,8 @@
     "legal-third": "Nota: si estás leyendo esto en tu móvil, es probable que el botón no funcione, a menos que tengas instalado tu certificado eIDAS en el móvil. Normalmente necesitas usar un ordenador con el certificado instalado en el navegador.",
     "login-btn": "Inicia sesión como Representante Legal",
     "obtain-wallet-title": "Obtén tu cartera",
-    "obtain-wallet-intro": "Necesitas una cartera para almacenar tus LEAR Credentials y presentarlas a terceras partes.",
-    "obtain-wallet-detail": "Proporcionamos una cartera simple suficiente para autenticarte y realizar todos los procesos necesarios.",
+    "obtain-wallet-intro": "Necesitas una cartera para almacenar tus LEAR Credentials y presentarlas a terceros.",
+    "obtain-wallet-detail": "Proporcionamos una cartera simple suficiente para autenticarte en el Catálogo y realizar todos los procesos necesarios.",
     "wallet-instructions": "Escanea este código QR o ve en tu móvil a",
     "footer-license": "CC BY 4.0",
     "footer-privacy": "Política de Privacidad"
