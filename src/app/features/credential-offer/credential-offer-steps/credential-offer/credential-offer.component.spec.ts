@@ -21,8 +21,8 @@ describe('CredentialOfferComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should set the QR color to "#2d58a7"', () => {
-    expect(component.qrColor).toBe('#2d58a7');
+  it('should set the QR color to "#B88EFF"', () => {
+    expect(component.qrColor).toBe('#B88EFF');
   });
 
   it('should initialize walletUsersGuideUrl with the correct value from the environment', () => {
