@@ -83,7 +83,7 @@ export class LearCredentialEmployeeSchemaProvider implements CredentialIssuanceS
             {
                 "action": ["Execute"],
                 "function": "Onboarding",
-                isIn2Required: true
+                isAdminRequired: true
             },
             {
                 "action": [
@@ -92,7 +92,7 @@ export class LearCredentialEmployeeSchemaProvider implements CredentialIssuanceS
                     "Delete",
                 ],
                 "function": "ProductOffering",
-                isIn2Required: false
+                isAdminRequired: false
             },
             {
                 "action": [
@@ -100,7 +100,7 @@ export class LearCredentialEmployeeSchemaProvider implements CredentialIssuanceS
                     "Attest"
                 ],
                 "function": "Certification",
-                isIn2Required: true
+                isAdminRequired: true
             }
       ]
         }

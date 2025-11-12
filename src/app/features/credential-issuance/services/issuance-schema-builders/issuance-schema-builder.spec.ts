@@ -123,7 +123,7 @@ describe('IssuanceSchemaBuilder', () => {
       expect(consoleWarnSpy).not.toHaveBeenCalled();
     });
 
-    it('extracts pref_side only when asSigner=false', () => {
+    it('extracts pref_side only when onBehalf=false', () => {
       const raw = [
         baseField({
           key: 'pref',

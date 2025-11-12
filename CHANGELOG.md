@@ -4,7 +4,47 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.1.4](https://github.com/in2workspace/in2-issuer-ui/releases/tag/v2.1.4)
+### Changed
+- Removed hardcoded "DOME" references.
 
+## [2.1.3](https://github.com/in2workspace/in2-issuer-ui/releases/tag/v2.1.3)
+### Added
+- Added environment variable `sys_admin` to set credential powers "domain" field and display it in issuance form and credential details page.
+
+### Fixed
+- Added translations for the country selector.
+
+## [2.1.2](https://github.com/in2workspace/in2-issuer-ui/releases/tag/v2.1.2)
+### Added
+- Admin organization identifier is now configurable.
+- Get and display contact email in credential details page.
+- Get and display organization identifier in management page.
+
+### Changed 
+- Changed "create-as-signer" route for "create-on-behalf".
+
+### Fixed
+- Add missing translations.
+
+
+## [2.1.1](https://github.com/in2workspace/in2-issuer-ui/releases/tag/v2.1.1)
+### Added 
+- Set language from browser or using the default from environment.
+
+### Changed 
+- Add missing translations.
+
+## [2.1.0](https://github.com/in2workspace/in2-issuer-ui/releases/tag/v2.1.0)
+### Added 
+- Admins can add Certification-upload power to LEARCredentialMachine.
+
+### Changed
+- When issuing LEARCredentialMachine as not-signer, set credential_owner_email with the mandatee email of the vc in the access token.
+- Change "as Signer" for "(on behalf)" in Management page button.
+
+### Fixed
+- Label "engineVersion" in credential details page.
 
 ## [2.0.0](https://github.com/in2workspace/in2-issuer-ui/releases/tag/v2.0.0)
 ### Added

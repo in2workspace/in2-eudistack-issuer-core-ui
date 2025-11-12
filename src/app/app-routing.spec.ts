@@ -108,17 +108,17 @@ describe('App Routes', () => {
     expect(module).toBeDefined();
   });
 
-  it('should define lazy loading for credential creation as signer', () => {
+  it('should define lazy loading for credential creation on behalf', () => {
     const parentRoute = routes.find((route) => route.path === 'organization/credentials');
-    const credCreateAsSignerRoute = parentRoute?.children?.find((r) => r.path === 'create-as-signer');
-    expect(credCreateAsSignerRoute).toBeTruthy();
-    expect(typeof credCreateAsSignerRoute?.loadChildren).toBe('function');
+    const credCreateonBehalfRoute = parentRoute?.children?.find((r) => r.path === 'create-on-behalf');
+    expect(credCreateonBehalfRoute).toBeTruthy();
+    expect(typeof credCreateonBehalfRoute?.loadChildren).toBe('function');
   });
 
-  it('should actually load the credential creation-as-signer module', async () => {
+  it('should actually load the credential creation-on-behalf module', async () => {
     const parent = routes.find(r => r.path === 'organization/credentials')!;
-    const credCreateAsSignerRoute = parent.children!.find(r => r.path === 'create-as-signer')!;
-    const module = await credCreateAsSignerRoute.loadChildren!();
+    const credCreateonBehalfRoute = parent.children!.find(r => r.path === 'create-on-behalf')!;
+    const module = await credCreateonBehalfRoute.loadChildren!();
     expect(module).toBeDefined();
   });
 

@@ -6,7 +6,8 @@ export interface IssuanceLEARCredentialRequestDto {
     payload: IssuanceLEARCredentialPayload,
     operation_mode: string,
     validity_period?: number,
-    response_uri?: string
+    response_uri?: string,
+    email?: string
 }
 
 export type IssuanceLEARCredentialPayload = IssuanceLEARCredentialMachinePayload | IssuanceLEARCredentialEmployeePayload;

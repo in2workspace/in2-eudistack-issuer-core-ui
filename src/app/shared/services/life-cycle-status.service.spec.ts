@@ -1,4 +1,5 @@
-import { CredentialProcedure } from 'src/app/core/models/dto/credential-procedures-response.dto';
+import { CredentialProcedureBasicInfo } from './../../core/models/dto/credential-procedures-response.dto';
+
 import { LifeCycleStatusService } from './life-cycle-status.service';
 import { LifeCycleStatus } from 'src/app/core/models/entity/lear-credential';
 import { STATUSES_WITH_DEFINED_CLASS } from 'src/app/core/models/entity/lear-credential-management';
@@ -32,7 +33,7 @@ describe('StatusService', () => {
 
   describe('addStatusClass', () => {
     it('should add statusClass to each CredentialProcedure preserving original data', () => {
-      const procedures: CredentialProcedure[] = [
+      const procedures: CredentialProcedureBasicInfo[] = [
         {
           credential_procedure: {
             procedure_id: '1',
@@ -40,6 +41,8 @@ describe('StatusService', () => {
             credential_type: 'LEAR_CREDENTIAL_EMPLOYEE',
             status: 'VALID',
             updated: '2025-07-09T12:00:00Z',
+            email: "email@aaa.com",
+            organization_identifier: "2345"
           },
         },
         {
@@ -49,6 +52,8 @@ describe('StatusService', () => {
             credential_type: 'LEAR_CREDENTIAL_MACHINE',
             status: 'UNKNOWN' as LifeCycleStatus,
             updated: '2025-07-09T13:00:00Z',
+            email: "email@bbb.com",
+            organization_identifier: "1234"
           },
         },
       ];

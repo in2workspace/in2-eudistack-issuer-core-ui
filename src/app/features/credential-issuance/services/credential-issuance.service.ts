@@ -2,7 +2,7 @@ import { toObservable, toSignal } from '@angular/core/rxjs-interop';
 import { computed, inject, Injectable, Signal, signal, WritableSignal } from '@angular/core';
 import { AbstractControl, FormControl, FormGroup } from '@angular/forms';
 import { CredentialProcedureService } from 'src/app/core/services/credential-procedure.service';
-import { IssuanceLEARCredentialPayload, IssuanceLEARCredentialRequestDto } from 'src/app/core/models/dto/lear-credential-issuance-request.dto';
+import { IssuanceLEARCredentialRequestDto } from 'src/app/core/models/dto/lear-credential-issuance-request.dto';
 import { IssuanceRequestFactoryService } from './issuance-request-factory.service';
 import { EMPTY, from, map, Observable, of, startWith, switchMap, tap } from 'rxjs';
 import { IssuanceSchemaBuilder } from './issuance-schema-builders/issuance-schema-builder';
@@ -29,7 +29,7 @@ export class CredentialIssuanceService {
   // BUILD SCHEMAS FROM CREDENTIAL TYPE
   public credentialViewModels$ = computed<IssuanceViewModelsTuple | null>(() => 
     this.selectedCredentialType$() 
-    ? this.issuanceViewModelsBuilder(this.selectedCredentialType$()!, this.asSigner$())
+    ? this.issuanceViewModelsBuilder(this.selectedCredentialType$()!, this.onBehalf$())
     : null
   );
 
@@ -53,7 +53,7 @@ export class CredentialIssuanceService {
 
   public form$ = computed<FormGroup>(() => { 
     return this.credentialFormSchema$() 
-      ? this.formBuilder(this.credentialFormSchema$()!, this.asSigner$())
+      ? this.formBuilder(this.credentialFormSchema$()!, this.onBehalf$())
       : new FormGroup({})
   });
 
@@ -73,7 +73,7 @@ export class CredentialIssuanceService {
   );
 
   // OTHER STATES
-  public asSigner$ = signal<boolean>(false);
+  public onBehalf$ = signal<boolean>(false);
   // avoids "canLeave alert" after submitting and being redirected to home
   public hasSubmitted$ = signal<boolean>(false);
 
@@ -172,20 +172,20 @@ export class CredentialIssuanceService {
     this.dialog.openDialogWithCallback(ConditionalConfirmDialogComponent, dialogData, this.submitAsCallback);
   }
 
-  private issuanceViewModelsBuilder(credType: "LEARCredentialEmployee" | "LEARCredentialMachine", asSigner: boolean): IssuanceViewModelsTuple{
-    return this.schemaBuilder.formSchemasBuilder(credType, asSigner);
+  private issuanceViewModelsBuilder(credType: "LEARCredentialEmployee" | "LEARCredentialMachine", onBehalf: boolean): IssuanceViewModelsTuple{
+    return this.schemaBuilder.formSchemasBuilder(credType, onBehalf);
   }
 
   private formBuilder(
   schema: CredentialIssuanceViewModelField[],
-  asSigner: boolean
+  onBehalf: boolean
 ): FormGroup {
   const controls: Record<string, AbstractControl> = {};
 
   for (const field of schema) {
     if (
       field.type === 'group' &&
-      !asSigner &&
+      !onBehalf &&
       (field.display === 'pref_side' || field.display === 'side')
     ) {
       continue;
@@ -205,7 +205,7 @@ export class CredentialIssuanceService {
 
       case 'group': {
         const childSchema = field.groupFields ?? [];
-        controls[field.key] = this.formBuilder(childSchema, asSigner);
+        controls[field.key] = this.formBuilder(childSchema, onBehalf);
         break;
       }
 
@@ -235,7 +235,7 @@ export class CredentialIssuanceService {
       const rawCredentialPayload: IssuanceRawCredentialPayload = { 
         formData: formValue, 
         staticData: this.staticData$(),
-        asSigner: this.asSigner$()
+        onBehalf: this.onBehalf$()
       }
 
       const request = this.buildCredentialRequest(rawCredentialPayload, credentialType);
@@ -258,9 +258,8 @@ export class CredentialIssuanceService {
     credentialType: IssuanceCredentialType,
   ): IssuanceLEARCredentialRequestDto{
    
-    const payload: IssuanceLEARCredentialPayload = this.buildRequestPayload(credentialData, credentialType);
-    const request: IssuanceLEARCredentialRequestDto = this.buildRequestDto(credentialType, payload);
-    return request;
+    return this.buildRequestDto(credentialData, credentialType);
+    
   }
 
 
@@ -269,17 +268,8 @@ export class CredentialIssuanceService {
     return factory ? factory(...(entry.args ?? [])) : null;
   }
 
-  private buildRequestPayload(credentialData: IssuanceRawCredentialPayload, credentialType: IssuanceCredentialType): IssuanceLEARCredentialPayload{
+  private buildRequestDto(credentialData: IssuanceRawCredentialPayload, credentialType: IssuanceCredentialType): IssuanceLEARCredentialRequestDto{
     return this.credentialRequestFactory.createCredentialRequest(credentialData, credentialType);
-  }
-
-  private buildRequestDto(credType:IssuanceCredentialType, payload: IssuanceLEARCredentialPayload): IssuanceLEARCredentialRequestDto{
-    return {
-      schema: credType,
-      format: "jwt_vc_json",
-      payload: payload,
-      operation_mode: "S"
-    }
   }
 
   private sendCredentialRequest(credentialPayload: IssuanceLEARCredentialRequestDto): Observable<void>{

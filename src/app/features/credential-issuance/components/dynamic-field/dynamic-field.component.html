@@ -37,16 +37,16 @@
             <input matInput [type]="controlType" [formControlName]="fieldName" [id]="fieldName" [class]="fieldSchema.classes"/>
           }@else if(controlType === 'selector'){
               <mat-select [formControlName]="fieldName" [id]="fieldName" [class]="fieldSchema.classes">
-                <mat-option [value]="" disabled>{{ "credentialIssuance.selectA" | translate }}{{ fieldName }}</mat-option>
+                <mat-option [value]="" disabled>{{ "credentialIssuance.selectA" | translate }}{{ "credentialDetails." + fieldName | translate }}</mat-option>
                 @for(option of controlSchema.multiOptions; track $index){
                   <mat-option [value]="option.value">
-                    {{ option.label }}
+                    {{ option.label | translate }}
                   </mat-option>
                 }
               </mat-select>
           }
           @if (control?.invalid && control?.touched) {
-             <mat-error>{{getErrorMessage(control) | translate: getErrorsArgs(control) }}</mat-error>
+             <mat-error>{{ getErrorMessage(control) | translate: getErrorsArgs(control) }}</mat-error>
           }
         </mat-form-field>
       }

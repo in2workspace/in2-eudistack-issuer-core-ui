@@ -2,6 +2,8 @@
 
 export const environment = {
   production: false,
+  sys_tenant: "TENANT",
+  admin_organization_id: "VATES-000000000",
   iam_url: 'https://keycloak-dev.ssihub.org/realms/in2-issuer',
   server_url: 'http://localhost:8081',
   wallet_url: 'http://localhost:4200',
@@ -16,6 +18,7 @@ export const environment = {
       secondary_contrast:'#dde6f6'
     },
     logo_src:"dome-issuer.png",
-    favicon_src:"dome-favicon.png"
+    favicon_src:"dome-favicon.png",
+    default_lang: "en"
   }
 };

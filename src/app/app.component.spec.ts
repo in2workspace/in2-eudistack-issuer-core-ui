@@ -15,16 +15,13 @@ describe('AppComponent', () => {
 
   mockAuthService = {
     getMandator: () => of(null),
-    getEmailName() {
-      return of('User Name');
-    },
     getName() {
       return of('Name');
     },
     logout() {
       return of(void 0);
     },
-    hasIn2OrganizationIdentifier() {
+    hasAdminOrganizationIdentifier() {
       return true;
     },
     hasPower: () => true,

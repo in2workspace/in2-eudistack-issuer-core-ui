@@ -4,6 +4,7 @@ export interface CredentialProcedureDetails {
   procedure_id: string;
   lifeCycleStatus: LifeCycleStatus;
   credential: LEARCredentialJwtPayload; 
+  email: string;
 }
 
 export type LifeCycleStatus = 'WITHDRAWN' | 'VALID' | 'EXPIRED' | 'PEND_DOWNLOAD' | 'PEND_SIGNATURE' | 'DRAFT' | 'ISSUED' | 'REVOKED';
@@ -72,7 +73,7 @@ export interface Power {
   type: string;
 }
 
-
+//todo remove "Tmf" prefix
 export type TmfFunction = 'Onboarding' | 'ProductOffering' | 'Certification' | 'CredentialIssuer' | 'Login';
 export type TmfAction = 'Execute' | 'Create' | 'Update' | 'Delete' | 'Upload' | 'Attest' | 'Configure' | 'oidc_m2m'
 
