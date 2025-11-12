@@ -8,6 +8,7 @@ import { RoleType } from '../models/enums/auth-rol-type.enum';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { Router } from '@angular/router';
 import { LEARCredentialDataNormalizer } from 'src/app/features/credential-details/utils/lear-credential-data-normalizer';
+import { environment } from 'src/environments/environment';
 
 // todo restore auth.service.spec.ts
 @Injectable({
@@ -19,7 +20,7 @@ export class AuthService{
   private readonly userDataSubject = new BehaviorSubject<UserDataAuthenticationResponse |null>(null);
   private readonly tokenSubject = new BehaviorSubject<string>('');
   private readonly mandatorSubject = new BehaviorSubject<EmployeeMandator | null>(null);
-  private readonly emailSubject = new BehaviorSubject<string>('');
+  private readonly mandateeEmailSubject = new BehaviorSubject<string>('');
   private readonly nameSubject = new BehaviorSubject<string>('');
   private readonly normalizer = new LEARCredentialDataNormalizer();
   public readonly roleType: WritableSignal<RoleType> = signal(RoleType.LEAR);
@@ -56,7 +57,7 @@ export class AuthService{
 
         switch (event.type) {
           case EventTypes.SilentRenewStarted:
-            console.info('Silent renew started' + Date.now());
+            console.info('Silent renew started: ' + Date.now());
             break;
 
           // before this happens, the library cleans up the local auth data
@@ -106,7 +107,6 @@ export class AuthService{
   }
 
   public checkAuth$(): Observable<LoginResponse> {
-    console.info('Checking authentication.');
     return this.oidcSecurityService.checkAuth().pipe(
       take(1),
       tap(({ isAuthenticated, userData}) => {
@@ -186,8 +186,6 @@ export class AuthService{
   }
 
   private handleVCLogin(learCredential: LEARCredentialEmployee): void {
-    console.log("handleVCLogin");
-    console.log(learCredential);
     const mandator = {
       id: learCredential.credentialSubject.mandate.mandator.id,
       organizationIdentifier: learCredential.credentialSubject.mandate.mandator.organizationIdentifier,
@@ -200,10 +198,10 @@ export class AuthService{
     
     this.mandatorSubject.next(mandator);
   
-    const emailName = learCredential.credentialSubject.mandate.mandator.email.split('@')[0];
+    const email = learCredential.credentialSubject.mandate.mandatee.email;
     const name = learCredential.credentialSubject.mandate.mandatee.firstName + ' ' + learCredential.credentialSubject.mandate.mandatee.lastName;
   
-    this.emailSubject.next(emailName);
+    this.mandateeEmailSubject.next(email);
     this.nameSubject.next(name);
     this.userPowers = this.extractUserPowers(learCredential);
   }
@@ -219,10 +217,10 @@ export class AuthService{
   }
 
   // POLICY: user_powers_restriction_policy
-  public hasIn2OrganizationIdentifier() : boolean {
-    const mandatorData = this.mandatorSubject.getValue()
+  public hasAdminOrganizationIdentifier() : boolean {
+    const mandatorData = this.mandatorSubject.getValue();
     if (mandatorData != null){
-      return "VATES-B60645900" === mandatorData.organizationIdentifier;
+      return environment.admin_organization_id === mandatorData.organizationIdentifier;
     }
     return false
   }
@@ -280,8 +278,8 @@ export class AuthService{
     return this.userDataSubject.asObservable();
   }
 
-  public getEmailName(): Observable<string> {
-    return this.emailSubject.asObservable();
+  public getMandateeEmail(): string {
+    return this.mandateeEmailSubject.getValue();
   }
 
   public getToken(): Observable<string> {

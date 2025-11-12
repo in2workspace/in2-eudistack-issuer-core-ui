@@ -7,7 +7,7 @@ import { DynamicFieldComponent } from '../dynamic-field/dynamic-field.component'
 import { FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { TitleCasePipe, KeyValuePipe, CommonModule } from '@angular/common';
 import { TranslatePipe } from '@ngx-translate/core';
-import { ActivatedRoute, CanDeactivate } from '@angular/router';
+import { ActivatedRoute, CanDeactivate, RouterLink } from '@angular/router';
 import { MatCard, MatCardContent } from '@angular/material/card';
 import { CanComponentDeactivate, CanDeactivateType } from 'src/app/core/guards/can-component-deactivate.guard';
 import { CredentialIssuanceService } from '../../services/credential-issuance.service';
@@ -22,7 +22,7 @@ import { CredentialIssuanceViewModelSchemaWithId, IssuanceCredentialType, Issuan
   selector: 'app-credential-issuance',
   standalone: true,
   providers: [CredentialIssuanceService],
-  imports: [CommonModule, KeyValuePipe, ReactiveFormsModule, DynamicFieldComponent, MatButton, MatCard, MatCardContent, MatFormField, MatLabel, MatOption, MatSelect, TitleCasePipe, TranslatePipe],
+  imports: [CommonModule, KeyValuePipe, ReactiveFormsModule, DynamicFieldComponent, MatButton, MatCard, MatCardContent, MatFormField, MatLabel, MatOption, MatSelect, RouterLink, TitleCasePipe, TranslatePipe],
   templateUrl: './credential-issuance.component.html',
   styleUrl: './credential-issuance.component.scss'
 })
@@ -40,7 +40,7 @@ export class CredentialIssuanceComponent implements CanDeactivate<CanComponentDe
   public formValue$: Signal<Record<string, any>>;
   public isFormValid$: Signal<boolean>;
 
-  public asSigner$: WritableSignal<boolean>;
+  public onBehalf$: WritableSignal<boolean>;
   public hasSubmitted$: WritableSignal<boolean>;
 
   public bottomAlertMessages$: WritableSignal<string[]>;
@@ -50,12 +50,12 @@ export class CredentialIssuanceComponent implements CanDeactivate<CanComponentDe
   private readonly route = inject(ActivatedRoute);
 
   public constructor(){
-    const asSigner = this.route.snapshot.pathFromRoot
+    const onBehalf = this.route.snapshot.pathFromRoot
         .flatMap(r => r.url)
         .map(seg => seg.path)
-        .includes('create-as-signer');
-    this.issuanceService.asSigner$.set(asSigner);
-    this.asSigner$ = this.issuanceService.asSigner$;
+        .includes('create-on-behalf');
+    this.issuanceService.onBehalf$.set(onBehalf);
+    this.onBehalf$ = this.issuanceService.onBehalf$;
     this.hasSubmitted$ = this.issuanceService.hasSubmitted$;
     this.credentialTypesArr = this.issuanceService.credentialTypesArr;
     this.selectedCredentialType$ = this.issuanceService.selectedCredentialType$;

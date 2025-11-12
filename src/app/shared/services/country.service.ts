@@ -12,8 +12,18 @@ export interface Country {
   providedIn: 'root'
 })
 export class CountryService {
-  private readonly countries: Country[] = COUNTRIES;
+  private readonly countries: Country[];
 
+  constructor(){
+    this.countries = this.mapCountriesToTranslationLabel(COUNTRIES);
+  }
+
+  private mapCountriesToTranslationLabel(countries: Country[]): Country[]{
+    return countries.map(c => ({
+      ...c,
+      name: "countries." + c.name.toLocaleLowerCase() 
+    }));
+  }
 
   public getCountries(): Country[] {
     return this.countries;

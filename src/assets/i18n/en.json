@@ -2,9 +2,8 @@
   "next": "Next",
   "back": "Back",
   "copy": "Copy",
-  "copied": "Copied",
   "verifiable-credential": "Verifiable Credential",
-  "dome-wallet": "Wallet",
+  "digital-wallet": "Digital Wallet",
   "home": {
     "title": "Welcome to the Issuer for LEAR Credentials",
     "learn-more": "Learn more",
@@ -12,13 +11,13 @@
     "intro-main": "This site is intended for Legal Representatives of companies who want to issue one or more LEAR Credentials to one or more employees of the company. A LEAR Credential is a type of Verifiable Credential which enables an employee, nominated by a legal representative, to act on behalf of an organisation with restricted power with respect to third-parties.",
     "intro-first": "The issuer of the LEAR Credential <strong>must be a legal representative</strong> of the company. The legal representative will sign the LEAR Credential with an eIDAS digital certificate, which can be either a personal one or a certificate of representation.",
     "intro-second": "The receiver of the LEARC redential (both the subject and holder of the credential) <strong>can be any employee (or contractor)</strong> of the company. The legal representative will delegate a restricted set of power to that person. Those restricted power are included inside the credential and can be verified by any Relying party to whom the holder presents the LEAR Credential.",
-    "legal-first": "You must be a legal representative of the company, to be able to delegate the restricted power.",
+    "legal-first": "You must be a legal representative of the company to be able to delegate power.",
     "legal-second": "You need an eIDAS certificate to be able to use the system. In additionyou will have to register your company email.",
     "legal-third": "Note: if you are reading this in your mobile, most probably the button will not work, unless you have installed your eIDAS certificate in the mobile. You typically need to use a PC, with the certificate installed in the browser.",
     "login-btn": "Login as Legal Representative",
     "obtain-wallet-title": "Obtain your wallet",
-    "obtain-wallet-intro": "You need a wallet to store your LEAR Credentials and present them to Relaying parties like the Catalog.",
-    "obtain-wallet-detail": "We provide a simple wallet enough for authenticating to the Marketplace and performing all needed processes.",
+    "obtain-wallet-intro": "You need a wallet to store your LEAR Credentials and present them to Relying parties like the Catalog.",
+    "obtain-wallet-detail": "We provide a simple wallet enough for authenticating to the Catalog and performing all needed processes.",
     "wallet-instructions": "Scan this QR code or go in your mobile to",
     "footer-license": "CC BY 4.0",
     "footer-privacy": "Privacy Policy"
@@ -57,7 +56,6 @@
     "country": "Country"
   },
   "mandatee": {
-    "firstnameid": "First name",
     "last_name": "Last name",
     "email": "Email"
   },
@@ -71,6 +69,7 @@
     "PEND_SIGNATURE": "PEND_SIGNATURE",
     "WITHDRAWN": "WITHDRAWN",
     "VALID": "VALID",
+    "REVOKED": "REVOKED",
     "EXPIRED": "EXPIRED",
     "PEND_DOWNLOAD": "PEND_DOWNLOAD",
     "ISSUED": "ISSUED",
@@ -82,13 +81,14 @@
     "mandatee": "mandatee",
     "mandator": "mandator",
     "power": "power",
-    "id": "id",
+    "id": "ID",
     "organizationIdentifier": "company VAT number",
     "organizationId": "company VAT number",
     "country": "country",
     "organization": "company name",
     "commonName": "name",
     "email": "email",
+    "contact-email": "Contact email",
     "serialNumber": "ID card number",
     "name": "name",
     "firstName": "first name",
@@ -111,10 +111,11 @@
     "basic": "basic",
     "gx:labelLevel": "Label Level",
     "gx:rulesVersion": "Rules Version",
-    "gx:engineRules": "Engine Rules",
+    "gx:engineVersion": "Engine Version",
     "gx:compliantCredentials": "Compliant Credentials",
     "gx:validatedCriteria": "Validated Criteria",
     "gx:validatedCriteriaReference": "Validated Criteria Reference",
+    "digestSri": "digest SRI",
     "revoke": "revoke",
     "revokeTooltip": "This credential cannot be revoked because it was issued using a legacy type. To learn how to revoke this type of credential, please check our <a href='{{url}}' style='color: white; font-weight:700' target='_blank' rel='noopener noreferrer'>guide</a>.",
     "sendReminderConfirm": {
@@ -157,7 +158,7 @@
     "ask-refresh": "Credential offer is about to expire. Would you like to refresh it or leave? If it expires, you will need to request a new one from your legal representative.",
     "remaining-time": "Time remaining:",
     "first-step": {
-      "title": "Scan the QR code to log in and access the Wallet.",
+      "title": "Scan the QR code to log in and access the Digital Wallet.",
       "test-purposes": "For tests purposes, access the "
     },
     "second-step": {
@@ -168,30 +169,38 @@
       "refresh-link": "Get a new credential offer"
     }
   },
-  "scaner": {
-    "textinformation": "OrganizationScan with your wallet to download the credential"
-  },
   "credentialManagement": {
     "title": "List of issued credentials",
     "button": "New credential",
     "status": "Status",
+    "organization": "Organization",
+    "organizationIdentifier": "Organization ID",
+    "filter-by-org": "Filter by org.",
     "subject": "Subject",
     "credentialType": "Credential Type",
     "updated": "Updated",
     "cancel": "Cancel",
     "create": "Create Credential",
-    "buttonAdmin": "New credential as Signer",
-    "search": "Search by Subject",
-    "searchPlaceholder": "Joe Doe"
+    "buttonAdmin": "New credential (on behalf)",
+    "search": "Search by",
+    "searchPlaceholderSubject": "Joe Doe",
+    "searchPlaceholderOrgID": "VATES-000000",
+    "paginator": {
+      "items-per-page": "Items per paggg",
+      "next-page": "Nextt",
+      "previous-page": "Prevvv",
+      "first-page": "First page",
+      "last-page": "Last page",
+      "of": "of"
+    }
   },
   "power": {
     "power": "Powers",
     "domain": "Domain",
-    "dome": "DOME",
     "function": "Function",
     "onboarding": "Onboarding",
     "marketplace": "Marketplace",
-    "productOffering": "ProductOffering",
+    "productoffering": "ProductOffering",
     "certification": "Certification",
     "add": "Add",
     "execute": "Execute",
@@ -218,7 +227,8 @@
       "title": "Create credential",
       "message": "Are you sure you want to create this credential?",
       "checkboxLabel": "I confirm that I have copied and safely stored the private key.",
-      "belowText": "Without the private key, you will not be able to use this credential later."
+      "belowText": "Without the private key, you will not be able to use this credential later.",
+      "defaultLoadingTitle": "Please wait while the process is completed..."
     },
     "create-success-dialog": {
       "title": "Credential created",
@@ -310,7 +320,8 @@
     "cancel": "Cancel",
     "accept": "Accept",
     "delete": "Delete",
-    "save": "Save"
+    "save": "Save",
+    "loading-default-title": "Please wait while the process is completed..."
   },
   "signature": {
     "settings": {
@@ -357,6 +368,58 @@
     "buttonText": "Generate Key",
     "alert": "Make sure to copy this key.",
     "tooltip": "Your private key is a secret that lets you sign and prove ownership of your credential. Without it you can’t use your credential. Store it safely, back it up and never share it."
+  },
+  "countries": {
+    "spain": "Spain",
+    "germany": "Germany",
+    "france": "France",
+    "italy": "Italy",
+    "unitedKingdom": "United Kingdom",
+    "russia": "Russia",
+    "ukraine": "Ukraine",
+    "poland": "Poland",
+    "romania": "Romania",
+    "netherlands": "Netherlands",
+    "belgium": "Belgium",
+    "greece": "Greece",
+    "portugal": "Portugal",
+    "sweden": "Sweden",
+    "norway": "Norway",
+    "albania": "Albania",
+    "andorra": "Andorra",
+    "armenia": "Armenia",
+    "austria": "Austria",
+    "azerbaijan": "Azerbaijan",
+    "belarus": "Belarus",
+    "bosniaAndHerzegovina": "Bosnia and Herzegovina",
+    "bulgaria": "Bulgaria",
+    "croatia": "Croatia",
+    "cyprus": "Cyprus",
+    "czechRepublic": "Czech Republic",
+    "denmark": "Denmark",
+    "estonia": "Estonia",
+    "finland": "Finland",
+    "georgia": "Georgia",
+    "hungary": "Hungary",
+    "iceland": "Iceland",
+    "ireland": "Ireland",
+    "kazakhstan": "Kazakhstan",
+    "kosovo": "Kosovo",
+    "latvia": "Latvia",
+    "liechtenstein": "Liechtenstein",
+    "lithuania": "Lithuania",
+    "luxembourg": "Luxembourg",
+    "malta": "Malta",
+    "moldova": "Moldova",
+    "monaco": "Monaco",
+    "montenegro": "Montenegro",
+    "northMacedonia": "North Macedonia",
+    "sanMarino": "San Marino",
+    "serbia": "Serbia",
+    "slovakia": "Slovakia",
+    "slovenia": "Slovenia",
+    "switzerland": "Switzerland",
+    "turkey": "Turkey",
+    "vaticanCity": "Vatican City"
   }
 }
-

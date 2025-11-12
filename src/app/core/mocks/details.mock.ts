@@ -18,10 +18,11 @@ export const mockCredentialStatus: CredentialStatus = {
   statusListCredential: "https://issuer.dome-marketplace.eu/credentials/status/1" 
 } 
 
+// todo update to more recent models
 export const mockCredentialEmployee: any = {
-// todo export const mockCredentialEmployee: CredentialProcedureDetails = {
   procedure_id: 'mock-procedure-employee',
   lifeCycleStatus: 'DRAFT',
+  email: "mock@email.com",
   credential: {
     sub: null,
     nbf: '1714675200',
@@ -90,6 +91,7 @@ export const mockCredentialMachine: any = {
 // todo export const mockCredentialMachine: CredentialProcedureDetails = {
   procedure_id: 'mock-procedure-machine',
   lifeCycleStatus: 'PEND_SIGNATURE',
+  email: "mock@email.com",
   credential: {
     sub: null,
     nbf: '1714675200',
@@ -154,6 +156,7 @@ export const mockCredentialCertification: any = {
 // todo xport const mockCredentialCertification: CredentialProcedureDetails = {
   procedure_id: 'mock-procedure-cert',
   lifeCycleStatus: 'PEND_DOWNLOAD',
+  email: "mock@email.com",
   credential: {
     sub: null,
     nbf: '1714675200',
@@ -231,6 +234,7 @@ export const mockCredentialCertification: any = {
 export const mockGxLabel: CredentialProcedureDetails = {
   procedure_id: 'mock-procedure-gx-label',
   lifeCycleStatus: 'DRAFT',
+  email: "mock@email.com",
   credential: {
     sub: null,
     nbf: '1714675200',
