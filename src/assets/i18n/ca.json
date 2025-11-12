@@ -2,21 +2,21 @@
   "next": "Següent",
   "back": "Tornar",
   "verifiable-credential": "Credencial Verificable",
-  "dome-wallet": "Wallet de DOME",
+  "digital-wallet": "Wallet Digital",
   "home": {
-    "title": "Benvingut al DOME Issuer per a LEAR Credentials",
+    "title": "Benvingut a l'Issuer de LEAR Credentials ",
     "learn-more": "Més informació",
     "scroll": "Desplaça't per veure més",
     "intro-main": "Aquest lloc està destinat als Representants Legals d'empreses que vulguin emetre una o més LEAR Credentials per a un o més empleats de l'empresa. Una LEAR Credential és un tipus de Credencial Verificable que permet a un empleat, designat per un representant legal, actuar en nom d'una organització amb un poder restringit envers tercers.",
     "intro-first": "L'emissor de la LEAR Credential <strong>ha de ser un representant legal</strong> de l'empresa. El representant legal signarà la LEAR Credential amb un certificat digital eIDAS, que pot ser personal o un certificat de representació.",
     "intro-second": "El receptor de la LEAR Credential (tant el subjecte com el titular de la credencial) <strong>pot ser qualsevol empleat (o contractista)</strong> de l'empresa. El representant legal delegarà un conjunt restringit de poders a aquesta persona. Aquests poders restringits estan inclosos dins la credencial i poden ser verificats per qualsevol tercera part que el titular presenti la LEAR Credential.",
-    "legal-first": "Has de ser un representant legal de l'empresa per poder delegar el poder restringit requerit per a DOME.",
+    "legal-first": "Has de ser un representant legal de l'empresa per poder delegar poders.",
     "legal-second": "Necessites un certificat eIDAS per poder utilitzar el sistema. A més, hauràs de registrar el correu electrònic de la teva empresa.",
     "legal-third": "Nota: si estàs llegint això al teu mòbil, probablement el botó no funcionarà, a menys que tinguis instal·lat el teu certificat eIDAS al mòbil. Normalment cal utilitzar un ordinador amb el certificat instal·lat al navegador.",
     "login-btn": "Inicia sessió com a Representant Legal",
     "obtain-wallet-title": "Obté la teva cartera",
-    "obtain-wallet-intro": "Necessites una cartera per emmagatzemar les teves LEAR Credentials i presentar-les a terceres parts com el DOME Marketplace.",
-    "obtain-wallet-detail": "DOME proporciona una cartera senzilla suficient per autenticar-se al DOME Marketplace i dur a terme tots els processos necessaris.",
+    "obtain-wallet-intro": "Necessites un Wallet per emmagatzemar les teves LEAR Credentials i presentar-les a tercers.",
+    "obtain-wallet-detail": "Proporcionem una cartera senzilla suficient per autenticar-se i dur a terme tots els processos necessaris.",
     "wallet-instructions": "Escaneja aquest codi QR o ves al teu mòbil a",
     "footer-license": "CC BY 4.0",
     "footer-privacy": "Política de Privacitat"
@@ -159,7 +159,7 @@
     "ask-refresh": "L'oferta de credencial està a punt d'expirar. Vols refrescar-la o sortir? Si expira, n'hauràs de demanar una altra al teu representant legal.",
     "remaining-time": "Temps restant:",
     "first-step": {
-      "title": "Escaneja el codi QR per iniciar sessió i accedir al Wallet de DOME.",
+      "title": "Escaneja el codi QR per iniciar sessió i accedir al Wallet Digital.",
       "test-purposes": "Per fer fer proves, accedeix al "
     },
     "second-step": {
@@ -199,7 +199,6 @@
     "power": {
       "power": "Poders",
       "domain": "Domini",
-      "dome": "DOME",
       "function": "Funció",
       "onboarding": "Alta",
       "marketplace": "Marketplace",

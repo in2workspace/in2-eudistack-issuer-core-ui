@@ -69,7 +69,7 @@ export interface IssuanceRawCredentialPayload {
 export type IssuanceRawPowerForm = Partial<Record<TmfFunction, Record<TmfAction, boolean>>>;
 
 export interface IssuanceFormPowerSchema{
-  //todo: in the future, if there are multiple domains, add a "domain" field (currently there is only "DOME")
+  //todo: in the future, if there are multiple domains, add a "domain" field
   function: string,
   action: string[],
   isAdminRequired: boolean
