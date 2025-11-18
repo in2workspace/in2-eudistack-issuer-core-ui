@@ -4,6 +4,13 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.1.5](https://github.com/in2workspace/in2-issuer-ui/releases/tag/v2.1.5)
+### Fixed
+- English grammar and clarity firxes in home and credential offer stepper pages.
+
+### Removed
+- Outdated text in home page.
+
 ## [2.1.4](https://github.com/in2workspace/in2-issuer-ui/releases/tag/v2.1.4)
 ### Changed
 - Removed hardcoded "DOME" references.
