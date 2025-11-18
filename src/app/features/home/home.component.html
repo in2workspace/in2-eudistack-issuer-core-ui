@@ -28,7 +28,7 @@
             <img src="../../../assets/icons/arrow-right.png" alt="arrow">
           </a>
           <p class="scroller">{{ "home.scroll" | translate }}</p>
-          <a class="btn btn-link" (click)="navigateToSection('about-section')">
+          <a class="btn btn-link" (click)="scrollToLoginSection()">
             <svg
               xmlns="http://www.w3.org/2000/svg"
               width="64"
@@ -65,7 +65,7 @@
     </section>
   </div>
 
-  <section id="about-section" class="content-section">
+  <section class="content-section">
     <div class="content-wrapper">
       <p>
         {{ "home.intro-main" | translate }}
@@ -80,7 +80,7 @@
     </div>
   </section>
 
-  <section class="content-section">
+  <section id="login-section" #loginSection class="content-section">
     <div class="legal-representative">
       <p>
         {{ "home.legal-first" | translate }}
