@@ -8,7 +8,7 @@
     "title": "Welcome to the Issuer for LEAR Credentials",
     "learn-more": "Learn more",
     "scroll": "Scroll to see more and sign in",
-    "intro-main": "This site is intended for Legal Representatives of companies who want to issue one or more LEAR Credentials to one or more employees of the company. A LEAR Credential is a type of Verifiable Credential that enables an employee, nominated by a legal representative, to act on behalf of an organisation with restricted powers towards third parties.",
+    "intro-main": "This site is intended for Legal Representatives of companies who want to issue LEAR Credentials to their employees. A LEAR Credential is a type of Verifiable Credential that enables an employee, nominated by a legal representative, to act on behalf of an organisation with restricted powers towards third parties.",
     "intro-first": "The issuer of the LEAR Credential <strong>must be a legal representative</strong> of the company.",
     "intro-second": "The receiver of the LEAR Credential (both the subject and the holder of the credential) <strong>can be any employee (or contractor)</strong> of the company. The legal representative will delegate a restricted set of powers to that person. These restricted powers are included in the credential and can be verified by any relying party to whom the holder presents the LEAR Credential.",
     "legal-first": "You must be a legal representative of the company to be able to delegate powers.",

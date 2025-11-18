@@ -7,7 +7,7 @@
     "title": "Benvingut a l'Issuer de LEAR Credentials ",
     "learn-more": "Més informació",
     "scroll": "Desplaça't per saber-ne més i iniciar sessió",
-    "intro-main": "Aquest lloc està destinat als Representants Legals d'empreses que vulguin emetre una o més LEAR Credentials per a un o més empleats de l'empresa. Una LEAR Credential és un tipus de Credencial Verificable que permet a un empleat, designat per un representant legal, actuar en nom d'una organització amb poders restringits envers tercers.",
+    "intro-main": "Aquest lloc està destinat als Representants Legals d'empreses que vulguin emetre una o més LEAR Credentials per als seus empleats. Una LEAR Credential és un tipus de Credencial Verificable que permet a un empleat, designat per un representant legal, actuar en nom d'una organització amb poders restringits envers tercers.",
     "intro-first": "L'emissor de la LEAR Credential <strong>ha de ser un representant legal</strong> de l'empresa.",
     "intro-second": "El receptor de la LEAR Credential (tant el subjecte com el titular de la credencial) <strong>pot ser qualsevol empleat (o contractista)</strong> de l'empresa. El representant legal delegarà un conjunt restringit de poders a aquesta persona. Aquests poders restringits estan inclosos dins la credencial i poden ser verificats per qualsevol tercera part a qui el titular presenti la LEAR Credential.",
     "legal-first": "Has de ser un representant legal de l'empresa per poder delegar poders.",
