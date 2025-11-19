@@ -1,5 +1,7 @@
 <div class="landing-page">
   <div class="container-nav">
+  <!-- HEADER BANNER -->
+    <!-- HEADER INTEGRATED NAVBAR -->
     <header class="main-header">
       <nav class="navbar">
         <div class="navbar-brand" href="/">
@@ -19,16 +21,18 @@
       </nav>
     </header>
 
+    <!-- HEADER TITLE AND SCROLL BUTTON SECTION -->
     <section class="cover" id="cover">
       <div class="cover-content">
         <h1>{{ "home.title" | translate }}</h1>
+        <!-- SCROLL BUTTON -->
         <div class="scroll-indicator">
           <a class="btn btn-primary" [href]="knowledge_base_url" target="_blank" rel="noopener noreferrer" tabindex="0">
             {{ "home.learn-more" | translate }}
             <img src="../../../assets/icons/arrow-right.png" alt="arrow">
           </a>
           <p class="scroller">{{ "home.scroll" | translate }}</p>
-          <a class="btn btn-link" (click)="navigateToSection('about-section')">
+          <a class="btn btn-link" (click)="scrollToLoginSection()">
             <svg
               xmlns="http://www.w3.org/2000/svg"
               width="64"
@@ -64,38 +68,33 @@
       </div>
     </section>
   </div>
+  <!-- END HEADER BANNER -->
 
-  <section id="about-section" class="content-section">
+  <!-- CONTENT SECTION -->
+  <section class="content-section">
     <div class="content-wrapper">
       <p>
         {{ "home.intro-main" | translate }}
       </p>
       <ul>
-        <li [innerHTML]="'home.intro-first' | translate">
-
-        </li>
-        <li [innerHTML]="'home.intro-second' | translate">
-        </li>
+        <!-- we need 'innerHTML' because we are using <b> for styles -->
+        <li [innerHTML]="'home.intro-first' | translate"></li>
+        <li [innerHTML]="'home.intro-second' | translate"></li>
       </ul>
     </div>
   </section>
 
-  <section class="content-section">
+  <!-- LOGIN SECTION -->
+  <section id="login-section" #loginSection class="content-section">
     <div class="legal-representative">
-      <p>
+      <p class="legal-first-text">
         {{ "home.legal-first" | translate }}
       </p>
-      <p>
-        {{ "home.legal-second" | translate }}
-      </p>
-      <p>
-        {{ "home.legal-third" | translate }}
-      </p>
       <a class="btn-secondary" tabindex="0" (click)="login()">{{ "home.login-btn" | translate}}</a>
-
     </div>
   </section>
 
+  <!-- "GO TO WALLET" SECTION -->
   <section class="content-section wallet-section">
     <div class="wallet-info-container">
       <div class="wallet-info-qr">
@@ -112,6 +111,7 @@
     </div>
   </section>
 
+  <!-- FOOTER -->
   <footer class="main-footer">
     <span>
       <p>

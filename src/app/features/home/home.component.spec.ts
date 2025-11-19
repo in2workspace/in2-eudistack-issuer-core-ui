@@ -1,13 +1,13 @@
-import { TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { HomeComponent } from './home.component';
 import { Router } from '@angular/router';
 import { AuthService } from 'src/app/core/services/auth.service';
 import { environment } from 'src/environments/environment';
-import { QRCodeModule } from 'angularx-qrcode';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 
 describe('HomeComponent', () => {
   let component: HomeComponent;
+  let fixture: ComponentFixture<HomeComponent>;
   let router: jest.Mocked<Router>;
   let authService: jest.Mocked<AuthService>;
 
@@ -22,7 +22,10 @@ describe('HomeComponent', () => {
     } as unknown as jest.Mocked<AuthService>;
 
     TestBed.configureTestingModule({
-      imports: [QRCodeModule, TranslateModule.forRoot({})],
+      imports: [
+        HomeComponent,
+        TranslateModule.forRoot({}),
+      ],
       providers: [
         TranslateService,
         { provide: Router, useValue: routerMock },
@@ -30,7 +33,8 @@ describe('HomeComponent', () => {
       ],
     });
 
-    component = TestBed.createComponent(HomeComponent).componentInstance;
+    fixture = TestBed.createComponent(HomeComponent);
+    component = fixture.componentInstance;
     router = TestBed.inject(Router) as jest.Mocked<Router>;
     authService = TestBed.inject(AuthService) as jest.Mocked<AuthService>;
   });
@@ -40,11 +44,13 @@ describe('HomeComponent', () => {
   });
 
   it('should get logo source', () => {
-    expect(component.logoSrc).toBe("../../../assets/logos/" + environment.customizations.logo_src);
+    expect(component.logoSrc).toBe(
+      '../../../assets/logos/' + environment.customizations.logo_src,
+    );
   });
 
   it('should set walletUrl and knowledge_base_url from environment', () => {
-    expect(component.walletUrl).toBe(environment.wallet_url);
+    expect(component.walletUrl).toBe(environment.wallet_url ?? '');
     expect(component.knowledge_base_url).toBe(environment.knowledge_base_url);
   });
 
@@ -59,23 +65,17 @@ describe('HomeComponent', () => {
     expect(router.navigate).toHaveBeenCalledWith(['/login']);
   });
 
-  it('should scroll to the specified section when navigateToSection is called', () => {
+  it('should scroll to login section when scrollToLoginSection() is called', () => {
     const scrollIntoViewMock = jest.fn();
-    jest.spyOn(document, 'getElementById').mockReturnValue({
-      scrollIntoView: scrollIntoViewMock,
-    } as unknown as HTMLElement);
 
-    const sectionId = 'section1';
-    component.navigateToSection(sectionId);
-    expect(document.getElementById).toHaveBeenCalledWith(sectionId);
+    component.loginSection = {
+      nativeElement: {
+        scrollIntoView: scrollIntoViewMock,
+      } as unknown as HTMLElement,
+    } as any;
+
+    component.scrollToLoginSection();
+
     expect(scrollIntoViewMock).toHaveBeenCalledWith({ behavior: 'smooth' });
-  });
-
-  it('should do nothing if the section ID is not found', () => {
-    jest.spyOn(document, 'getElementById').mockReturnValue(null);
-
-    const sectionId = 'nonexistent-section';
-    component.navigateToSection(sectionId);
-    expect(document.getElementById).toHaveBeenCalledWith(sectionId);
   });
 });

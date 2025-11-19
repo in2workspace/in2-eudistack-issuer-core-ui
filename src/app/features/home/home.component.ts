@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { Component, ElementRef, inject, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
 import { AuthService } from 'src/app/core/services/auth.service';
 import { environment } from 'src/environments/environment';
@@ -13,6 +13,7 @@ import { TranslatePipe } from '@ngx-translate/core';
     imports: [QRCodeModule, TranslatePipe],
 })
 export class HomeComponent{
+  @ViewChild('loginSection') loginSection!: ElementRef<HTMLElement>;
   public walletUrl = environment.wallet_url ?? '';
   public knowledge_base_url = environment.knowledge_base_url;
   public readonly logoSrc = "../../../assets/logos/" + environment.customizations.logo_src;
@@ -29,8 +30,8 @@ export class HomeComponent{
     this.router.navigate(['/login']);
   }
 
-  public navigateToSection(sectionId: string): void {
-    document.getElementById(sectionId)?.scrollIntoView({ behavior: 'smooth' });
+  public scrollToLoginSection(): void {
+    this.loginSection.nativeElement.scrollIntoView({ behavior: 'smooth' });
   }
 
 }
