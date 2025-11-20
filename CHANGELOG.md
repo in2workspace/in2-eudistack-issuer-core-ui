@@ -6,11 +6,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [2.1.6](https://github.com/in2workspace/in2-issuer-ui/releases/tag/v2.1.6)
 ### Added
-- Sign LEAR Credential Machine.
+- Allow signature for LEAR Credential Machine.
+
+### Fixed
+- Adjust scroll effect in home page so that the login button is clearly visible.
 
 ## [2.1.5](https://github.com/in2workspace/in2-issuer-ui/releases/tag/v2.1.5)
 ### Fixed
-- English grammar and clarity firxes in home and credential offer stepper pages.
+- English grammar and clarity fixes in home and credential offer stepper pages.
 
 ### Removed
 - Outdated text in home page.
