@@ -13,7 +13,8 @@ import { TranslatePipe } from '@ngx-translate/core';
     imports: [QRCodeModule, TranslatePipe],
 })
 export class HomeComponent{
-  @ViewChild('loginSection') loginSection!: ElementRef<HTMLElement>;
+  @ViewChild('contentWrapper') contentWrapperSection!: ElementRef<HTMLElement>;
+  @ViewChild('header') header!: ElementRef;
   public walletUrl = environment.wallet_url ?? '';
   public knowledge_base_url = environment.knowledge_base_url;
   public readonly logoSrc = "../../../assets/logos/" + environment.customizations.logo_src;
@@ -30,8 +31,23 @@ export class HomeComponent{
     this.router.navigate(['/login']);
   }
 
-  public scrollToLoginSection(): void {
-    this.loginSection.nativeElement.scrollIntoView({ behavior: 'smooth' });
-  }
+  // we use content wrapper as reference because we need space for navbar
+public scrollToLoginSection(): void {
+  // The navbar uses position: fixed, so its height overlaps the target section.
+  // We calculate the section's absolute position and subtract the navbar height
+  // to ensure the section becomes fully visible below the fixed header.
+  const element = this.contentWrapperSection.nativeElement;
+  const rect = element.getBoundingClientRect();
+
+  const navbarHeight = this.header.nativeElement.offsetHeight;
+  console.log('navbar h: ' + navbarHeight);
+
+  const top = rect.top + window.scrollY - navbarHeight;
+
+  window.scrollTo({
+    top,
+    behavior: 'smooth'
+  });
+}
 
 }
