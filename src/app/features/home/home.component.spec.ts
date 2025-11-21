@@ -69,7 +69,7 @@ describe('HomeComponent', () => {
     const scrollToMock = jest.fn();
     window.scrollTo = scrollToMock;
 
-    component.contentWrapperSection = {
+    component.loginSection = {
       nativeElement: {
         getBoundingClientRect: () => ({ top: 300 })
       }
