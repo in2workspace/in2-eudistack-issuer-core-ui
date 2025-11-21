@@ -65,17 +65,30 @@ describe('HomeComponent', () => {
     expect(router.navigate).toHaveBeenCalledWith(['/login']);
   });
 
-  it('should scroll to login section when scrollToLoginSection() is called', () => {
-    const scrollIntoViewMock = jest.fn();
+  it('should scroll to the correct position accounting for navbar height', () => {
+    const scrollToMock = jest.fn();
+    window.scrollTo = scrollToMock;
 
     component.loginSection = {
       nativeElement: {
-        scrollIntoView: scrollIntoViewMock,
-      } as unknown as HTMLElement,
+        getBoundingClientRect: () => ({ top: 300 })
+      }
     } as any;
+
+    component.header = {
+      nativeElement: {
+        offsetHeight: 80
+      }
+    } as any;
+
+    Object.defineProperty(window, 'scrollY', { value: 200, writable: true });
 
     component.scrollToLoginSection();
 
-    expect(scrollIntoViewMock).toHaveBeenCalledWith({ behavior: 'smooth' });
+    expect(scrollToMock).toHaveBeenCalledWith({
+      top: 420,
+      behavior: 'smooth'
+    });
   });
+
 });

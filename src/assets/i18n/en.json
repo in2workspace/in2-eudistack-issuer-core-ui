@@ -184,9 +184,9 @@
     "searchPlaceholderSubject": "Joe Doe",
     "searchPlaceholderOrgID": "VATES-000000",
     "paginator": {
-      "items-per-page": "Items per paggg",
-      "next-page": "Nextt",
-      "previous-page": "Prevvv",
+      "items-per-page": "Items per page",
+      "next-page": "Next",
+      "previous-page": "Previous",
       "first-page": "First page",
       "last-page": "Last page",
       "of": "of"
