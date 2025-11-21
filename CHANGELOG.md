@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 - Adjust scroll effect in home page so that the login button is clearly visible.
+- Fix the texts in the Dashboard table footer.
 
 ## [2.1.5](https://github.com/in2workspace/in2-issuer-ui/releases/tag/v2.1.5)
 ### Fixed
