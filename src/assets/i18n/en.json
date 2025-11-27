@@ -64,12 +64,12 @@
     "LEARCredentialMachine": "LEAR Credential Machine",
     "VerifiableCertification": "Verifiable Certification",
     "DRAFT": "DRAFT",
-    "PEND_SIGNATURE": "PEND_SIGNATURE",
+    "PEND_SIGNATURE": "TO SIGN",
     "WITHDRAWN": "WITHDRAWN",
     "VALID": "VALID",
     "REVOKED": "REVOKED",
     "EXPIRED": "EXPIRED",
-    "PEND_DOWNLOAD": "PEND_DOWNLOAD",
+    "PEND_DOWNLOAD": "TO DOWNLOAD",
     "ISSUED": "ISSUED",
     "type" : "type",
     "status": "status",
@@ -190,7 +190,11 @@
       "first-page": "First page",
       "last-page": "Last page",
       "of": "of"
-    }
+    },
+    "LABEL_CREDENTIAL": "Label Credential",
+    "LEAR_CREDENTIAL_EMPLOYEE": "LEAR Credential Employee",
+    "LEAR_CREDENTIAL_MACHINE": "LEAR Credential Machine",
+    "VERIFIABLE_CERTIFICATION": "Verifiable Certification"
   },
   "power": {
     "power": "Powers",

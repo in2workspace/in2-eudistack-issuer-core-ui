@@ -22,6 +22,8 @@ import { LifeCycleStatusService } from 'src/app/shared/services/life-cycle-statu
 import { SubjectComponent } from './components/subject-component/subject-component.component';
 import { FormsModule } from '@angular/forms';
 import { CREDENTIAL_MANAGEMENT_SUBJECT } from 'src/app/core/constants/translations.constants';
+import { CapitalizePipe } from 'src/app/shared/pipes/capitalize.pipe';
+import { AddPrefixPipe } from 'src/app/shared/pipes/add-prefix.pipe';
 
 
 
@@ -54,7 +56,9 @@ import { CREDENTIAL_MANAGEMENT_SUBJECT } from 'src/app/core/constants/translatio
     MatPaginator,
     DatePipe,
     SubjectComponent,
-    TranslatePipe
+    TranslatePipe,
+    CapitalizePipe,
+    AddPrefixPipe
 ],
     animations: [
       trigger('openClose', [

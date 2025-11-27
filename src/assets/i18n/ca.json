@@ -65,12 +65,12 @@
     "LEARCredentialMachine":"LEAR Credential Machine",
     "VerifiableCertification": "Verifiable Certification",
     "DRAFT": "ESBORRANY",
-    "PEND_SIGNATURE": "PEND_FIRMA",
+    "PEND_SIGNATURE": "PER SIGNAR",
     "WITHDRAWN": "WITHDRAWN",
     "VALID": "VALID",
     "REVOKED": "REVOCAT",
     "EXPIRED": "EXPIRAT",
-    "PEND_DOWNLOAD": "PEND_DESC.",
+    "PEND_DOWNLOAD": "PER DESCARREGAR",
     "ISSUED": "EMÈS",
     "type" : "tipus",
     "status": "estatus",
@@ -192,7 +192,11 @@
       "first-page": "1a pàg.",
       "last-page": "Última pàg.",
       "of": "de"
-    }
+    },    
+    "LABEL_CREDENTIAL": "Label Credential",
+    "LEAR_CREDENTIAL_EMPLOYEE": "LEAR Credential Employee",
+    "LEAR_CREDENTIAL_MACHINE": "LEAR Credential Machine",
+    "VERIFIABLE_CERTIFICATION": "Verifiable Certification"
   },
     "power": {
       "power": "Poders",
