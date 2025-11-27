@@ -192,7 +192,11 @@
       "first-page": "1a pàg.",
       "last-page": "Última pàg.",
       "of": "de"
-    }
+    },    
+    "LABEL_CREDENTIAL": "Label Credential",
+    "LEAR_CREDENTIAL_EMPLOYEE": "LEAR Credential Employee",
+    "LEAR_CREDENTIAL_MACHINE": "LEAR Credential Machine",
+    "VERIFIABLE_CERTIFICATION": "Verifiable Certification"
   },
     "power": {
       "power": "Poders",
