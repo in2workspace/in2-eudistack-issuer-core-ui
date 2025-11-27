@@ -64,12 +64,12 @@
     "LEARCredentialMachine": "LEAR Credential Machine",
     "VerifiableCertification": "Verifiable Certification",
     "DRAFT": "BORRADOR",
-    "PEND_SIGNATURE": "PEND_FIRMA",
+    "PEND_SIGNATURE": "FIRMA PENDIENTE",
     "WITHDRAWN": "WITHDRAWN",
     "VALID": "VALIDO",
     "REVOKED": "REVOCADO",
     "EXPIRED": "EXPIRADO",
-    "PEND_DOWNLOAD": "PEND_DESC.",
+    "PEND_DOWNLOAD": "DESCARGA PENDENT",
     "ISSUED": "EMITIDO",
     "status": "estatus",
     "email": "Correo electrónico",
@@ -190,7 +190,11 @@
       "first-page": "1a pág.",
       "last-page": "Última pág.",
       "of": "de"
-    }
+    },    
+    "LABEL_CREDENTIAL": "Label Credential",
+    "LEAR_CREDENTIAL_EMPLOYEE": "LEAR Credential Employee",
+    "LEAR_CREDENTIAL_MACHINE": "LEAR Credential Machine",
+    "VERIFIABLE_CERTIFICATION": "Verifiable Certification"
   },
   "power": {
     "power": "Poderes",
