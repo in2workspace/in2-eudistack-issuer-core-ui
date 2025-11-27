@@ -48,25 +48,33 @@ jobs:
 
       # Step 4.1: Generate runtime-config.json to inject runtime variables
       # Creates a JSON file with environment-specific settings for the app
-      - name: Generate runtime-config.json
+      - name: Generate env.js from env.template.js (envsubst)
+        env:
+          IAM_URL: ${{ vars.IAM_URL }}
+          BASE_URL: ${{ vars.BASE_URL }}
+          ADMIN_ORGANIZATION_ID: ${{ vars.ADMIN_ORGANIZATION_ID }}
+          SYS_TENANT: ${{ vars.SYS_TENANT }}
+          WALLET_URL: ${{ vars.WALLET_URL }}
+          WALLET_URL_TEST: ${{ vars.WALLET_URL_TEST }}
+          SHOW_WALLET_URL_TEST: ${{ vars.SHOW_WALLET_URL_TEST }}
+          KNOWLEDGE_BASE_URL: ${{ vars.KNOWLEDGE_BASE_URL }}
+          PRIMARY: ${{ vars.PRIMARY }}
+          PRIMARY_CONTRAST: ${{ vars.PRIMARY_CONTRAST }}
+          SECONDARY: ${{ vars.SECONDARY }}
+          SECONDARY_CONTRAST: ${{ vars.SECONDARY_CONTRAST }}
+          LOGO_SRC: ${{ vars.LOGO_SRC }}
+          FAVICON_SRC: ${{ vars.FAVICON_SRC }}
+          DEFAULT_LANG: ${{ vars.DEFAULT_LANG }}
         run: |
-          mkdir -p dist/out/assets
-          cat > dist/out/assets/runtime-config.json << 'EOF'
-          {
-            "BASE_URL": "${{ vars.BASE_URL }}",
-            "FAVICON_SRC": "${{ vars.FAVICON_SRC }}",
-            "IAM_URL": "${{ vars.IAM_URL }}",
-            "KNOWLEDGE_BASE_URL": "${{ vars.KNOWLEDGE_BASE_URL }}",
-            "LOGO_SRC": "${{ vars.LOGO_SRC }}",
-            "PRIMARY": "${{ vars.PRIMARY }}",
-            "PRIMARY_CONTRAST": "${{ vars.PRIMARY_CONTRAST }}",
-            "SECONDARY": "${{ vars.SECONDARY }}",
-            "SECONDARY_CONTRAST": "${{ vars.SECONDARY_CONTRAST }}",
-            "WALLET_URL": "${{ vars.WALLET_URL }}",
-            "SHOW_WALLET_URL_TEST": "${{ vars.SHOW_WALLET_URL_TEST }}",
-            "WALLET_URL_TEST": "${{ vars.WALLET_URL_TEST }}"
-          }
-          EOF
+          sudo apt-get update && sudo apt-get install -y gettext-base
+          if [ -f dist/out/assets/env.template.js ]; then
+            envsubst < dist/out/assets/env.template.js > dist/out/assets/env.js
+            echo "Generated env.js from env.template.js:"
+            head -n 30 dist/out/assets/env.js || true
+          else
+            echo "dist/out/assets/env.template.js not found" >&2
+            exit 1
+          fi
 
       # Step 5: Create deployment zip file
       # Creates a zip archive of the built application for AWS Amplify deployment
