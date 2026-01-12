@@ -45,7 +45,7 @@ describe('HomeComponent', () => {
 
   it('should get logo source', () => {
     expect(component.logoSrc).toBe(
-      '../../../assets/logos/' + environment.customizations.logo_src,
+      environment.customizations.images.base_url + "/" + environment.customizations.images.logo_path
     );
   });
 

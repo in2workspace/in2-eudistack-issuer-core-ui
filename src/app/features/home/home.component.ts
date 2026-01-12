@@ -17,7 +17,7 @@ export class HomeComponent{
   @ViewChild('header') header!: ElementRef;
   public walletUrl = environment.wallet_url ?? '';
   public knowledge_base_url = environment.knowledge_base_url;
-  public readonly logoSrc = "../../../assets/logos/" + environment.customizations.logo_src;
+  public readonly logoSrc = environment.customizations.images.base_url + "/" + environment.customizations.images.logo_path;
 
   private readonly router = inject(Router);
   private readonly authService = inject(AuthService);

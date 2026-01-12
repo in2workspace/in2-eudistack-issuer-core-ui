@@ -17,8 +17,11 @@ export const environment = {
       secondary:'#2cb6b2',
       secondary_contrast:'#dde6f6'
     },
-    logo_src:"dome-issuer.png",
-    favicon_src:"dome-favicon.png",
+    images: {
+      base_url: "/assets",
+      logo_path:"logos/dome-issuer.png",
+      favicon_path:"icons/dome-favicon.png",
+    },
     default_lang: "en"
   }
 };
