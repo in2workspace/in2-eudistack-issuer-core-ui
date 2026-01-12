@@ -62,7 +62,7 @@ jobs:
           PRIMARY_CONTRAST: ${{ vars.PRIMARY_CONTRAST }}
           SECONDARY: ${{ vars.SECONDARY }}
           SECONDARY_CONTRAST: ${{ vars.SECONDARY_CONTRAST }}
-          IMAGES_BASE_URL: ${{ vars.IMAGES_BASE_URL }}
+          ASSETS_BASE_URL: ${{ vars.ASSETS_BASE_URL }}
           LOGO_PATH: ${{ vars.LOGO_PATH }}
           FAVICON_PATH: ${{ vars.FAVICON_PATH }}
           DEFAULT_LANG: ${{ vars.DEFAULT_LANG }}

@@ -29,9 +29,9 @@ export const environment = {
       // (OPTIONAL with fallback)
       secondary_contrast: window["env"]["secondary_contrast"] ?? '#dde6f6',
     },
-    images: {
-      // Base URL for images (OPTIONAL with fallback)
-      base_url: window["env"]["images_base_url"] ?? "/assets",
+    assets: {
+      // Base URL for assets (OPTIONAL with fallback)
+      base_url: window["env"]["assets_base_url"] ?? "/assets",
       // Main app logo name, shown in the navbar. Points to "assets/logos/" (REQUIRED)
       logo_path: window["env"]["logo_path"],
       // App favicon. Points to "assets/icons/" (REQUIRED)

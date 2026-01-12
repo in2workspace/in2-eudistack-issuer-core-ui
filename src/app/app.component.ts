@@ -48,7 +48,7 @@ public readonly showNavbar$ = toSignal(this.router.events.pipe(
  }
 
  private setFavicon(): void {
-  const faviconSrc = environment.customizations.images.base_url + "/" + environment.customizations.images.favicon_path;
+  const faviconSrc = environment.customizations.assets.base_url + "/" + environment.customizations.assets.favicon_path;
 
   // load favicon from environment
   const faviconLink: HTMLLinkElement = this.document.querySelector("link[rel='icon']") || this.document.createElement('link');

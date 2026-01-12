@@ -6,7 +6,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [2.1.9](https://github.com/in2workspace/in2-issuer-ui/releases/tag/v2.1.9)
 ### Changed
-- Configure logo and favicon using the `IMAGES_BASE_URL` environment variable combined with asset-specific paths.
+- Configure logo and favicon using the `ASSETS_BASE_URL` environment variable combined with asset-specific paths.
 
 
 ## [2.1.8](https://github.com/in2workspace/in2-issuer-ui/releases/tag/v2.1.8)
