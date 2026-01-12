@@ -48,13 +48,13 @@ public readonly showNavbar$ = toSignal(this.router.events.pipe(
  }
 
  private setFavicon(): void {
-  const faviconSrc = environment.customizations.favicon_src;
+  const faviconSrc = environment.customizations.assets.base_url + "/" + environment.customizations.assets.favicon_path;
 
   // load favicon from environment
   const faviconLink: HTMLLinkElement = this.document.querySelector("link[rel='icon']") || this.document.createElement('link');
   faviconLink.type = 'image/x-icon';
   faviconLink.rel = 'icon';
-  faviconLink.href = 'assets/icons/' + faviconSrc;
+  faviconLink.href = faviconSrc;
 
   this.document.head.appendChild(faviconLink);
 
@@ -62,7 +62,7 @@ public readonly showNavbar$ = toSignal(this.router.events.pipe(
   const appleFaviconLink: HTMLLinkElement = this.document.querySelector("link[rel='apple-touch-icon']") || this.document.createElement('link');
   appleFaviconLink.type = 'image/x-icon';
   appleFaviconLink.rel = 'apple-touch-icon';
-  appleFaviconLink.href = 'assets/icons/' + faviconSrc;
+  appleFaviconLink.href = faviconSrc;
 
   this.document.head.appendChild(appleFaviconLink);
 }

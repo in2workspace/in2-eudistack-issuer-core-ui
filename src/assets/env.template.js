@@ -15,8 +15,9 @@
   window["env"]["primary_contrast"]= "${PRIMARY_CONTRAST}";
   window["env"]["secondary"] = "${SECONDARY}";
   window["env"]["secondary_contrast"]= "${SECONDARY_CONTRAST}"
-  window["env"]["logo_src"]= "${LOGO_SRC}"
-  window["env"]["favicon_src"]= "${FAVICON_SRC}"
+  window["env"]["assets_base_url"]= "${ASSETS_BASE_URL}";
+  window["env"]["logo_path"]= "${LOGO_PATH}"
+  window["env"]["favicon_path"]= "${FAVICON_PATH}"
   window["env"]["default_lang"]= "${DEFAULT_LANG}"
   window["env"]["admin_organization_id"]= "${ADMIN_ORGANIZATION_ID}"
 })(this);
