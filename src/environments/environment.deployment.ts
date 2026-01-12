@@ -30,12 +30,12 @@ export const environment = {
       secondary_contrast: window["env"]["secondary_contrast"] ?? '#dde6f6',
     },
     assets: {
-      // Base URL for assets (OPTIONAL with fallback)
-      base_url: window["env"]["assets_base_url"] ?? "/assets",
-      // Main app logo name, shown in the navbar. Points to "assets/logos/" (REQUIRED)
+      // Base URL for assets (REQUIRED)
+      base_url: window["env"]["assets_base_url"],
+      // Main app logo name, shown in the navbar (REQUIRED)
       logo_path: window["env"]["logo_path"],
       // App favicon. Points to "assets/icons/" (REQUIRED)
-      favicon_path: window["env"]["favicon_path"] ?? ""
+      favicon_path: window["env"]["favicon_path"]
     },
     // Default app language (OPTIONAL)
     default_lang: window["env"]["default_lang"] ?? "en"
