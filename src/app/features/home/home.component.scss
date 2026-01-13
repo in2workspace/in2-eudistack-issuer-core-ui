@@ -139,7 +139,7 @@
     position: relative;
     z-index: 1;
     &:first-of-type {
-      background-color: #dde6f6;
+      background-color: $light-grey;
       font-size: calc(1.275rem + 0.3vw);
       margin-top: 0;
       font-weight: 500;
