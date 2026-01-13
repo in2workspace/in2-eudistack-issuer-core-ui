@@ -11,7 +11,7 @@ export const environment = {
   show_wallet_url_test: false,
   knowledge_base_url: "https://knowledgebase.dome-marketplace-sbx.org/",
   customizations:{
-    theme_bundle: "default-theme",
+    theme_name: "default-theme",
     assets: {
       base_url: "/assets",
       logo_path:"altia-logo.svg",

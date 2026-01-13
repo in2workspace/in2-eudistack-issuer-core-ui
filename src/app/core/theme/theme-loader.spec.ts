@@ -24,22 +24,22 @@ describe('runtime theme functions', () => {
 
   describe('getInitialThemeBundleName', () => {
     it('returns default-theme when environment.customizations is undefined', () => {
-      expect(runtimeTheme.getInitialThemeBundleName()).toBe('default-theme');
+      expect(runtimeTheme.getInitialThemeName()).toBe('default-theme');
     });
 
-    it('returns default-theme when environment.customizations.theme_bundle is undefined', () => {
+    it('returns default-theme when environment.customizations.theme_name is undefined', () => {
       (environment as any).customizations = {};
-      expect(runtimeTheme.getInitialThemeBundleName()).toBe('default-theme');
+      expect(runtimeTheme.getInitialThemeName()).toBe('default-theme');
     });
 
-    it('returns the configured theme_bundle when present', () => {
-      (environment as any).customizations = { theme_bundle: 'my-theme' };
-      expect(runtimeTheme.getInitialThemeBundleName()).toBe('my-theme');
+    it('returns the configured theme_name when present', () => {
+      (environment as any).customizations = { theme_name: 'my-theme' };
+      expect(runtimeTheme.getInitialThemeName()).toBe('my-theme');
     });
 
-    it('returns empty string if theme_bundle is an empty string (no fallback)', () => {
-      (environment as any).customizations = { theme_bundle: '' };
-      expect(runtimeTheme.getInitialThemeBundleName()).toBe('');
+    it('returns empty string if theme_name is an empty string (no fallback)', () => {
+      (environment as any).customizations = { theme_name: '' };
+      expect(runtimeTheme.getInitialThemeName()).toBe('');
     });
   });
 
@@ -52,8 +52,8 @@ describe('runtime theme functions', () => {
       expect(link!.getAttribute('href')).toBe('/default-theme.css');
     });
 
-    it('applies environment custom theme_bundle when provided', () => {
-      (environment as any).customizations = { theme_bundle: 'bundle-x' };
+    it('applies environment custom theme_name when provided', () => {
+      (environment as any).customizations = { theme_name: 'bundle-x' };
 
       applyInitialTheme();
 
@@ -63,7 +63,7 @@ describe('runtime theme functions', () => {
     });
 
     it('uses <base href> when present', () => {
-      (environment as any).customizations = { theme_bundle: 'bundle-x' };
+      (environment as any).customizations = { theme_name: 'bundle-x' };
 
       const base = document.createElement('base');
       base.setAttribute('href', '/app/');
