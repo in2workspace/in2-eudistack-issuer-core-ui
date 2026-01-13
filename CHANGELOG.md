@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.1.10](https://github.com/in2workspace/in2-issuer-ui/releases/tag/v2.1.10)
+### Changed
+- Configure colors not by specific env variables but by pointing to specific styles file.
+
 ## [2.1.9](https://github.com/in2workspace/in2-issuer-ui/releases/tag/v2.1.9)
 ### Changed
 - Configure logo and favicon using the `ASSETS_BASE_URL` environment variable combined with asset-specific paths.
