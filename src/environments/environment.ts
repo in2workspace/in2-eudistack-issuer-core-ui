@@ -11,11 +11,11 @@ export const environment = {
   show_wallet_url_test: false,
   knowledge_base_url: "https://knowledgebase.dome-marketplace-sbx.org/",
   customizations:{
-    theme_name: "default-theme",
+    theme_name: "altia-theme",
     assets: {
-      base_url: "/assets",
-      logo_path:"altia-logo.svg",
-      favicon_path:"altia-favicon.ico",
+      base_url: "assets",
+      logo_path:"logos/altia-logo.svg",
+      favicon_path:"icons/altia-favicon.ico",
     },
     default_lang: "en"
   }
