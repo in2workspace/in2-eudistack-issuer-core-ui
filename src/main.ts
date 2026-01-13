@@ -1,4 +1,3 @@
-import { TempIssuanceFormPowerSchema } from './app/features/credential-issuance/components/power/issuance-power.component';
 import { importProvidersFrom } from '@angular/core';
 import { AppComponent } from './app/app.component';
 import { environment } from 'src/environments/environment';
