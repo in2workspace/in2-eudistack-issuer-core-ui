@@ -30,7 +30,22 @@
               "src/assets"
             ],
             "styles": [
-              "src/styles/styles.scss"
+              "src/styles/styles.scss",
+              {
+                "input": "src/styles/themes/default-theme.scss",
+                "bundleName": "default-theme",
+                "inject": false
+              },
+              {
+                "input": "src/styles/themes/altia-theme.scss",
+                "bundleName": "altia-theme",
+                "inject": false
+              },
+              {
+                "input": "src/styles/themes/isbe-theme.scss",
+                "bundleName": "isbe-theme",
+                "inject": false
+              }
             ],
             "scripts": []
           },

@@ -19,16 +19,7 @@ export const environment = {
   // Knowledgebase base URL (REQUIRED)
   knowledge_base_url: window["env"]["knowledge_base_url"],
   customizations:{
-    colors:{
-      // (OPTIONAL with fallback)
-      primary: window["env"]["primary"] ?? '#2d58a7',
-      // (OPTIONAL with fallback)
-      primary_contrast: window["env"]["primary_contrast"] ?? '#ffffff',
-      // (OPTIONAL with fallback)
-      secondary: window["env"]["secondary"] ?? '#2cb6b2',
-      // (OPTIONAL with fallback)
-      secondary_contrast: window["env"]["secondary_contrast"] ?? '#dde6f6',
-    },
+    theme_bundle: window["env"]["theme_bundle"],
     assets: {
       // Base URL for assets (REQUIRED)
       base_url: window["env"]["assets_base_url"],

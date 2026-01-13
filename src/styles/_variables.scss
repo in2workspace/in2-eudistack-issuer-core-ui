@@ -1,42 +1,10 @@
-//todo make 100% adaptable to different tenants
-//DOME colors
-$Blue: #2d58a7;
-$Light-Blue-Primary: #00add3;
-$Dark-Blue: #14274a;
-$Light-Blue-Secondary: #dde6f6;
-$White: #ffffff;
-
-//App colors
+//Neutres reutilitzables
+// home footer background color
+$dark-color: #14274a;
+// light background color for links and hover in footer
+$white: #ffffff;
+//Background color for cancel dialog (?)
+//todo: revisar
 $cancel: rgba(0, 0, 0, 0.12);
-
-//Palette with DOME blue, used as primary palette in Angular Material components
-$custom-palette: (
-  50: #e5edf9,
-  100: #cad9f3,
-  200: #9cb8eb,
-  300: #7097e2,
-  400: #4a75d3,
-  500: $Blue,
-  600: #25468b,
-  700: #1d3673,
-  800: #162a5b,
-  900: #0f1d40,
-  A100: #cad9f3,
-  A200: #9cb8eb,
-  A400: #4a75d3,
-  A700: #1d3673,
-  contrast: (
-    50: rgba(black, 0.87),
-    100: rgba(black, 0.87),
-    200: rgba(black, 0.87),
-    300: rgba(black, 0.87),
-    400: white,
-    500: white,
-    600: white,
-    700: white,
-    800: white,
-    900: white,
-  )
-);
 
 $font-stack: 'Blinker', 'Arial', sans-serif;
