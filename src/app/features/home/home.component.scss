@@ -106,12 +106,15 @@
           background-color: color-mix(in srgb, var(--secondary-custom-color) 90%, black);
         }
 
-        img {
+        .arrow-right {
           margin-left: 0.5rem;
           width: 20px;
           align-items: center;
           text-align: center;
+          fill: var(--secondary-contrast-custom-color);
         }
+
+
       }
       .scroller {
         margin-top: 4.5%;
@@ -177,8 +180,8 @@
           align-items: center;
           justify-content: center;
           text-align: center;
-          background-color: #ffa630;
-          color: black;
+          background-color: var(--secondary-custom-color);
+          color: var(--secondary-contrast-custom-color);
           padding: 0.5rem 1rem;
           border-radius: 0.375rem;
           text-decoration: none;
