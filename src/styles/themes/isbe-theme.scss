@@ -1,36 +1,35 @@
 @use '@angular/material' as mat;
 @use '../variables' as v;
 
-// todo update with correct colors
-//Main palette color, also used in other variables
-// todo update after tests
-$primary-color: rgb(230, 80, 230);
-// navbar
-$primary-contrast-color: rgb(138, 234, 142);
-// no s'usa enlloc, es podria canviar potser per Light-blue-primary que és semblant
-$secondary-color: #b94c31;
-// no s'usa enlloc
-$secondary-contrast-color: #dde6f6;
+// Deactivated theme, it is selected via configuration through THEME_NAME variable
+
+// Main palette color, also used in other variables
+$primary-color: #B88EFF;
+// Used in navbar
+$primary-contrast-color: #000000;
+// Used in landing page buttons and as hover color in management table
+$secondary-color: #76F276;
+$secondary-contrast-color: #444444;
 
 @include mat.core();
 
 
-//Palette with DOME blue, used as primary palette in Angular Material components
+//Palette for Angular Material components
 $custom-palette: (
   50: #e5edf9,
   100: #cad9f3,
   200: #9cb8eb,
-  300: #7097e2,
-  400: #4a75d3,
+  300: #a170e2,
+  400: #8a4ad3,
   500: $primary-color,
-  600: #25468b,
-  700: #1d3673,
-  800: #162a5b,
-  900: #0f1d40,
+  600: #6e258b,
+  700: #5f1d73,
+  800: #4a165b,
+  900: #390f40,
   A100: #cad9f3,
   A200: #9cb8eb,
-  A400: #4a75d3,
-  A700: #1d3673,
+  A400: #b14ad3,
+  A700: #631d73,
   contrast: (
     50: rgba(black, 0.87),
     100: rgba(black, 0.87),

@@ -1,20 +1,20 @@
 @use '@angular/material' as mat;
 @use '../variables' as v;
 
-//Main palette color, also used in other variables
-// todo update with correct colors
+// Deactivated theme, it is selected via configuration through THEME_NAME variable
+
+// Main palette color, also used in other variables
 $primary-color: #2d58a7;
-// navbar
+// Used in navbar
 $primary-contrast-color: #ffffff;
-// no s'usa enlloc, es podria canviar potser per Light-blue-primary que és semblant
+// Used in landing page buttons and as hover color in management table
 $secondary-color: #00add3;
-// no s'usa enlloc
-$secondary-contrast-color: #dde6f6;
+$secondary-contrast-color: #ffffff;
 
 @include mat.core();
 
 
-//Palette with DOME blue, used as primary palette in Angular Material components
+//Palette for Angular Material components
 $custom-palette: (
   50: #e5edf9,
   100: #cad9f3,
