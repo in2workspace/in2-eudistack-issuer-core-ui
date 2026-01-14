@@ -27,7 +27,6 @@ public readonly showNavbar$ = toSignal(this.router.events.pipe(
 
  ngOnInit(){
   this.languageService.setLanguage();
-  //todo move to main.ts to avoid glitching
   this.setFavicon();
  }
 
