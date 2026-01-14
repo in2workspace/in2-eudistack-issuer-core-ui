@@ -1,12 +1,13 @@
-//Neutres reutilitzables
+// Reusable neutral colors
 // home footer background color
 $dark-color: #14274a;
-// light background color for links and hover in footer
+// Light background color for links and hover in footer
 $white: #ffffff;
-//Light grey for background
+// Light grey for background (i.e. for landing page sections or side cards)
 $light-grey: #dde6f6;
-//Background color for cancel dialog (?)
-//todo: revisar
+// Neutral background color (i. e. for table rows)
+$bg-neutral-light: whitesmoke;
+// Background color for cancel dialog
 $cancel: rgba(0, 0, 0, 0.12);
 
 $font-stack: 'Blinker', 'Arial', sans-serif;
