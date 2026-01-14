@@ -58,10 +58,7 @@ jobs:
           WALLET_URL_TEST: ${{ vars.WALLET_URL_TEST }}
           SHOW_WALLET_URL_TEST: ${{ vars.SHOW_WALLET_URL_TEST }}
           KNOWLEDGE_BASE_URL: ${{ vars.KNOWLEDGE_BASE_URL }}
-          PRIMARY: ${{ vars.PRIMARY }}
-          PRIMARY_CONTRAST: ${{ vars.PRIMARY_CONTRAST }}
-          SECONDARY: ${{ vars.SECONDARY }}
-          SECONDARY_CONTRAST: ${{ vars.SECONDARY_CONTRAST }}
+          THEME_NAME: ${{ vars.THEME_NAME }}
           ASSETS_BASE_URL: ${{ vars.ASSETS_BASE_URL }}
           LOGO_PATH: ${{ vars.LOGO_PATH }}
           FAVICON_PATH: ${{ vars.FAVICON_PATH }}
