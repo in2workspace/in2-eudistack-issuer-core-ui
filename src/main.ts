@@ -17,8 +17,12 @@ import { LearCredentialEmployeeSchemaProvider } from './app/features/credential-
 import { LearCredentialMachineIssuanceSchemaProvider } from './app/features/credential-issuance/services/issuance-schema-builders/lear-credential-machine-issuance-schema-provider';
 import { MatPaginatorIntl } from '@angular/material/paginator';
 import { MatPaginatorIntlService } from './app/shared/services/mat-paginator-intl.service';
+import { applyInitialTheme } from './app/core/theme/theme-loader';
+
 
 overrideDefaultValueAccessor();
+
+applyInitialTheme();
 
 bootstrapApplication(AppComponent, {
     providers: [

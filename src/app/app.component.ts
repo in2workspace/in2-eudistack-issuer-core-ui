@@ -27,24 +27,7 @@ public readonly showNavbar$ = toSignal(this.router.events.pipe(
 
  ngOnInit(){
   this.languageService.setLanguage();
-  this.setCustomColors();
   this.setFavicon();
- }
-
- private setCustomColors(){
-  const root = document.documentElement;
-  const colors = environment.customizations.colors;
-
-  const cssVarMap = {
-    '--primary-custom-color': colors.primary,
-    '--primary-contrast-custom-color': colors.primary_contrast,
-    '--secondary-custom-color': colors.secondary,
-    '--secondary-contrast-custom-color': colors.secondary_contrast,
-  };
-
-  Object.entries(cssVarMap).forEach(([cssVariable, colorValue]) => {
-    root.style.setProperty(cssVariable, colorValue);
-  });
  }
 
  private setFavicon(): void {

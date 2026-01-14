@@ -1,58 +1,28 @@
-import { CredentialProcedure } from "../models/dto/credential-procedures-response.dto";
+import { CredentialProceduresResponse } from "../models/dto/credential-procedures-response.dto";
 
-export const credentialProcedureListMock: CredentialProcedure[] =[
+export const credentialProceduresResponseMock: CredentialProceduresResponse = {
+  credential_procedures: [
     {
-        credential_procedure: {
-            procedure_id: "aaa",
-            subject: "AAAAAAAAAAAAA BBBBBBB",
-            status: "ISSUED",
-            credential_type: "LABEL_CREDENTIAL",
-            updated: "2024-11-25T14:35:45.123+01:00"
-        }
+      credential_procedure: {
+        procedure_id: 'proc-001',
+        subject: 'John Doe',
+        credential_type: "LEAR_CREDENTIAL_EMPLOYEE",
+        status: "VALID",
+        updated: '2025-01-10T09:30:00Z',
+        email: 'john.doe@example.com',
+        organization_identifier: 'ORG-123'
+      }
     },
     {
-        credential_procedure: {
-            procedure_id: "aaa",
-            subject: "ddddddddd CCCCCCCCCCCCCcc",
-            status: "PEND_DOWNLOAD",
-            credential_type: "LABEL_CREDENTIAL",
-            updated: "2024-11-26T14:35:45.123+01:00"
-        }
-    },
-    {
-        credential_procedure: {
-            procedure_id: "aaa",
-            subject: "aaaaaaaaaaaaaaa CCCCCCCCCCCCCcc",
-            status: "WITHDRAWN",
-            credential_type: "LABEL_CREDENTIAL",
-            updated: "2024-11-26T14:35:45.123+01:00"
-        }
-    },
-    {
-        credential_procedure: {
-            procedure_id: "aaa",
-            subject: "ddddddddddddddd hhhhhhhhhhhhh",
-            status: "EXPIRED",
-            credential_type: "LABEL_CREDENTIAL",
-            updated: "2024-11-26T14:35:45.123+01:00"
-        }
-    },
-    {
-        credential_procedure: {
-            procedure_id: "aaa",
-            subject: "xxxxxxxxxxxxxxxxxx zzzzzzzzzzzzzzzz",
-            status: "VALID",
-            credential_type: "LEAR_CREDENTIAL_MACHINE",
-            updated: "2024-11-26T14:35:45.123+01:00"
-        }
-    },
-    {
-        credential_procedure: {
-            procedure_id: "aaa",
-            subject: "hhhhhhhhhhh jjjjjjjjjjjjjjjjjj",
-            status: "DRAFT",
-            credential_type: "LEAR_CREDENTIAL_MACHINE",
-            updated: "2024-11-26T14:35:45.123+01:00"
-        }
-    },
-]
+      credential_procedure: {
+        procedure_id: 'proc-002',
+        subject: 'Jane Smith',
+        credential_type: "LEAR_CREDENTIAL_EMPLOYEE",
+        status: "PEND_DOWNLOAD",
+        updated: '2025-01-09T15:12:00Z',
+        email: 'jane.smith@example.com',
+        organization_identifier: 'ORG-456'
+      }
+    }
+  ]
+};

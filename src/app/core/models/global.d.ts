@@ -13,10 +13,7 @@ interface Window {
         credential_offer_url?: string;
         notification?: string;
         sign_credential_url?: string;
-        primary?: string;
-        primary_contrast?: string;
-        secondary?: string;
-        secondary_contrast?: string;
+        theme_name?: string;
         assets_base_url?: string;
         logo_path?: string;
         favicon_path?: string;

@@ -4,6 +4,11 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.1.10](https://github.com/in2workspace/in2-issuer-ui/releases/tag/v2.1.10)
+### Changed
+- Configure colors relying on a single environment variable, `THEME_NAME`, which determines which CSS bundle is loaded. Each theme encapsulates all its CSS variables in a dedicated bundle. Previously, theming was handled through four separate color environment variables.
+- Button colors on the landing page are now configurable and depend on CSS variables defined in the selected theme bundle.
+
 ## [2.1.9](https://github.com/in2workspace/in2-issuer-ui/releases/tag/v2.1.9)
 ### Changed
 - Configure logo and favicon using the `ASSETS_BASE_URL` environment variable combined with asset-specific paths.

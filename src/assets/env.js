@@ -10,10 +10,7 @@
   window["env"]["wallet_url_test"] = "${WALLET_URL_TEST}";
   window["env"]["show_wallet_url_test"] = "${SHOW_WALLET_URL_TEST}";
   window["env"]["knowledge_base_url"] = "${KNOWLEDGE_BASE_URL}";
-  window["env"]["primary"] = "${PRIMARY}";
-  window["env"]["primary_contrast"]= "${PRIMARY_CONTRAST}";
-  window["env"]["secondary"] = "${SECONDARY}";
-  window["env"]["secondary_contrast"]= "${SECONDARY_CONTRAST}";
+  window["env"]["theme_name"] = "${THEME_NAME}";
   window["env"]["assets_base_url"]= "${ASSETS_BASE_URL}";
   window["env"]["logo_path"]= "${LOGO_PATH}"
   window["env"]["favicon_path"]= "${FAVICON_PATH}"
