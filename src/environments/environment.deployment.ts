@@ -16,8 +16,18 @@ export const environment = {
   wallet_url_test: window["env"]["wallet_url_test"],
   // Determines whether to show wallet_url_test or not (REQUIRED)
   show_wallet_url_test: window["env"]["show_wallet_url_test"] === "true",
+  privacy_policy_url: window["env"]["privacy_policy_url"],
+  license_url: window["env"]["license_url"],
+  code_repository_url: window["env"]["code_repository_url"],
   // Knowledgebase base URL (REQUIRED)
-  knowledge_base_url: window["env"]["knowledge_base_url"],
+  knowledge_base_url: {
+    base: window["env"]["knowledge_base_url"],
+    wallet: window["env"]["knowledge_base_url_wallet"],
+    issuer: {
+      base: window["env"]["knowledge_base_url_issuer"],
+      revocation: window["env"]["knowledge_base_url_revocation"]
+    }
+  },
   customizations:{
     theme_name: window["env"]["theme_name"],
     assets: {

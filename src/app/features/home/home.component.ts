@@ -15,9 +15,12 @@ import { TranslatePipe } from '@ngx-translate/core';
 export class HomeComponent{
   @ViewChild('loginSection') loginSection!: ElementRef<HTMLElement>;
   @ViewChild('header') header!: ElementRef;
-  public walletUrl = environment.wallet_url ?? '';
-  public knowledge_base_url = environment.knowledge_base_url;
+  public readonly walletUrl = environment.wallet_url ?? '';
+  public readonly knowledge_base_url = environment.knowledge_base_url.base;
   public readonly logoSrc = environment.customizations.assets.base_url + "/" + environment.customizations.assets.logo_path;
+  public readonly licenseUrl = environment.license_url;
+  public readonly privacyPolicyUrl = environment.privacy_policy_url;
+  public readonly codeRepositoryUrl = environment.code_repository_url;
 
   private readonly router = inject(Router);
   private readonly authService = inject(AuthService);

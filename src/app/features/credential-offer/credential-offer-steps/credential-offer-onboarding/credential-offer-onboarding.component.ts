@@ -2,7 +2,6 @@ import { Component } from '@angular/core';
 import { TranslatePipe } from '@ngx-translate/core';
 import { environment } from 'src/environments/environment';
 import { QRCodeModule } from 'angularx-qrcode';
-import { KNOWLEDGEBASE_PATH } from 'src/app/core/constants/knowledge.constants';
 
 @Component({
   selector: 'app-credential-offer-onboarding',
@@ -13,7 +12,7 @@ import { KNOWLEDGEBASE_PATH } from 'src/app/core/constants/knowledge.constants';
 })
 export class CredentialOfferOnboardingComponent{
   public qrColor = "#2d58a7";
-  public walletUsersGuideUrl = environment.knowledge_base_url + KNOWLEDGEBASE_PATH.WALLET;
+  public walletUsersGuideUrl = environment.knowledge_base_url.base + environment.knowledge_base_url.wallet;
 
   public walletUrl = environment.wallet_url || 'https://wallet.dome-marketplace.eu/';
   public walletTestUrl = environment.wallet_url_test || 'https://wallet.dome-marketplace.eu/';

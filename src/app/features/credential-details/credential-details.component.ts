@@ -18,7 +18,6 @@ import { CredentialStatus, CredentialType, LifeCycleStatus } from 'src/app/core/
 import { Observable } from 'rxjs';
 import { EvaluatedExtendedDetailsField } from 'src/app/core/models/entity/lear-credential-details';
 import { StatusClass } from 'src/app/core/models/entity/lear-credential-management';
-import { KNOWLEDGEBASE_PATH } from 'src/app/core/constants/knowledge.constants';
 import { environment } from 'src/environments/environment';
 
 
@@ -57,7 +56,7 @@ export class CredentialDetailsComponent implements OnInit {
 
   //RAW VARIABLES
   public tooltipText: string = "credentialDetails.revokeTooltip";
-  public knowledgeBaseUrl = environment.knowledge_base_url + KNOWLEDGEBASE_PATH.ISSUER + KNOWLEDGEBASE_PATH.ISSUER_REVOKATION;
+  public knowledgeBaseUrl = environment.knowledge_base_url.base + environment.knowledge_base_url.issuer.base + environment.knowledge_base_url.issuer.revocation;
 
   private readonly route = inject(ActivatedRoute);
   private readonly detailsService = inject(CredentialDetailsService);

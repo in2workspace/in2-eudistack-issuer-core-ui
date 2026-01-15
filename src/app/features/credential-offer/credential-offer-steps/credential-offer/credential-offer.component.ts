@@ -2,7 +2,6 @@ import { Component, computed, EventEmitter, input, Output } from '@angular/core'
 import { TranslatePipe } from '@ngx-translate/core';
 import { QRCodeModule } from 'angularx-qrcode';
 import { environment } from 'src/environments/environment';
-import { KNOWLEDGEBASE_PATH } from 'src/app/core/constants/knowledge.constants';
 
 @Component({
     selector: 'app-credential-offer',
@@ -14,7 +13,7 @@ import { KNOWLEDGEBASE_PATH } from 'src/app/core/constants/knowledge.constants';
 export class CredentialOfferComponent{
   @Output() public refreshCredential = new EventEmitter<void>();
   public qrColor = "#2d58a7";
-  public walletUsersGuideUrl = environment.knowledge_base_url + KNOWLEDGEBASE_PATH.WALLET;
+  public walletUsersGuideUrl = environment.knowledge_base_url.base + environment.knowledge_base_url.wallet;
   public credentialOfferUri$ = input.required<string>();
 
   public readonly walletSameDeviceUrl = environment.wallet_url + '/tabs/home/';
