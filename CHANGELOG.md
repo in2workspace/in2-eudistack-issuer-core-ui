@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.1.11](https://github.com/in2workspace/in2-issuer-ui/releases/tag/v2.1.11)
+### Changed
+- UI adjustments in home and management page.
+
 ## [2.1.10](https://github.com/in2workspace/in2-issuer-ui/releases/tag/v2.1.10)
 ### Changed
 - Configure colors relying on a single environment variable, `THEME_NAME`, which determines which CSS bundle is loaded. Each theme encapsulates all its CSS variables in a dedicated bundle. Previously, theming was handled through four separate color environment variables.

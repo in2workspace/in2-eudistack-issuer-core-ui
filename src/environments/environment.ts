@@ -11,11 +11,11 @@ export const environment = {
   show_wallet_url_test: false,
   knowledge_base_url: "https://knowledgebase.dome-marketplace-sbx.org/",
   customizations:{
-    theme_name: "altia-theme",
+    theme_name: "rfef-theme",
     assets: {
-      base_url: "assets",
-      logo_path:"logos/altia-logo.svg",
-      favicon_path:"icons/altia-favicon.ico",
+      base_url: "https://cdn.jsdelivr.net/gh/in2workspace/eudistack-assets@main/RFEF",
+      logo_path:"rfef-logo.png",
+      favicon_path:"rfef-favicon.ico",
     },
     default_lang: "en"
   }

@@ -1,36 +1,15 @@
 @use '@angular/material' as mat;
 @use '../variables' as v;
 
-@import url("https://fonts.googleapis.com/css2?family=Blinker:wght@400;600&display=swap");
-
-
-@font-face {
-  font-family: "Blinker";
-  font-weight: 400;
-  src: url("../../assets/fonts/Blinker-Regular.ttf") format("truetype");
-}
-
-@font-face {
-  font-family: "Blinker";
-  font-weight: 600;
-  src: url("../../assets/fonts/Blinker-SemiBold.ttf") format("truetype");
-}
-
-@font-face {
-  font-family: "Blinker";
-  font-weight: 700;
-  src: url("../../assets/fonts/Blinker-Bold.ttf") format("truetype");
-}
-
 // Deactivated theme, it is selected via configuration through THEME_NAME variable
 
 // Main palette color, also used in other variables
-$primary-color: #B88EFF;
+$primary-color: #cd062d;
 // Used in navbar
-$primary-contrast-color: #000000;
+$primary-contrast-color: #ffffff;
 // Used in landing page buttons and as hover color in management table
-$secondary-color: #76F276;
-$secondary-contrast-color: #444444;
+$secondary-color: #061934;
+$secondary-contrast-color: #ffffff;
 
 @include mat.core();
 
@@ -40,17 +19,17 @@ $custom-palette: (
   50: #e5edf9,
   100: #cad9f3,
   200: #9cb8eb,
-  300: #a170e2,
-  400: #8a4ad3,
+  300: #7097e2,
+  400: #4a75d3,
   500: $primary-color,
-  600: #6e258b,
-  700: #5f1d73,
-  800: #4a165b,
-  900: #390f40,
+  600: #25468b,
+  700: #1d3673,
+  800: #162a5b,
+  900: #0f1d40,
   A100: #cad9f3,
   A200: #9cb8eb,
-  A400: #b14ad3,
-  A700: #631d73,
+  A400: #4a75d3,
+  A700: #1d3673,
   contrast: (
     50: rgba(black, 0.87),
     100: rgba(black, 0.87),
@@ -71,8 +50,11 @@ $custom-primary: mat.m2-define-palette($custom-palette);
 $custom-accent: mat.m2-define-palette(mat.$m2-pink-palette, A200, A100, A400);
 $custom-warn: mat.m2-define-palette(mat.$m2-red-palette);
 
-$font-stack: 'Blinker', 'Arial', sans-serif;
+$font-stack: 'Montserrat', sans-serif;
+
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&display=swap');
 $custom-typography: mat.m2-define-typography-config($font-family: $font-stack);
+
 body{
   font-family: $font-stack;
 }
