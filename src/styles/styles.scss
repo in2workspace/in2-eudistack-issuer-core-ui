@@ -3,26 +3,6 @@
 @import './ng-material/ng-index.scss';
 @import './status.scss';
 
-@import url("https://fonts.googleapis.com/css2?family=Blinker:wght@400;600&display=swap");
-
-@font-face {
-  font-family: "Blinker";
-  font-weight: 400;
-  src: url("../assets/fonts/Blinker-Regular.ttf") format("truetype");
-}
-
-@font-face {
-  font-family: "Blinker";
-  font-weight: 600;
-  src: url("../assets/fonts/Blinker-SemiBold.ttf") format("truetype");
-}
-
-@font-face {
-  font-family: "Blinker";
-  font-weight: 700;
-  src: url("../assets/fonts/Blinker-Bold.ttf") format("truetype");
-}
-
 
 html,
 body {
@@ -30,8 +10,7 @@ body {
 }
 
 body {
-  margin: 0;
-  font-family: $font-stack; //apply font stack to non-angular-material text
+  margin: 0; //apply font stack to non-angular-material text
 }
 
 h1{

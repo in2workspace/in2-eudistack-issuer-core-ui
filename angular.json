@@ -50,6 +50,11 @@
                 "input": "src/styles/themes/isbe-theme.scss",
                 "bundleName": "isbe-theme",
                 "inject": false
+              },
+              {
+                "input": "src/styles/themes/rfef-theme.scss",
+                "bundleName": "rfef-theme",
+                "inject": false
               }
             ],
             "scripts": []
