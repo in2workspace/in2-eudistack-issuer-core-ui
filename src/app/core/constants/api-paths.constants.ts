@@ -5,7 +5,7 @@ export const API_PATH = Object.freeze({
     CONFIGURATION: '/backoffice/v1/configuration',
     NOTIFICATION: '/backoffice/v1/notifications',
     PROCEDURES: '/backoffice/v1/procedures',
-    REVOKE: '/backoffice/v1/credentials/status/revoke',
+    REVOKE: '/api/v1/status-list/revoke',
     SAVE_CREDENTIAL: '/backoffice/v1/issuances',
     SIGNATURE_CONFIG:'/backoffice/v1/signatures/configs',
     SIGN_CREDENTIAL: '/backoffice/v1/retry-sign-credential'
