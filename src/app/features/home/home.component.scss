@@ -58,7 +58,7 @@
             margin-left: 1rem;
 
             .nav-link {
-              color: $white;
+              color: var(--custom-primary-contrast-color);
               text-decoration: none;
               font-size: large;
               cursor: pointer;
@@ -70,7 +70,7 @@
   }
 
   .cover {
-    color: $white;
+    color: var(--primary-contrast-custom-color);;
     text-align: center;
     padding-top: 10rem;
     padding-bottom: 5rem;
@@ -156,7 +156,7 @@
     }
     &:nth-of-type(2n) {
       background-color: var(--primary-custom-color);
-      color: $white;
+      color: var(--primary-contrast-custom-color);
       font-size: calc(1.275rem + 0.3vw);
       margin-top: 0;
       font-weight: 500;
