@@ -173,6 +173,7 @@ export class CredentialDetailsService {
       return;
     }
     const listId = this.getCredentialListId();
+    console.log("CredentialdetailsService - revoke - listId: ", listId);
     if(!listId){
       console.error("Couldn't get credential list from vc.");
       this.dialog.openErrorInfoDialog(DialogComponent, 'error.unknown_error');
@@ -190,17 +191,19 @@ export class CredentialDetailsService {
   }
 
   private getCredentialListId(): string {
-    const statusListCredential = this.getCredential()?.credentialStatus?.statusListCredential;
-    
-    if(!statusListCredential){
-      console.error('No Status List Credential found in vc: ');
-      console.error(this.getCredential());
-      return "";
-    }
-    
-    const id = statusListCredential[statusListCredential.length - 1];
-    return id;
+  const statusListCredential = this.getCredential()?.credentialStatus?.statusListCredential;
+  
+  if (!statusListCredential) {
+    console.error('No Status List Credential found in vc: ');
+    console.error(this.getCredential());
+    return "";
   }
+  
+  const parts = statusListCredential.split('/');
+  const id = parts[parts.length - 1];
+  
+  return id;
+}
 
   
   private loadCredentialDetails(): Observable<CredentialProcedureDetails> {
