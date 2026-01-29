@@ -138,13 +138,14 @@ describe('CredentialDetailsService', () => {
     });
 
     it('amb statusListCredential: retorna l’últim element sense error', () => {
-      const list = ['one', 'two', 'three'];
-      const withStatus: any = { credentialStatus: { statusListCredential: list } };
+      const withStatus: any = { credentialStatus: { statusListCredential: 'one/two/three' } };
       jest.spyOn(console, 'error').mockImplementation(() => {});
       (service as any).getCredential = () => withStatus;
+
       expect((service as any).getCredentialListId()).toBe('three');
       expect(console.error).not.toHaveBeenCalled();
     });
+
   });
 
   describe('evaluateFieldMain', () => {
