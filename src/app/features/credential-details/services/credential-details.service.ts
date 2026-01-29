@@ -191,16 +191,19 @@ export class CredentialDetailsService {
 
   private getCredentialListId(): string {
     const statusListCredential = this.getCredential()?.credentialStatus?.statusListCredential;
-    
-    if(!statusListCredential){
+
+    if (!statusListCredential) {
       console.error('No Status List Credential found in vc: ');
       console.error(this.getCredential());
       return "";
     }
-    
-    const id = statusListCredential[statusListCredential.length - 1];
-    return id;
+
+    const parts = statusListCredential.split('/');
+    const id = parts.at(-1);
+
+    return id ?? "";
   }
+
 
   
   private loadCredentialDetails(): Observable<CredentialProcedureDetails> {
